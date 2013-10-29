@@ -1,7 +1,7 @@
 package core.datatypes;
 
 import core.Constants;
-import exception.IllegalStringException;
+import exceptions.IllegalStringException;
 
 /**
  * This class is used to represent DNA sequences. It enforces that the string it contains is made
@@ -16,7 +16,7 @@ public class Sequence {
 	private String seq;
 	
 	/**
-	 * Returns a new Sequence object containing the specified sequence.
+	 * Returns a new Sequence object containing the specified sequence string. If the string contains non-DNA characters and IllegalStringException is thrown.
 	 * @param seq string containing DNA characters
 	 * @throws IllegalStringException
 	 */
@@ -41,7 +41,7 @@ public class Sequence {
 		if(seq.matches(Constants.DNA_REGEX)){
 			this.seq = seq;
 		}else{
-			throw new IllegalStringException("Error: the string \""+seq+"\" contains a non DNA character.");
+			throw new IllegalStringException("Error: the string \""+seq+"\" contains non-DNA characters.");
 		}
 	}
 	
