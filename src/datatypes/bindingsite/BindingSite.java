@@ -1,7 +1,7 @@
-package datatypes.probe;
+package datatypes.bindingsite;
 
 import utils.MathUtils;
-import datatypes.Sequence;
+import datatypes.sequence.Sequence;
 
 /**
  * This class is used to represent binding sites associated with particular sequences and provides various methods

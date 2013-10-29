@@ -1,4 +1,4 @@
-package datatypes;
+package datatypes.location;
 
 public interface Location {
 	

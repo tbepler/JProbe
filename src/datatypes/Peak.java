@@ -1,5 +1,6 @@
 package datatypes;
 
+import datatypes.sequence.DNASequence;
 import exceptions.IllegalStringException;
 
 /**

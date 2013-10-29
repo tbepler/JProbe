@@ -1,4 +1,5 @@
-package datatypes;
+package datatypes.location;
+
 
 public class GenomeLocation implements Location{
 	

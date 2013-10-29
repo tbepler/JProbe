@@ -1,4 +1,4 @@
-package datatypes;
+package datatypes.sequence;
 
 import core.Constants;
 import exceptions.IllegalStringException;

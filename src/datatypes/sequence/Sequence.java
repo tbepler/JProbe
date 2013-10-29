@@ -1,4 +1,4 @@
-package datatypes;
+package datatypes.sequence;
 
 public interface Sequence {
 	
