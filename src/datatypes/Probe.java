@@ -25,7 +25,7 @@ public class Probe implements Sequence, NBindingSites, Location{
 	
 	@Override
 	public String toString(){
-		return getSeq()+"\t"+getName()+"";
+		return getSeq()+"\t"+getName()+getMutationFlag()+getOrientationFlag()+"_"+id+"\t"+locationToString();
 	}
 	
 	public int getId(){
