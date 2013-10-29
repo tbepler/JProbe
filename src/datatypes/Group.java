@@ -1,4 +1,4 @@
-package core.datatypes;
+package datatypes;
 
 public class Group {
 

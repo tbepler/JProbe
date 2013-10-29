@@ -1,4 +1,4 @@
-package core.datatypes;
+package datatypes;
 
 import exceptions.IllegalStringException;
 
@@ -6,10 +6,10 @@ import exceptions.IllegalStringException;
  * This class extends Sequence and is used to represent peak objects. It contains the DNA sequence, chromosome, start and ending locations for the peak.
  * 
  * @author Tristan Bepler
- * @see Sequence
+ * @see DNASequence
  */
 
-public class Peak extends Sequence{
+public class Peak extends DNASequence{
 	
 	private String chr;
 	private int start;

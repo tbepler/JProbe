@@ -1,4 +1,4 @@
-package core.datatypes;
+package datatypes;
 
 import core.Constants;
 import exceptions.IllegalStringException;
@@ -11,7 +11,7 @@ import exceptions.IllegalStringException;
  *
  */
 
-public class Sequence {
+public class DNASequence implements Sequence{
 	
 	private String seq;
 	
@@ -20,7 +20,7 @@ public class Sequence {
 	 * @param seq string containing DNA characters
 	 * @throws IllegalStringException
 	 */
-	public Sequence(String seq) throws IllegalStringException{
+	public DNASequence(String seq) throws IllegalStringException{
 		this.setSeq(seq);
 	}
 	
@@ -37,12 +37,22 @@ public class Sequence {
 	 * @param seq string containing DNA characters
 	 * @throws IllegalStringException
 	 */
-	public void setSeq(String seq) throws IllegalStringException{
+	private void setSeq(String seq) throws IllegalStringException{
 		if(seq.matches(Constants.DNA_REGEX)){
-			this.seq = seq;
+			this.seq = seq.toUpperCase();
 		}else{
 			throw new IllegalStringException("Error: the string \""+seq+"\" contains non-DNA characters.");
 		}
+	}
+
+	@Override
+	public String seqToString() {
+		return seq;
+	}
+
+	@Override
+	public int length() {
+		return seq.length();
 	}
 	
 	
