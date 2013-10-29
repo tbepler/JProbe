@@ -14,6 +14,18 @@ import exceptions.IllegalStringException;
 public class DNASequence implements Sequence{
 	
 	private String seq;
+	private String mutationFlag;
+	private String orientationFlag;
+	
+	public DNASequence(String seq, String mutationFlag, String orientationFlag) throws IllegalStringException{
+		this.setSeq(seq);
+		this.mutationFlag = mutationFlag;
+		this.orientationFlag = orientationFlag;
+	}
+	
+	public DNASequence(String seq, String mutationFlag) throws IllegalStringException{
+		this(seq, mutationFlag, "");
+	}
 	
 	/**
 	 * Returns a new Sequence object containing the specified sequence string. If the string contains non-DNA characters and IllegalStringException is thrown.
@@ -21,7 +33,7 @@ public class DNASequence implements Sequence{
 	 * @throws IllegalStringException
 	 */
 	public DNASequence(String seq) throws IllegalStringException{
-		this.setSeq(seq);
+		this(seq, "");
 	}
 	
 	/**
@@ -53,6 +65,16 @@ public class DNASequence implements Sequence{
 	@Override
 	public int length() {
 		return seq.length();
+	}
+
+	@Override
+	public String getMutationFlag() {
+		return mutationFlag;
+	}
+
+	@Override
+	public String getOrientationFlag() {
+		return orientationFlag;
 	}
 	
 	

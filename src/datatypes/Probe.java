@@ -11,36 +11,21 @@ public class Probe implements Sequence, NBindingSites, Location{
 	private Location loc;
 	
 	private int id;
-	private boolean wildtype;
-	private boolean forward;
 	
-	public Probe(Sequence seq, NBindingSites bindingSites, Location loc, int id, boolean wildtype, boolean forward){
+	public Probe(Sequence seq, NBindingSites bindingSites, Location loc, int id){
 		this.seq = seq;
 		this.bindingSites = bindingSites;
 		this.loc = loc;
 		this.id = id;
-		this.wildtype = wildtype;
-		this.forward = forward;
-	}
-	
-	public Probe(Sequence seq, NBindingSites bindingSites, Location loc, boolean wildtype, boolean forward){
-		this(seq, bindingSites, loc, 0, wildtype, forward);
-	}
-	
-	public Probe(Sequence seq, NBindingSites bindingSites, Location loc, int id, boolean wildtype){
-		this(seq, bindingSites, loc, id, wildtype, true);
-	}
-	
-	public Probe(Sequence seq, NBindingSites bindingSites, Location loc, boolean wildtype){
-		this(seq, bindingSites, loc, 0, wildtype);
-	}
-	
-	public Probe(Sequence seq, NBindingSites bindingSites, Location loc, int id){
-		this(seq, bindingSites, loc, id, true);
 	}
 	
 	public Probe(Sequence seq, NBindingSites bindingSites, Location loc){
 		this(seq, bindingSites, loc, 0);
+	}
+	
+	@Override
+	public String toString(){
+		return getSeq()+"\t"+getName()+"";
 	}
 	
 	public int getId(){
@@ -49,14 +34,6 @@ public class Probe implements Sequence, NBindingSites, Location{
 	
 	public void setId(int id){
 		this.id = id;
-	}
-	
-	public boolean isWildtype(){
-		return wildtype;
-	}
-	
-	public boolean isForward(){
-		return forward;
 	}
 	
 	@Override
@@ -107,6 +84,16 @@ public class Probe implements Sequence, NBindingSites, Location{
 	@Override
 	public String locationToString() {
 		return  loc.locationToString();
+	}
+
+	@Override
+	public String getMutationFlag() {
+		return seq.getMutationFlag();
+	}
+
+	@Override
+	public String getOrientationFlag() {
+		return seq.getOrientationFlag();
 	}
 	
 }
