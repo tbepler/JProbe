@@ -1,0 +1,13 @@
+<modules>
+	<module>
+		<name>
+			test_module
+		</name>
+		<classpath>
+			modules.TestModule
+		</classpath>
+		<description>
+			A module for testing purposes.
+		</description>
+	</module>
+</modules>

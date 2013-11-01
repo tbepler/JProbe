@@ -12,19 +12,25 @@ import exceptions.IllegalModuleException;
 
 import modules.*;
 
-public class Core {
+public class Core extends Observable{
 	
 	private Map<String, Module> moduleObjectMap;
 	private Map<String, String> moduleDescriptionMap;
 	
 	public Core(String moduleXML) throws ParserConfigurationException, SAXException, IOException{
+		moduleObjectMap = new HashMap<String, Module>();
+		moduleDescriptionMap = new HashMap<String, String>();
 		registerModules(moduleXML);
+	}
+	
+	public Map<String, String> getModuleMap(){
+		return new HashMap<String, String>(moduleDescriptionMap);
 	}
 	
 	private void registerModules(String moduleXML) throws ParserConfigurationException, SAXException, IOException{
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		Document doc = docBuilder.parse (new File("book.xml"));
+		Document doc = docBuilder.parse (new File(moduleXML));
 		// normalize text representation
 		doc.getDocumentElement ().normalize ();
 		NodeList moduleList = doc.getElementsByTagName("module");
@@ -36,12 +42,14 @@ public class Core {
 			try{
 				moduleObjectMap.put(name, instantiateModule(classpath));
 				moduleDescriptionMap.put(name, description);
+				setChanged();
 			} catch (IllegalModuleException e){
 				System.err.println(e.getMessage());
 			} catch (ClassNotFoundException e){
 				System.err.println(e.getMessage());
 			}
 		}
+		notifyObservers();
 	}
 	
 	private Module instantiateModule(String classpath) throws ClassNotFoundException, IllegalModuleException{
