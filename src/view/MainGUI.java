@@ -20,6 +20,7 @@ public class MainGUI extends JFrame implements Observer{
 	private JTextArea testDisplay;
 	
 	public MainGUI(){
+		super("ArrayGenerator");
 		initComponents();
 		try{
 			core = new Core("src/modules.xml");
@@ -43,22 +44,24 @@ public class MainGUI extends JFrame implements Observer{
 	}
 	
 	private void initComponents(){
-		testDisplay = new JTextArea();
 		
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		
-		add(new JLabel("ArrayGenerator"));
+		testDisplay = new JTextArea(10, 40);
+		testDisplay.setEditable(false);
+		testDisplay.setText("test");
 		
 		GroupLayout layout = new GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
+		this.getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(
 			layout.createParallelGroup().addComponent(testDisplay, Alignment.CENTER)
 		);
 		layout.setVerticalGroup(
 			layout.createParallelGroup().addComponent(testDisplay, Alignment.CENTER)	
 		);
-		pack();
-		setVisible(true);
+		this.pack();
+		this.setVisible(true);
 	}
 	
 	

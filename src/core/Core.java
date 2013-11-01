@@ -36,9 +36,9 @@ public class Core extends Observable{
 		NodeList moduleList = doc.getElementsByTagName("module");
 		for(int i=0; i<moduleList.getLength(); i++){
 			Element module = (Element) moduleList.item(i);
-			String name = module.getElementsByTagName("name").item(0).getTextContent();
-			String classpath = module.getElementsByTagName("classpath").item(0).getTextContent();
-			String description = module.getElementsByTagName("description").item(0).getTextContent();
+			String name = module.getElementsByTagName("name").item(0).getTextContent().trim();
+			String classpath = module.getElementsByTagName("classpath").item(0).getTextContent().trim();
+			String description = module.getElementsByTagName("description").item(0).getTextContent().trim();
 			try{
 				moduleObjectMap.put(name, instantiateModule(classpath));
 				moduleDescriptionMap.put(name, description);
@@ -46,7 +46,7 @@ public class Core extends Observable{
 			} catch (IllegalModuleException e){
 				System.err.println(e.getMessage());
 			} catch (ClassNotFoundException e){
-				System.err.println(e.getMessage());
+				System.err.println("Module \""+classpath+"\" not found.");
 			}
 		}
 		notifyObservers();

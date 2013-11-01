@@ -1,6 +1,5 @@
 package modules;
 
-import datatypes.DataType;
 import datatypes.Param;
 import datatypes.Probe;
 
