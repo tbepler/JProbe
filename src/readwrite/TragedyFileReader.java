@@ -25,6 +25,7 @@ import exceptions.InvalidClassException;
 public class TragedyFileReader {
 	
 	public static final String WHITESPACE_REGEX = "\\s+";
+	public static final String BED_ENCODE_LINE_FORMAT_REGEX = "^(chr).+\\s+\\d+\\s+\\d+.*$";
 	
 	private static final FileFormat[] PEAK_READ_FORMATS = new FileFormat[]{FileFormat.BED, FileFormat.ENCODEPEAK, FileFormat.XML};
 	
@@ -54,6 +55,14 @@ public class TragedyFileReader {
 	
 	public Group<Peak> readPeakGroup(Scanner s) throws FileReadException{
 		Group<Peak> peaks = new Group<Peak>();
+		//check first line for header
+		if(s.hasNextLine()){
+			String line = s.nextLine();
+			if(line.matches(BED_ENCODE_LINE_FORMAT_REGEX)){
+				peaks.add(readPeak(line));
+			}
+		}
+		//read rest of lines normally
 		while(s.hasNextLine()){
 			peaks.add(readPeak(s.nextLine()));
 		}
