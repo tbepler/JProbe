@@ -1,4 +1,4 @@
-package datatypes;
+package readwrite;
 
 public enum FileFormat {
 	

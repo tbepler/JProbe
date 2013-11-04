@@ -1,6 +1,5 @@
 package readwrite;
 
-import datatypes.FileFormat;
 
 public class TragedyFileReader {
 	

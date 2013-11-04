@@ -1,38 +1,98 @@
 package datatypes;
 
-import datatypes.sequence.DNASequence;
-import exceptions.IllegalStringException;
+import datatypes.sequence.Sequence;
+import datatypes.location.*;
 
 /**
- * This class extends Sequence and is used to represent peak objects. It contains the DNA sequence, chromosome, start and ending locations for the peak.
+ * This class is used to represent peak objects. It contains the chromosome, start and ending locations for the peak and can have a sequence associated with it.
  * 
  * @author Tristan Bepler
- * @see DNASequence
+ * @see Location, Sequence, DataType
  */
 
-public class Peak extends DNASequence{
+public class Peak implements Location, Sequence, DataType{
 	
-	private String chr;
-	private int start;
-	private int end;
+	private Sequence seq = null;
+	private Location loc;
 	
-	public Peak(String seq, String chr, int start, int end) throws IllegalStringException {
-		super(seq);
-		this.chr = chr;
-		this.start = start;
-		this.end = end;
+	private int id;
+	
+	public Peak(Location loc) {
+		this.loc = loc;
 	}
 	
+	public Peak(Location loc, Sequence seq){
+		this(loc);
+		this.seq = seq;
+	}
+	
+	public void setSequence(Sequence seq){
+		this.seq = seq;
+	}
+	
+	@Override
 	public String getChr(){
-		return chr;	
+		return loc.getChr();
 	}
 	
+	@Override
 	public int getStart(){
-		return start;
+		return loc.getStart();
 	}
 	
+	@Override
 	public int getEnd(){
-		return end;
+		return loc.getEnd();
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	@Override
+	public Location parseLocation(String l) {
+		return loc.parseLocation(l);
+	}
+
+	@Override
+	public String locationToString() {
+		return loc.locationToString();
+	}
+
+	@Override
+	public String getSeq() {
+		if(seq == null) return "";
+		return seq.getSeq();
+	}
+
+	@Override
+	public int length() {
+		if(seq == null) return 0;
+		return seq.length();
+	}
+
+	@Override
+	public String getMutationFlag() {
+		if(seq == null) return "";
+		return seq.getMutationFlag();
+	}
+
+	@Override
+	public String getOrientationFlag() {
+		if(seq == null) return "";
+		return seq.getOrientationFlag();
+	}
+
+	@Override
+	public String seqToString() {
+		if(seq == null) return "";
+		return seq.seqToString();
 	}
 
 }
