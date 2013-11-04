@@ -7,7 +7,7 @@ package datatypes.bindingsite;
  *
  */
 
-public interface NBindingSites {
+public interface NBindingSites{
 	
 	public BindingSite[] getBindingSites();
 	public String getName();

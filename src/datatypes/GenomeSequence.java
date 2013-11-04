@@ -3,7 +3,7 @@ package datatypes;
 import datatypes.location.Location;
 import datatypes.sequence.Sequence;
 
-public class GenomeSequence implements Sequence, Location, DataType<GenomeSequence>{
+public class GenomeSequence implements Sequence, Location, DataType{
 
 	private Sequence seq;
 	private Location loc;
@@ -12,18 +12,6 @@ public class GenomeSequence implements Sequence, Location, DataType<GenomeSequen
 	public GenomeSequence(Sequence seq, Location loc){
 		this.seq = seq;
 		this.loc = loc;
-	}
-	
-	@Override
-	public GenomeSequence parse(String s) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String writeToString() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

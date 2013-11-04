@@ -4,7 +4,7 @@ import datatypes.bindingsite.NBindingSites;
 import datatypes.location.Location;
 import datatypes.sequence.Sequence;
 
-public class Probe implements Sequence, NBindingSites, Location, DataType<Probe>{
+public class Probe implements Sequence, NBindingSites, Location, DataType{
 	
 	private Sequence seq;
 	private NBindingSites bindingSites;
@@ -96,16 +96,6 @@ public class Probe implements Sequence, NBindingSites, Location, DataType<Probe>
 		return seq.getOrientationFlag();
 	}
 
-	@Override
-	public Probe parse(String s) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String writeToString() {
-		return getSeq()+"\t"+getName()+getMutationFlag()+getOrientationFlag()+"_"+id+"\t"+locationToString();
-	}
 	
 }
 	
