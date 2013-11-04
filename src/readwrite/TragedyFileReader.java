@@ -1,9 +1,10 @@
 package readwrite;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,6 +14,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import datatypes.*;
+import datatypes.location.GenomeLocation;
 import datatypes.location.Location;
 import datatypes.sequence.Sequence;
 import exceptions.FileReadException;
@@ -30,12 +32,12 @@ public class TragedyFileReader {
 		return PEAK_READ_FORMATS;
 	}
 	
-	public Group<Peak> readPeakGroup(String file, FileFormat format) throws FormatNotSupportedException, FileReadException{
+	public Group<Peak> readPeakGroup(String file, FileFormat format) throws FormatNotSupportedException, FileReadException, FileNotFoundException{
 		switch(format){
 			case BED:
-				//do stuff
+				return readPeakGroup(new Scanner(new File(file)));
 			case ENCODEPEAK:
-				//do stuff
+				return readPeakGroup(new Scanner(new File(file)));
 			case XML:
 				try{
 					DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -50,7 +52,15 @@ public class TragedyFileReader {
 		}
 	}
 	
-	public Group<Peak> readPeakGroup(Document doc){
+	public Group<Peak> readPeakGroup(Scanner s) throws FileReadException{
+		Group<Peak> peaks = new Group<Peak>();
+		while(s.hasNextLine()){
+			peaks.add(readPeak(s.nextLine()));
+		}
+		return peaks;
+	}
+	
+	public Group<Peak> readPeakGroup(Document doc) throws FileReadException{
 		Group<Peak> peaks = new Group<Peak>();
 		doc.getDocumentElement ().normalize ();
 		NodeList peakList = doc.getElementsByTagName("peak");
@@ -59,10 +69,23 @@ public class TragedyFileReader {
 			try{
 				peaks.add(readPeak(p));
 			}catch(Exception e){
-				System.err.println("Peak Read Error: "+e.getMessage());
+				throw new FileReadException(e);
 			}
 		}
 		return peaks;
+	}
+	
+	public Peak readPeak(String line) throws FileReadException{
+		return readPeak(line.split(WHITESPACE_REGEX));
+	}
+
+	public Peak readPeak(String[] entries) throws FileReadException{
+		try{
+			GenomeLocation loc = new GenomeLocation(entries[0], Integer.parseInt(entries[1]), Integer.parseInt(entries[2]));
+			return new Peak(loc);
+		}catch(Exception e){
+			throw new FileReadException("Invalid entry format");
+		}
 	}
 	
 	public Peak readPeak(Element p) throws FileReadException{
