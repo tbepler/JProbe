@@ -1,5 +1,8 @@
 package datatypes.sequence;
 
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
+
 import core.Constants;
 import exceptions.IllegalStringException;
 
@@ -75,6 +78,10 @@ public class DNASequence implements Sequence{
 	@Override
 	public String getOrientationFlag() {
 		return orientationFlag;
+	}
+
+	public static Sequence readXML(Element e) throws DOMException, IllegalStringException {
+		return new DNASequence(e.getElementsByTagName("seq").item(0).getTextContent().trim());
 	}
 	
 	

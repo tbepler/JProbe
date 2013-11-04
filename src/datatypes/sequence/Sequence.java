@@ -2,10 +2,10 @@ package datatypes.sequence;
 
 public interface Sequence {
 	
-	String getSeq();
-	int length();
-	String getMutationFlag();
-	String getOrientationFlag();
-	String seqToString();
+	public String getSeq();
+	public int length();
+	public String getMutationFlag();
+	public String getOrientationFlag();
+	public String seqToString();
 	
 }

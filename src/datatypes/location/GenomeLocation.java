@@ -1,5 +1,7 @@
 package datatypes.location;
 
+import org.w3c.dom.Element;
+
 
 public class GenomeLocation implements Location{
 	
@@ -38,6 +40,14 @@ public class GenomeLocation implements Location{
 	@Override
 	public String locationToString() {
 		return chr + ":" + start + "-" + end;
+	}
+	
+	public static GenomeLocation readXML(Element e){
+		return new GenomeLocation(
+				e.getElementsByTagName("chromosome").item(0).getTextContent().trim(),
+				Integer.parseInt(e.getElementsByTagName("start").item(0).getTextContent().trim()),
+				Integer.parseInt(e.getElementsByTagName("end").item(0).getTextContent().trim())
+				);
 	}
 
 }
