@@ -1,0 +1,67 @@
+<group>
+<peak>
+	<sequence>
+		<classpath>
+			datatypes.sequence.DNASequence
+		</classpath>
+		<seq>
+			AAGGTTGGTTAAATTAG
+		</seq>
+	</sequence>
+	<location>
+		<classpath>
+			datatypes.location.GenomeLocation
+		</classpath>
+		<chromosome>
+			chr1
+		</chromosome>
+		<start>
+			100
+		</start>
+		<end>
+			116
+		</end>
+	</location>
+	<id>
+		1
+	</id>
+</peak>
+<peak>
+	<location>
+		<classpath>
+			datatypes.location.GenomeLocation
+		</classpath>
+		<chromosome>
+			chrX
+		</chromosome>
+		<start>
+			151616
+		</start>
+		<end>
+			160000
+		</end>
+	</location>
+	<id>
+		105
+	</id>
+</peak>
+<peak>
+	<location>
+		<classpath>
+			datatypes.location.GenomeLocation
+		</classpath>
+		<chromosome>
+			chr17
+		</chromosome>
+		<start>
+			12
+		</start>
+		<end>
+			1254
+		</end>
+	</location>
+	<id>
+		56
+	</id>
+</peak>
+</group>
