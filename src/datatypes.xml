@@ -1,0 +1,6 @@
+<datatypes>
+	<datatype name="Peak" classpath="datatypes.Peak">
+		<reader>readwrite.PeakReaderWriter</reader>
+		<writer>readwrite.PeakReaderWriter</writer>
+	</datatype>
+</datatypes>

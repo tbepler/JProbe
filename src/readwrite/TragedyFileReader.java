@@ -2,16 +2,20 @@ package readwrite;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import datatypes.*;
 import datatypes.location.GenomeLocation;
@@ -27,9 +31,36 @@ public class TragedyFileReader {
 	
 	private static final FileFormat[] PEAK_READ_FORMATS = new FileFormat[]{FileFormat.BED, FileFormat.ENCODEPEAK, FileFormat.XML};
 	
-	public String[] getValidReadFormats(Class dataType) throws NotReadableException{
-		//todo
-		return null;
+	private Map<Class<? extends DataType>, DataReader> classReaderMap;
+	private Map<Class<? extends DataType>, DataWriter> classWriterMap;
+	
+	public TragedyFileReader(String dataTypesXML) throws ParserConfigurationException, SAXException, IOException{
+		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+		Document doc = docBuilder.parse (new File(dataTypesXML));
+		doc.getDocumentElement ().normalize ();
+		NodeList dataList = doc.getElementsByTagName("datatype");
+		for(int i=0; i<dataList.getLength(); i++){
+			Element e = (Element) dataList.item(i);
+			
+		}
+	}
+	
+	
+	public String[] getValidReadFormats(Class<? extends DataType> type) throws NotReadableException{
+		try {
+			Class<?>[] inner = type.getDeclaredClasses();
+			for(Class<?> clazz : inner){
+				System.out.println(clazz.getName());
+				if(DataType.Reader.class.isAssignableFrom(clazz)){
+					Method m = clazz.getDeclaredMethod("getValidReadFormats");
+					return (String[]) m.invoke(null);
+				}
+			}
+		} catch (Exception e) {
+			throw new NotReadableException(e);
+		}
+		throw new NotReadableException("No Reader inner class found");
 	}
 	
 	

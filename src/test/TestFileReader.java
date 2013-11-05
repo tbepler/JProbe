@@ -8,6 +8,22 @@ import readwrite.TragedyFileReader;
 
 public class TestFileReader extends junit.framework.TestCase{
 	
+	public void testReadFactory(){
+		TragedyFileReader reader = new TragedyFileReader();
+		boolean error = false;
+		try{
+			String[] readTypes = reader.getValidReadFormats(Peak.class);
+			String[] peakTypes = Peak.PEAK_READ_FORMATS;
+			assertEquals(peakTypes.length, readTypes.length);
+			for(int i=0; i<peakTypes.length; i++){
+				assertEquals(peakTypes[i], readTypes[i]);
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+			error = true;
+		}
+		assertFalse(error);
+	}
 	
 	public void testReadPeakGroupXML(){
 		TragedyFileReader reader = new TragedyFileReader();
