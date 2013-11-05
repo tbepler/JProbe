@@ -17,9 +17,7 @@ import datatypes.*;
 import datatypes.location.GenomeLocation;
 import datatypes.location.Location;
 import datatypes.sequence.Sequence;
-import exceptions.FileReadException;
-import exceptions.FormatNotSupportedException;
-import exceptions.InvalidClassException;
+import exceptions.*;
 
 
 public class TragedyFileReader {
@@ -28,6 +26,12 @@ public class TragedyFileReader {
 	public static final String BED_ENCODE_LINE_FORMAT_REGEX = "^(chr).+\\s+\\d+\\s+\\d+.*$";
 	
 	private static final FileFormat[] PEAK_READ_FORMATS = new FileFormat[]{FileFormat.BED, FileFormat.ENCODEPEAK, FileFormat.XML};
+	
+	public String[] getValidReadFormats(Class dataType) throws NotReadableException{
+		//todo
+		return null;
+	}
+	
 	
 	public FileFormat[] getPeakReadFormats(){
 		return PEAK_READ_FORMATS;

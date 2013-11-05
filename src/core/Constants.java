@@ -10,7 +10,7 @@ package core;
 public class Constants {
 	
 	public static final String DNA_REGEX = "^[AaCcGgTt]+$";
-	
+	public static final String WHITESPACE_REGEX = "\\s+";
 	
 	
 	
