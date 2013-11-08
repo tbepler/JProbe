@@ -2,66 +2,39 @@ package core;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import exceptions.CoreInitializationException;
 import exceptions.IllegalModuleException;
 
 import modules.*;
 
 public class Core extends Observable{
 	
-	private Map<String, Module> moduleObjectMap;
-	private Map<String, String> moduleDescriptionMap;
-	
-	public Core(String moduleXML) throws ParserConfigurationException, SAXException, IOException{
-		moduleObjectMap = new HashMap<String, Module>();
-		moduleDescriptionMap = new HashMap<String, String>();
-		registerModules(moduleXML);
-	}
-	
-	public Map<String, String> getModuleMap(){
-		return new HashMap<String, String>(moduleDescriptionMap);
-	}
-	
-	private void registerModules(String moduleXML) throws ParserConfigurationException, SAXException, IOException{
-		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		Document doc = docBuilder.parse (new File(moduleXML));
-		// normalize text representation
-		doc.getDocumentElement ().normalize ();
-		NodeList moduleList = doc.getElementsByTagName("module");
-		for(int i=0; i<moduleList.getLength(); i++){
-			Element module = (Element) moduleList.item(i);
-			String name = module.getElementsByTagName("name").item(0).getTextContent().trim();
-			String classpath = module.getElementsByTagName("classpath").item(0).getTextContent().trim();
-			String description = module.getElementsByTagName("description").item(0).getTextContent().trim();
-			try{
-				moduleObjectMap.put(name, instantiateModule(classpath));
-				moduleDescriptionMap.put(name, description);
-				setChanged();
-			} catch (IllegalModuleException e){
-				System.err.println(e.getMessage());
-			} catch (ClassNotFoundException e){
-				System.err.println("Module \""+classpath+"\" not found.");
-			}
-		}
-		notifyObservers();
-	}
-	
-	private Module instantiateModule(String classpath) throws ClassNotFoundException, IllegalModuleException{
-		Class clazz = Class.forName(classpath);
-		try {
-			Object o = clazz.newInstance();
-			if(o instanceof Module){
-				return (Module) o;
-			}
-			throw new IllegalModuleException("Error: \""+classpath+"\" is not a module object.");
-		} catch (Exception e) {
-			throw new IllegalModuleException(e);
+	private ModuleRegistry modules;
+	private DataRegistry data;
+
+	public Core() throws CoreInitializationException{
+		try{
+			modules = new ModuleRegistry("Extensions", "src/modules.xml");
+			data = new DataRegistry("Extensions", "src/datatypes.xml");
+		}catch(Exception e){
+			throw new CoreInitializationException(e);
 		}
 	}
+
+	public Collection<String> getModuleNames(){
+		return modules.getModuleNames();
+	}
+	
+	public String getModuleDescription(String name){
+		return modules.getDescription(name);
+	}
+
+	
 }

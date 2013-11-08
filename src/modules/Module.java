@@ -3,10 +3,10 @@ package modules;
 import datatypes.DataType;
 import datatypes.Param;
 
-public interface Module <D extends DataType> {
+public interface Module{
 	
 	
-	public D run(Param p);
+	public DataType run(Param p);
 	
 	
 	

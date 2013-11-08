@@ -3,7 +3,7 @@ package modules;
 import datatypes.Param;
 import datatypes.Probe;
 
-public class TestModule implements Module<Probe>{
+public class TestModule implements Module{
 
 	@Override
 	public Probe run(Param p) {

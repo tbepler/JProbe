@@ -6,10 +6,10 @@ import datatypes.Peak;
 import readwrite.FileFormat;
 import readwrite.TragedyFileReader;
 
-public class TestFileReader extends junit.framework.TestCase{
+public class TestPeakReaderWriter extends junit.framework.TestCase{
 	
 	public void testReadFactory(){
-		TragedyFileReader reader = new TragedyFileReader();
+		
 		boolean error = false;
 		try{
 			String[] readTypes = reader.getValidReadFormats(Peak.class);

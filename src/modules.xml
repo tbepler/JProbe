@@ -1,13 +1,12 @@
 <modules>
-	<module>
-		<name>
-			test_module
-		</name>
-		<classpath>
-			modules.TestModule
-		</classpath>
+	<module name="test_module" classpath="modules.TestModule">
 		<description>
 			A module for testing purposes.
+		</description>
+	</module>
+	<module name="extension" classpath="extensions.ExtensionModule">
+		<description>
+			A module for testing module extensions.
 		</description>
 	</module>
 </modules>

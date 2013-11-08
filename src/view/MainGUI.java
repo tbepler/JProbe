@@ -1,20 +1,19 @@
 package view;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import core.Core;
 
 public class MainGUI extends JFrame implements Observer{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Core core;
 	
 	private JTextArea testDisplay;
@@ -23,22 +22,23 @@ public class MainGUI extends JFrame implements Observer{
 		super("ArrayGenerator");
 		initComponents();
 		try{
-			core = new Core("src/modules.xml");
+			core = new Core();
 		} catch (Exception e){
 			System.err.println("Core initialization error.");
 			System.err.println(e.getMessage());
 			System.exit(0);
 		}
 		core.addObserver(this);
+		update(null, null);
 	}
 	
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String out = "";
-		Map<String, String> modules = core.getModuleMap();
-		for(String module : modules.keySet()){
-			out += module+":\n"+modules.get(module)+"\n";
+		Collection<String> modules = core.getModuleNames();
+		for(String module : modules){
+			out += module+"\n";
 		}
 		testDisplay.setText(out);
 	}
