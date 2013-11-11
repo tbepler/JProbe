@@ -74,4 +74,10 @@ public class GenomeSequence implements Sequence, Location, DataType{
 		this.id = id;
 	}
 
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

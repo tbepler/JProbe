@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 
 import exceptions.CoreInitializationException;
 import exceptions.IllegalModuleException;
+import exceptions.NoSuchModuleException;
 
 import modules.*;
 
@@ -34,6 +35,14 @@ public class Core extends Observable{
 	
 	public String getModuleDescription(String name){
 		return modules.getDescription(name);
+	}
+	
+	public void runModule(String name) throws NoSuchModuleException{
+		Module mod = modules.getModule(name);
+		if(mod == null){
+			throw new NoSuchModuleException("Could not find module \""+name+"\"");
+		}
+		
 	}
 
 	

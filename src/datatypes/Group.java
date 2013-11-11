@@ -197,4 +197,10 @@ public class Group<D extends DataType> implements DataType, Iterable<D>{
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
