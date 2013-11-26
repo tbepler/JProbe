@@ -1,3 +1,4 @@
+
 package view;
 
 import java.util.*;
@@ -60,6 +61,7 @@ public class MainGUI extends JFrame implements CoreController{
 		menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
 		menuBar.add(new ModuleMenu(core));
+		menuBar.add(new DataMenu(core));
 		
 		testDisplay = new JTextArea(10, 40);
 		testDisplay.setEditable(false);

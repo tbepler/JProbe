@@ -1,5 +1,6 @@
 package core;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.*;
 
@@ -48,8 +49,20 @@ public class Core implements Serializable{
 		return dataRegistry.getDataTypeIds();
 	}
 	
+	public Collection<String> getReadableDataTypes(){
+		return dataRegistry.getReaderIds();
+	}
+	
+	public Collection<String> getWritableDataTypes(){
+		return dataRegistry.getWriterIds();
+	}
+	
 	public List<DataType> getAllData(){
 		return Collections.unmodifiableList(data);
+	}
+	
+	public DataType getDate(int index){
+		return data.get(index);
 	}
 	
 	public void removeData(DataType data){
@@ -66,6 +79,22 @@ public class Core implements Serializable{
 	public void clearData(){
 		data.clear();
 		controller.update(EVENT_DATA_REMOVED);
+	}
+	
+	public Map<String, String[]> getWritableFormats(String dataType){
+		return dataRegistry.getWriter(dataType).getValidWriteFormats();
+	}
+	
+	public void write(DataType data, File file, String fileFormat){
+		
+	}
+	
+	public Map<String, String[]> getReadableFormats(String dataType){
+		return dataRegistry.getReader(dataType).getValidReadFormats();
+	}
+	
+	public void read(String dataType, File file, String fileFormat){
+		
 	}
 	
 	public void runModule(String name) throws NoSuchModuleException, ModuleExecutionException{

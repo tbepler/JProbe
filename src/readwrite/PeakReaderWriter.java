@@ -1,6 +1,8 @@
 package readwrite;
 
 import java.io.BufferedWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.w3c.dom.Element;
@@ -19,8 +21,12 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 	public static final String BED_ENCODE_LINE_FORMAT_REGEX = "^(chr).+\\s+\\d+\\s+\\d+.*$";
 	
 	@Override
-	public String[] getValidReadFormats() {
-		return PEAK_READ_FORMATS;
+	public Map<String, String[]> getValidReadFormats() {
+		Map<String, String[]> formats = new HashMap<String, String[]>();
+		formats.put("bed", new String[]{});
+		formats.put("encode", new String[]{});
+		formats.put("xml", new String[]{".xml"});
+		return formats;
 	}
 
 	@Override
@@ -57,8 +63,12 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 	
 
 	@Override
-	public String[] getValidWriteFormats() {
-		return PEAK_WRITE_FORMATS;
+	public Map<String, String[]> getValidWriteFormats() {
+		Map<String, String[]> formats = new HashMap<String, String[]>();
+		formats.put("bed", new String[]{});
+		formats.put("encode", new String[]{});
+		formats.put("xml", new String[]{".xml"});
+		return formats;
 	}
 
 	@Override

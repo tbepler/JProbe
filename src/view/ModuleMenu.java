@@ -12,30 +12,21 @@ import core.Core;
 import exceptions.ModuleExecutionException;
 import exceptions.NoSuchModuleException;
 
-public class ModuleMenu extends JMenu implements ActionListener{
+public class ModuleMenu extends CoreMenu{
 	private static final long serialVersionUID = 1L;
 	
-	private Core core;
-	private List<JMenuItem> items;
-	
 	public ModuleMenu(Core core){
-		super("Modules");
-		this.core = core;
-		this.items = new ArrayList<JMenuItem>();
+		super("Modules", core);
 		this.updateMenu();
 	}
 	
 	public void updateMenu(){
-		for(JMenuItem i : items){
-			this.remove(i);
-		}
-		items.clear();
+		this.removeAll();
 		for(String mod : core.getModuleNames()){
 			JMenuItem item = new JMenuItem(mod);
 			item.setToolTipText(core.getModuleDescription(mod));
 			item.setActionCommand(mod);
 			item.addActionListener(this);
-			items.add(item);
 			this.add(item);
 		}
 	}
