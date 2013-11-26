@@ -18,8 +18,8 @@ public class ModuleRegistry {
 	
 	public ModuleRegistry(String directory, String registry) throws URISyntaxException, IOException, SAXException, ClassNotFoundException, InstantiationException, IllegalAccessException{
 		
-		descriptions = new HashMap<String, String>();
-		modules = new HashMap<String, Module>();
+		descriptions = new TreeMap<String, String>();
+		modules = new TreeMap<String, Module>();
 		
 		ClassLoader loader = ExtensionUtils.createDirectoryLoader(directory);
 		XMLParser parser = new XMLParser(registry);

@@ -5,9 +5,11 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 
+import controller.CoreController;
 import core.Core;
+import datatypes.DataType;
 
-public class MainGUI extends JFrame implements Observer{
+public class MainGUI extends JFrame implements CoreController{
 	
 	/**
 	 * 
@@ -29,18 +31,25 @@ public class MainGUI extends JFrame implements Observer{
 			System.exit(0);
 		}
 		core.addObserver(this);
-		update(null, null);
-	}
-	
-
-	@Override
-	public void update(Observable arg0, Object arg1) {
 		String out = "";
 		Collection<String> modules = core.getModuleNames();
 		for(String module : modules){
 			out += module+"\n";
 		}
 		testDisplay.setText(out);
+	}
+	
+
+	@Override
+	public DataType[] selectArgs(Class<? extends DataType>[] types) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(int event) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	private void initComponents(){
@@ -69,6 +78,7 @@ public class MainGUI extends JFrame implements Observer{
 	public static void main(String[] args){
 		new MainGUI();
 	}
+
 
 	
 }
