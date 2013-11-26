@@ -1,6 +1,7 @@
 package modules;
 
 import datatypes.DataType;
+import exceptions.ModuleExecutionException;
 
 public interface Module{
 	
@@ -22,12 +23,13 @@ public interface Module{
 	 * This method defines the core behavior of this module. It takes two DataType arrays, one specifying the required
 	 * DataType arguments and one specifying the optional DataType arguments. The class of each of these DataTypes will
 	 * match the class specified for that index by the getRequiredArgs or getOptionalArgs methods. For the optional args, 
-	 * args that are not specified will have a value of null.
+	 * args that are not specified will have a value of null. This should never return null. It should throw an exception
+	 * instead.
 	 * @param required - DataType array specifying the required DataType arguments
 	 * @param optional - DataType array specifying the optional DataType arguments, elements of null mean no specified.
 	 * @return a DataType object that is the result of this module's processing
 	 */
-	public DataType run(DataType[] required, DataType[] optional);
+	public DataType run(DataType[] required, DataType[] optional) throws ModuleExecutionException;
 	
 	
 	

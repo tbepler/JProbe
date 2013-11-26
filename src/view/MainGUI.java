@@ -19,18 +19,18 @@ public class MainGUI extends JFrame implements CoreController{
 	private Core core;
 	
 	private JTextArea testDisplay;
+	private JMenuBar menuBar;
 	
 	public MainGUI(){
 		super("ArrayGenerator");
-		initComponents();
 		try{
-			core = new Core();
+			core = new Core(this, "Extensions", "Extensions/modules.xml", "Extensions/datatypes.xml");
 		} catch (Exception e){
 			System.err.println("Core initialization error.");
 			System.err.println(e.getMessage());
 			System.exit(0);
 		}
-		core.addObserver(this);
+		initComponents();
 		String out = "";
 		Collection<String> modules = core.getModuleNames();
 		for(String module : modules){
@@ -41,7 +41,7 @@ public class MainGUI extends JFrame implements CoreController{
 	
 
 	@Override
-	public DataType[] selectArgs(Class<? extends DataType>[] types) {
+	public DataType[] selectArgs(Class<? extends DataType>[] requiredArgs, Class<? extends DataType>[] optionalArgs) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -57,18 +57,16 @@ public class MainGUI extends JFrame implements CoreController{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		
+		menuBar = new JMenuBar();
+		this.setJMenuBar(menuBar);
+		menuBar.add(new ModuleMenu(core));
+		
 		testDisplay = new JTextArea(10, 40);
 		testDisplay.setEditable(false);
 		testDisplay.setText("test");
+		this.add(testDisplay);
 		
-		GroupLayout layout = new GroupLayout(getContentPane());
-		this.getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(
-			layout.createParallelGroup().addComponent(testDisplay, Alignment.CENTER)
-		);
-		layout.setVerticalGroup(
-			layout.createParallelGroup().addComponent(testDisplay, Alignment.CENTER)	
-		);
+		
 		this.pack();
 		this.setVisible(true);
 	}
