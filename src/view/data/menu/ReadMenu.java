@@ -1,4 +1,4 @@
-package view;
+package view.data.menu;
 
 import java.awt.event.ActionEvent;
 import java.util.Map;
@@ -7,6 +7,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileFilter;
 
+import view.CoreMenu;
+import view.FormatFilter;
 import core.Core;
 
 public class ReadMenu extends CoreMenu{

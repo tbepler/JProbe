@@ -1,5 +1,6 @@
 package controller;
 
+import view.data.DataListener;
 import datatypes.DataType;
 
 public class NullController implements CoreController{

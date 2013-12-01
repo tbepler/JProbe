@@ -11,7 +11,7 @@ import exceptions.ModuleExecutionException;
 import exceptions.NoSuchModuleException;
 import modules.*;
 
-public class Core implements Serializable{
+public class Core extends Observable implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	public static final int EVENT_DATA_ADDED = 1;
@@ -57,6 +57,12 @@ public class Core implements Serializable{
 		return dataRegistry.getWriterIds();
 	}
 	
+	public boolean isWritable(DataType data){
+		if(data == null) return false;
+		String id = dataRegistry.getId(data.getClass());
+		return dataRegistry.getWriterIds().contains(id);
+	}
+
 	public List<DataType> getAllData(){
 		return Collections.unmodifiableList(data);
 	}
@@ -68,17 +74,36 @@ public class Core implements Serializable{
 	public void removeData(DataType data){
 		if(this.data.remove(data)){
 			controller.update(EVENT_DATA_REMOVED);
+			this.setChanged();
+			this.notifyObservers(new DataEvent(data, EVENT_DATA_REMOVED));
 		}
 	}
 	
 	public void removeData(int index){
-		data.remove(index);
-		controller.update(EVENT_DATA_REMOVED);
+		DataType removed = data.remove(index);
+		if(removed != null){
+			controller.update(EVENT_DATA_REMOVED);
+			this.setChanged();
+			this.notifyObservers(new DataEvent(removed, EVENT_DATA_REMOVED));
+		}
 	}
 	
 	public void clearData(){
 		data.clear();
 		controller.update(EVENT_DATA_REMOVED);
+		this.setChanged();
+		this.notifyObservers(new DataEvent(null, DataEvent.EVENT_DATA_CLEARED));
+	}
+	
+	public void addDate(DataType data){
+		this.data.add(data);
+		controller.update(EVENT_DATA_ADDED);
+		this.setChanged();
+		this.notifyObservers(new DataEvent(data, DataEvent.EVENT_DATA_ADDED));
+	}
+	
+	public Map<String, String[]> getWritableFormats(DataType data){
+		return getWritableFormats(dataRegistry.getId(data.getClass()));
 	}
 	
 	public Map<String, String[]> getWritableFormats(String dataType){

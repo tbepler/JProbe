@@ -1,11 +1,17 @@
 
 package view;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.*;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 
+import view.data.DataContext;
+import view.data.DataListener;
+import view.data.display.TabbedDataViewer;
+import view.data.menu.DataMenu;
 import controller.CoreController;
 import core.Core;
 import datatypes.DataType;
@@ -18,12 +24,13 @@ public class MainGUI extends JFrame implements CoreController{
 	private static final long serialVersionUID = 1L;
 
 	private Core core;
-	
-	private JTextArea testDisplay;
 	private JMenuBar menuBar;
+	private List<DataContext> contexts;
+	private TabbedDataViewer tabs;
 	
 	public MainGUI(){
 		super("ArrayGenerator");
+		contexts = new ArrayList<DataContext>();
 		try{
 			core = new Core(this, "Extensions", "Extensions/modules.xml", "Extensions/datatypes.xml");
 		} catch (Exception e){
@@ -32,12 +39,6 @@ public class MainGUI extends JFrame implements CoreController{
 			System.exit(0);
 		}
 		initComponents();
-		String out = "";
-		Collection<String> modules = core.getModuleNames();
-		for(String module : modules){
-			out += module+"\n";
-		}
-		testDisplay.setText(out);
 	}
 	
 
@@ -49,7 +50,6 @@ public class MainGUI extends JFrame implements CoreController{
 
 	@Override
 	public void update(int event) {
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -58,15 +58,23 @@ public class MainGUI extends JFrame implements CoreController{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		
+		JPanel content = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		this.setContentPane(content);
+		
+		tabs = new TabbedDataViewer(core);
+		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 0.7;
+		c.weighty = 0.7;
+		content.add(tabs, c);
+		
 		menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
 		menuBar.add(new ModuleMenu(core));
-		menuBar.add(new DataMenu(core));
-		
-		testDisplay = new JTextArea(10, 40);
-		testDisplay.setEditable(false);
-		testDisplay.setText("test");
-		this.add(testDisplay);
+		menuBar.add(new DataMenu(core, tabs));
 		
 		
 		this.pack();

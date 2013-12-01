@@ -1,4 +1,4 @@
-package view;
+package view.data.menu;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -10,20 +10,24 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileFilter;
 
+import view.CoreMenu;
+import view.data.DataContext;
 import core.Core;
 
 public class DataMenu extends CoreMenu{
 	private static final long serialVersionUID = 1L;
 	
 	private CoreMenu read;
-	private JMenu write;
+	private WriteMenuItem write;
 	private JFileChooser readWriteChooser;
+	private DataContext context;
 	
-	public DataMenu(Core core) {
+	public DataMenu(Core core, DataContext context) {
 		super("Data", core);
+		this.context = context;
 		readWriteChooser = new JFileChooser("");
 		read = new ReadMenu(core, readWriteChooser);
-		write = new JMenu("Write");
+		write = new WriteMenuItem(readWriteChooser, core, context);
 		this.add(read);
 		this.add(write);
 	}
@@ -31,13 +35,7 @@ public class DataMenu extends CoreMenu{
 	@Override
 	public void updateMenu() {
 		read.updateMenu();
-		write.removeAll();
-		for(String writable : core.getWritableDataTypes()){
-			JMenuItem i = new JMenuItem(writable);
-			i.setActionCommand(writable);
-			i.addActionListener(this);
-			write.add(i);
-		}
+		write.update(context);
 	}
 
 	@Override
