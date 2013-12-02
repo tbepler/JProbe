@@ -5,9 +5,9 @@ import java.util.Scanner;
 
 import org.w3c.dom.Element;
 
+import core.exceptions.FileReadException;
+import core.exceptions.FormatNotSupportedException;
 import datatypes.DataType;
-import exceptions.FileReadException;
-import exceptions.FormatNotSupportedException;
 
 public interface DataReader {
 	public Map<String, String[]> getValidReadFormats();

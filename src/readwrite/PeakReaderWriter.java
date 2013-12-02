@@ -8,11 +8,11 @@ import java.util.Scanner;
 import org.w3c.dom.Element;
 
 import core.Constants;
+import core.exceptions.FileReadException;
+import core.exceptions.FormatNotSupportedException;
 import datatypes.DataType;
 import datatypes.Peak;
 import datatypes.location.GenomeLocation;
-import exceptions.FileReadException;
-import exceptions.FormatNotSupportedException;
 
 public class PeakReaderWriter implements DataReader, DataWriter{
 	
@@ -72,7 +72,7 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 	}
 
 	@Override
-	public void write(String format, BufferedWriter out)
+	public void write(DataType data, String format, BufferedWriter out)
 			throws FormatNotSupportedException {
 		// TODO Auto-generated method stub
 		

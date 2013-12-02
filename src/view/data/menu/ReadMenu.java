@@ -10,6 +10,7 @@ import javax.swing.filechooser.FileFilter;
 import view.CoreMenu;
 import view.FormatFilter;
 import core.Core;
+import core.exceptions.DataReadException;
 
 public class ReadMenu extends CoreMenu{
 	private static final long serialVersionUID = 1L;
@@ -38,7 +39,12 @@ public class ReadMenu extends CoreMenu{
 		int val = fc.showOpenDialog(this);
 		if(val == JFileChooser.APPROVE_OPTION){
 			FormatFilter chosen = (FormatFilter) fc.getFileFilter();
-			core.read(dataType, fc.getSelectedFile(), chosen.format);
+			try {
+				core.read(dataType, fc.getSelectedFile(), chosen.format);
+			} catch (DataReadException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 	}

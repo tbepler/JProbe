@@ -1,7 +1,7 @@
 package modules;
 
+import core.exceptions.ModuleExecutionException;
 import datatypes.DataType;
-import exceptions.ModuleExecutionException;
 
 public interface Module{
 	

@@ -9,9 +9,6 @@ import core.Constants;
 
 import datatypes.sequence.Sequence;
 import datatypes.location.*;
-import exceptions.FileReadException;
-import exceptions.FormatNotSupportedException;
-
 /**
  * This class is used to represent peak objects. It contains the chromosome, start and ending locations for the peak and can have a sequence associated with it.
  * 

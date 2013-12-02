@@ -4,7 +4,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 
 import core.Constants;
-import exceptions.IllegalStringException;
+import core.exceptions.IllegalStringException;
 
 /**
  * This class is used to represent DNA sequences. It enforces that the string it contains is made

@@ -12,6 +12,7 @@ import view.FormatFilter;
 import view.data.DataListener;
 import view.data.DataContext;
 import core.Core;
+import core.exceptions.DataWriteException;
 import datatypes.DataType;
 
 public class WriteMenuItem extends JMenuItem implements DataListener, ActionListener{
@@ -53,7 +54,12 @@ public class WriteMenuItem extends JMenuItem implements DataListener, ActionList
 		int val = fc.showDialog(this, "Write");
 		if(val == JFileChooser.APPROVE_OPTION){
 			FormatFilter chosen = (FormatFilter) fc.getFileFilter();
-			core.write(curData, fc.getSelectedFile(), chosen.format);
+			try {
+				core.write(curData, fc.getSelectedFile(), chosen.format);
+			} catch (DataWriteException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 	

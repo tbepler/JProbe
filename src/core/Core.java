@@ -1,14 +1,24 @@
 package core;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
+import readwrite.DataReader;
+import readwrite.DataWriter;
 import controller.CoreController;
+import core.exceptions.CoreInitializationException;
+import core.exceptions.DataReadException;
+import core.exceptions.DataWriteException;
+import core.exceptions.FileReadException;
+import core.exceptions.FormatNotSupportedException;
+import core.exceptions.ModuleExecutionException;
+import core.exceptions.NoSuchModuleException;
 import datatypes.DataType;
-import exceptions.CoreInitializationException;
-import exceptions.ModuleExecutionException;
-import exceptions.NoSuchModuleException;
 import modules.*;
 
 public class Core extends Observable implements Serializable{
@@ -95,7 +105,7 @@ public class Core extends Observable implements Serializable{
 		this.notifyObservers(new DataEvent(null, DataEvent.EVENT_DATA_CLEARED));
 	}
 	
-	public void addDate(DataType data){
+	public void addData(DataType data){
 		this.data.add(data);
 		controller.update(EVENT_DATA_ADDED);
 		this.setChanged();
@@ -110,7 +120,20 @@ public class Core extends Observable implements Serializable{
 		return dataRegistry.getWriter(dataType).getValidWriteFormats();
 	}
 	
-	public void write(DataType data, File file, String fileFormat){
+	public void write(DataType data, File file, String fileFormat) throws DataWriteException{
+		String id = dataRegistry.getId(data.getClass());
+		if(id == null){
+			throw new DataWriteException(data.getClass()+" not writable");
+		}
+		DataWriter writer = dataRegistry.getWriter(id);
+		if(writer == null){
+			throw new DataWriteException(data.getClass()+" not writable");
+		}
+		try {
+			writer.write(data, fileFormat, new BufferedWriter(new FileWriter(file)));
+		} catch (Exception e){
+			throw new DataWriteException(e);
+		}
 		
 	}
 	
@@ -118,8 +141,17 @@ public class Core extends Observable implements Serializable{
 		return dataRegistry.getReader(dataType).getValidReadFormats();
 	}
 	
-	public void read(String dataType, File file, String fileFormat){
-		
+	public void read(String dataType, File file, String fileFormat) throws DataReadException{
+		DataReader reader = dataRegistry.getReader(dataType);
+		if(reader == null){
+			throw new DataReadException(dataType+" not readable");
+		}
+		try {
+			DataType read = reader.read(fileFormat, new Scanner(file));
+			this.addData(read);
+		} catch (Exception e){
+			throw new DataReadException(e);
+		}
 	}
 	
 	public void runModule(String name) throws NoSuchModuleException, ModuleExecutionException{
