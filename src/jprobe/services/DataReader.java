@@ -3,13 +3,7 @@ package jprobe.services;
 import java.util.Map;
 import java.util.Scanner;
 
-import old.core.exceptions.FileReadException;
-import old.core.exceptions.FormatNotSupportedException;
-import old.datatypes.DataType;
-
-import org.w3c.dom.Element;
-
 public interface DataReader {
 	public Map<String, String[]> getValidReadFormats();
-	public DataType read(String format, Scanner s) throws FormatNotSupportedException, FileReadException;
+	public Data read(String format, Scanner s) throws Exception;
 }

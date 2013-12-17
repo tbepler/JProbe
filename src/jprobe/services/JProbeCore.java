@@ -2,6 +2,7 @@ package jprobe.services;
 
 import java.awt.GridBagConstraints;
 import java.io.File;
+import java.util.Collection;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -26,17 +27,17 @@ public interface JProbeCore {
 	
 	public void addDataReader(Class<? extends Data> read, DataReader reader);
 	public void removeDataReader(DataReader reader);
-	public Class<? extends Data>[] getReadableDataClasses();
+	public Collection<Class<? extends Data>> getReadableDataClasses();
 	public String[] getValidReadFormats(Class<? extends Data> dataClass);
 	
 	public void addDataWriter(Class<? extends Data> write, DataWriter writer);
 	public void removeDataWriter(DataWriter writer);
-	public Class<? extends Data>[] getWritableDataClasses();
+	public Collection<Class<? extends Data>> getWritableDataClasses();
 	public String[] getValidWriteFormats(Class<? extends Data> dataClass);
 	
 	public void addData(Data data);
 	public void removeData(Data data);
-	public Data readData(File file, String format) throws Exception;
+	public Data readData(File file, Class<? extends Data> type, String format) throws Exception;
 	public void writeData(File file, Data data, String format) throws Exception;
 	public Data[] getData();
 	

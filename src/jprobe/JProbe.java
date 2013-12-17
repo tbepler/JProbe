@@ -3,6 +3,7 @@ package jprobe;
 import java.awt.GridBagConstraints;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +30,12 @@ import org.osgi.framework.Constants;
 public class JProbe implements JProbeCore{
 	
 	private JProbeGUIFrame frame;
+	private DataManager manager;
 	private JProbeActivator activator;
 	private Felix felix;
 	
 	public JProbe(){
-		
+		manager = new DataManager();
 		frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map config = new HashMap();
@@ -128,66 +130,60 @@ public class JProbe implements JProbeCore{
 
 	@Override
 	public void addDataReader(Class<? extends Data> read, DataReader reader) {
-		// TODO Auto-generated method stub
-		
+		manager.addDataReader(read, reader);
 	}
 
 	@Override
 	public void removeDataReader(DataReader reader) {
-		// TODO Auto-generated method stub
-		
+		manager.removeDataReader(reader);
 	}
 
 	@Override
-	public Class<? extends Data>[] getReadableDataClasses() {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<Class<? extends Data>> getReadableDataClasses() {
+		return manager.getReadableDataTypes();
 	}
 
 	@Override
 	public String[] getValidReadFormats(Class<? extends Data> dataClass) {
-		// TODO Auto-generated method stub
-		return null;
+		DataReader reader = manager.getReader(dataClass);
+		Map<String, String[]> formats = reader.getValidReadFormats();
+		return formats.keySet().toArray(new String[formats.size()]);
 	}
 
 	@Override
 	public void addDataWriter(Class<? extends Data> write, DataWriter writer) {
-		// TODO Auto-generated method stub
-		
+		manager.addDataWriter(write, writer);
 	}
 
 	@Override
 	public void removeDataWriter(DataWriter writer) {
-		// TODO Auto-generated method stub
-		
+		manager.removeDataWriter(writer);
 	}
 
 	@Override
-	public Class<? extends Data>[] getWritableDataClasses() {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<Class<? extends Data>> getWritableDataClasses() {
+		return manager.getWritableDataTypes();
 	}
 
 	@Override
 	public String[] getValidWriteFormats(Class<? extends Data> dataClass) {
-		// TODO Auto-generated method stub
-		return null;
+		DataWriter writer = manager.getWriter(dataClass);
+		Map<String, String[]> formats = writer.getValidWriteFormats();
+		return formats.keySet().toArray(new String[formats.size()]);
 	}
 
 	@Override
 	public void addData(Data data) {
-		// TODO Auto-generated method stub
-		
+		manager.addData(data);
 	}
 
 	@Override
 	public void removeData(Data data) {
-		// TODO Auto-generated method stub
-		
+		manager.removeData(data);
 	}
 
 	@Override
-	public Data readData(File file, String format) throws Exception {
+	public Data readData(File file, Class<? extends Data> type, String format) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,6 +1,7 @@
 package jprobe;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -16,16 +17,20 @@ public class DataManager {
 	private Map<String, Data> nameToData;
 	private Map<Data, String> dataToName;
 	private Map<Class<? extends Data>, Integer> counts;
-	private Map<Class<? extends Data>, DataReader> readers;
-	private Map<Class<? extends Data>, DataWriter> writers;
+	private Map<Class<? extends Data>, DataReader> typeToReader;
+	private Map<DataReader, Class<? extends Data>> readerToType;
+	private Map<Class<? extends Data>, DataWriter> typeToWriter;
+	private Map<DataWriter, Class<? extends Data>> writerToType;
 	
 	public DataManager(){
 		data = new HashMap<Class<? extends Data>, List<Data>>();
 		nameToData = new HashMap<String, Data>();
 		dataToName = new HashMap<Data, String>();
 		counts = new HashMap<Class<? extends Data>, Integer>();
-		readers = new HashMap<Class<? extends Data>, DataReader>();
-		writers = new HashMap<Class<? extends Data>, DataWriter>();
+		typeToReader = new HashMap<Class<? extends Data>, DataReader>();
+		readerToType = new HashMap<DataReader, Class<? extends Data>>();
+		typeToWriter = new HashMap<Class<? extends Data>, DataWriter>();
+		writerToType = new HashMap<DataWriter, Class<? extends Data>>();
 	}
 	
 	private String assignName(Data d){
@@ -95,9 +100,78 @@ public class DataManager {
 		return dataToName.get(d);
 	}
 	
+	public void rename(Data d, String name){
+		String old = dataToName.get(d);
+		nameToData.remove(old);
+		nameToData.put(name, d);
+		dataToName.put(d, name);
+	}
 	
+	public boolean isReadable(Class<? extends Data> type){
+		return typeToReader.containsKey(type);
+	}
 	
+	public boolean isWritable(Class<? extends Data> type){
+		return typeToWriter.containsKey(type);
+	}
 	
+	public void addDataReader(Class<? extends Data> type, DataReader reader){
+		typeToReader.put(type, reader);
+		readerToType.put(reader, type);
+	}
+	
+	public void addDataWriter(Class<? extends Data> type, DataWriter writer){
+		typeToWriter.put(type, writer);
+		writerToType.put(writer, type);
+	}
+	
+	public void removeDataReader(Class<? extends Data> type){
+		DataReader reader = typeToReader.get(type);
+		readerToType.remove(reader);
+		typeToReader.remove(type);
+	}
+	
+	public void removeDataWriter(Class<? extends Data> type){
+		DataWriter writer = typeToWriter.get(type);
+		writerToType.remove(writer);
+		typeToWriter.remove(type);
+	}
+	
+	public void removeDataReader(DataReader reader){
+		Class<? extends Data> type = readerToType.get(reader);
+		typeToReader.remove(type);
+		readerToType.remove(reader);
+	}
+	
+	public void removeDataWriter(DataWriter writer){
+		Class<? extends Data> type = writerToType.get(writer);
+		typeToWriter.remove(type);
+		writerToType.remove(writer);
+	}
+	
+	public Collection<Class<? extends Data>> getReadableDataTypes(){
+		return typeToReader.keySet();
+	}
+	
+	public Collection<Class<? extends Data>> getWritableDataTypes(){
+		return typeToWriter.keySet();
+	}
+	
+	public DataReader getReader(Class<? extends Data> type){
+		return typeToReader.get(type);
+	}
+	
+	public DataWriter getWriter(Class<? extends Data> type){
+		return typeToWriter.get(type);
+	}
+	
+	public Class<? extends Data> getReadType(DataReader reader){
+		return readerToType.get(reader);
+	}
+	
+	public Class<? extends Data> getWriteType(DataWriter writer){
+		return writerToType.get(writer);
+	}
 	
 	
 	
