@@ -1,6 +1,5 @@
 package jprobe.services;
 
-import jprobe.CoreEvent;
 
 
 public interface CoreListener {
