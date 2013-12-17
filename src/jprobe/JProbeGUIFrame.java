@@ -25,7 +25,10 @@ public class JProbeGUIFrame extends JFrame{
 		menuBar = new JMenuBar();
 		contentPane = new JPanel(new GridBagLayout());
 		this.setJMenuBar(menuBar);
-		this.setContentPane(contentPane);
+		this.getContentPane().setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		//c.fill = GridBagConstraints.BOTH;
+		this.getContentPane().add(contentPane, c);
 		menuBar.setVisible(true);
 		contentPane.setVisible(true);
 		//override window closing event to make sure Felix is shutdown correctly
@@ -38,6 +41,7 @@ public class JProbeGUIFrame extends JFrame{
 				}
 			}
 		});
+		this.setLocationRelativeTo(null);
 	}
 	
 	void addComponent(JComponent comp, GridBagConstraints c){

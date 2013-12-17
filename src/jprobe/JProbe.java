@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -19,6 +20,8 @@ import jprobe.services.JProbeCore;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
+import org.apache.felix.main.AutoProcessor;
+import org.apache.felix.main.Main;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 
@@ -30,11 +33,13 @@ public class JProbe implements JProbeCore{
 	
 	public JProbe(){
 		
-		JProbeGUIFrame frame = new JProbeGUIFrame(this, "JProbe");
+		frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map config = new HashMap();
 		//export the core service package
 		config.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services; version=1.0.0");
+		config.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing");
+		config.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, "onFirstInit");
 		//create activator and add to config map
 		activator = new JProbeActivator(this);
 		List<BundleActivator> l = new ArrayList<BundleActivator>();
@@ -44,6 +49,12 @@ public class JProbe implements JProbeCore{
 		try{
 			//create and instance of the felix framework using the config map
 			felix = new Felix(config);
+			Properties props = new Properties();
+			Main.copySystemProperties(props);
+			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, "plugins");
+			props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
+			felix.init();
+			AutoProcessor.process(props, felix.getBundleContext());
 			//start the felix instance
 			felix.start();
 		} catch (Exception e){

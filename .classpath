@@ -7,6 +7,6 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="lib" path="C:/Users/Tristan/workspace/ArrayGenerator/ApacheFelix/felix.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Tristan/workspace/JProbe/ApacheFelix/felix.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
