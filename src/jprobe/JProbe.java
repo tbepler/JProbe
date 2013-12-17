@@ -1,13 +1,16 @@
 package jprobe;
 
 import java.awt.GridBagConstraints;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -30,12 +33,12 @@ import org.osgi.framework.Constants;
 public class JProbe implements JProbeCore{
 	
 	private JProbeGUIFrame frame;
-	private DataManager manager;
+	private DataManager dataManager;
 	private JProbeActivator activator;
 	private Felix felix;
 	
 	public JProbe(){
-		manager = new DataManager();
+		dataManager = new DataManager(this);
 		frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map config = new HashMap();
@@ -101,13 +104,13 @@ public class JProbe implements JProbeCore{
 	@Override
 	public void addCoreListener(CoreListener listener) {
 		// TODO Auto-generated method stub
-		
+		dataManager.addListener(listener);
 	}
 
 	@Override
 	public void removeCoreListener(CoreListener listener) {
 		// TODO Auto-generated method stub
-		
+		dataManager.removeListener(listener);
 	}
 
 	@Override
@@ -130,74 +133,116 @@ public class JProbe implements JProbeCore{
 
 	@Override
 	public void addDataReader(Class<? extends Data> read, DataReader reader) {
-		manager.addDataReader(read, reader);
+		dataManager.addDataReader(read, reader);
 	}
 
 	@Override
 	public void removeDataReader(DataReader reader) {
-		manager.removeDataReader(reader);
+		dataManager.removeDataReader(reader);
 	}
 
 	@Override
 	public Collection<Class<? extends Data>> getReadableDataClasses() {
-		return manager.getReadableDataTypes();
+		return dataManager.getReadableDataTypes();
 	}
 
 	@Override
 	public String[] getValidReadFormats(Class<? extends Data> dataClass) {
-		DataReader reader = manager.getReader(dataClass);
+		DataReader reader = dataManager.getReader(dataClass);
 		Map<String, String[]> formats = reader.getValidReadFormats();
 		return formats.keySet().toArray(new String[formats.size()]);
 	}
 
 	@Override
 	public void addDataWriter(Class<? extends Data> write, DataWriter writer) {
-		manager.addDataWriter(write, writer);
+		dataManager.addDataWriter(write, writer);
 	}
 
 	@Override
 	public void removeDataWriter(DataWriter writer) {
-		manager.removeDataWriter(writer);
+		dataManager.removeDataWriter(writer);
 	}
 
 	@Override
 	public Collection<Class<? extends Data>> getWritableDataClasses() {
-		return manager.getWritableDataTypes();
+		return dataManager.getWritableDataTypes();
 	}
 
 	@Override
 	public String[] getValidWriteFormats(Class<? extends Data> dataClass) {
-		DataWriter writer = manager.getWriter(dataClass);
+		DataWriter writer = dataManager.getWriter(dataClass);
 		Map<String, String[]> formats = writer.getValidWriteFormats();
 		return formats.keySet().toArray(new String[formats.size()]);
 	}
 
 	@Override
 	public void addData(Data data) {
-		manager.addData(data);
+		dataManager.addData(data);
 	}
 
 	@Override
 	public void removeData(Data data) {
-		manager.removeData(data);
+		dataManager.removeData(data);
 	}
 
 	@Override
 	public Data readData(File file, Class<? extends Data> type, String format) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		if(!dataManager.isReadable(type)){
+			throw new Exception("Error: "+type+" not readable");
+		}
+		DataReader reader = dataManager.getReader(type);
+		try{
+			Data read = reader.read(format, new Scanner(file));
+			dataManager.addData(read);
+			return read;
+		} catch(Exception e){
+			throw e;
+		}
 	}
 
 	@Override
 	public void writeData(File file, Data data, String format) throws Exception {
-		// TODO Auto-generated method stub
-		
+		if(!dataManager.isWritable(data.getClass())){
+			throw new Exception("Error: "+data.getClass()+" not writable");
+		}
+		DataWriter writer = dataManager.getWriter(data.getClass());
+		try{
+			writer.write(data, format, new BufferedWriter(new FileWriter(file)));
+		} catch(Exception e){
+			throw e;
+		}
 	}
 
 	@Override
 	public Data[] getData() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Data> data = dataManager.getAllData();
+		return data.toArray(new Data[data.size()]);
+	}
+	
+	@Override
+	public String[] getDataNames() {
+		return dataManager.getDataNames();
+	}
+
+	@Override
+	public void rename(Data data, String name) {
+		dataManager.rename(data, name);
+	}
+
+	@Override
+	public String getName(Data data) {
+		return dataManager.getDataName(data);
+	}
+
+	@Override
+	public Data getData(String name) {
+		return dataManager.getData(name);
+	}
+	
+	@Override
+	public Data[] getData(Class<? extends Data> type){
+		List<Data> data = dataManager.getData(type);
+		return data.toArray(new Data[data.size()]);
 	}
 
 	@Override
@@ -211,5 +256,7 @@ public class JProbe implements JProbeCore{
 		// TODO Auto-generated method stub
 		
 	}
+
+
 	
 }

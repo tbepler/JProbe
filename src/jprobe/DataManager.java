@@ -4,14 +4,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import jprobe.services.CoreEvent;
+import jprobe.services.CoreEvent.Type;
+import jprobe.services.CoreListener;
 import jprobe.services.Data;
 import jprobe.services.DataReader;
 import jprobe.services.DataWriter;
+import jprobe.services.JProbeCore;
 
 public class DataManager {
+	
+	private JProbeCore core;
+	
+	private Collection<CoreListener> listeners;
 	
 	private Map<Class<? extends Data>, List<Data>> data;
 	private Map<String, Data> nameToData;
@@ -22,7 +31,9 @@ public class DataManager {
 	private Map<Class<? extends Data>, DataWriter> typeToWriter;
 	private Map<DataWriter, Class<? extends Data>> writerToType;
 	
-	public DataManager(){
+	public DataManager(JProbeCore core){
+		this.core = core;
+		listeners = new HashSet<CoreListener>();
 		data = new HashMap<Class<? extends Data>, List<Data>>();
 		nameToData = new HashMap<String, Data>();
 		dataToName = new HashMap<Data, String>();
@@ -31,6 +42,20 @@ public class DataManager {
 		readerToType = new HashMap<DataReader, Class<? extends Data>>();
 		typeToWriter = new HashMap<Class<? extends Data>, DataWriter>();
 		writerToType = new HashMap<DataWriter, Class<? extends Data>>();
+	}
+	
+	public void addListener(CoreListener listener){
+		listeners.add(listener);
+	}
+	
+	public void removeListener(CoreListener listener){
+		listeners.remove(listener);
+	}
+	
+	private void notifyListeners(CoreEvent event){
+		for(CoreListener l : listeners){
+			l.update(event);
+		}
 	}
 	
 	private String assignName(Data d){
@@ -55,11 +80,19 @@ public class DataManager {
 			data.put(clazz, list);
 			counts.put(clazz, 1);
 		}else{
-			data.get(clazz).add(d);
-			counts.put(clazz, counts.get(clazz)+1);
+			List<Data> list = data.get(clazz);
+			if(!list.contains(d)){
+				list.add(d);
+				counts.put(clazz, counts.get(clazz)+1);
+			}
 		}
-		nameToData.put(name, d);
-		dataToName.put(d, name);
+		if(dataToName.containsKey(d)){
+			this.rename(d, name);
+		}else{
+			nameToData.put(name, d);
+			dataToName.put(d, name);
+			notifyListeners(new CoreEvent(core, Type.DATA_ADDED, d));
+		}
 	}
 	
 	public void addData(Data d){
@@ -70,6 +103,7 @@ public class DataManager {
 		data.get(d.getClass()).remove(d);
 		nameToData.remove(name);
 		dataToName.remove(d);
+		notifyListeners(new CoreEvent(core, Type.DATA_REMOVED, d));
 	}
 	
 	public void removeData(String name){
@@ -100,11 +134,16 @@ public class DataManager {
 		return dataToName.get(d);
 	}
 	
+	public String[] getDataNames(){
+		return nameToData.keySet().toArray(new String[nameToData.size()]);
+	}
+	
 	public void rename(Data d, String name){
 		String old = dataToName.get(d);
 		nameToData.remove(old);
 		nameToData.put(name, d);
 		dataToName.put(d, name);
+		notifyListeners(new CoreEvent(core, Type.DATA_NAME_CHANGE, d));
 	}
 	
 	public boolean isReadable(Class<? extends Data> type){
@@ -118,35 +157,41 @@ public class DataManager {
 	public void addDataReader(Class<? extends Data> type, DataReader reader){
 		typeToReader.put(type, reader);
 		readerToType.put(reader, type);
+		notifyListeners(new CoreEvent(core, Type.DATAREADER_ADDED, type));
 	}
 	
 	public void addDataWriter(Class<? extends Data> type, DataWriter writer){
 		typeToWriter.put(type, writer);
 		writerToType.put(writer, type);
+		notifyListeners(new CoreEvent(core, Type.DATAWRITER_ADDED, type));
+	}
+	
+	private void removeDataReader(Class<? extends Data> type, DataReader reader){
+		readerToType.remove(reader);
+		typeToReader.remove(type);
+		notifyListeners(new CoreEvent(core, Type.DATAREADER_REMOVED, type));
+	}
+	
+	private void removeDataWriter(Class<? extends Data> type, DataWriter writer){
+		writerToType.remove(writer);
+		typeToWriter.remove(type);
+		notifyListeners(new CoreEvent(core, Type.DATAWRITER_REMOVED, type));
 	}
 	
 	public void removeDataReader(Class<? extends Data> type){
-		DataReader reader = typeToReader.get(type);
-		readerToType.remove(reader);
-		typeToReader.remove(type);
+		removeDataReader(type, typeToReader.get(type));
 	}
 	
 	public void removeDataWriter(Class<? extends Data> type){
-		DataWriter writer = typeToWriter.get(type);
-		writerToType.remove(writer);
-		typeToWriter.remove(type);
+		removeDataWriter(type, typeToWriter.get(type));
 	}
 	
 	public void removeDataReader(DataReader reader){
-		Class<? extends Data> type = readerToType.get(reader);
-		typeToReader.remove(type);
-		readerToType.remove(reader);
+		removeDataReader(readerToType.get(reader), reader);
 	}
 	
 	public void removeDataWriter(DataWriter writer){
-		Class<? extends Data> type = writerToType.get(writer);
-		typeToWriter.remove(type);
-		writerToType.remove(writer);
+		removeDataWriter(writerToType.get(writer), writer);
 	}
 	
 	public Collection<Class<? extends Data>> getReadableDataTypes(){

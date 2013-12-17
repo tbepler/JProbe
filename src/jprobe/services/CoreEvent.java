@@ -15,8 +15,7 @@ public class CoreEvent {
 	private Type type;
 	private JProbeCore source;
 	private Data dataEffected = null;
-	private DataReader readerEffected = null;
-	private DataWriter writerEffected = null;
+	private Class<? extends Data> dataClass = null;
 	private Function functionEffected = null;
 	
 	public CoreEvent(JProbeCore source, Type type){
@@ -27,16 +26,12 @@ public class CoreEvent {
 	public CoreEvent(JProbeCore source, Type type, Data effected){
 		this(source, type);
 		dataEffected = effected;
+		dataClass = effected.getClass();
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, DataReader effected){
+	public CoreEvent(JProbeCore source, Type type, Class<? extends Data> effected){
 		this(source, type);
-		readerEffected = effected;
-	}
-	
-	public CoreEvent(JProbeCore source, Type type, DataWriter effected){
-		this(source, type);
-		writerEffected = effected;
+		dataClass = effected;
 	}
 	
 	public CoreEvent(JProbeCore source, Type type, Function effected){
@@ -56,12 +51,8 @@ public class CoreEvent {
 		return dataEffected;
 	}
 	
-	public DataReader readerChanged(){
-		return readerEffected;
-	}
-	
-	public DataWriter writerChanged(){
-		return writerEffected;
+	public Class<? extends Data> dataClassChanged(){
+		return dataClass;
 	}
 	
 	public Function functionChanged(){

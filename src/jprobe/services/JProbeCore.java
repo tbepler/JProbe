@@ -40,5 +40,10 @@ public interface JProbeCore {
 	public Data readData(File file, Class<? extends Data> type, String format) throws Exception;
 	public void writeData(File file, Data data, String format) throws Exception;
 	public Data[] getData();
+	public String[] getDataNames();
+	public void rename(Data data, String name);
+	public String getName(Data data);
+	public Data getData(String name);
+	public Data[] getData(Class<? extends Data> type);
 	
 }
