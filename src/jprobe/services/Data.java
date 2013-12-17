@@ -2,6 +2,7 @@ package jprobe.services;
 
 import java.io.Serializable;
 
+
 public interface Data extends Serializable{
 	
 	public void addDataListener(DataListener listener);

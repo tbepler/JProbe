@@ -1,6 +1,7 @@
 package jprobe.services;
 
 
+
 public interface Function {
 	
 	/**
