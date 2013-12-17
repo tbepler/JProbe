@@ -17,6 +17,9 @@ public interface JProbeCore {
 	public void addCoreListener(CoreListener listener);
 	public void removeCoreListener(CoreListener listener);
 	
+	public void addSaveable(Saveable add);
+	public void removeSaveable(Saveable remove);
+	
 	public void addFunction(Function f);
 	public void removeFunction(Function f);
 	public Function[] getAllFunctions();

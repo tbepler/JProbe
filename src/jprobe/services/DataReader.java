@@ -12,5 +12,4 @@ import org.w3c.dom.Element;
 public interface DataReader {
 	public Map<String, String[]> getValidReadFormats();
 	public DataType read(String format, Scanner s) throws FormatNotSupportedException, FileReadException;
-	public DataType readXML(Element e) throws FormatNotSupportedException, FileReadException;
 }

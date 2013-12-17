@@ -17,6 +17,7 @@ import jprobe.services.DataReader;
 import jprobe.services.DataWriter;
 import jprobe.services.Function;
 import jprobe.services.JProbeCore;
+import jprobe.services.Saveable;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
@@ -201,6 +202,18 @@ public class JProbe implements JProbeCore{
 	public Data[] getData() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void addSaveable(Saveable add) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeSaveable(Saveable remove) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
