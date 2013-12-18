@@ -34,11 +34,13 @@ public class JProbe implements JProbeCore{
 	
 	private JProbeGUIFrame frame;
 	private DataManager dataManager;
+	private FunctionManager functionManager;
 	private JProbeActivator activator;
 	private Felix felix;
 	
 	public JProbe(){
 		dataManager = new DataManager(this);
+		functionManager = new FunctionManager(this);
 		frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map config = new HashMap();
@@ -105,12 +107,14 @@ public class JProbe implements JProbeCore{
 	public void addCoreListener(CoreListener listener) {
 		// TODO Auto-generated method stub
 		dataManager.addListener(listener);
+		functionManager.addListener(listener);
 	}
 
 	@Override
 	public void removeCoreListener(CoreListener listener) {
 		// TODO Auto-generated method stub
 		dataManager.removeListener(listener);
+		functionManager.removeListener(listener);
 	}
 
 	@Override
