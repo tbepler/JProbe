@@ -119,20 +119,27 @@ public class JProbe implements JProbeCore{
 
 	@Override
 	public void addFunction(Function f) {
-		// TODO Auto-generated method stub
-		
+		functionManager.addFunction(f);
 	}
 
 	@Override
 	public void removeFunction(Function f) {
-		// TODO Auto-generated method stub
-		
+		functionManager.removeFunction(f);
 	}
 
 	@Override
 	public Function[] getAllFunctions() {
-		// TODO Auto-generated method stub
-		return null;
+		return functionManager.getAllFunctions();
+	}
+	
+	@Override
+	public Function[] getFunctions(String name){
+		return functionManager.getFunctions(name);
+	}
+	
+	@Override
+	public String[] getFunctionNames(){
+		return functionManager.getFunctionNames();
 	}
 
 	@Override

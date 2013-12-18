@@ -24,6 +24,8 @@ public interface JProbeCore {
 	public void addFunction(Function f);
 	public void removeFunction(Function f);
 	public Function[] getAllFunctions();
+	public Function[] getFunctions(String name);
+	public String[] getFunctionNames();
 	
 	public void addDataReader(Class<? extends Data> read, DataReader reader);
 	public void removeDataReader(DataReader reader);
