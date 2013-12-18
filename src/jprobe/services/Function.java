@@ -1,5 +1,7 @@
 package jprobe.services;
 
+import java.util.List;
+
 
 
 public interface Function {
@@ -21,18 +23,18 @@ public interface Function {
 	 * DataType object that should be passed to this module when it is run.
 	 * @return a class array
 	 */
-	public Class<? extends Data>[] getRequiredDataArgs();
+	public List<Class<? extends Data>> getRequiredDataArgs();
 	
 	/**
 	 * This method should be defined to return an array of classes, where each element of the array represents an optional
 	 * DataType object that should be passed to this module when it is run.
 	 * @return
 	 */
-	public Class<? extends Data>[] getOptionalDataArgs();
+	public List<Class<? extends Data>> getOptionalDataArgs();
 	
-	public DataField[] getRequiredFields();
+	public List<DataField> getRequiredFields();
 	
-	public DataField[] getOptionalFields();
+	public List<DataField> getOptionalFields();
 	
 	/**
 	 * This method defines the core behavior of this function. It takes two Data arrays, one specifying the required
@@ -46,5 +48,5 @@ public interface Function {
 	 * @param optionalFields - DataFields array specifying the optional fields arguments, elements of null mean none specified
 	 * @return a Data object that is the result of this function's processing
 	 */
-	public Data run(Data[] requiredData, Data[] optionalData, DataField[] requiredFields, DataField[] optionalFields) throws Exception;
+	public Data run(List<Data> requiredData, List<Data> optionalData, List<DataField> requiredFields, List<DataField> optionalFields) throws Exception;
 }
