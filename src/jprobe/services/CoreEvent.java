@@ -1,5 +1,7 @@
 package jprobe.services;
 
+import org.osgi.framework.Bundle;
+
 public class CoreEvent {
 
 	public enum Type{
@@ -11,7 +13,11 @@ public class CoreEvent {
 		DATAWRITER_ADDED,
 		DATAWRITER_REMOVED,
 		FUNCTION_ADDED,
-		FUNCTION_REMOVED;
+		FUNCTION_REMOVED,
+		GUI_COMPONENT_ADDED,
+		GUI_COMPONENT_REMOVED,
+		GUI_MENU_ADDED,
+		GUI_MENU_REMOVED;
 	};
 	
 	private Type type;
@@ -19,25 +25,26 @@ public class CoreEvent {
 	private Data dataEffected = null;
 	private Class<? extends Data> dataClass = null;
 	private Function functionEffected = null;
+	private Bundle cause = null;
 	
-	public CoreEvent(JProbeCore source, Type type){
+	public CoreEvent(JProbeCore source, Type type, Bundle responsible){
 		this.source = source;
 		this.type = type;
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, Data effected){
-		this(source, type);
+	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Data effected){
+		this(source, type, responsible);
 		dataEffected = effected;
 		dataClass = effected.getClass();
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, Class<? extends Data> effected){
-		this(source, type);
+	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Class<? extends Data> effected){
+		this(source, type, responsible);
 		dataClass = effected;
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, Function effected){
-		this(source, type);
+	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Function effected){
+		this(source, type, responsible);
 		functionEffected = effected;
 	}
 	
@@ -45,19 +52,23 @@ public class CoreEvent {
 		return type;
 	}
 	
-	public JProbeCore source(){
+	public Bundle getCause(){
+		return cause;
+	}
+	
+	public JProbeCore getSource(){
 		return source;
 	}
 	
-	public Data dataChanged(){
+	public Data getData(){
 		return dataEffected;
 	}
 	
-	public Class<? extends Data> dataClassChanged(){
+	public Class<? extends Data> getDataClass(){
 		return dataClass;
 	}
 	
-	public Function functionChanged(){
+	public Function getFunction(){
 		return functionEffected;
 	}
 	

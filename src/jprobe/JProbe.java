@@ -27,6 +27,7 @@ import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.main.AutoProcessor;
 import org.apache.felix.main.Main;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 
@@ -84,47 +85,48 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public void addComponent(JComponent component, GridBagConstraints constrains) {
-		frame.addComponent(component, constrains);
+	public void addComponent(JComponent component, GridBagConstraints constrains, Bundle responsible) {
+		frame.addComponent(component, constrains, responsible);
 	}
 
 	@Override
-	public void removeComponent(JComponent component) {
-		frame.removeComponent(component);
+	public void removeComponent(JComponent component, Bundle responsible) {
+		frame.removeComponent(component, responsible);
 	}
 
 	@Override
-	public void addDropdownMenu(JMenu menu) {
-		frame.addDropdownMenu(menu);
+	public void addDropdownMenu(JMenu menu, Bundle responsible) {
+		frame.addDropdownMenu(menu, responsible);
 	}
 
 	@Override
-	public void removeDropdownMenu(JMenu menu) {
-		frame.removeDropdownMenu(menu);
+	public void removeDropdownMenu(JMenu menu, Bundle responsible) {
+		frame.removeDropdownMenu(menu, responsible);
 	}
 
 	@Override
 	public void addCoreListener(CoreListener listener) {
-		// TODO Auto-generated method stub
+		frame.addListener(listener);
 		dataManager.addListener(listener);
 		functionManager.addListener(listener);
+		
 	}
 
 	@Override
 	public void removeCoreListener(CoreListener listener) {
-		// TODO Auto-generated method stub
+		frame.removeListener(listener);
 		dataManager.removeListener(listener);
 		functionManager.removeListener(listener);
 	}
 
 	@Override
-	public void addFunction(Function f) {
-		functionManager.addFunction(f);
+	public void addFunction(Function f, Bundle responsible) {
+		functionManager.addFunction(f, responsible);
 	}
 
 	@Override
-	public void removeFunction(Function f) {
-		functionManager.removeFunction(f);
+	public void removeFunction(Function f, Bundle responsible) {
+		functionManager.removeFunction(f, responsible);
 	}
 
 	@Override
@@ -143,13 +145,13 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public void addDataReader(Class<? extends Data> read, DataReader reader) {
-		dataManager.addDataReader(read, reader);
+	public void addDataReader(Class<? extends Data> read, DataReader reader, Bundle responsible) {
+		dataManager.addDataReader(read, reader, responsible);
 	}
 
 	@Override
-	public void removeDataReader(DataReader reader) {
-		dataManager.removeDataReader(reader);
+	public void removeDataReader(DataReader reader, Bundle responsible) {
+		dataManager.removeDataReader(reader, responsible);
 	}
 
 	@Override
@@ -165,13 +167,13 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public void addDataWriter(Class<? extends Data> write, DataWriter writer) {
-		dataManager.addDataWriter(write, writer);
+	public void addDataWriter(Class<? extends Data> write, DataWriter writer, Bundle responsible) {
+		dataManager.addDataWriter(write, writer, responsible);
 	}
 
 	@Override
-	public void removeDataWriter(DataWriter writer) {
-		dataManager.removeDataWriter(writer);
+	public void removeDataWriter(DataWriter writer, Bundle responsible) {
+		dataManager.removeDataWriter(writer, responsible);
 	}
 
 	@Override
@@ -187,24 +189,24 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public void addData(Data data) {
-		dataManager.addData(data);
+	public void addData(Data data, Bundle responsible) {
+		dataManager.addData(data, responsible);
 	}
 
 	@Override
-	public void removeData(Data data) {
-		dataManager.removeData(data);
+	public void removeData(Data data, Bundle responsible) {
+		dataManager.removeData(data, responsible);
 	}
 
 	@Override
-	public Data readData(File file, Class<? extends Data> type, String format) throws Exception {
+	public Data readData(File file, Class<? extends Data> type, String format, Bundle responsible) throws Exception {
 		if(!dataManager.isReadable(type)){
 			throw new Exception("Error: "+type+" not readable");
 		}
 		DataReader reader = dataManager.getReader(type);
 		try{
 			Data read = reader.read(format, new Scanner(file));
-			dataManager.addData(read);
+			dataManager.addData(read, responsible);
 			return read;
 		} catch(Exception e){
 			throw e;
@@ -236,8 +238,8 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public void rename(Data data, String name) {
-		dataManager.rename(data, name);
+	public void rename(Data data, String name, Bundle responsible) {
+		dataManager.rename(data, name, responsible);
 	}
 
 	@Override

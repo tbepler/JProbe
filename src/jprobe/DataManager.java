@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.osgi.framework.Bundle;
+
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.CoreListener;
@@ -72,7 +74,7 @@ public class DataManager {
 		return name;
 	}
 	
-	public void addData(Data d, String name){
+	public void addData(Data d, String name, Bundle responsible){
 		Class<? extends Data> clazz = d.getClass();
 		if(!data.containsKey(clazz)){
 			List<Data> list = new ArrayList<Data>();
@@ -87,31 +89,31 @@ public class DataManager {
 			}
 		}
 		if(dataToName.containsKey(d)){
-			this.rename(d, name);
+			this.rename(d, name, responsible);
 		}else{
 			nameToData.put(name, d);
 			dataToName.put(d, name);
-			notifyListeners(new CoreEvent(core, Type.DATA_ADDED, d));
+			notifyListeners(new CoreEvent(core, Type.DATA_ADDED, responsible, d));
 		}
 	}
 	
-	public void addData(Data d){
-		addData(d, assignName(d));
+	public void addData(Data d, Bundle responsible){
+		addData(d, assignName(d), responsible);
 	}
 	
-	private void removeData(String name, Data d){
+	private void removeData(String name, Data d, Bundle responsible){
 		data.get(d.getClass()).remove(d);
 		nameToData.remove(name);
 		dataToName.remove(d);
-		notifyListeners(new CoreEvent(core, Type.DATA_REMOVED, d));
+		notifyListeners(new CoreEvent(core, Type.DATA_REMOVED, responsible, d));
 	}
 	
-	public void removeData(String name){
-		removeData(name, nameToData.get(name));
+	public void removeData(String name, Bundle responsible){
+		removeData(name, nameToData.get(name), responsible);
 	}
 	
-	public void removeData(Data d){
-		removeData(dataToName.get(d), d);
+	public void removeData(Data d, Bundle responsible){
+		removeData(dataToName.get(d), d, responsible);
 	}
 	
 	public List<Data> getAllData(){
@@ -138,12 +140,12 @@ public class DataManager {
 		return nameToData.keySet().toArray(new String[nameToData.size()]);
 	}
 	
-	public void rename(Data d, String name){
+	public void rename(Data d, String name, Bundle responsible){
 		String old = dataToName.get(d);
 		nameToData.remove(old);
 		nameToData.put(name, d);
 		dataToName.put(d, name);
-		notifyListeners(new CoreEvent(core, Type.DATA_NAME_CHANGE, d));
+		notifyListeners(new CoreEvent(core, Type.DATA_NAME_CHANGE, responsible, d));
 	}
 	
 	public boolean isReadable(Class<? extends Data> type){
@@ -154,44 +156,44 @@ public class DataManager {
 		return typeToWriter.containsKey(type);
 	}
 	
-	public void addDataReader(Class<? extends Data> type, DataReader reader){
+	public void addDataReader(Class<? extends Data> type, DataReader reader, Bundle responsible){
 		typeToReader.put(type, reader);
 		readerToType.put(reader, type);
-		notifyListeners(new CoreEvent(core, Type.DATAREADER_ADDED, type));
+		notifyListeners(new CoreEvent(core, Type.DATAREADER_ADDED, responsible, type));
 	}
 	
-	public void addDataWriter(Class<? extends Data> type, DataWriter writer){
+	public void addDataWriter(Class<? extends Data> type, DataWriter writer, Bundle responsible){
 		typeToWriter.put(type, writer);
 		writerToType.put(writer, type);
-		notifyListeners(new CoreEvent(core, Type.DATAWRITER_ADDED, type));
+		notifyListeners(new CoreEvent(core, Type.DATAWRITER_ADDED, responsible, type));
 	}
 	
-	private void removeDataReader(Class<? extends Data> type, DataReader reader){
+	private void removeDataReader(Class<? extends Data> type, DataReader reader, Bundle responsible){
 		readerToType.remove(reader);
 		typeToReader.remove(type);
-		notifyListeners(new CoreEvent(core, Type.DATAREADER_REMOVED, type));
+		notifyListeners(new CoreEvent(core, Type.DATAREADER_REMOVED, responsible, type));
 	}
 	
-	private void removeDataWriter(Class<? extends Data> type, DataWriter writer){
+	private void removeDataWriter(Class<? extends Data> type, DataWriter writer, Bundle responsible){
 		writerToType.remove(writer);
 		typeToWriter.remove(type);
-		notifyListeners(new CoreEvent(core, Type.DATAWRITER_REMOVED, type));
+		notifyListeners(new CoreEvent(core, Type.DATAWRITER_REMOVED, responsible, type));
 	}
 	
-	public void removeDataReader(Class<? extends Data> type){
-		removeDataReader(type, typeToReader.get(type));
+	public void removeDataReader(Class<? extends Data> type, Bundle responsible){
+		removeDataReader(type, typeToReader.get(type), responsible);
 	}
 	
-	public void removeDataWriter(Class<? extends Data> type){
-		removeDataWriter(type, typeToWriter.get(type));
+	public void removeDataWriter(Class<? extends Data> type, Bundle responsible){
+		removeDataWriter(type, typeToWriter.get(type), responsible);
 	}
 	
-	public void removeDataReader(DataReader reader){
-		removeDataReader(readerToType.get(reader), reader);
+	public void removeDataReader(DataReader reader, Bundle responsible){
+		removeDataReader(readerToType.get(reader), reader, responsible);
 	}
 	
-	public void removeDataWriter(DataWriter writer){
-		removeDataWriter(writerToType.get(writer), writer);
+	public void removeDataWriter(DataWriter writer, Bundle responsible){
+		removeDataWriter(writerToType.get(writer), writer, responsible);
 	}
 	
 	public Collection<Class<? extends Data>> getReadableDataTypes(){

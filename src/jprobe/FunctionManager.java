@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import org.osgi.framework.Bundle;
+
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.CoreListener;
@@ -51,7 +53,7 @@ public class FunctionManager {
 		return functionsByName.keySet().toArray(new String[functionsByName.size()]);
 	}
 	
-	public void addFunction(Function f){
+	public void addFunction(Function f, Bundle responsible){
 		if(!functions.contains(f)){
 			functions.add(f);
 			if(!functionsByName.containsKey(f.getName())){
@@ -61,14 +63,14 @@ public class FunctionManager {
 			}else{
 				functionsByName.get(f.getName()).add(f);
 			}
-			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_ADDED, f));
+			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_ADDED, responsible, f));
 		}
 	}
 	
-	public void removeFunction(Function f){
+	public void removeFunction(Function f, Bundle responsible){
 		if(functions.remove(f)){
 			functionsByName.get(f.getName()).remove(f);
-			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_REMOVED, f));
+			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_REMOVED, responsible, f));
 		}
 	}
 	
