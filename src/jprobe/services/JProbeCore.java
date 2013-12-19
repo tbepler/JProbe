@@ -11,14 +11,10 @@ import org.osgi.framework.Bundle;
 
 public interface JProbeCore {
 	
-	public void addComponent(JComponent component, GridBagConstraints constrains, Bundle responsible);
-	public void removeComponent(JComponent component, Bundle responsible);
-	
-	public void addDropdownMenu(JMenu menu, Bundle responsible);
-	public void removeDropdownMenu(JMenu menu, Bundle responsible);
-	
 	public void addCoreListener(CoreListener listener);
 	public void removeCoreListener(CoreListener listener);
+	
+	public void shutdown();
 	
 	public void addSaveable(Saveable add);
 	public void removeSaveable(Saveable remove);

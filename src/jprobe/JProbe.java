@@ -33,7 +33,7 @@ import org.osgi.framework.Constants;
 
 public class JProbe implements JProbeCore{
 	
-	private JProbeGUIFrame frame;
+	//private JProbeGUIFrame frame;
 	private DataManager dataManager;
 	private FunctionManager functionManager;
 	private JProbeActivator activator;
@@ -42,7 +42,7 @@ public class JProbe implements JProbeCore{
 	public JProbe(){
 		dataManager = new DataManager(this);
 		functionManager = new FunctionManager(this);
-		frame = new JProbeGUIFrame(this, "JProbe");
+		//frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map config = new HashMap();
 		//export the core service package
@@ -70,14 +70,19 @@ public class JProbe implements JProbeCore{
 			System.err.println("Error creating Felix framework: "+e);
 			e.printStackTrace();
 		}
-		frame.pack();
-		frame.setVisible(true);
+		//frame.pack();
+		//frame.setVisible(true);
 	}
 	
-	void shutdown(){
+	@Override
+	public void shutdown(){
 		try{
+			System.out.println("Shutting down");
 			felix.stop();
-			felix.waitForStop(0);
+			//System.out.println("Waiting for stop");
+			//felix.waitForStop(0);
+			System.out.println("Felix stopped");
+			System.exit(0);
 		} catch (Exception e){
 			System.err.println("Error shutting down Felix framework: "+e);
 			e.printStackTrace();
@@ -85,28 +90,8 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public void addComponent(JComponent component, GridBagConstraints constrains, Bundle responsible) {
-		frame.addComponent(component, constrains, responsible);
-	}
-
-	@Override
-	public void removeComponent(JComponent component, Bundle responsible) {
-		frame.removeComponent(component, responsible);
-	}
-
-	@Override
-	public void addDropdownMenu(JMenu menu, Bundle responsible) {
-		frame.addDropdownMenu(menu, responsible);
-	}
-
-	@Override
-	public void removeDropdownMenu(JMenu menu, Bundle responsible) {
-		frame.removeDropdownMenu(menu, responsible);
-	}
-
-	@Override
 	public void addCoreListener(CoreListener listener) {
-		frame.addListener(listener);
+		//frame.addListener(listener);
 		dataManager.addListener(listener);
 		functionManager.addListener(listener);
 		
@@ -114,7 +99,7 @@ public class JProbe implements JProbeCore{
 
 	@Override
 	public void removeCoreListener(CoreListener listener) {
-		frame.removeListener(listener);
+		//frame.removeListener(listener);
 		dataManager.removeListener(listener);
 		functionManager.removeListener(listener);
 	}

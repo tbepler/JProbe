@@ -1,4 +1,4 @@
-package jprobe;
+package plugins.jprobe.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -16,21 +16,26 @@ import javax.swing.JPanel;
 
 import org.osgi.framework.Bundle;
 
+import plugins.jprobe.gui.services.GUIEvent;
+import plugins.jprobe.gui.services.GUIListener;
+import plugins.jprobe.gui.services.JProbeGUI;
+
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
+import jprobe.services.JProbeCore;
 
-public class JProbeGUIFrame extends JFrame{
+public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private static final long serialVersionUID = 1L;
 	
-	private JProbe core;
+	private JProbeCore core;
 	private JPanel contentPane;
 	private JMenuBar menuBar;
-	private Collection<CoreListener> listeners;
+	private Collection<GUIListener> listeners;
 	
-	JProbeGUIFrame(JProbe core, String name){
+	JProbeGUIFrame(JProbeCore core, String name){
 		super(name);
 		this.core = core;
-		listeners = new HashSet<CoreListener>();
+		listeners = new HashSet<GUIListener>();
 		menuBar = new JMenuBar();
 		contentPane = new JPanel(new GridBagLayout());
 		contentPane.setOpaque(true);
@@ -44,50 +49,56 @@ public class JProbeGUIFrame extends JFrame{
 			public void windowClosing(WindowEvent event){
 				if(JOptionPane.showConfirmDialog(JProbeGUIFrame.this, "Exit JProbe?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION){
 					JProbeGUIFrame.this.core.shutdown();
-					System.exit(0);
 				}
 			}
 		});
 		this.setLocationRelativeTo(null);
 	}
 	
-	public void addListener(CoreListener listener){
+	@Override
+	public void addGUIListener(GUIListener listener){
 		listeners.add(listener);
 	}
 	
-	public void removeListener(CoreListener listener){
+	@Override
+	public void removeGUIListener(GUIListener listener){
 		listeners.remove(listener);
 	}
 	
-	private void notifyListeners(CoreEvent event){
-		for(CoreListener l : listeners){
+	private void notifyListeners(GUIEvent event){
+		for(GUIListener l : listeners){
 			l.update(event);
 		}
 	}
 	
-	void addComponent(JComponent comp, GridBagConstraints c, Bundle responsible){
+	@Override
+	public JProbeCore getJProbeCore(){
+		return core;
+	}
+	
+	public void addComponent(JComponent comp, GridBagConstraints c, Bundle responsible){
 		contentPane.add(comp, c);
 		comp.revalidate();
 		comp.repaint();
-		this.notifyListeners(new CoreEvent(core, CoreEvent.Type.GUI_COMPONENT_ADDED, responsible));
+		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.COMPONENT_ADDED, responsible));
 	}
 	
-	void removeComponent(JComponent comp, Bundle responsible){
+	public void removeComponent(JComponent comp, Bundle responsible){
 		contentPane.remove(comp);
 		contentPane.revalidate();
-		this.notifyListeners(new CoreEvent(core, CoreEvent.Type.GUI_COMPONENT_REMOVED, responsible));
+		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.COMPONENT_REMOVED, responsible));
 	}
 	
-	void addDropdownMenu(JMenu menu, Bundle responsible){
+	public void addDropdownMenu(JMenu menu, Bundle responsible){
 		menuBar.add(menu);
 		menuBar.revalidate();
-		this.notifyListeners(new CoreEvent(core, CoreEvent.Type.GUI_MENU_ADDED, responsible));
+		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.MENU_ADDED, responsible));
 	}
 	
-	void removeDropdownMenu(JMenu menu, Bundle responsible){
+	public void removeDropdownMenu(JMenu menu, Bundle responsible){
 		menuBar.remove(menu);
 		menuBar.revalidate();
-		this.notifyListeners(new CoreEvent(core, CoreEvent.Type.GUI_MENU_REMOVED, responsible));
+		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.MENU_REMOVED, responsible));
 	}
 	
 }
