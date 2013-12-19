@@ -8,7 +8,7 @@ public interface Data extends Serializable{
 	public void addDataListener(DataListener listener);
 	public void removeDataListener(DataListener listener);
 	
-	public boolean isModifiable();
+	public boolean isModifiable(int row, int col);
 	
 	public DataField[][] toTable();
 	public boolean setValue(int row, int col, DataField value);

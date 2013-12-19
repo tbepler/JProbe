@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Function GUI Plugin
-Bundle-SymbolicName: plugins.functionMenu.Activator
+Bundle-SymbolicName: plugins.functions.gui
 Bundle-Version: 1.0.0
-Bundle-Activator: plugins.functionMenu.Activator
+Bundle-Activator: plugins.functions.gui.Activator
 Bundle-Vendor: Tristan Bepler
 Bundle-Localization: plugin
 Import-Package: org.osgi.framework,jprobe.services,plugins.jprobe.gui.services,javax.swing

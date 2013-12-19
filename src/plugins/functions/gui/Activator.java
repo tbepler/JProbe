@@ -1,4 +1,4 @@
-package plugins.functionMenu;
+package plugins.functions.gui;
 
 import java.util.Collection;
 

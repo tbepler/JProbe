@@ -34,7 +34,7 @@ public class TestData implements Data{
 	}
 
 	@Override
-	public boolean isModifiable() {
+	public boolean isModifiable(int row, int col) {
 		return true;
 	}
 
