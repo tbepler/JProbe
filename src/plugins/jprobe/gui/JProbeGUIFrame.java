@@ -1,7 +1,10 @@
 package plugins.jprobe.gui;
 
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collection;
@@ -26,6 +29,8 @@ import jprobe.services.JProbeCore;
 
 public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private static final long serialVersionUID = 1L;
+	
+	public static final Dimension INITSIZE = new Dimension(800, 800);
 	
 	private JProbeCore core;
 	private JPanel contentPane;
@@ -52,7 +57,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 				}
 			}
 		});
-		this.setLocationRelativeTo(null);
+		this.setPreferredSize(INITSIZE);
 	}
 	
 	@Override

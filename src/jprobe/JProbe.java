@@ -1,5 +1,6 @@
 package jprobe;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.io.BufferedWriter;
 import java.io.File;

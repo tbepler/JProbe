@@ -1,5 +1,8 @@
 package plugins.jprobe.gui;
 
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+
 import jprobe.services.JProbeCore;
 
 import org.osgi.framework.BundleActivator;
@@ -21,6 +24,8 @@ public class Activator implements BundleActivator{
 		core = (JProbeCore) context.getService(ref);
 		gui = new JProbeGUIFrame(core, "JProbe");
 		gui.pack();
+		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+		gui.setLocation(center.x-gui.getWidth()/2, center.y-gui.getHeight()/2);
 		gui.setVisible(true);
 		register = context.registerService(JProbeGUI.class, gui, null);
 	}
