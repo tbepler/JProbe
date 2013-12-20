@@ -7,4 +7,5 @@ Bundle-Activator: plugins.testDataAndFunction.Activator
 Bundle-Vendor: Tristan Bepler
 Bundle-Localization: plugin
 Import-Package: org.osgi.framework,jprobe.services
+Export-Package: plugins.testDataAndFunction
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

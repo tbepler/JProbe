@@ -13,6 +13,7 @@ class DataRenderer extends DefaultTableCellRenderer{
 	
 	public DataRenderer(){
 		super();
+		
 	}
 	
 	@Override
@@ -28,6 +29,7 @@ class DataRenderer extends DefaultTableCellRenderer{
 		if(value instanceof DataField){
 			DataField field = (DataField) value;
 			this.setToolTipText((field == null)?"":field.getTooltip());
+			//return super.getTableCellRendererComponent(table, field.asString(), isSelected, hasFocus, row, column);
 		}
 		return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	}

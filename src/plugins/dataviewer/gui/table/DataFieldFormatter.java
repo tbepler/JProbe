@@ -68,7 +68,7 @@ public class DataFieldFormatter extends AbstractFormatter{
 			DataField f = (DataField) o;
 			return f.asString();
 		}
-		throw new ParseException("Unable to parse object of type "+o.getClass(), 0);
+		throw new ParseException("Unable to parse object "+o, 0);
 	}
 
 }

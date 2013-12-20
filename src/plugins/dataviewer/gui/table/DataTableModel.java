@@ -34,7 +34,7 @@ public class DataTableModel extends AbstractTableModel implements DataListener{
 	
 	@Override
 	public Class getColumnClass(int c){
-		return data.getValue(0, c).getClass();
+		return DataField.class;
 	}
 	
 	@Override
@@ -47,6 +47,7 @@ public class DataTableModel extends AbstractTableModel implements DataListener{
 		if(value instanceof DataField){
 			DataField field = (DataField) value;
 			data.setValue(row, col, field);
+			fireTableCellUpdated(row, col);
 			return;
 		}
 		if(value instanceof String){
