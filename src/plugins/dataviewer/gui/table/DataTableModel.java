@@ -3,15 +3,17 @@ package plugins.dataviewer.gui.table;
 import javax.swing.table.AbstractTableModel;
 
 import jprobe.services.Data;
+import jprobe.services.DataEvent;
 import jprobe.services.DataField;
+import jprobe.services.DataListener;
 
-class DataTableModel extends AbstractTableModel{
+public class DataTableModel extends AbstractTableModel implements DataListener{
 	private static final long serialVersionUID = 1L;
 	
 	
 	private Data data;
 	
-	DataTableModel(Data data){
+	public DataTableModel(Data data){
 		this.data = data;
 	}
 	
@@ -27,8 +29,7 @@ class DataTableModel extends AbstractTableModel{
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		return data.getValue(rowIndex, columnIndex);
 	}
 	
 	@Override
@@ -43,6 +44,11 @@ class DataTableModel extends AbstractTableModel{
 	
 	@Override
 	public void setValueAt(Object value, int row, int col){
+		if(value instanceof DataField){
+			DataField field = (DataField) value;
+			data.setValue(row, col, field);
+			return;
+		}
 		if(value instanceof String){
 			String val = (String) value;
 			DataField field = data.getValue(row, col);
@@ -52,6 +58,41 @@ class DataTableModel extends AbstractTableModel{
 					fireTableCellUpdated(row, col);
 				}
 			}
+		}
+	}
+
+	@Override
+	public void update(DataEvent event) {
+		switch(event.getType()){
+		
+		case FIELD_UPDATED:
+			if(event.getRow() >= 0 && event.getColumn() >= 0){
+				this.fireTableCellUpdated(event.getRow(), event.getColumn());
+			}else{
+				this.fireTableDataChanged();
+			}
+			break;
+		
+		case ROW_INSERTED:
+			if(event.getRow() >= 0){
+				this.fireTableRowsInserted(event.getRow(), event.getRow());
+			}else{
+				this.fireTableRowsInserted(0, data.getNumRows()-1);
+			}
+			break;
+		
+		case ROW_DELETED:
+			if(event.getRow() >= 0){
+				this.fireTableRowsDeleted(event.getRow(), event.getRow());
+			}else{
+				this.fireTableRowsDeleted(0, data.getNumRows()-1);
+			}
+			break;
+			
+		default:
+			this.fireTableStructureChanged();
+			break;
+			
 		}
 	}
 	

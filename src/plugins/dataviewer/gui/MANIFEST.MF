@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Function GUI Plugin
+Bundle-SymbolicName: plugins.dataviewer.gui
+Bundle-Version: 1.0.0
+Bundle-Activator: plugins.dataviewer.gui.Activator
+Bundle-Vendor: Tristan Bepler
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework,jprobe.services,plugins.jprobe.gui.services,javax.swing,javax.swing.table
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: plugins.jprobe.gui
+Export-Package: plugins.dataviewer.gui.services

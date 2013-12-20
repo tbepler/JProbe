@@ -18,9 +18,9 @@ public class TestData implements Data{
 		integer = new IntField(1);
 		decimal = new DecimalField(2.5);
 		table = new DataField[1][3];
-		table[1][1] = string;
-		table[1][2] = integer;
-		table[1][3] = decimal;
+		table[0][0] = string;
+		table[0][1] = integer;
+		table[0][2] = decimal;
 	}
 	
 	@Override

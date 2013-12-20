@@ -47,7 +47,7 @@ public class JProbe implements JProbeCore{
 		Map config = new HashMap();
 		//export the core service package
 		config.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services; version=1.0.0");
-		config.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing");
+		config.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.event,javax.swing.table");
 		config.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, "onFirstInit");
 		//create activator and add to config map
 		activator = new JProbeActivator(this);

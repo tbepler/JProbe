@@ -1,38 +1,16 @@
 package plugins.dataviewer.gui.table;
 
-import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.JScrollPane;
 
 import jprobe.services.Data;
-import jprobe.services.DataField;
 
-public class DataTab extends JTable{
+public class DataTab extends JScrollPane{
 	private static final long serialVersionUID = 1L;
-
-
+	
 	
 	public DataTab(Data data){
-		this.setDefaultRenderer(DataField.class, new DataRenderer());
+		super(new DataTable(data));
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }
