@@ -36,17 +36,19 @@ public interface Function {
 	
 	public List<DataField> getOptionalFields();
 	
+	public boolean isProgressTrackable();
+	public int getProgressLength(FunctionParam params);
+	public void addProgressListener(FunctionListener listener);
+	public void removeProgressListener(FunctionListener listener);
+	
 	/**
 	 * This method defines the core behavior of this function. It takes two Data arrays, one specifying the required
 	 * Data arguments and one specifying the optional Data arguments. The class of each Data object will
 	 * match the class specified for that index by the getRequiredDataArgs or getOptionalDataArgs methods. For the optional args, 
 	 * args that are not specified will have a value of null. This should never return null. It should throw an exception
 	 * instead.
-	 * @param requiredData - Data array specifying the required Data arguments
-	 * @param optionalData - Data array specifying the optional Data arguments, elements of null mean none specified.
-	 * @param requiredFields - DataField array specifying the required fields arguments
-	 * @param optionalFields - DataFields array specifying the optional fields arguments, elements of null mean none specified
+	 * @param params - A FunctionParam object containing the arguments for this function
 	 * @return a Data object that is the result of this function's processing
 	 */
-	public Data run(List<Data> requiredData, List<Data> optionalData, List<DataField> requiredFields, List<DataField> optionalFields) throws Exception;
+	public Data run(FunctionParam params) throws Exception;
 }

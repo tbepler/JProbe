@@ -9,6 +9,7 @@ import org.osgi.framework.Bundle;
 
 import jprobe.services.Data;
 import jprobe.services.Function;
+import jprobe.services.FunctionParam;
 import jprobe.services.JProbeCore;
 
 public class FunctionMenuItem extends JMenuItem implements ActionListener{
@@ -33,7 +34,7 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 		//code for executing function here
 		System.out.println(function.getName()+" clicked");
 		try {
-			Data d = function.run(null, null, null, null);
+			Data d = function.run(new FunctionParam(null, null, null, null));
 			core.addData(d, bundle);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
