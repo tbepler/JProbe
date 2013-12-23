@@ -7,6 +7,8 @@ import java.util.List;
 import jprobe.services.Data;
 import jprobe.services.DataField;
 import jprobe.services.Function;
+import jprobe.services.FunctionListener;
+import jprobe.services.FunctionParam;
 
 public class TestFunction implements Function{
 	
@@ -46,10 +48,32 @@ public class TestFunction implements Function{
 	}
 
 	@Override
-	public Data run(List<Data> requiredData, List<Data> optionalData,
-			List<DataField> requiredFields, List<DataField> optionalFields)
-			throws Exception {
+	public Data run(FunctionParam params) throws Exception {
 		return new TestData();
+	}
+
+	@Override
+	public boolean isProgressTrackable() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int getProgressLength(FunctionParam params) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void addProgressListener(FunctionListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeProgressListener(FunctionListener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
