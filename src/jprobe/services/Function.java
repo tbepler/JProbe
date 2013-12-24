@@ -38,8 +38,8 @@ public interface Function {
 	
 	public boolean isProgressTrackable();
 	public int getProgressLength(FunctionParam params);
-	public void addProgressListener(FunctionListener listener);
-	public void removeProgressListener(FunctionListener listener);
+	public void addListener(FunctionListener listener);
+	public void removeListener(FunctionListener listener);
 	
 	/**
 	 * This method defines the core behavior of this function. It takes two Data arrays, one specifying the required

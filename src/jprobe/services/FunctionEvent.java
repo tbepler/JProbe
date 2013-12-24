@@ -9,16 +9,16 @@ public class FunctionEvent {
 	}
 	
 	private Type type;
-	private Object source;
+	private Function source;
 	private int progress;
 	
-	public FunctionEvent(Object source, Type type){
+	public FunctionEvent(Function source, Type type){
 		this.type = type;
 		this.source = source;
 		this.progress = 0;
 	}
 	
-	public FunctionEvent(Object source, Type type, int progress){
+	public FunctionEvent(Function source, Type type, int progress){
 		this(source, type);
 		this.progress = progress;
 	}
@@ -31,7 +31,7 @@ public class FunctionEvent {
 		return type;
 	}
 	
-	public Object getSource(){
+	public Function getSource(){
 		return source;
 	}
 	

@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 
+import org.osgi.framework.Bundle;
+
 import jprobe.services.Data;
 import jprobe.services.DataField;
 import jprobe.services.Function;
@@ -16,126 +18,118 @@ import jprobe.services.FunctionParam;
 import jprobe.services.JProbeCore;
 import jprobe.services.FunctionListener;
 
-public class SwingFunctionExecutor implements PropertyChangeListener, FunctionExecutor{
+public class SwingFunctionExecutor extends FunctionExecutor implements PropertyChangeListener{
 	
-	private Function function;
-	private FunctionThread thread;
-	private JProbeCore core;
-	private boolean done;
+	public static final int PROGRESS_BOUND = 100;
 	
-	public SwingFunctionExecutor(Function function, JProbeCore core){
-		this.function = function;
-		this.core = core;
-		this.thread = null;
-		this.done = false;
-	}
-	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#execute(jprobe.services.FunctionParam)
-	 */
-	@Override
-	public void execute(FunctionParam params){
-		thread = new FunctionThread(function, params);
-		thread.addPropertyChangeListener(this);
-		thread.execute();	
-	}
-	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#getResult()
-	 */
-	@Override
-	public Data getResult(){
-		if(this.isDone()){
-			try {
-				return (Data) thread.get();
-			} catch (Exception e){
-				//proceed
+	class FunctionThread extends SwingWorker<Data, Data> implements FunctionListener{
+		
+		private Function function;
+		private FunctionParam params;
+		private int maxProgress = PROGRESS_BOUND;
+		
+		FunctionThread(Function function, FunctionParam params){
+			this.function = function;
+			this.params = params;
+			this.function.addListener(this);
+			maxProgress = function.getProgressLength(params);
+		}
+		
+		@Override
+		public void update(FunctionEvent event) {
+			switch(event.getType()){
+			case UPDATE:
+				this.setProgress(event.getProgress()*maxProgress/PROGRESS_BOUND);
+				break;
+			default:
+				break;
 			}
 		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#isDone()
-	 */
-	@Override
-	public boolean isDone(){
-		return done;
-	}
-	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#isCancelled()
-	 */
-	@Override
-	public boolean isCancelled(){
-		if(thread != null){
-			return thread.isCancelled();
+		
+		@Override
+		protected void done(){
+			if(this.isCancelled()){
+				setCancelled();
+				return;
+			}
+			try{
+				setResults(this.get());
+				setComplete();
+			} catch (Exception ignore){
+				
+			}
 		}
-		return false;
-	}
-	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#getProgress()
-	 */
-	@Override
-	public int getProgress(){
-		if(thread != null){
-			return thread.getProgress();
-		}
-		return 0;
-	}
-	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#getFunctionName()
-	 */
-	@Override
-	public String getFunctionName(){
-		return function.getName();
-	}
-	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#getFunctionDescription()
-	 */
-	@Override
-	public String getFunctionDescription(){
-		return function.getDescription();
-	}
 
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#getRequiredDataArgs()
-	 */
-	@Override
-	public List<Class<? extends Data>> getRequiredDataArgs(){
-		return function.getRequiredDataArgs();
+		@Override
+		protected Data doInBackground() throws Exception {
+			return function.run(params);
+		}
+		
 	}
 	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#getOptionalDataArgs()
-	 */
-	@Override
-	public List<Class<? extends Data>> getOptionalDataArgs(){
-		return function.getOptionalDataArgs();
+	private boolean completed;
+	private boolean cancelled;
+	private Bundle bundle;
+	private JProbeCore core;
+	private Data result;
+	private FunctionThread thread;
+
+	public SwingFunctionExecutor(Function function, FunctionParam params, JProbeCore core, Bundle bundle) {
+		super(function, params);
+		this.core = core;
+		this.bundle = bundle;
+		this.completed = false;
+		this.cancelled = false;
+		this.result = null;
+		this.thread = null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#getRequiredFields()
-	 */
-	@Override
-	public List<DataField> getRequiredFields(){
-		return function.getRequiredFields();
+	private void setResults(Data data){
+		this.result = data;
+		core.addData(result, bundle);
 	}
 	
-	/* (non-Javadoc)
-	 * @see plugins.functions.gui.FunctionExecutorI#getOptionalFields()
-	 */
-	@Override
-	public List<DataField> getOptionalFields(){
-		return function.getOptionalFields();
+	private void setComplete(){
+		completed = true;
+		
+	}
+	
+	private void setCancelled(){
+		cancelled = true;
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		
+	}
+
+	@Override
+	public void execute() {
+		completed = false;
+		cancelled = false;
+		thread = new FunctionThread(this.getFunction(), this.getParams());
+	}
+
+	@Override
+	public boolean isComplete() {
+		return completed;
+	}
+
+	@Override
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
+	@Override
+	public void cancel() {
+		if(thread!=null){
+			thread.cancel(true);
+		}
+	}
+
+	@Override
+	public Data getResults() {
+		return result;
 	}
 	
 	

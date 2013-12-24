@@ -1,30 +1,47 @@
 package jprobe.services;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 
-public interface FunctionExecutor {
+public abstract class FunctionExecutor {
 
-	public void execute(FunctionParam params);
-
-	public Data getResult();
-
-	public boolean isDone();
-
-	public boolean isCancelled();
-
-	public int getProgress();
-
-	public String getFunctionName();
-
-	public String getFunctionDescription();
-
-	public List<Class<? extends Data>> getRequiredDataArgs();
-
-	public List<Class<? extends Data>> getOptionalDataArgs();
-
-	public List<DataField> getRequiredFields();
-
-	public List<DataField> getOptionalFields();
+	private Function function;
+	private FunctionParam params;
+	private Collection<ExecutionListener> listeners;
+	
+	public FunctionExecutor(Function function, FunctionParam params){
+		this.function = function;
+		this.params = params;
+		listeners = new HashSet<ExecutionListener>();
+	}
+	
+	public abstract void execute();
+	public abstract boolean isComplete();
+	public abstract boolean isCancelled();
+	public abstract void cancel();
+	public abstract Data getResults();
+	
+	public void addListener(ExecutionListener listener){
+		listeners.add(listener);
+	}
+	
+	public void removeListener(ExecutionListener listener){
+		listeners.remove(listener);
+	}
+	
+	protected void notifyListeners(ExecutionEvent event){
+		for(ExecutionListener l : listeners){
+			l.update(event);
+		}
+	}
+	
+	protected FunctionParam getParams(){
+		return params;
+	}
+	
+	protected Function getFunction(){
+		return function;
+	}
 
 }
