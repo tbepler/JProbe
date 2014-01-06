@@ -7,6 +7,8 @@ import java.util.Collection;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 
+import jprobe.log.Log;
+
 import org.osgi.framework.Bundle;
 
 public interface JProbeCore {
@@ -15,6 +17,8 @@ public interface JProbeCore {
 	public void removeCoreListener(CoreListener listener);
 	
 	public void shutdown();
+	
+	public Log getLog();
 	
 	public void addSaveable(Saveable add);
 	public void removeSaveable(Saveable remove);

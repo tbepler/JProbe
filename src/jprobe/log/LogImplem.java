@@ -15,15 +15,20 @@ public class LogImplem implements Log{
 	private Calendar calendar;
 	private BufferedWriter writer;
 	
-	public LogImplem(File log) throws IOException{
+	public LogImplem(File log){
 		calendar = new GregorianCalendar(TimeZone.getDefault());
-		writer = new BufferedWriter(new FileWriter(log));
+		try {
+			writer = new BufferedWriter(new FileWriter(log));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
-	public void write(Bundle bundle, String output) {
+	public void write(Bundle bundle, String message) {
 		try {
-			writer.write("<"+calendar.getTime()+"><"+bundle.getSymbolicName()+">"+ output);
+			writer.write("<"+calendar.getTime()+"><"+bundle.getSymbolicName()+">"+ message);
 			writer.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

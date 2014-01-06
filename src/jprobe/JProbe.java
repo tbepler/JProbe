@@ -16,6 +16,8 @@ import java.util.Scanner;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 
+import jprobe.log.Log;
+import jprobe.log.LogImplem;
 import jprobe.services.CoreListener;
 import jprobe.services.Data;
 import jprobe.services.DataReader;
@@ -34,13 +36,17 @@ import org.osgi.framework.Constants;
 
 public class JProbe implements JProbeCore{
 	
+	private static final String LOG_FILE = "jprobe.log";
+	
 	//private JProbeGUIFrame frame;
 	private DataManager dataManager;
 	private FunctionManager functionManager;
 	private JProbeActivator activator;
 	private Felix felix;
+	private Log log;
 	
 	public JProbe(){
+		log = new LogImplem(new File(LOG_FILE));
 		dataManager = new DataManager(this);
 		functionManager = new FunctionManager(this);
 		//frame = new JProbeGUIFrame(this, "JProbe");
@@ -73,6 +79,10 @@ public class JProbe implements JProbeCore{
 		}
 		//frame.pack();
 		//frame.setVisible(true);
+	}
+	
+	public Log getLog(){
+		return log;
 	}
 	
 	@Override

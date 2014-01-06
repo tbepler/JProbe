@@ -65,13 +65,13 @@ public class TestFunction implements Function{
 	}
 
 	@Override
-	public void addProgressListener(FunctionListener listener) {
+	public void addListener(FunctionListener listener) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void removeProgressListener(FunctionListener listener) {
+	public void removeListener(FunctionListener listener) {
 		// TODO Auto-generated method stub
 		
 	}
