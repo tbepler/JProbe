@@ -10,39 +10,43 @@ import org.osgi.framework.Bundle;
 
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
+import jprobe.services.DataManager;
 import jprobe.services.Function;
+import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 
 public class FunctionMenu extends JMenu implements CoreListener{
 	private static final long serialVersionUID = 1L;
 	
-	private JProbeCore core;
+	private FunctionManager functionManager;
+	private DataManager dataManager;
 	private Bundle bundle;
 	private Map<Function, JMenuItem> items;
 	
-	public FunctionMenu(JProbeCore core, Bundle bundle){
+	public FunctionMenu(FunctionManager functionManager, DataManager dataManager, Bundle bundle){
 		super("Functions");
-		this.core = core;
+		this.functionManager = functionManager;
+		this.dataManager = dataManager;
 		this.bundle = bundle;
 		items = new HashMap<Function, JMenuItem>();
-		for(Function f : core.getAllFunctions()){
-			items.put(f, new FunctionMenuItem(core, bundle, f));
+		for(Function f : functionManager.getAllFunctions()){
+			items.put(f, new FunctionMenuItem(dataManager, bundle, f));
 			this.add(items.get(f));
 		}
-		this.core.addCoreListener(this);
+		this.functionManager.addListener(this);
 		this.setVisible(true);
 		this.setEnabled(true);
 	}
 	
 	void cleanup(){
-		core.removeCoreListener(this);
+		functionManager.removeListener(this);
 	}
 
 	@Override
 	public void update(CoreEvent event) {
 		if(event.type() == CoreEvent.Type.FUNCTION_ADDED){
 			Function f = event.getFunction();
-			items.put(f, new FunctionMenuItem(core, bundle, f));
+			items.put(f, new FunctionMenuItem(dataManager, bundle, f));
 			this.add(items.get(f));
 			this.revalidate();
 		}

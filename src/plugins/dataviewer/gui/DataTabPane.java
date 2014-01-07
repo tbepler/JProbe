@@ -13,6 +13,7 @@ import plugins.dataviewer.gui.table.DataTable;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.Data;
+import jprobe.services.DataManager;
 import jprobe.services.JProbeCore;
 
 public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer{
@@ -20,14 +21,14 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	
 	public static final Dimension PREFERRED = new Dimension(800, 800);
 	
-	private JProbeCore core;
+	private DataManager dataManager;
 	private Map<Data, DataTab> tabs;
 	private GridBagConstraints constraints;
 	
-	public DataTabPane(JProbeCore core){
+	public DataTabPane(DataManager dataManager){
 		super();
 		this.setPreferredSize(PREFERRED);
-		this.core = core;
+		this.dataManager = dataManager;
 		constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.weightx = 0.7;
@@ -35,11 +36,11 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 		constraints.gridheight = GridBagConstraints.REMAINDER;
 		constraints.gridwidth = 3;
 		tabs = new HashMap<Data, DataTab>();
-		core.addCoreListener(this);
-		for(Data d : core.getData()){
+		dataManager.addListener(this);
+		for(Data d : dataManager.getAllData()){
 			DataTab tab = new  DataTab(d);
 			tabs.put(d, tab);
-			this.addTab(core.getName(d), tab);
+			this.addTab(dataManager.getDataName(d), tab);
 		}
 		this.revalidate();
 	}
@@ -52,7 +53,7 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	public void displayData(Data data) {
 		DataTab tab = new DataTab(data);
 		tabs.put(data, tab);
-		this.addTab(core.getName(data), tab);
+		this.addTab(dataManager.getDataName(data), tab);
 		this.revalidate();
 	}
 
@@ -64,7 +65,7 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	}
 	
 	void cleanup(){
-		core.removeCoreListener(this);
+		dataManager.removeListener(this);
 	}
 	
 	@Override
@@ -76,7 +77,7 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 			closeData(event.getData());
 		}
 		if(event.type() == CoreEvent.Type.DATA_NAME_CHANGE){
-			this.setTitleAt(this.indexOfComponent(tabs.get(event.getData())), core.getName(event.getData()));
+			this.setTitleAt(this.indexOfComponent(tabs.get(event.getData())), dataManager.getDataName(event.getData()));
 		}
 	}
 

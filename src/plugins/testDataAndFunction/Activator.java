@@ -16,13 +16,13 @@ public class Activator implements BundleActivator{
 	public void start(BundleContext context) throws Exception {
 		ServiceReference ref = context.getServiceReference(JProbeCore.class);
 		core = (JProbeCore) context.getService(ref);
-		core.addFunction(fun, context.getBundle());
+		core.getFunctionManager().addFunction(fun, context.getBundle());
 		System.out.println("Started test data and function plugin");
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		core.removeFunction(fun, context.getBundle());
+		core.getFunctionManager().removeFunction(fun, context.getBundle());
 	}
 
 }

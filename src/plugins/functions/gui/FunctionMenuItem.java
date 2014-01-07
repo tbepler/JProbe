@@ -8,6 +8,7 @@ import javax.swing.JMenuItem;
 import org.osgi.framework.Bundle;
 
 import jprobe.services.Data;
+import jprobe.services.DataManager;
 import jprobe.services.Function;
 import jprobe.services.FunctionParam;
 import jprobe.services.JProbeCore;
@@ -16,12 +17,12 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	
 	private Function function;
-	private JProbeCore core;
+	private DataManager dataManager;
 	private Bundle bundle;
 	
-	public FunctionMenuItem(JProbeCore core, Bundle bundle, Function function){
+	public FunctionMenuItem(DataManager dataManager, Bundle bundle, Function function){
 		super(function.getName());
-		this.core = core;
+		this.dataManager = dataManager;
 		this.bundle = bundle;
 		this.function = function;
 		this.setEnabled(true);
@@ -35,7 +36,7 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 		System.out.println(function.getName()+" clicked");
 		try {
 			Data d = function.run(new FunctionParam(null, null, null, null));
-			core.addData(d, bundle);
+			dataManager.addData(d, bundle);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -86,11 +86,13 @@ public class CoreFunctionManager implements FunctionManager{
 		}
 	}
 	
-	void addListener(CoreListener listener){
+	@Override
+	public void addListener(CoreListener listener){
 		this.listeners.add(listener);
 	}
 	
-	void removeListener(CoreListener listener){
+	@Override
+	public void removeListener(CoreListener listener){
 		this.listeners.remove(listener);
 	}
 	

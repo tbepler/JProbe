@@ -51,11 +51,13 @@ public class CoreDataManager implements DataManager{
 		writerToType = new HashMap<DataWriter, Class<? extends Data>>();
 	}
 	
-	void addListener(CoreListener listener){
+	@Override
+	public void addListener(CoreListener listener){
 		listeners.add(listener);
 	}
 	
-	void removeListener(CoreListener listener){
+	@Override
+	public void removeListener(CoreListener listener){
 		listeners.remove(listener);
 	}
 	

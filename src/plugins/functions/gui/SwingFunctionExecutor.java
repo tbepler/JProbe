@@ -11,6 +11,7 @@ import org.osgi.framework.Bundle;
 
 import jprobe.services.Data;
 import jprobe.services.DataField;
+import jprobe.services.DataManager;
 import jprobe.services.Function;
 import jprobe.services.FunctionEvent;
 import jprobe.services.FunctionExecutor;
@@ -70,13 +71,13 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	private boolean completed;
 	private boolean cancelled;
 	private Bundle bundle;
-	private JProbeCore core;
+	private DataManager dataManager;
 	private Data result;
 	private FunctionThread thread;
 
-	public SwingFunctionExecutor(Function function, FunctionParam params, JProbeCore core, Bundle bundle) {
+	public SwingFunctionExecutor(Function function, FunctionParam params, DataManager dataManager, Bundle bundle) {
 		super(function, params);
-		this.core = core;
+		this.dataManager = dataManager;
 		this.bundle = bundle;
 		this.completed = false;
 		this.cancelled = false;
@@ -86,7 +87,7 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	
 	private void setResults(Data data){
 		this.result = data;
-		core.addData(result, bundle);
+		dataManager.addData(result, bundle);
 	}
 	
 	private void setComplete(){

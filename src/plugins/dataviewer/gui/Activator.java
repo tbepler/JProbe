@@ -37,7 +37,7 @@ public class Activator implements BundleActivator{
 	};
 	
 	private void initTabPane(){
-		tabPane = new DataTabPane(core);
+		tabPane = new DataTabPane(core.getDataManager());
 		gui.addComponent(tabPane, tabPane.getGridBagConstraints(), bc.getBundle());
 		System.out.println("DataViewer started");
 	}
