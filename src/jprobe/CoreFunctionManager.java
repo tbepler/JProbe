@@ -15,9 +15,10 @@ import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.CoreListener;
 import jprobe.services.Function;
+import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 
-public class FunctionManager {
+public class CoreFunctionManager implements FunctionManager{
 	
 	private JProbeCore core;
 	private Collection<CoreListener> listeners;
@@ -25,7 +26,7 @@ public class FunctionManager {
 	private Collection<Function> functions;
 	private Map<String, List<Function>> functionsByName;
 	
-	public FunctionManager(JProbeCore core){
+	public CoreFunctionManager(JProbeCore core){
 		this.core = core;
 		listeners = new HashSet<CoreListener>();
 		functions = new PriorityQueue<Function>(10, new Comparator<Function>(){
@@ -37,10 +38,12 @@ public class FunctionManager {
 		functionsByName = new HashMap<String, List<Function>>();
 	}
 	
+	@Override
 	public Function[] getAllFunctions(){
 		return functions.toArray(new Function[functions.size()]);
 	}
 	
+	@Override
 	public Function[] getFunctions(String name){
 		if(functionsByName.containsKey(name)){
 			List<Function> list = functionsByName.get(name);
@@ -49,10 +52,12 @@ public class FunctionManager {
 		return new Function[]{};
 	}
 	
+	@Override
 	public String[] getFunctionNames(){
 		return functionsByName.keySet().toArray(new String[functionsByName.size()]);
 	}
 	
+	@Override
 	public void addFunction(Function f, Bundle responsible){
 		if(!functions.contains(f)){
 			functions.add(f);
@@ -67,6 +72,7 @@ public class FunctionManager {
 		}
 	}
 	
+	@Override
 	public void removeFunction(Function f, Bundle responsible){
 		if(functions.remove(f)){
 			functionsByName.get(f.getName()).remove(f);
@@ -80,11 +86,11 @@ public class FunctionManager {
 		}
 	}
 	
-	public void addListener(CoreListener listener){
+	void addListener(CoreListener listener){
 		this.listeners.add(listener);
 	}
 	
-	public void removeListener(CoreListener listener){
+	void removeListener(CoreListener listener){
 		this.listeners.remove(listener);
 	}
 	

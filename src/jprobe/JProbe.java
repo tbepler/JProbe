@@ -16,13 +16,16 @@ import java.util.Scanner;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 
+import jprobe.error.ErrorHandler;
 import jprobe.log.Log;
 import jprobe.log.LogImplem;
 import jprobe.services.CoreListener;
 import jprobe.services.Data;
+import jprobe.services.DataManager;
 import jprobe.services.DataReader;
 import jprobe.services.DataWriter;
 import jprobe.services.Function;
+import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 import jprobe.services.Saveable;
 
@@ -39,16 +42,17 @@ public class JProbe implements JProbeCore{
 	private static final String LOG_FILE = "jprobe.log";
 	
 	//private JProbeGUIFrame frame;
-	private DataManager dataManager;
-	private FunctionManager functionManager;
+	private CoreDataManager dataManager;
+	private CoreFunctionManager functionManager;
+	private CoreErrorHandler errorHandler;
 	private JProbeActivator activator;
 	private Felix felix;
 	private Log log;
 	
 	public JProbe(){
 		log = new LogImplem(new File(LOG_FILE));
-		dataManager = new DataManager(this);
-		functionManager = new FunctionManager(this);
+		dataManager = new CoreDataManager(this);
+		functionManager = new CoreFunctionManager(this);
 		//frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map config = new HashMap();
@@ -70,6 +74,7 @@ public class JProbe implements JProbeCore{
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, "plugins");
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
 			felix.init();
+			errorHandler = new CoreErrorHandler(felix.getBundleContext(), log);
 			AutoProcessor.process(props, felix.getBundleContext());
 			//start the felix instance
 			felix.start();
@@ -115,144 +120,7 @@ public class JProbe implements JProbeCore{
 		functionManager.removeListener(listener);
 	}
 
-	@Override
-	public void addFunction(Function f, Bundle responsible) {
-		functionManager.addFunction(f, responsible);
-	}
 
-	@Override
-	public void removeFunction(Function f, Bundle responsible) {
-		functionManager.removeFunction(f, responsible);
-	}
-
-	@Override
-	public Function[] getAllFunctions() {
-		return functionManager.getAllFunctions();
-	}
-	
-	@Override
-	public Function[] getFunctions(String name){
-		return functionManager.getFunctions(name);
-	}
-	
-	@Override
-	public String[] getFunctionNames(){
-		return functionManager.getFunctionNames();
-	}
-
-	@Override
-	public void addDataReader(Class<? extends Data> read, DataReader reader, Bundle responsible) {
-		dataManager.addDataReader(read, reader, responsible);
-	}
-
-	@Override
-	public void removeDataReader(DataReader reader, Bundle responsible) {
-		dataManager.removeDataReader(reader, responsible);
-	}
-
-	@Override
-	public Collection<Class<? extends Data>> getReadableDataClasses() {
-		return dataManager.getReadableDataTypes();
-	}
-
-	@Override
-	public String[] getValidReadFormats(Class<? extends Data> dataClass) {
-		DataReader reader = dataManager.getReader(dataClass);
-		Map<String, String[]> formats = reader.getValidReadFormats();
-		return formats.keySet().toArray(new String[formats.size()]);
-	}
-
-	@Override
-	public void addDataWriter(Class<? extends Data> write, DataWriter writer, Bundle responsible) {
-		dataManager.addDataWriter(write, writer, responsible);
-	}
-
-	@Override
-	public void removeDataWriter(DataWriter writer, Bundle responsible) {
-		dataManager.removeDataWriter(writer, responsible);
-	}
-
-	@Override
-	public Collection<Class<? extends Data>> getWritableDataClasses() {
-		return dataManager.getWritableDataTypes();
-	}
-
-	@Override
-	public String[] getValidWriteFormats(Class<? extends Data> dataClass) {
-		DataWriter writer = dataManager.getWriter(dataClass);
-		Map<String, String[]> formats = writer.getValidWriteFormats();
-		return formats.keySet().toArray(new String[formats.size()]);
-	}
-
-	@Override
-	public void addData(Data data, Bundle responsible) {
-		dataManager.addData(data, responsible);
-	}
-
-	@Override
-	public void removeData(Data data, Bundle responsible) {
-		dataManager.removeData(data, responsible);
-	}
-
-	@Override
-	public Data readData(File file, Class<? extends Data> type, String format, Bundle responsible) throws Exception {
-		if(!dataManager.isReadable(type)){
-			throw new Exception("Error: "+type+" not readable");
-		}
-		DataReader reader = dataManager.getReader(type);
-		try{
-			Data read = reader.read(format, new Scanner(file));
-			dataManager.addData(read, responsible);
-			return read;
-		} catch(Exception e){
-			throw e;
-		}
-	}
-
-	@Override
-	public void writeData(File file, Data data, String format) throws Exception {
-		if(!dataManager.isWritable(data.getClass())){
-			throw new Exception("Error: "+data.getClass()+" not writable");
-		}
-		DataWriter writer = dataManager.getWriter(data.getClass());
-		try{
-			writer.write(data, format, new BufferedWriter(new FileWriter(file)));
-		} catch(Exception e){
-			throw e;
-		}
-	}
-
-	@Override
-	public Data[] getData() {
-		List<Data> data = dataManager.getAllData();
-		return data.toArray(new Data[data.size()]);
-	}
-	
-	@Override
-	public String[] getDataNames() {
-		return dataManager.getDataNames();
-	}
-
-	@Override
-	public void rename(Data data, String name, Bundle responsible) {
-		dataManager.rename(data, name, responsible);
-	}
-
-	@Override
-	public String getName(Data data) {
-		return dataManager.getDataName(data);
-	}
-
-	@Override
-	public Data getData(String name) {
-		return dataManager.getData(name);
-	}
-	
-	@Override
-	public Data[] getData(Class<? extends Data> type){
-		List<Data> data = dataManager.getData(type);
-		return data.toArray(new Data[data.size()]);
-	}
 
 	@Override
 	public void addSaveable(Saveable add) {
@@ -264,6 +132,31 @@ public class JProbe implements JProbeCore{
 	public void removeSaveable(Saveable remove) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
+
+	@Override
+	public void addErrorHandler(ErrorHandler handler) {
+		errorHandler.addErrorHandler(handler);
+	}
+
+	@Override
+	public void removeErrorHandler(ErrorHandler handler) {
+		errorHandler.removeErrorHandler(handler);
+	}
+
+	@Override
+	public DataManager getDataManager() {
+		return dataManager;
+	}
+
+	@Override
+	public FunctionManager getFunctionManager() {
+		return functionManager;
 	}
 
 

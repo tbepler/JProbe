@@ -1,8 +1,10 @@
 package jprobe.error;
 
+import org.osgi.framework.Bundle;
+
 public interface ErrorHandler {
 	
-	public void handleException(Exception e);
-	public void handleException(String message);
+	public void handleException(Bundle reporter, Exception e);
+	public void handleException(Bundle reporter, String message);
 	
 }

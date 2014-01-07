@@ -31,6 +31,10 @@ public class JProbeActivator implements BundleActivator{
 		this.context = null;
 	}
 	
+	public BundleContext getBundleContext(){
+		return context;
+	}
+	
 	public Bundle[] getBundles(){
 		if(context!=null){
 			return context.getBundles();

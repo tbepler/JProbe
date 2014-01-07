@@ -1,22 +1,28 @@
-package jprobe.error;
+package jprobe;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 
+import jprobe.error.ErrorHandler;
+import jprobe.log.Log;
+
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-public class HandlerServiceListener implements ServiceListener{
+public class CoreErrorHandler implements ErrorHandler, ServiceListener{
 	
 	private BundleContext context;
 	private Collection<ErrorHandler> handlers;
+	private Log log;
 	
-	public HandlerServiceListener(BundleContext context){
+	public CoreErrorHandler(BundleContext context, Log log){
 		this.context = context;
+		this.log = log;
 		handlers = new LinkedHashSet<ErrorHandler>();
+		context.addServiceListener(this);
 	}
 	
 	@Override
@@ -39,8 +45,28 @@ public class HandlerServiceListener implements ServiceListener{
 		}
 	}
 	
-	public Collection<ErrorHandler> getRegisteredErrorHandlers(){
-		return Collections.unmodifiableCollection(handlers);
+	void addErrorHandler(ErrorHandler handler){
+		handlers.add(handler);
+	}
+	
+	void removeErrorHandler(ErrorHandler handler){
+		handlers.remove(handler);
+	}
+
+	@Override
+	public void handleException(Bundle reporter, Exception e) {
+		log.write(reporter, "ERROR: "+e.getMessage());
+		for(ErrorHandler handler : handlers){
+			handler.handleException(reporter, e);
+		}
+	}
+
+	@Override
+	public void handleException(Bundle reporter, String message) {
+		log.write(reporter, "ERROR: "+message);
+		for(ErrorHandler handler : handlers){
+			handler.handleException(reporter, message);
+		}
 	}
 
 }
