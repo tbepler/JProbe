@@ -2,6 +2,7 @@ package plugins.dataviewer.gui;
 
 import java.util.Collection;
 
+import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
 
 import org.osgi.framework.BundleActivator;
@@ -37,9 +38,12 @@ public class Activator implements BundleActivator{
 	};
 	
 	private void initTabPane(){
-		tabPane = new DataTabPane(core.getDataManager());
+		tabPane = new DataTabPane(core.getDataManager(), core.getLog());
 		gui.addComponent(tabPane, tabPane.getGridBagConstraints(), bc.getBundle());
-		System.out.println("DataViewer started");
+		if(core.getDebugLevel() == Debug.FULL){
+			System.out.println("DataViewer started");
+		}
+		core.getLog().write(bc.getBundle(), "DataViewer started.");
 	}
 	
 	@Override

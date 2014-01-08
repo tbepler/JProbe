@@ -2,10 +2,10 @@ package plugins.dataviewer.gui.table;
 
 import javax.swing.table.AbstractTableModel;
 
-import jprobe.services.Data;
-import jprobe.services.DataEvent;
-import jprobe.services.DataField;
-import jprobe.services.DataListener;
+import jprobe.services.data.Data;
+import jprobe.services.data.DataEvent;
+import jprobe.services.data.DataField;
+import jprobe.services.data.DataListener;
 
 public class DataTableModel extends AbstractTableModel implements DataListener{
 	private static final long serialVersionUID = 1L;

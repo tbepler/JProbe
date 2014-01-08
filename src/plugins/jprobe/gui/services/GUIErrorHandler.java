@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 import org.osgi.framework.Bundle;
 
-import jprobe.services.error.ErrorHandler;
+import jprobe.services.ErrorHandler;
 
 public class GUIErrorHandler implements ErrorHandler{
 	

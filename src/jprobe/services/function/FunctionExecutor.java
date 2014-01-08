@@ -1,7 +1,9 @@
-package jprobe.services;
+package jprobe.services.function;
 
 import java.util.Collection;
 import java.util.HashSet;
+
+import jprobe.services.data.Data;
 
 
 public abstract class FunctionExecutor {

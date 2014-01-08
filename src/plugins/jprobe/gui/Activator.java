@@ -3,8 +3,8 @@ package plugins.jprobe.gui;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 
+import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
-import jprobe.services.error.ErrorHandler;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

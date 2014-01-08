@@ -1,8 +1,8 @@
 package plugins.testDataAndFunction;
 
-import jprobe.services.Data;
-import jprobe.services.DataField;
-import jprobe.services.DataListener;
+import jprobe.services.data.Data;
+import jprobe.services.data.DataField;
+import jprobe.services.data.DataListener;
 
 public class TestData implements Data{
 	

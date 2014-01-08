@@ -8,7 +8,7 @@ import javax.swing.text.*;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.text.DocumentFilter;
 
-import jprobe.services.DataField;
+import jprobe.services.data.DataField;
 
 public class DataFieldFormatter extends AbstractFormatter{
 	private static final long serialVersionUID = 1L;

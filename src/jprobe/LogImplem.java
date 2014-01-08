@@ -1,4 +1,4 @@
-package jprobe.log;
+package jprobe;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+
+import jprobe.services.Log;
 
 import org.osgi.framework.Bundle;
 

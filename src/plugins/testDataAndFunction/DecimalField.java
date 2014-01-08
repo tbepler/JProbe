@@ -1,6 +1,6 @@
 package plugins.testDataAndFunction;
 
-import jprobe.services.DoubleField;
+import jprobe.services.data.DoubleField;
 
 public class DecimalField extends DoubleField{
 	

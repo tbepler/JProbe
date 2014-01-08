@@ -1,4 +1,4 @@
-package jprobe;
+package jprobe.services;
 
 public enum Debug {
 	OFF,

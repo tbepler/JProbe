@@ -1,6 +1,6 @@
 package plugins.testDataAndFunction;
 
-import jprobe.services.IntegerField;
+import jprobe.services.data.IntegerField;
 
 public class IntField extends IntegerField{
 	

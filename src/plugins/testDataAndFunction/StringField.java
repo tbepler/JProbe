@@ -3,7 +3,7 @@ package plugins.testDataAndFunction;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
-import jprobe.services.DataField;
+import jprobe.services.data.DataField;
 
 public class StringField implements DataField{
 	

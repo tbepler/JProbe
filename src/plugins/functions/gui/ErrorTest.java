@@ -7,7 +7,7 @@ import javax.swing.JMenuItem;
 
 import org.osgi.framework.Bundle;
 
-import jprobe.services.error.ErrorHandler;
+import jprobe.services.ErrorHandler;
 
 public class ErrorTest extends JMenuItem implements ActionListener{
 	

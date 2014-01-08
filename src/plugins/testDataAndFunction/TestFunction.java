@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jprobe.services.Data;
-import jprobe.services.DataField;
-import jprobe.services.Function;
-import jprobe.services.FunctionListener;
-import jprobe.services.FunctionParam;
+import jprobe.services.data.Data;
+import jprobe.services.data.DataField;
+import jprobe.services.function.Function;
+import jprobe.services.function.FunctionListener;
+import jprobe.services.function.FunctionParam;
 
 public class TestFunction implements Function{
 	

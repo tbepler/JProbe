@@ -1,7 +1,8 @@
-package jprobe.services;
+package jprobe.services.data;
 
 import java.util.Map;
 import java.util.Scanner;
+
 
 public interface DataReader {
 	public Map<String, String[]> getValidReadFormats();

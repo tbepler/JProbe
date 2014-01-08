@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import jprobe.services.error.ErrorHandler;
-import jprobe.log.Log;
-import jprobe.log.LogImplem;
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
+import jprobe.services.Debug;
+import jprobe.services.ErrorHandler;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
+import jprobe.services.Log;
 import jprobe.services.Saveable;
 
 import org.apache.felix.framework.Felix;
@@ -43,7 +43,9 @@ public class JProbe implements JProbeCore{
 		//create felix config map
 		Map felixConfig = new HashMap();
 		//export the core service package
-		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0,jprobe.services.error;version=1.0.0");
+		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0," +
+				"jprobe.services.data;version=1.0.0," +
+				"jprobe.services.function;version=1.0.0");
 		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*");
 		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, config.getFelixStorageClean());
 		//create activator and add to config map
@@ -72,8 +74,14 @@ public class JProbe implements JProbeCore{
 		//frame.setVisible(true);
 	}
 	
+	@Override
 	public Log getLog(){
 		return log;
+	}
+	
+	@Override
+	public Debug getDebugLevel(){
+		return debugLevel;
 	}
 	
 	@Override
@@ -118,6 +126,16 @@ public class JProbe implements JProbeCore{
 	public void removeSaveable(Saveable remove) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void save(File toFile){
+		//TODO
+	}
+	
+	@Override
+	public void load(File fromFile){
+		//TODO
 	}
 
 	@Override

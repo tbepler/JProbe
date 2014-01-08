@@ -4,6 +4,10 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import jprobe.services.data.Data;
+import jprobe.services.data.DataReader;
+import jprobe.services.data.DataWriter;
+
 import org.osgi.framework.Bundle;
 
 public interface DataManager {

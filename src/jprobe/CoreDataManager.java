@@ -16,11 +16,11 @@ import org.osgi.framework.Bundle;
 
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
+import jprobe.services.data.Data;
+import jprobe.services.data.DataReader;
+import jprobe.services.data.DataWriter;
 import jprobe.services.CoreListener;
-import jprobe.services.Data;
 import jprobe.services.DataManager;
-import jprobe.services.DataReader;
-import jprobe.services.DataWriter;
 import jprobe.services.JProbeCore;
 
 public class CoreDataManager implements DataManager{

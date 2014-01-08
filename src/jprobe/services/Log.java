@@ -1,4 +1,4 @@
-package jprobe.log;
+package jprobe.services;
 
 import org.osgi.framework.Bundle;
 

@@ -9,15 +9,15 @@ import javax.swing.SwingWorker;
 
 import org.osgi.framework.Bundle;
 
-import jprobe.services.Data;
-import jprobe.services.DataField;
 import jprobe.services.DataManager;
-import jprobe.services.Function;
-import jprobe.services.FunctionEvent;
-import jprobe.services.FunctionExecutor;
-import jprobe.services.FunctionParam;
 import jprobe.services.JProbeCore;
-import jprobe.services.FunctionListener;
+import jprobe.services.data.Data;
+import jprobe.services.data.DataField;
+import jprobe.services.function.Function;
+import jprobe.services.function.FunctionEvent;
+import jprobe.services.function.FunctionExecutor;
+import jprobe.services.function.FunctionListener;
+import jprobe.services.function.FunctionParam;
 
 public class SwingFunctionExecutor extends FunctionExecutor implements PropertyChangeListener{
 	

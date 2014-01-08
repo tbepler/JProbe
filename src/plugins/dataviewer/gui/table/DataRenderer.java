@@ -6,9 +6,9 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import jprobe.services.DataField;
-import jprobe.services.DoubleField;
-import jprobe.services.IntegerField;
+import jprobe.services.data.DataField;
+import jprobe.services.data.DoubleField;
+import jprobe.services.data.IntegerField;
 
 class DataRenderer extends DefaultTableCellRenderer{
 	private static final long serialVersionUID = 1L;

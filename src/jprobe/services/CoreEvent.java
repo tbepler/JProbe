@@ -1,5 +1,8 @@
 package jprobe.services;
 
+import jprobe.services.data.Data;
+import jprobe.services.function.Function;
+
 import org.osgi.framework.Bundle;
 
 public class CoreEvent {

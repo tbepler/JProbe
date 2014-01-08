@@ -1,4 +1,5 @@
-package jprobe.services;
+package jprobe.services.data;
+
 
 public abstract class IntegerField implements DataField{
 	private static final long serialVersionUID = 1L;

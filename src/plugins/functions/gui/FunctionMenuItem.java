@@ -7,11 +7,11 @@ import javax.swing.JMenuItem;
 
 import org.osgi.framework.Bundle;
 
-import jprobe.services.Data;
 import jprobe.services.DataManager;
-import jprobe.services.Function;
-import jprobe.services.FunctionParam;
 import jprobe.services.JProbeCore;
+import jprobe.services.data.Data;
+import jprobe.services.function.Function;
+import jprobe.services.function.FunctionParam;
 
 public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	private static final long serialVersionUID = 1L;

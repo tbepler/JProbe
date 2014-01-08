@@ -1,5 +1,7 @@
 package jprobe.services;
 
+import jprobe.services.function.Function;
+
 import org.osgi.framework.Bundle;
 
 public interface FunctionManager {

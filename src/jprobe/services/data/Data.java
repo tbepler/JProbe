@@ -1,6 +1,7 @@
-package jprobe.services;
+package jprobe.services.data;
 
 import java.io.Serializable;
+
 
 
 public interface Data extends Serializable{

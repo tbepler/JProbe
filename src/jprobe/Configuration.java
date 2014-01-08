@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import jprobe.services.Debug;
+
 /**
  * This class is responsible for parsing the configuration file. The file should be formatted as:
  * <p>

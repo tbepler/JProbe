@@ -3,8 +3,8 @@ package jprobe;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import jprobe.services.error.ErrorHandler;
-import jprobe.log.Log;
+import jprobe.services.ErrorHandler;
+import jprobe.services.Log;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

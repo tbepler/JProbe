@@ -4,8 +4,8 @@ import javax.swing.JTable;
 
 import utils.TableFormatter;
 
-import jprobe.services.Data;
-import jprobe.services.DataField;
+import jprobe.services.data.Data;
+import jprobe.services.data.DataField;
 
 public class DataTable extends JTable{
 	private static final long serialVersionUID = 1L;

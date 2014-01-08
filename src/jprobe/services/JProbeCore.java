@@ -1,7 +1,7 @@
 package jprobe.services;
 
-import jprobe.services.error.ErrorHandler;
-import jprobe.log.Log;
+import java.io.File;
+
 
 public interface JProbeCore {
 	
@@ -12,12 +12,17 @@ public interface JProbeCore {
 	
 	public Log getLog();
 	
+	public Debug getDebugLevel();
+	
 	public ErrorHandler getErrorHandler();
 	public void addErrorHandler(ErrorHandler handler);
 	public void removeErrorHandler(ErrorHandler handler);
 	
 	public DataManager getDataManager();
 	public FunctionManager getFunctionManager();
+	
+	public void save(File toFile);
+	public void load(File fromFile);
 	
 	public void addSaveable(Saveable add);
 	public void removeSaveable(Saveable remove);

@@ -1,7 +1,7 @@
 package plugins.testDataAndFunction;
 
-import jprobe.services.Function;
 import jprobe.services.JProbeCore;
+import jprobe.services.function.Function;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

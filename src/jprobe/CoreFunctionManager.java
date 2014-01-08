@@ -13,8 +13,8 @@ import org.osgi.framework.Bundle;
 
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
+import jprobe.services.function.Function;
 import jprobe.services.CoreListener;
-import jprobe.services.Function;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 

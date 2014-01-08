@@ -15,9 +15,9 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.text.DefaultFormatter;
 
 import plugins.testDataAndFunction.DecimalField;
-import jprobe.services.DataField;
-import jprobe.services.DoubleField;
-import jprobe.services.IntegerField;
+import jprobe.services.data.DataField;
+import jprobe.services.data.DoubleField;
+import jprobe.services.data.IntegerField;
 
 public class DataCellEditor extends AbstractCellEditor implements TableCellEditor{
 	

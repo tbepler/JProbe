@@ -11,9 +11,9 @@ import org.osgi.framework.Bundle;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
-import jprobe.services.Function;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
+import jprobe.services.function.Function;
 
 public class FunctionMenu extends JMenu implements CoreListener{
 	private static final long serialVersionUID = 1L;

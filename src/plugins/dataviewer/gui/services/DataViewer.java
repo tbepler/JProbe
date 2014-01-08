@@ -1,6 +1,6 @@
 package plugins.dataviewer.gui.services;
 
-import jprobe.services.Data;
+import jprobe.services.data.Data;
 
 public interface DataViewer {
 	

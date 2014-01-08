@@ -1,7 +1,8 @@
-package jprobe.services;
+package jprobe.services.data;
 
 import java.io.BufferedWriter;
 import java.util.Map;
+
 
 public interface DataWriter {
 	

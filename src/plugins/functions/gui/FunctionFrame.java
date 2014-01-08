@@ -5,7 +5,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import jprobe.services.Function;
+import jprobe.services.function.Function;
 
 public class FunctionFrame extends JDialog{
 	

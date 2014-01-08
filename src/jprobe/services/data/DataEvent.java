@@ -1,4 +1,5 @@
-package jprobe.services;
+package jprobe.services.data;
+
 
 public class DataEvent {
 	
