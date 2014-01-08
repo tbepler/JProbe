@@ -18,35 +18,34 @@ import jprobe.services.JProbeCore;
 public class FunctionMenu extends JMenu implements CoreListener{
 	private static final long serialVersionUID = 1L;
 	
-	private FunctionManager functionManager;
-	private DataManager dataManager;
+	private JProbeCore core;
 	private Bundle bundle;
 	private Map<Function, JMenuItem> items;
 	
-	public FunctionMenu(FunctionManager functionManager, DataManager dataManager, Bundle bundle){
+	public FunctionMenu(JProbeCore core, Bundle bundle){
 		super("Functions");
-		this.functionManager = functionManager;
-		this.dataManager = dataManager;
+		this.core = core;
 		this.bundle = bundle;
 		items = new HashMap<Function, JMenuItem>();
-		for(Function f : functionManager.getAllFunctions()){
-			items.put(f, new FunctionMenuItem(dataManager, bundle, f));
+		for(Function f : core.getFunctionManager().getAllFunctions()){
+			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f));
 			this.add(items.get(f));
 		}
-		this.functionManager.addListener(this);
+		this.add(new ErrorTest(bundle, core.getErrorHandler()));
+		this.core.getFunctionManager().addListener(this);
 		this.setVisible(true);
 		this.setEnabled(true);
 	}
 	
 	void cleanup(){
-		functionManager.removeListener(this);
+		core.getFunctionManager().removeListener(this);
 	}
 
 	@Override
 	public void update(CoreEvent event) {
 		if(event.type() == CoreEvent.Type.FUNCTION_ADDED){
 			Function f = event.getFunction();
-			items.put(f, new FunctionMenuItem(dataManager, bundle, f));
+			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f));
 			this.add(items.get(f));
 			this.revalidate();
 		}

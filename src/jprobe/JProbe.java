@@ -1,30 +1,17 @@
 package jprobe;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Scanner;
 
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-
-import jprobe.error.ErrorHandler;
+import jprobe.services.error.ErrorHandler;
 import jprobe.log.Log;
 import jprobe.log.LogImplem;
 import jprobe.services.CoreListener;
-import jprobe.services.Data;
 import jprobe.services.DataManager;
-import jprobe.services.DataReader;
-import jprobe.services.DataWriter;
-import jprobe.services.Function;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 import jprobe.services.Saveable;
@@ -33,7 +20,6 @@ import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.main.AutoProcessor;
 import org.apache.felix.main.Main;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 
@@ -57,8 +43,8 @@ public class JProbe implements JProbeCore{
 		//create felix config map
 		Map config = new HashMap();
 		//export the core service package
-		config.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services; version=1.0.0");
-		config.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*,javax.swing.table");
+		config.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0,jprobe.services.error;version=1.0.0");
+		config.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*");
 		config.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, "onFirstInit");
 		//create activator and add to config map
 		activator = new JProbeActivator(this);

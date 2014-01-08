@@ -28,7 +28,7 @@ public class LogImplem implements Log{
 	@Override
 	public void write(Bundle bundle, String message) {
 		try {
-			writer.write("<"+calendar.getTime()+"><"+bundle.getSymbolicName()+">"+ message);
+			writer.write("<"+calendar.getTime()+"><"+bundle.getSymbolicName()+">"+ message+"\n");
 			writer.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -6,6 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: plugins.jprobe.gui.Activator
 Bundle-Vendor: Tristan Bepler
 Bundle-Localization: plugin
-Import-Package: org.osgi.framework,jprobe.services,javax.swing, plugins.jprobe.gui.services
+Import-Package: org.osgi.framework,jprobe.services,jprobe.services.*,javax.swing, plugins.jprobe.gui.services
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: plugins.jprobe.gui.services

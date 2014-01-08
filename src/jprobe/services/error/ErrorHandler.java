@@ -1,4 +1,4 @@
-package jprobe.error;
+package jprobe.services.error;
 
 import org.osgi.framework.Bundle;
 

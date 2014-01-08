@@ -36,7 +36,7 @@ public class Activator implements BundleActivator{
 	};
 	
 	private void initMenu(){
-		menu = new FunctionMenu(core.getFunctionManager(), core.getDataManager(), bc.getBundle());
+		menu = new FunctionMenu(core, bc.getBundle());
 		gui.addDropdownMenu(menu, bc.getBundle());
 		System.out.println("Function menu started");
 	}

@@ -1,6 +1,6 @@
 package jprobe.services;
 
-import jprobe.error.ErrorHandler;
+import jprobe.services.error.ErrorHandler;
 import jprobe.log.Log;
 
 public interface JProbeCore {
