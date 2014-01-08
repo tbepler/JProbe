@@ -25,39 +25,39 @@ import org.osgi.framework.Constants;
 
 public class JProbe implements JProbeCore{
 	
-	private static final String LOG_FILE = "jprobe.log";
-	
 	//private JProbeGUIFrame frame;
 	private CoreDataManager dataManager;
 	private CoreFunctionManager functionManager;
 	private CoreErrorHandler errorHandler;
 	private JProbeActivator activator;
+	private Debug debugLevel;
 	private Felix felix;
 	private Log log;
 	
-	public JProbe(){
-		log = new LogImplem(new File(LOG_FILE));
+	public JProbe(Configuration config){
+		log = new LogImplem(new File(config.getLogFile()));
 		dataManager = new CoreDataManager(this);
 		functionManager = new CoreFunctionManager(this);
+		debugLevel = config.getDebugLevel();
 		//frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
-		Map config = new HashMap();
+		Map felixConfig = new HashMap();
 		//export the core service package
-		config.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0,jprobe.services.error;version=1.0.0");
-		config.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*");
-		config.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, "onFirstInit");
+		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0,jprobe.services.error;version=1.0.0");
+		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*");
+		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, config.getFelixStorageClean());
 		//create activator and add to config map
 		activator = new JProbeActivator(this);
 		List<BundleActivator> l = new ArrayList<BundleActivator>();
 		l.add(activator);
-		config.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, l);
+		felixConfig.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, l);
 		
 		try{
 			//create and instance of the felix framework using the config map
-			felix = new Felix(config);
+			felix = new Felix(felixConfig);
 			Properties props = new Properties();
 			Main.copySystemProperties(props);
-			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, "plugins");
+			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, config.getAutoDeployPluginDirectory());
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
 			felix.init();
 			errorHandler = new CoreErrorHandler(felix.getBundleContext(), log);
