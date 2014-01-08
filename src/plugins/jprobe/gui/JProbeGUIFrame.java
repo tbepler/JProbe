@@ -9,7 +9,11 @@ import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -38,14 +42,23 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private JProbeCore core;
 	private JPanel contentPane;
 	private JMenuBar menuBar;
+	private Queue<JMenu> pluginMenuItems;
 	private TabDialogueWindow preferencesWindow;
 	private TabDialogueWindow helpWindow;
+	private DialogueMenu preferencesMenu;
+	private DialogueMenu helpMenu;
 	private Collection<GUIListener> listeners;
 	
 	JProbeGUIFrame(JProbeCore core, String name, Bundle bundle){
 		super(name);
 		this.bundle = bundle;
 		this.core = core;
+		pluginMenuItems = new PriorityQueue<JMenu>(10, new Comparator<JMenu>(){
+			@Override
+			public int compare(JMenu arg0, JMenu arg1) {
+				return arg0.getName().compareTo(arg1.getName());
+			}
+		});
 		listeners = new HashSet<GUIListener>();
 		menuBar = new JMenuBar();
 		contentPane = new JPanel(new GridBagLayout());
@@ -64,10 +77,15 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 			}
 		});
 		this.setPreferredSize(INITSIZE);
+		this.pack();
+		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+		this.setLocation(center.x-this.getWidth()/2, center.y-this.getHeight()/2);
 		preferencesWindow = new TabDialogueWindow(this, "Preferences", true);
 		helpWindow = new TabDialogueWindow(this, "Help", true);
-		menuBar.add(new DialogueMenu("Preferences", preferencesWindow));
-		menuBar.add(new DialogueMenu("Help", helpWindow));
+		preferencesMenu = new DialogueMenu("Preferences", preferencesWindow);
+		menuBar.add(preferencesMenu);
+		helpMenu = new DialogueMenu("Help", helpWindow);
+		menuBar.add(helpMenu);
 	}
 	
 	@Override
@@ -111,12 +129,19 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	}
 	
 	public void addDropdownMenu(JMenu menu, Bundle responsible){
-		menuBar.add(menu);
+		pluginMenuItems.add(menu);
+		menuBar.removeAll();
+		for(JMenu m : pluginMenuItems){
+			menuBar.add(m);
+		}
+		menuBar.add(preferencesMenu);
+		menuBar.add(helpMenu);
 		menuBar.revalidate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.MENU_ADDED, responsible));
 	}
 	
 	public void removeDropdownMenu(JMenu menu, Bundle responsible){
+		pluginMenuItems.remove(menu);
 		menuBar.remove(menu);
 		menuBar.revalidate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.MENU_REMOVED, responsible));

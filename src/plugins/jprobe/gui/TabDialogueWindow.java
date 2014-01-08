@@ -15,8 +15,8 @@ public class TabDialogueWindow extends JDialog{
 		super(owner, title, modal);
 		tabPane = new JTabbedPane();
 		this.setContentPane(tabPane);
-		this.setLocationRelativeTo(owner);
 		this.pack();
+		this.setLocation(owner.getX()+owner.getWidth()/2-this.getWidth()/2, owner.getY()+owner.getHeight()/2-this.getHeight()/2);
 	}
 	
 	public void addTab(JComponent tab, String title){

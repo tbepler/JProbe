@@ -28,9 +28,6 @@ public class Activator implements BundleActivator{
 		gui = new JProbeGUIFrame(core, "JProbe", context.getBundle());
 		errorHandler = new GUIErrorHandler(gui);
 		context.registerService(ErrorHandler.class, errorHandler, null);
-		gui.pack();
-		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-		gui.setLocation(center.x-gui.getWidth()/2, center.y-gui.getHeight()/2);
 		gui.setVisible(true);
 		register = context.registerService(JProbeGUI.class, gui, null);
 	}
