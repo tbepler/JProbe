@@ -1,6 +1,7 @@
 package plugins.jprobe.gui;
 
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,6 +26,7 @@ import plugins.jprobe.gui.services.JProbeGUI;
 
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
+import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
 
 public class JProbeGUIFrame extends JFrame implements JProbeGUI{
@@ -32,13 +34,17 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	
 	public static final Dimension INITSIZE = new Dimension(800, 800);
 	
+	private Bundle bundle;
 	private JProbeCore core;
 	private JPanel contentPane;
 	private JMenuBar menuBar;
+	private TabDialogueWindow preferencesWindow;
+	private TabDialogueWindow helpWindow;
 	private Collection<GUIListener> listeners;
 	
-	JProbeGUIFrame(JProbeCore core, String name){
+	JProbeGUIFrame(JProbeCore core, String name, Bundle bundle){
 		super(name);
+		this.bundle = bundle;
 		this.core = core;
 		listeners = new HashSet<GUIListener>();
 		menuBar = new JMenuBar();
@@ -58,6 +64,10 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 			}
 		});
 		this.setPreferredSize(INITSIZE);
+		preferencesWindow = new TabDialogueWindow(this, "Preferences", true);
+		helpWindow = new TabDialogueWindow(this, "Help", true);
+		menuBar.add(new DialogueMenu("Preferences", preferencesWindow));
+		menuBar.add(new DialogueMenu("Help", helpWindow));
 	}
 	
 	@Override
@@ -73,6 +83,12 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private void notifyListeners(GUIEvent event){
 		for(GUIListener l : listeners){
 			l.update(event);
+		}
+	}
+	
+	private void checkDebugAndLog(String message){
+		if(core.getDebugLevel() == Debug.LOG || core.getDebugLevel() == Debug.FULL){
+			core.getLog().write(bundle, message);
 		}
 	}
 	
@@ -104,6 +120,35 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		menuBar.remove(menu);
 		menuBar.revalidate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.MENU_REMOVED, responsible));
+	}
+
+	@Override
+	public Frame getGUIFrame() {
+		return this;
+	}
+
+	@Override
+	public void addHelpTab(JComponent component, Bundle responsible) {
+		helpWindow.addTab(component, responsible.getSymbolicName());
+		checkDebugAndLog("Help tab "+component.toString()+" added by plugin: "+responsible.getSymbolicName());
+	}
+
+	@Override
+	public void removeHelpTab(JComponent component, Bundle responsible) {
+		helpWindow.removeTab(component);
+		checkDebugAndLog("Help tab "+component.toString()+" removed by plugin: "+responsible.getSymbolicName());
+	}
+
+	@Override
+	public void addPreferencesTab(JComponent component, Bundle responsible) {
+		preferencesWindow.addTab(component, responsible.getSymbolicName());
+		checkDebugAndLog("Preferences tab "+component.toString()+" added by plugin: "+responsible.getSymbolicName());
+	}
+
+	@Override
+	public void removePreferencesTab(JComponent component, Bundle responsible) {
+		preferencesWindow.removeTab(component);
+		checkDebugAndLog("Preferences tab "+component.toString()+" removed by plugin: "+responsible.getSymbolicName());
 	}
 	
 }

@@ -25,7 +25,7 @@ public class Activator implements BundleActivator{
 	public void start(BundleContext context) throws Exception {
 		ServiceReference ref = context.getServiceReference(JProbeCore.class);
 		core = (JProbeCore) context.getService(ref);
-		gui = new JProbeGUIFrame(core, "JProbe");
+		gui = new JProbeGUIFrame(core, "JProbe", context.getBundle());
 		errorHandler = new GUIErrorHandler(gui);
 		context.registerService(ErrorHandler.class, errorHandler, null);
 		gui.pack();
