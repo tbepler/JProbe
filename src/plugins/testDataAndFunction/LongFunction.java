@@ -78,7 +78,7 @@ public class LongFunction implements Function{
 		int progress = 0;
 		this.setProgress(progress);
 		while(progress<100){
-			Thread.sleep(500);
+			Thread.sleep(100);
 			this.setProgress(++progress);
 		}
 		return new TestData();

@@ -63,6 +63,7 @@ public class FunctionDialogHandler{
 			return dialog;
 		}else{
 			IndexedDialog dialog = new IndexedDialog(owner, title, modal, allDialogs.size());
+			dialog.setLocationRelativeTo(null);
 			allDialogs.add(dialog);
 			return dialog;
 		}

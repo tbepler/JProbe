@@ -76,7 +76,8 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	private DataManager dataManager;
 	private Data result;
 	private FunctionThread thread;
-	private ProgressMonitor monitor;
+	private ProgressWindow monitor;
+	//private ProgressMonitor monitor;
 
 	public SwingFunctionExecutor(Function function, FunctionParam params, DataManager dataManager, Bundle bundle) {
 		super(function, params);
@@ -95,21 +96,36 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	
 	private void setComplete(){
 		completed = true;
-		
+		if(monitor != null){
+			monitor.setVisible(false);
+		}
 	}
 	
 	private void setCancelled(){
 		cancelled = true;
+		if(monitor != null){
+			monitor.setVisible(false);
+		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		monitor.setProgress(thread.getProgress());
+		//monitor.setProgress(thread.getProgress());
+		monitor.setValue(thread.getProgress());
 	}
 
 	@Override
 	public void execute() {
-		this.monitor = new ProgressMonitor(null, thread.function.getName(), null, 0, PROGRESS_BOUND);
+		//this.monitor = new ProgressMonitor(null, thread.function.getName(), null, 0, PROGRESS_BOUND);
+		this.monitor = new ProgressWindow(thread.function.getName(), 0, PROGRESS_BOUND, new OnPress(){
+
+			@Override
+			public void act() {
+				thread.cancel(true);
+			}
+			
+		});
+		monitor.setVisible(true);
 		thread.addPropertyChangeListener(this);
 		thread.execute();
 	}
