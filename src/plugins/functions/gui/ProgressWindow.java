@@ -1,11 +1,16 @@
 package plugins.functions.gui;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -16,52 +21,74 @@ import javax.swing.SwingUtilities;
 
 public class ProgressWindow implements ActionListener{
 	
+	public static final long MILLISEC_BEFORE_DISPLAY = 2000;
+	
 	private JFrame frame;
 	private JProgressBar progressBar;
 	private JButton cancelButton;
 	private OnPress onCancel;
+	private boolean visible;
 	
-	public ProgressWindow(String title, int min, int max, OnPress onCancel){
+	public ProgressWindow(String title, int min, int max, final OnPress onCancel){
 		this.onCancel = onCancel;
 		frame = new JFrame(title);
-		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.PAGE_AXIS));
+		frame.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent event){
+				onCancel.act();
+				frame.dispose();
+			}
+		});
+		frame.getContentPane().setLayout(new GridBagLayout());
 		progressBar = new JProgressBar(min, max);
 		progressBar.setStringPainted(true);
 		cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(this);
-		progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
-		progressBar.setAlignmentY(Component.CENTER_ALIGNMENT);
-		cancelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		cancelButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		frame.add(progressBar);
-		frame.add(cancelButton);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(25, 50, 15, 50);
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		frame.add(progressBar, gbc);
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.anchor = GridBagConstraints.SOUTHEAST;
+		gbc.gridy = 2;
+		frame.add(cancelButton, gbc);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
+		visible = false;
 	}
 	
-	public void setVisible(boolean visible){
+	public void dispose(){
+		frame.dispose();
+	}
+	
+	private void setVisible(boolean visible){
 		frame.setVisible(visible);
+		this.visible = visible;
 	}
 	
-	public void setMax(int max){
-		progressBar.setMaximum(max);
-	}
-	
-	public int getMax(){
-		return progressBar.getMaximum();
-	}
-	
-	public void setMin(int min){
-		progressBar.setMinimum(min);
-	}
-	
-	public int getMin(){
-		return progressBar.getMinimum();
-	}
+	private long prevTime = -1;
 	
 	public void setValue(int value){
+		if(!visible){
+			if(prevTime < 0){
+				prevTime = System.currentTimeMillis();
+			}else{
+				long curTime = System.currentTimeMillis();
+				long approxTimeRequired = (progressBar.getMaximum()-progressBar.getValue())/(value-progressBar.getValue())
+					*(curTime - prevTime);
+				prevTime = curTime;
+				if(approxTimeRequired > MILLISEC_BEFORE_DISPLAY){
+					this.setVisible(true);
+				}
+			}
+		}
 		progressBar.setValue(value);
+		if(value >= progressBar.getMaximum()){
+			this.dispose();
+			return;
+		}
 	}
 	
 	public int getValue(){
@@ -71,7 +98,7 @@ public class ProgressWindow implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		onCancel.act();
-		frame.setVisible(false);
+		this.dispose();
 	}
 	
 }

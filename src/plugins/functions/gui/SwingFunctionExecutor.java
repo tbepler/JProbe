@@ -97,21 +97,25 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	private void setComplete(){
 		completed = true;
 		if(monitor != null){
-			monitor.setVisible(false);
+			monitor.dispose();
+			monitor = null;
 		}
 	}
 	
 	private void setCancelled(){
 		cancelled = true;
 		if(monitor != null){
-			monitor.setVisible(false);
+			monitor.dispose();
+			monitor = null;
 		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		//monitor.setProgress(thread.getProgress());
-		monitor.setValue(thread.getProgress());
+		if(monitor != null){
+			monitor.setValue(thread.getProgress());
+		}
 	}
 
 	@Override
@@ -125,7 +129,6 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 			}
 			
 		});
-		monitor.setVisible(true);
 		thread.addPropertyChangeListener(this);
 		thread.execute();
 	}
