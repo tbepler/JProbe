@@ -1,5 +1,6 @@
 package plugins.functions.gui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,6 +12,7 @@ import jprobe.services.DataManager;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.function.Function;
+import jprobe.services.function.FunctionExecutor;
 import jprobe.services.function.FunctionParam;
 
 public class FunctionMenuItem extends JMenuItem implements ActionListener{
@@ -35,8 +37,11 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 		//code for executing function here
 		System.out.println(function.getName()+" clicked");
 		try {
-			Data d = function.run(new FunctionParam(null, null, null, null));
-			dataManager.addData(d, bundle);
+			FunctionExecutor ex = new SwingFunctionExecutor(function, new FunctionParam(null, null, null, null), dataManager, bundle);
+			ex.execute();
+			
+			//Data d = function.run(new FunctionParam(null, null, null, null));
+			//dataManager.addData(d, bundle);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,10 +1,12 @@
 package plugins.functions.gui;
 
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 
 import org.osgi.framework.Bundle;
@@ -74,6 +76,7 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	private DataManager dataManager;
 	private Data result;
 	private FunctionThread thread;
+	private ProgressMonitor monitor;
 
 	public SwingFunctionExecutor(Function function, FunctionParam params, DataManager dataManager, Bundle bundle) {
 		super(function, params);
@@ -82,7 +85,7 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 		this.completed = false;
 		this.cancelled = false;
 		this.result = null;
-		this.thread = null;
+		this.thread = new FunctionThread(this.getFunction(), this.getParams());
 	}
 	
 	private void setResults(Data data){
@@ -101,14 +104,14 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		
+		monitor.setProgress(thread.getProgress());
 	}
 
 	@Override
 	public void execute() {
-		completed = false;
-		cancelled = false;
-		thread = new FunctionThread(this.getFunction(), this.getParams());
+		this.monitor = new ProgressMonitor(null, thread.function.getName(), null, 0, PROGRESS_BOUND);
+		thread.addPropertyChangeListener(this);
+		thread.execute();
 	}
 
 	@Override

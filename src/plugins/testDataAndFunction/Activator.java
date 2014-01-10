@@ -11,18 +11,21 @@ public class Activator implements BundleActivator{
 	
 	private JProbeCore core;
 	private Function fun = new TestFunction();
+	private Function longFun = new LongFunction();
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		ServiceReference ref = context.getServiceReference(JProbeCore.class);
 		core = (JProbeCore) context.getService(ref);
 		core.getFunctionManager().addFunction(fun, context.getBundle());
+		core.getFunctionManager().addFunction(longFun, context.getBundle());
 		System.out.println("Started test data and function plugin");
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		core.getFunctionManager().removeFunction(fun, context.getBundle());
+		core.getFunctionManager().removeFunction(longFun, context.getBundle());
 	}
 
 }

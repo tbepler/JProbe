@@ -1,0 +1,2 @@
+*Log needs to be statically accessible and thread safe so that Functions can write to the log
+*Debug level also needs to be statically accessible and thread safe, so does ErrorHandler
