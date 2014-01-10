@@ -22,13 +22,13 @@ public class FunctionMenu extends JMenu implements CoreListener{
 	private JProbeCore core;
 	private Bundle bundle;
 	private Map<Function, JMenuItem> items;
-	private FunctionDialog functionWindow;
+	private FunctionDialogHandler functionWindow;
 	
 	public FunctionMenu(Frame owner, JProbeCore core, Bundle bundle){
 		super("Functions");
 		this.core = core;
 		this.bundle = bundle;
-		this.functionWindow = new FunctionDialog(owner, "Select Args", true);
+		this.functionWindow = new FunctionDialogHandler(owner, false);
 		items = new HashMap<Function, JMenuItem>();
 		for(Function f : core.getFunctionManager().getAllFunctions()){
 			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f, functionWindow));

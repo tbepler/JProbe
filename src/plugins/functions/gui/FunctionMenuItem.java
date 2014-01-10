@@ -21,10 +21,10 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	private Function function;
 	private DataManager dataManager;
 	private Bundle bundle;
-	private FunctionDialog functionDialog;
+	private FunctionDialogHandler functionDialog;
 	private FunctionPanel functionPanel;
 	
-	public FunctionMenuItem(DataManager dataManager, Bundle bundle, Function function, FunctionDialog dialogWindow){
+	public FunctionMenuItem(DataManager dataManager, Bundle bundle, Function function, FunctionDialogHandler dialogWindow){
 		super(function.getName());
 		this.dataManager = dataManager;
 		this.bundle = bundle;

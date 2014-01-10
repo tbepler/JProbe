@@ -40,6 +40,10 @@ public class FunctionPanel extends JPanel implements ActionListener{
 		gbc.gridx = 2;
 		this.add(cancelButton, gbc);
 	}
+	
+	public String getTitle(){
+		return function.getName();
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
