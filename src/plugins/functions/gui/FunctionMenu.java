@@ -1,5 +1,6 @@
 package plugins.functions.gui;
 
+import java.awt.Frame;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,14 +22,16 @@ public class FunctionMenu extends JMenu implements CoreListener{
 	private JProbeCore core;
 	private Bundle bundle;
 	private Map<Function, JMenuItem> items;
+	private FunctionDialog functionWindow;
 	
-	public FunctionMenu(JProbeCore core, Bundle bundle){
+	public FunctionMenu(Frame owner, JProbeCore core, Bundle bundle){
 		super("Functions");
 		this.core = core;
 		this.bundle = bundle;
+		this.functionWindow = new FunctionDialog(owner, "Select Args", true);
 		items = new HashMap<Function, JMenuItem>();
 		for(Function f : core.getFunctionManager().getAllFunctions()){
-			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f));
+			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f, functionWindow));
 			this.add(items.get(f));
 		}
 		this.add(new ErrorTest(bundle, core.getErrorHandler()));
@@ -45,7 +48,7 @@ public class FunctionMenu extends JMenu implements CoreListener{
 	public void update(CoreEvent event) {
 		if(event.type() == CoreEvent.Type.FUNCTION_ADDED){
 			Function f = event.getFunction();
-			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f));
+			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f, functionWindow));
 			this.add(items.get(f));
 			this.revalidate();
 		}

@@ -21,12 +21,16 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	private Function function;
 	private DataManager dataManager;
 	private Bundle bundle;
+	private FunctionDialog functionDialog;
+	private FunctionPanel functionPanel;
 	
-	public FunctionMenuItem(DataManager dataManager, Bundle bundle, Function function){
+	public FunctionMenuItem(DataManager dataManager, Bundle bundle, Function function, FunctionDialog dialogWindow){
 		super(function.getName());
 		this.dataManager = dataManager;
 		this.bundle = bundle;
 		this.function = function;
+		this.functionDialog = dialogWindow;
+		this.functionPanel = new FunctionPanel(function, dataManager, bundle);
 		this.setEnabled(true);
 		this.setVisible(true);
 		this.setToolTipText(function.getDescription());
@@ -37,8 +41,10 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 		//code for executing function here
 		System.out.println(function.getName()+" clicked");
 		try {
-			FunctionExecutor ex = new SwingFunctionExecutor(function, new FunctionParam(null, null, null, null), dataManager, bundle);
-			ex.execute();
+			functionDialog.display(functionPanel);
+			
+			//FunctionExecutor ex = new SwingFunctionExecutor(function, new FunctionParam(null, null, null, null), dataManager, bundle);
+			//ex.execute();
 			
 			//Data d = function.run(new FunctionParam(null, null, null, null));
 			//dataManager.addData(d, bundle);
