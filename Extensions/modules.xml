@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <modules>
 	<module name="test_module" classpath="modules.TestModule">
 		<description>

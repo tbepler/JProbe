@@ -221,5 +221,46 @@
         <value xsi:nil="true"/>
       </defaultValue>
     </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_RIG98HydEeOrG4P8rw6P8w" name="errorManagers" visibility="private" type="_Nb0SYHydEeOrG4P8rw6P8w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RsCKYHydEeOrG4P8rw6P8w" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RsCxcHydEeOrG4P8rw6P8w" value="*"/>
+      <defaultValue xmi:type="uml:LiteralString" xmi:id="_RsDYgHydEeOrG4P8rw6P8w">
+        <value xsi:nil="true"/>
+      </defaultValue>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_k1-aQHyeEeOrG4P8rw6P8w" name="errorLog" visibility="private" type="_oxzzIHydEeOrG4P8rw6P8w"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_tUMgkHyaEeOrG4P8rw6P8w" name="getInstance" isStatic="true"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_Pfi6IHycEeOrG4P8rw6P8w" name="handleException"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_bHy6MHydEeOrG4P8rw6P8w" name="addErrorManager">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_emrb4HydEeOrG4P8rw6P8w" name="manager" type="_Nb0SYHydEeOrG4P8rw6P8w"/>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_fV22EHydEeOrG4P8rw6P8w" name="removeErrorManager">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_iEHMEHydEeOrG4P8rw6P8w" name="manager" type="_Nb0SYHydEeOrG4P8rw6P8w"/>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_tH83gHyeEeOrG4P8rw6P8w" name="setLog" visibility="package">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_GzxVcHyfEeOrG4P8rw6P8w" name="log" type="_oxzzIHydEeOrG4P8rw6P8w"/>
+    </ownedOperation>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_Nb0SYHydEeOrG4P8rw6P8w" name="ErrorManager">
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_OuFykHydEeOrG4P8rw6P8w" name="handleException"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_oxzzIHydEeOrG4P8rw6P8w" name="BasicLog">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_Y_3u8HyeEeOrG4P8rw6P8w" name="file" visibility="private">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_bCpfAHyeEeOrG4P8rw6P8w" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_bCqGEHyeEeOrG4P8rw6P8w" value="1"/>
+      <defaultValue xmi:type="uml:LiteralString" xmi:id="_bCrUMHyeEeOrG4P8rw6P8w">
+        <value xsi:nil="true"/>
+      </defaultValue>
+    </ownedAttribute>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_cKssMHyeEeOrG4P8rw6P8w" name="write"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_k4HS0HyfEeOrG4P8rw6P8w" name="Log">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_r0_lYHyfEeOrG4P8rw6P8w" name="instance" visibility="private" isStatic="true" type="_k4HS0HyfEeOrG4P8rw6P8w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ywjpUHyfEeOrG4P8rw6P8w" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_ywkQYHyfEeOrG4P8rw6P8w" value="1"/>
+      <defaultValue xmi:type="uml:LiteralString" xmi:id="_ywlegHyfEeOrG4P8rw6P8w">
+        <value xsi:nil="true"/>
+      </defaultValue>
+    </ownedAttribute>
   </packagedElement>
 </uml:Model>
