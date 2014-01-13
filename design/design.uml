@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20110701" xmlns:xmi="http://www.omg.org/spec/XMI/20110701" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML" xmi:id="_aiKWAHx7EeOrG4P8rw6P8w" name="model">
+  <packagedElement xmi:type="uml:Class" xmi:id="_4_TtkHx-EeOrG4P8rw6P8w" clientDependency="_-8lu4Hx_EeOrG4P8rw6P8w _aCQUoHyAEeOrG4P8rw6P8w _TxPNEHyBEeOrG4P8rw6P8w _TCgpYHyCEeOrG4P8rw6P8w _UwhDUHyCEeOrG4P8rw6P8w" name="JProbe">
+    <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_-8lu4Hx_EeOrG4P8rw6P8w" name="InterfaceRealization1" client="_4_TtkHx-EeOrG4P8rw6P8w" supplier="_AxWGgHx_EeOrG4P8rw6P8w" contract="_AxWGgHx_EeOrG4P8rw6P8w"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_AxWGgHx_EeOrG4P8rw6P8w" name="JProbeCore"/>
+  <packagedElement xmi:type="uml:Package" xmi:id="_PYm1YHyAEeOrG4P8rw6P8w" clientDependency="_jPJiAHyAEeOrG4P8rw6P8w" name="Felix">
+    <packagedElement xmi:type="uml:Usage" xmi:id="_jPJiAHyAEeOrG4P8rw6P8w" name="provides access to" client="_PYm1YHyAEeOrG4P8rw6P8w" supplier="_AxWGgHx_EeOrG4P8rw6P8w"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_aCQUoHyAEeOrG4P8rw6P8w" name="Initializes" client="_4_TtkHx-EeOrG4P8rw6P8w" supplier="_PYm1YHyAEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_ML7BgHyBEeOrG4P8rw6P8w" clientDependency="_QZMTMHyBEeOrG4P8rw6P8w _YCb8gHyBEeOrG4P8rw6P8w" name="Launcher"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_OJHuAHyBEeOrG4P8rw6P8w" name="Configuration"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_QZMTMHyBEeOrG4P8rw6P8w" name="creates" client="_ML7BgHyBEeOrG4P8rw6P8w" supplier="_4_TtkHx-EeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_TxPNEHyBEeOrG4P8rw6P8w" name="Initializes using" client="_4_TtkHx-EeOrG4P8rw6P8w" supplier="_OJHuAHyBEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_YCb8gHyBEeOrG4P8rw6P8w" name="creates" client="_ML7BgHyBEeOrG4P8rw6P8w" supplier="_OJHuAHyBEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_qGvPcHyBEeOrG4P8rw6P8w" clientDependency="_ThfO8HyDEeOrG4P8rw6P8w" name="DataManager"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_q9DzcHyBEeOrG4P8rw6P8w" clientDependency="_Vf2ZEHyDEeOrG4P8rw6P8w" name="FunctionManager"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_TCgpYHyCEeOrG4P8rw6P8w" name="delegates" client="_4_TtkHx-EeOrG4P8rw6P8w" supplier="_q9DzcHyBEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_UwhDUHyCEeOrG4P8rw6P8w" name="delegates" client="_4_TtkHx-EeOrG4P8rw6P8w" supplier="_qGvPcHyBEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_Kb7YoHyDEeOrG4P8rw6P8w" clientDependency="_polB4HyDEeOrG4P8rw6P8w" name="CoreListener"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_ThfO8HyDEeOrG4P8rw6P8w" name="notifies" client="_qGvPcHyBEeOrG4P8rw6P8w" supplier="_Kb7YoHyDEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_Vf2ZEHyDEeOrG4P8rw6P8w" name="notifies" client="_q9DzcHyBEeOrG4P8rw6P8w" supplier="_Kb7YoHyDEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_Y6kzgHyDEeOrG4P8rw6P8w" name="CoreEvent"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_polB4HyDEeOrG4P8rw6P8w" name="receives events" client="_Kb7YoHyDEeOrG4P8rw6P8w" supplier="_Y6kzgHyDEeOrG4P8rw6P8w"/>
+</uml:Model>
