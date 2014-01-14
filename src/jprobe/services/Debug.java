@@ -5,6 +5,16 @@ public enum Debug {
 	LOG,
 	FULL;
 	
+	private static Debug debugLevel;
+	
+	public static void setLevel(Debug level){
+		Debug.debugLevel = level;
+	}
+	
+	public static Debug getLevel(){
+		return debugLevel;
+	}
+	
 	public static Debug fromString(String s){
 		return fromInt(Integer.parseInt(s));
 	}
