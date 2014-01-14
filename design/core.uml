@@ -213,7 +213,7 @@
   <packagedElement xmi:type="uml:Usage" xmi:id="_7iLesHyZEeOrG4P8rw6P8w" name="receives" client="_5i518HyWEeOrG4P8rw6P8w" supplier="_IHVIsHyXEeOrG4P8rw6P8w"/>
   <packagedElement xmi:type="uml:Usage" xmi:id="__I5twHyZEeOrG4P8rw6P8w" name="generates" client="_FCu60HyNEeOrG4P8rw6P8w" supplier="_IHVIsHyXEeOrG4P8rw6P8w"/>
   <packagedElement xmi:type="uml:Usage" xmi:id="_B9UWIHyaEeOrG4P8rw6P8w" name="notifies" client="_FCu60HyNEeOrG4P8rw6P8w" supplier="_5i518HyWEeOrG4P8rw6P8w"/>
-  <packagedElement xmi:type="uml:Class" xmi:id="_hFyC8HyaEeOrG4P8rw6P8w" name="ErrorHandler">
+  <packagedElement xmi:type="uml:Class" xmi:id="_hFyC8HyaEeOrG4P8rw6P8w" clientDependency="_dUfQcH07EeOY4Mj_3o4OIg _h3F48H07EeOY4Mj_3o4OIg" name="ErrorHandler">
     <ownedAttribute xmi:type="uml:Property" xmi:id="_nb20MHyaEeOrG4P8rw6P8w" name="instance" visibility="private" isStatic="true" type="_hFyC8HyaEeOrG4P8rw6P8w">
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_n2s9IHyaEeOrG4P8rw6P8w" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_n2tkMHyaEeOrG4P8rw6P8w" value="1"/>
@@ -254,7 +254,7 @@
     </ownedAttribute>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_cKssMHyeEeOrG4P8rw6P8w" name="write"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Class" xmi:id="_k4HS0HyfEeOrG4P8rw6P8w" name="Log">
+  <packagedElement xmi:type="uml:Class" xmi:id="_k4HS0HyfEeOrG4P8rw6P8w" clientDependency="_lgMGkH07EeOY4Mj_3o4OIg" name="Log">
     <ownedAttribute xmi:type="uml:Property" xmi:id="_r0_lYHyfEeOrG4P8rw6P8w" name="instance" visibility="private" isStatic="true" type="_k4HS0HyfEeOrG4P8rw6P8w">
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ywjpUHyfEeOrG4P8rw6P8w" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_ywkQYHyfEeOrG4P8rw6P8w" value="1"/>
@@ -262,5 +262,42 @@
         <value xsi:nil="true"/>
       </defaultValue>
     </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_EZRJCH07EeOY4Mj_3o4OIg" name="log" visibility="private" type="_oxzzIHydEeOrG4P8rw6P8w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Ep93cH07EeOY4Mj_3o4OIg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_EqATsH07EeOY4Mj_3o4OIg" value="1"/>
+      <defaultValue xmi:type="uml:LiteralString" xmi:id="_EqA6wH07EeOY4Mj_3o4OIg">
+        <value xsi:nil="true"/>
+      </defaultValue>
+    </ownedAttribute>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_ITwooH07EeOY4Mj_3o4OIg" name="getInstance" isStatic="true">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_MV0I0H07EeOY4Mj_3o4OIg" name="this" type="_k4HS0HyfEeOrG4P8rw6P8w" direction="return"/>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_NRj_YH07EeOY4Mj_3o4OIg" name="initialize" visibility="package">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_YML54H07EeOY4Mj_3o4OIg" name="log" type="_oxzzIHydEeOrG4P8rw6P8w"/>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_Y_ipcH07EeOY4Mj_3o4OIg" name="write"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_dUfQcH07EeOY4Mj_3o4OIg" name="delegates to" client="_hFyC8HyaEeOrG4P8rw6P8w" supplier="_Nb0SYHydEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_h3F48H07EeOY4Mj_3o4OIg" name="writes using" client="_hFyC8HyaEeOrG4P8rw6P8w" supplier="_oxzzIHydEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Usage" xmi:id="_lgMGkH07EeOY4Mj_3o4OIg" name="writes using" client="_k4HS0HyfEeOrG4P8rw6P8w" supplier="_oxzzIHydEeOrG4P8rw6P8w"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_rpaHkH07EeOY4Mj_3o4OIg" name="Debug">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_zUrxMH07EeOY4Mj_3o4OIg" name="debugLevel" visibility="private" isStatic="true" type="_vHvPoH07EeOY4Mj_3o4OIg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_zufYUH07EeOY4Mj_3o4OIg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_zuf_YH07EeOY4Mj_3o4OIg" value="1"/>
+      <defaultValue xmi:type="uml:LiteralString" xmi:id="_zuhNgH07EeOY4Mj_3o4OIg">
+        <value xsi:nil="true"/>
+      </defaultValue>
+    </ownedAttribute>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_3-RygH07EeOY4Mj_3o4OIg" name="getDebugLevel" isStatic="true">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_74Y3oH07EeOY4Mj_3o4OIg" name="debug" type="_vHvPoH07EeOY4Mj_3o4OIg" direction="return"/>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_81NsQH07EeOY4Mj_3o4OIg" name="setDebugLevel" isStatic="true">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="__YfhUH07EeOY4Mj_3o4OIg" name="debug" type="_vHvPoH07EeOY4Mj_3o4OIg"/>
+    </ownedOperation>
+    <nestedClassifier xmi:type="uml:Enumeration" xmi:id="_vHvPoH07EeOY4Mj_3o4OIg" name="DebugLevel">
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_wsdxwH07EeOY4Mj_3o4OIg" name="FULL"/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_xa7aQH07EeOY4Mj_3o4OIg" name="LOG"/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_yFahsH07EeOY4Mj_3o4OIg" name="OFF"/>
+    </nestedClassifier>
   </packagedElement>
 </uml:Model>
