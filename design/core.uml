@@ -8,7 +8,9 @@
     <packagedElement xmi:type="uml:Usage" xmi:id="_jPJiAHyAEeOrG4P8rw6P8w" name="provides access to" client="_PYm1YHyAEeOrG4P8rw6P8w" supplier="_AxWGgHx_EeOrG4P8rw6P8w"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Usage" xmi:id="_aCQUoHyAEeOrG4P8rw6P8w" name="Initializes" client="_4_TtkHx-EeOrG4P8rw6P8w" supplier="_PYm1YHyAEeOrG4P8rw6P8w"/>
-  <packagedElement xmi:type="uml:Class" xmi:id="_ML7BgHyBEeOrG4P8rw6P8w" clientDependency="_QZMTMHyBEeOrG4P8rw6P8w _YCb8gHyBEeOrG4P8rw6P8w" name="Launcher"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_ML7BgHyBEeOrG4P8rw6P8w" clientDependency="_QZMTMHyBEeOrG4P8rw6P8w _YCb8gHyBEeOrG4P8rw6P8w" name="Launcher">
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_pBx2oH0-EeOY4Mj_3o4OIg" name="main"/>
+  </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_OJHuAHyBEeOrG4P8rw6P8w" name="Configuration"/>
   <packagedElement xmi:type="uml:Usage" xmi:id="_QZMTMHyBEeOrG4P8rw6P8w" name="creates" client="_ML7BgHyBEeOrG4P8rw6P8w" supplier="_4_TtkHx-EeOrG4P8rw6P8w"/>
   <packagedElement xmi:type="uml:Usage" xmi:id="_TxPNEHyBEeOrG4P8rw6P8w" name="Initializes using" client="_4_TtkHx-EeOrG4P8rw6P8w" supplier="_OJHuAHyBEeOrG4P8rw6P8w"/>

@@ -105,6 +105,10 @@
         <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ML_S93yBEeOrG4P8rw6P8w"/>
       </children>
       <children xmi:type="notation:BasicCompartment" xmi:id="_ML_6AHyBEeOrG4P8rw6P8w" type="7018">
+        <children xmi:type="notation:Shape" xmi:id="_pBzEwH0-EeOY4Mj_3o4OIg" type="3013" fontName="Segoe UI" lineColor="0">
+          <element xmi:type="uml:Operation" href="core.uml#_pBx2oH0-EeOY4Mj_3o4OIg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_pBzEwX0-EeOY4Mj_3o4OIg"/>
+        </children>
         <styles xmi:type="notation:TitleStyle" xmi:id="_ML_6AXyBEeOrG4P8rw6P8w"/>
         <styles xmi:type="notation:SortingStyle" xmi:id="_ML_6AnyBEeOrG4P8rw6P8w"/>
         <styles xmi:type="notation:FilteringStyle" xmi:id="_ML_6A3yBEeOrG4P8rw6P8w"/>
