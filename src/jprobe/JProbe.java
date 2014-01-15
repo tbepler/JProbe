@@ -13,7 +13,7 @@ import jprobe.services.Debug;
 import jprobe.services.ErrorHandler;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
-import jprobe.services.Log;
+import jprobe.services.Journal;
 import jprobe.services.Saveable;
 
 import org.apache.felix.framework.Felix;
@@ -32,7 +32,7 @@ public class JProbe implements JProbeCore{
 	private JProbeActivator activator;
 	private Debug debugLevel;
 	private Felix felix;
-	private Log log;
+	private Journal log;
 	
 	public JProbe(Configuration config){
 		log = new LogImplem(new File(config.getLogFile()));
@@ -75,7 +75,7 @@ public class JProbe implements JProbeCore{
 	}
 	
 	@Override
-	public Log getLog(){
+	public Journal getLog(){
 		return log;
 	}
 	

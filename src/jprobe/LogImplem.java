@@ -8,11 +8,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import jprobe.services.Log;
+import jprobe.services.Journal;
 
 import org.osgi.framework.Bundle;
 
-public class LogImplem implements Log{
+public class LogImplem implements Journal{
 	
 	private Calendar calendar;
 	private BufferedWriter writer;

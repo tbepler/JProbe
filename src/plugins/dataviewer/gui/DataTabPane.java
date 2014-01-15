@@ -14,7 +14,7 @@ import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
 import jprobe.services.JProbeCore;
-import jprobe.services.Log;
+import jprobe.services.Journal;
 import jprobe.services.data.Data;
 
 public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer{
@@ -23,11 +23,11 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	public static final Dimension PREFERRED = new Dimension(800, 800);
 	
 	private DataManager dataManager;
-	private Log log;
+	private Journal log;
 	private Map<Data, DataTab> tabs;
 	private GridBagConstraints constraints;
 	
-	public DataTabPane(DataManager dataManager, Log log){
+	public DataTabPane(DataManager dataManager, Journal log){
 		super();
 		this.log = log;
 		this.setPreferredSize(PREFERRED);

@@ -10,7 +10,7 @@ public interface JProbeCore {
 	
 	public void shutdown();
 	
-	public Log getLog();
+	public Journal getLog();
 	
 	public Debug getDebugLevel();
 	

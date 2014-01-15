@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 
 import jprobe.services.ErrorHandler;
-import jprobe.services.Log;
+import jprobe.services.Journal;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -16,9 +16,9 @@ public class CoreErrorHandler implements ErrorHandler, ServiceListener{
 	
 	private BundleContext context;
 	private Collection<ErrorHandler> handlers;
-	private Log log;
+	private Journal log;
 	
-	public CoreErrorHandler(BundleContext context, Log log){
+	public CoreErrorHandler(BundleContext context, Journal log){
 		this.context = context;
 		this.log = log;
 		handlers = new LinkedHashSet<ErrorHandler>();
