@@ -5,7 +5,7 @@ public enum Debug {
 	LOG,
 	FULL;
 	
-	private static Debug debugLevel;
+	private static volatile Debug debugLevel;
 	
 	public static void setLevel(Debug level){
 		Debug.debugLevel = level;

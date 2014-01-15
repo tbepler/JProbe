@@ -27,7 +27,7 @@ public class ErrorHandler {
 		}
 	}
 	
-	public void handleException(Exception e, Bundle thrower){
+	public synchronized void handleException(Exception e, Bundle thrower){
 		if(m_ErrorLog != null){
 			if(Debug.getLevel() == Debug.FULL){
 				m_ErrorLog.write(thrower, " ERROR: "+e.getMessage()+"\n"+e.getStackTrace());
@@ -40,11 +40,11 @@ public class ErrorHandler {
 		}
 	}
 	
-	public void addErrorManager(ErrorManager manager){
+	public synchronized void addErrorManager(ErrorManager manager){
 		m_ErrorManagers.add(manager);
 	}
 	
-	public void removeErrorManager(ErrorManager manager){
+	public synchronized void removeErrorManager(ErrorManager manager){
 		m_ErrorManagers.remove(manager);
 	}
 	

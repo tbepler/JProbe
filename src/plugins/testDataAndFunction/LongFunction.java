@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.osgi.framework.Bundle;
+
+import jprobe.services.Log;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataField;
 import jprobe.services.function.Function;
@@ -15,7 +18,11 @@ import jprobe.services.function.FunctionParam;
 public class LongFunction implements Function{
 	
 	private Collection<FunctionListener> listeners = new HashSet<FunctionListener>();
+	private Bundle m_Bundle;
 	
+	public LongFunction(Bundle bundle){
+		m_Bundle = bundle;
+	}
 	
 	@Override
 	public String getName() {
@@ -77,9 +84,11 @@ public class LongFunction implements Function{
 	public Data run(FunctionParam params) throws Exception {
 		int progress = 0;
 		this.setProgress(progress);
+		Log.getInstance().write(m_Bundle, "Running long function");
 		while(progress<100){
 			Thread.sleep(100);
 			this.setProgress(++progress);
+			Log.getInstance().write(m_Bundle, "Progress = "+progress);
 		}
 		return new TestData();
 	}

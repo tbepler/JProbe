@@ -23,7 +23,7 @@ public class Log {
 		}
 	}
 	
-	public void write(Bundle writer, String message){
+	public synchronized void write(Bundle writer, String message){
 		if(m_Journal != null){
 			m_Journal.write(writer, message);
 		}
