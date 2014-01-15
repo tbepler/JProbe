@@ -158,10 +158,13 @@ public class CoreDataManager implements DataManager{
 	@Override
 	public void rename(Data d, String name, Bundle responsible){
 		String old = dataToName.get(d);
+		if(nameToData.containsKey(name)){
+			this.removeData(name, responsible);
+		}
 		nameToData.remove(old);
 		nameToData.put(name, d);
 		dataToName.put(d, name);
-		notifyListeners(new CoreEvent(core, Type.DATA_NAME_CHANGE, responsible, d));
+		notifyListeners(new CoreEvent(core, Type.DATA_NAME_CHANGE, responsible, d, old, name));
 	}
 	
 	@Override

@@ -26,6 +26,8 @@ public class CoreEvent {
 	private Class<? extends Data> m_DataClass = null;
 	private FunctionPrototype m_FunctionEffected = null;
 	private Bundle m_Cause = null;
+	private String m_OldName = null;
+	private String m_NewName = null;
 	
 	public CoreEvent(JProbeCore source, Type type, Bundle responsible){
 		this.m_Source = source;
@@ -36,6 +38,12 @@ public class CoreEvent {
 		this(source, type, responsible);
 		m_DataEffected = effected;
 		m_DataClass = effected.getClass();
+	}
+	
+	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Data effected, String oldName, String newName){
+		this(source, type, responsible, effected);
+		m_OldName = oldName;
+		m_NewName = newName;
 	}
 	
 	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Class<? extends Data> effected){
@@ -70,6 +78,14 @@ public class CoreEvent {
 	
 	public FunctionPrototype getFunctionPrototype(){
 		return m_FunctionEffected;
+	}
+	
+	public String getOldName(){
+		return m_OldName;
+	}
+	
+	public String getNewName(){
+		return m_NewName;
 	}
 	
 	

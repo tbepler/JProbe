@@ -27,9 +27,11 @@ public class FunctionPanel extends JPanel implements ActionListener{
 	private JButton m_RunButton;
 	private OnPress m_CancelAction = new DoNothingOnPress();
 	private OnPress m_RunAction = new DoNothingOnPress();
+	private boolean m_Ready;
 	
 	public FunctionPanel(FunctionPrototype functionPrototype, DataManager dataManager, Bundle bundle){
 		super(new GridBagLayout());
+		m_Ready = false;
 		m_FunctionPrototype = functionPrototype;
 		m_DataManager = dataManager;
 		m_Bundle = bundle;
@@ -37,10 +39,16 @@ public class FunctionPanel extends JPanel implements ActionListener{
 		m_CancelButton.addActionListener(this);
 		m_RunButton = new JButton("Run");
 		m_RunButton.addActionListener(this);
+		m_RunButton.setEnabled(false);
 		GridBagConstraints gbc = new GridBagConstraints();
 		this.add(m_RunButton, gbc);
 		gbc.gridx = 2;
 		this.add(m_CancelButton, gbc);
+	}
+	
+	void setReady(boolean ready){
+		m_Ready = ready;
+		m_RunButton.setEnabled(m_Ready);
 	}
 	
 	public String getTitle(){
@@ -49,7 +57,7 @@ public class FunctionPanel extends JPanel implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == m_RunButton){
+		if(e.getSource() == m_RunButton && m_Ready){
 			try{
 				Function run = m_FunctionPrototype.newInstance(null, null);
 				FunctionExecutor ex = new SwingFunctionExecutor(run, m_DataManager, m_Bundle);
