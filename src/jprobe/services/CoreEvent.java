@@ -2,6 +2,7 @@ package jprobe.services;
 
 import jprobe.services.data.Data;
 import jprobe.services.function.Function;
+import jprobe.services.function.FunctionPrototype;
 
 import org.osgi.framework.Bundle;
 
@@ -19,56 +20,56 @@ public class CoreEvent {
 		FUNCTION_REMOVED;
 	};
 	
-	private Type type;
-	private JProbeCore source;
-	private Data dataEffected = null;
-	private Class<? extends Data> dataClass = null;
-	private Function functionEffected = null;
-	private Bundle cause = null;
+	private Type m_Type;
+	private JProbeCore m_Source;
+	private Data m_DataEffected = null;
+	private Class<? extends Data> m_DataClass = null;
+	private FunctionPrototype m_FunctionEffected = null;
+	private Bundle m_Cause = null;
 	
 	public CoreEvent(JProbeCore source, Type type, Bundle responsible){
-		this.source = source;
-		this.type = type;
+		this.m_Source = source;
+		this.m_Type = type;
 	}
 	
 	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Data effected){
 		this(source, type, responsible);
-		dataEffected = effected;
-		dataClass = effected.getClass();
+		m_DataEffected = effected;
+		m_DataClass = effected.getClass();
 	}
 	
 	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Class<? extends Data> effected){
 		this(source, type, responsible);
-		dataClass = effected;
+		m_DataClass = effected;
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Function effected){
+	public CoreEvent(JProbeCore source, Type type, Bundle responsible, FunctionPrototype effected){
 		this(source, type, responsible);
-		functionEffected = effected;
+		m_FunctionEffected = effected;
 	}
 	
 	public Type type(){
-		return type;
+		return m_Type;
 	}
 	
 	public Bundle getCause(){
-		return cause;
+		return m_Cause;
 	}
 	
 	public JProbeCore getSource(){
-		return source;
+		return m_Source;
 	}
 	
 	public Data getData(){
-		return dataEffected;
+		return m_DataEffected;
 	}
 	
 	public Class<? extends Data> getDataClass(){
-		return dataClass;
+		return m_DataClass;
 	}
 	
-	public Function getFunction(){
-		return functionEffected;
+	public FunctionPrototype getFunctionPrototype(){
+		return m_FunctionEffected;
 	}
 	
 	

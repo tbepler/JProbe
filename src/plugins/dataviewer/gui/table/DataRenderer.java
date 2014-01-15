@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import jprobe.services.data.DataField;
+import jprobe.services.data.Field;
 import jprobe.services.data.DoubleField;
 import jprobe.services.data.IntegerField;
 
@@ -20,16 +20,16 @@ class DataRenderer extends DefaultTableCellRenderer{
 	
 	@Override
 	public void setValue(Object value){
-		if(value instanceof DataField){
-			DataField field = (DataField) value;
+		if(value instanceof Field){
+			Field field = (Field) value;
 			this.setText((field == null) ? "" : field.asString());
 		}
 	}
 	
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
-		if(value instanceof DataField){
-			DataField field = (DataField) value;
+		if(value instanceof Field){
+			Field field = (Field) value;
 			this.setToolTipText((field == null)?"":field.getTooltip());
 			//return super.getTableCellRendererComponent(table, field.asString(), isSelected, hasFocus, row, column);
 		}

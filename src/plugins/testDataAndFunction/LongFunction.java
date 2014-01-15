@@ -3,21 +3,21 @@ package plugins.testDataAndFunction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
 import org.osgi.framework.Bundle;
 
 import jprobe.services.Log;
 import jprobe.services.data.Data;
-import jprobe.services.data.DataField;
 import jprobe.services.function.Function;
-import jprobe.services.function.FunctionEvent;
-import jprobe.services.function.FunctionListener;
-import jprobe.services.function.FunctionParam;
+import jprobe.services.function.ProgressEvent;
+import jprobe.services.function.ProgressListener;
 
 public class LongFunction implements Function{
 	
-	private Collection<FunctionListener> listeners = new HashSet<FunctionListener>();
+	public static final String DESCRIPTION = "This function takes 10 seconds to complete";
+	public static final String NAME = "Long Function";
+	
+	private Collection<ProgressListener> listeners = new HashSet<ProgressListener>();
 	private Bundle m_Bundle;
 	
 	public LongFunction(Bundle bundle){
@@ -26,32 +26,12 @@ public class LongFunction implements Function{
 	
 	@Override
 	public String getName() {
-		return "Long Function";
+		return NAME;
 	}
 
 	@Override
 	public String getDescription() {
-		return "This function takes 10 seconds to complete";
-	}
-
-	@Override
-	public List<Class<? extends Data>> getRequiredDataArgs() {
-		return new ArrayList<Class<? extends Data>>();
-	}
-
-	@Override
-	public List<Class<? extends Data>> getOptionalDataArgs() {
-		return new ArrayList<Class<? extends Data>>();
-	}
-
-	@Override
-	public List<DataField> getRequiredFields() {
-		return new ArrayList<DataField>();
-	}
-
-	@Override
-	public List<DataField> getOptionalFields() {
-		return new ArrayList<DataField>();
+		return DESCRIPTION;
 	}
 
 	@Override
@@ -60,28 +40,28 @@ public class LongFunction implements Function{
 	}
 
 	@Override
-	public int getProgressLength(FunctionParam params) {
+	public int getProgressLength() {
 		return 100;
 	}
 
 	@Override
-	public void addListener(FunctionListener listener) {
+	public void addListener(ProgressListener listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeListener(FunctionListener listener) {
+	public void removeListener(ProgressListener listener) {
 		listeners.remove(listener);
 	}
 	
 	private void setProgress(int progress){
-		for(FunctionListener l : listeners){
-			l.update(new FunctionEvent(this, FunctionEvent.Type.UPDATE, progress));
+		for(ProgressListener l : listeners){
+			l.update(new ProgressEvent(this, ProgressEvent.Type.UPDATE, progress));
 		}
 	}
 
 	@Override
-	public Data run(FunctionParam params) throws Exception {
+	public Data run() throws Exception {
 		int progress = 0;
 		this.setProgress(progress);
 		Log.getInstance().write(m_Bundle, "Running long function");

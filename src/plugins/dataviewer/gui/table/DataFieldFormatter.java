@@ -8,16 +8,16 @@ import javax.swing.text.*;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.text.DocumentFilter;
 
-import jprobe.services.data.DataField;
+import jprobe.services.data.Field;
 
 public class DataFieldFormatter extends AbstractFormatter{
 	private static final long serialVersionUID = 1L;
 	
-	private DataField field;
+	private Field field;
 	private Collection<Character> validChars;
 	private DocumentFilter filter;
 	
-	public DataFieldFormatter(DataField field){
+	public DataFieldFormatter(Field field){
 		super();
 		this.field = field;
 		validChars = new HashSet<Character>();
@@ -64,8 +64,8 @@ public class DataFieldFormatter extends AbstractFormatter{
 
 	@Override
 	public String valueToString(Object o) throws ParseException {
-		if(o instanceof DataField){
-			DataField f = (DataField) o;
+		if(o instanceof Field){
+			Field f = (Field) o;
 			return f.asString();
 		}
 		throw new ParseException("Unable to parse object "+o, 0);

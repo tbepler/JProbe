@@ -1,7 +1,7 @@
 package jprobe.services.data;
 
 
-public abstract class DoubleField implements DataField{
+public abstract class DoubleField implements Field{
 	private static final long serialVersionUID = 1L;
 	
 	public static final String DOUBLE_REGEX = "\\d+\\.\\d+";
@@ -28,7 +28,7 @@ public abstract class DoubleField implements DataField{
 	}
 	
 	@Override
-	public DataField parseString(String s){
+	public Field parseString(String s){
 		if(isValid(s)){
 			return parseDouble(Double.parseDouble(s));
 		}

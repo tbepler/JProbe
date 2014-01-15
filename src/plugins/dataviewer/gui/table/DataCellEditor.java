@@ -15,7 +15,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.text.DefaultFormatter;
 
 import plugins.testDataAndFunction.DecimalField;
-import jprobe.services.data.DataField;
+import jprobe.services.data.Field;
 import jprobe.services.data.DoubleField;
 import jprobe.services.data.IntegerField;
 
@@ -26,7 +26,7 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 	
 	private JSpinner spinner = null;
 	private JFormattedTextField field = null;
-	private DataField value = null;
+	private Field value = null;
 	
 	public DataCellEditor(){
 		super();
@@ -90,7 +90,7 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 			field.setBorder(red);
 			return false;
 		}
-		value = (DataField) field.getValue();
+		value = (Field) field.getValue();
 		this.fireEditingStopped();
 		return true;
 	}
@@ -113,8 +113,8 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 	
 	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column){
-		if(value instanceof DataField){
-			this.value = (DataField) value;
+		if(value instanceof Field){
+			this.value = (Field) value;
 			if(this.value == null){
 				System.out.println("Value is null.");
 				System.out.println("Object passed = "+value);

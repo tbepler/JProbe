@@ -4,7 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 import jprobe.services.data.Data;
 import jprobe.services.data.DataEvent;
-import jprobe.services.data.DataField;
+import jprobe.services.data.Field;
 import jprobe.services.data.DataListener;
 
 public class DataTableModel extends AbstractTableModel implements DataListener{
@@ -34,7 +34,7 @@ public class DataTableModel extends AbstractTableModel implements DataListener{
 	
 	@Override
 	public Class getColumnClass(int c){
-		return DataField.class;
+		return Field.class;
 	}
 	
 	@Override
@@ -44,17 +44,17 @@ public class DataTableModel extends AbstractTableModel implements DataListener{
 	
 	@Override
 	public void setValueAt(Object value, int row, int col){
-		if(value instanceof DataField){
-			DataField field = (DataField) value;
+		if(value instanceof Field){
+			Field field = (Field) value;
 			data.setValue(row, col, field);
 			fireTableCellUpdated(row, col);
 			return;
 		}
 		if(value instanceof String){
 			String val = (String) value;
-			DataField field = data.getValue(row, col);
+			Field field = data.getValue(row, col);
 			if(field.isValid(val)){
-				DataField newField = field.parseString(val);
+				Field newField = field.parseString(val);
 				if(data.setValue(row, col, newField)){
 					fireTableCellUpdated(row, col);
 				}

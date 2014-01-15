@@ -14,7 +14,7 @@ public class DataEvent {
 	
 	private Type type;
 	private Data source;
-	private DataField changed = null;
+	private Field changed = null;
 	private int row = -1;
 	private int col = -1;
 	
@@ -28,7 +28,7 @@ public class DataEvent {
 		this.row = row;
 	}
 	
-	public DataEvent(Data source, Type type, DataField changed, int row, int col){
+	public DataEvent(Data source, Type type, Field changed, int row, int col){
 		this(source, type);
 		this.changed = changed;
 		this.row = row;
@@ -43,7 +43,7 @@ public class DataEvent {
 		return source;
 	}
 	
-	public DataField getFieldChanged(){
+	public Field getFieldChanged(){
 		return changed;
 	}
 	

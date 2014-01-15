@@ -15,13 +15,14 @@ import jprobe.services.DataManager;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 import jprobe.services.function.Function;
+import jprobe.services.function.FunctionPrototype;
 
 public class FunctionMenu extends JMenu implements CoreListener{
 	private static final long serialVersionUID = 1L;
 	
 	private JProbeCore core;
 	private Bundle bundle;
-	private Map<Function, JMenuItem> items;
+	private Map<FunctionPrototype, JMenuItem> items;
 	private FunctionDialogHandler functionWindow;
 	
 	public FunctionMenu(Frame owner, JProbeCore core, Bundle bundle){
@@ -29,8 +30,8 @@ public class FunctionMenu extends JMenu implements CoreListener{
 		this.core = core;
 		this.bundle = bundle;
 		this.functionWindow = new FunctionDialogHandler(owner, false);
-		items = new HashMap<Function, JMenuItem>();
-		for(Function f : core.getFunctionManager().getAllFunctions()){
+		items = new HashMap<FunctionPrototype, JMenuItem>();
+		for(FunctionPrototype f : core.getFunctionManager().getAllFunctionPrototypes()){
 			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f, functionWindow));
 			this.add(items.get(f));
 		}
@@ -47,13 +48,13 @@ public class FunctionMenu extends JMenu implements CoreListener{
 	@Override
 	public void update(CoreEvent event) {
 		if(event.type() == CoreEvent.Type.FUNCTION_ADDED){
-			Function f = event.getFunction();
+			FunctionPrototype f = event.getFunctionPrototype();
 			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f, functionWindow));
 			this.add(items.get(f));
 			this.revalidate();
 		}
 		if(event.type() == CoreEvent.Type.FUNCTION_REMOVED){
-			Function f = event.getFunction();
+			FunctionPrototype f = event.getFunctionPrototype();
 			this.remove(items.get(f));
 			items.remove(f);
 			this.revalidate();

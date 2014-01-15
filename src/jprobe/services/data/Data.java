@@ -11,9 +11,9 @@ public interface Data extends Serializable{
 	
 	public boolean isModifiable(int row, int col);
 	
-	public DataField[][] toTable();
-	public boolean setValue(int row, int col, DataField value);
-	public DataField getValue(int row, int col);
+	public Field[][] toTable();
+	public boolean setValue(int row, int col, Field value);
+	public Field getValue(int row, int col);
 	public int getNumRows();
 	public int getNumCols();
 	

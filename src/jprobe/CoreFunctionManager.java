@@ -13,7 +13,7 @@ import org.osgi.framework.Bundle;
 
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
-import jprobe.services.function.Function;
+import jprobe.services.function.FunctionPrototype;
 import jprobe.services.CoreListener;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
@@ -23,33 +23,33 @@ public class CoreFunctionManager implements FunctionManager{
 	private JProbeCore core;
 	private Collection<CoreListener> listeners;
 	
-	private Collection<Function> functions;
-	private Map<String, List<Function>> functionsByName;
+	private Collection<FunctionPrototype> functions;
+	private Map<String, List<FunctionPrototype>> functionsByName;
 	
 	public CoreFunctionManager(JProbeCore core){
 		this.core = core;
 		listeners = new HashSet<CoreListener>();
-		functions = new PriorityQueue<Function>(10, new Comparator<Function>(){
+		functions = new PriorityQueue<FunctionPrototype>(10, new Comparator<FunctionPrototype>(){
 			@Override
-			public int compare(Function arg0, Function arg1) {
-				return arg0.getName().compareTo(arg1.getName());
+			public int compare(FunctionPrototype arg0, FunctionPrototype arg1) {
+				return arg0.getFunctionName().compareTo(arg1.getFunctionName());
 			}
 		});
-		functionsByName = new HashMap<String, List<Function>>();
+		functionsByName = new HashMap<String, List<FunctionPrototype>>();
 	}
 	
 	@Override
-	public Function[] getAllFunctions(){
-		return functions.toArray(new Function[functions.size()]);
+	public FunctionPrototype[] getAllFunctionPrototypes(){
+		return functions.toArray(new FunctionPrototype[functions.size()]);
 	}
 	
 	@Override
-	public Function[] getFunctions(String name){
+	public FunctionPrototype[] getFunctionPrototypes(String name){
 		if(functionsByName.containsKey(name)){
-			List<Function> list = functionsByName.get(name);
-			return list.toArray(new Function[list.size()]);
+			List<FunctionPrototype> list = functionsByName.get(name);
+			return list.toArray(new FunctionPrototype[list.size()]);
 		}
-		return new Function[]{};
+		return new FunctionPrototype[]{};
 	}
 	
 	@Override
@@ -58,24 +58,24 @@ public class CoreFunctionManager implements FunctionManager{
 	}
 	
 	@Override
-	public void addFunction(Function f, Bundle responsible){
+	public void addFunctionPrototype(FunctionPrototype f, Bundle responsible){
 		if(!functions.contains(f)){
 			functions.add(f);
-			if(!functionsByName.containsKey(f.getName())){
-				List<Function> list = new ArrayList<Function>();
+			if(!functionsByName.containsKey(f.getFunctionName())){
+				List<FunctionPrototype> list = new ArrayList<FunctionPrototype>();
 				list.add(f);
-				functionsByName.put(f.getName(), list);
+				functionsByName.put(f.getFunctionName(), list);
 			}else{
-				functionsByName.get(f.getName()).add(f);
+				functionsByName.get(f.getFunctionName()).add(f);
 			}
 			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_ADDED, responsible, f));
 		}
 	}
 	
 	@Override
-	public void removeFunction(Function f, Bundle responsible){
+	public void removeFunctionPrototype(FunctionPrototype f, Bundle responsible){
 		if(functions.remove(f)){
-			functionsByName.get(f.getName()).remove(f);
+			functionsByName.get(f.getFunctionName()).remove(f);
 			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_REMOVED, responsible, f));
 		}
 	}

@@ -1,21 +1,13 @@
 package plugins.testDataAndFunction;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import jprobe.services.data.Data;
-import jprobe.services.data.DataField;
 import jprobe.services.function.Function;
-import jprobe.services.function.FunctionListener;
-import jprobe.services.function.FunctionParam;
+import jprobe.services.function.ProgressListener;
 
 public class TestFunction implements Function{
 	
 	public static final String NAME = "Test Function";
 	public static final String DESCRIPTION = "This is a test function. It takes no arguments and produces a TestData object.";
-	private List<Class<? extends Data>> data = new ArrayList<Class<? extends Data>>();
-	private List<DataField> fields = new ArrayList<DataField>();
 	
 	@Override
 	public String getName() {
@@ -28,27 +20,7 @@ public class TestFunction implements Function{
 	}
 
 	@Override
-	public List<Class<? extends Data>> getRequiredDataArgs() {
-		return Collections.unmodifiableList(data);
-	}
-
-	@Override
-	public List<Class<? extends Data>> getOptionalDataArgs() {
-		return Collections.unmodifiableList(data);
-	}
-
-	@Override
-	public List<DataField> getRequiredFields() {
-		return Collections.unmodifiableList(fields);
-	}
-
-	@Override
-	public List<DataField> getOptionalFields() {
-		return Collections.unmodifiableList(fields);
-	}
-
-	@Override
-	public Data run(FunctionParam params) throws Exception {
+	public Data run() throws Exception {
 		return new TestData();
 	}
 
@@ -59,19 +31,19 @@ public class TestFunction implements Function{
 	}
 
 	@Override
-	public int getProgressLength(FunctionParam params) {
+	public int getProgressLength() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public void addListener(FunctionListener listener) {
+	public void addListener(ProgressListener listener) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void removeListener(FunctionListener listener) {
+	public void removeListener(ProgressListener listener) {
 		// TODO Auto-generated method stub
 		
 	}

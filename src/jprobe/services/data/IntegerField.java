@@ -1,7 +1,7 @@
 package jprobe.services.data;
 
 
-public abstract class IntegerField implements DataField{
+public abstract class IntegerField implements Field{
 	private static final long serialVersionUID = 1L;
 	
 	public static final String INT_REGEX = "\\d+";
@@ -20,7 +20,7 @@ public abstract class IntegerField implements DataField{
 	}
 	
 	@Override
-	public DataField parseString(String s){
+	public Field parseString(String s){
 		if(isValid(s)){
 			return parseInt(Integer.parseInt(s));
 		}

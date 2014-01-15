@@ -3,9 +3,9 @@ package plugins.testDataAndFunction;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
-import jprobe.services.data.DataField;
+import jprobe.services.data.Field;
 
-public class StringField implements DataField{
+public class StringField implements Field{
 	
 	public static final String TOOLTIP = "A field containing any String";
 	public static final char[] VALID_CHARS = allLetters("UTF-8");
@@ -33,7 +33,7 @@ public class StringField implements DataField{
 	}
 
 	@Override
-	public DataField parseString(String s) {
+	public Field parseString(String s) {
 		return new StringField(s);
 	}
 

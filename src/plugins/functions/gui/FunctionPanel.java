@@ -11,58 +11,65 @@ import javax.swing.JPanel;
 import org.osgi.framework.Bundle;
 
 import jprobe.services.DataManager;
+import jprobe.services.ErrorHandler;
 import jprobe.services.function.Function;
 import jprobe.services.function.FunctionExecutor;
-import jprobe.services.function.FunctionParam;
+import jprobe.services.function.FunctionPrototype;
+import jprobe.services.function.InvalidArgumentsException;
 
 public class FunctionPanel extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
+
+	private FunctionPrototype m_FunctionPrototype;
+	private DataManager m_DataManager;
+	private Bundle m_Bundle;
+	private JButton m_CancelButton;
+	private JButton m_RunButton;
+	private OnPress m_CancelAction = new DoNothingOnPress();
+	private OnPress m_RunAction = new DoNothingOnPress();
 	
-	private Function function;
-	private DataManager dataManager;
-	private Bundle bundle;
-	private JButton cancelButton;
-	private JButton runButton;
-	private OnPress cancelAction = new DoNothingOnPress();
-	private OnPress runAction = new DoNothingOnPress();
-	
-	public FunctionPanel(Function function, DataManager dataManager, Bundle bundle){
+	public FunctionPanel(FunctionPrototype functionPrototype, DataManager dataManager, Bundle bundle){
 		super(new GridBagLayout());
-		this.function = function;
-		this.dataManager = dataManager;
-		this.bundle = bundle;
-		this.cancelButton = new JButton("Cancel");
-		this.cancelButton.addActionListener(this);
-		this.runButton = new JButton("Run");
-		this.runButton.addActionListener(this);
+		m_FunctionPrototype = functionPrototype;
+		m_DataManager = dataManager;
+		m_Bundle = bundle;
+		m_CancelButton = new JButton("Cancel");
+		m_CancelButton.addActionListener(this);
+		m_RunButton = new JButton("Run");
+		m_RunButton.addActionListener(this);
 		GridBagConstraints gbc = new GridBagConstraints();
-		this.add(runButton, gbc);
+		this.add(m_RunButton, gbc);
 		gbc.gridx = 2;
-		this.add(cancelButton, gbc);
+		this.add(m_CancelButton, gbc);
 	}
 	
 	public String getTitle(){
-		return function.getName();
+		return m_FunctionPrototype.getFunctionName();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == runButton){
-			FunctionExecutor ex = new SwingFunctionExecutor(function, new FunctionParam(null, null, null, null), dataManager, bundle);
-			ex.execute();
-			runAction.act();
+		if(e.getSource() == m_RunButton){
+			try{
+				Function run = m_FunctionPrototype.newInstance(null, null);
+				FunctionExecutor ex = new SwingFunctionExecutor(run, m_DataManager, m_Bundle);
+				ex.execute();
+				m_RunAction.act();
+			} catch (InvalidArgumentsException ex){
+				ErrorHandler.getInstance().handleException(ex, m_Bundle);
+			}
 		}
-		if(e.getSource() == cancelButton){
-			cancelAction.act();
+		if(e.getSource() == m_CancelButton){
+			m_CancelAction.act();
 		}
 	}
 	
 	public void setCancelAction(OnPress cancel){
-		this.cancelAction = cancel;
+		this.m_CancelAction = cancel;
 	}
 	
 	public void setRunAction(OnPress run){
-		this.runAction = run;
+		this.m_RunAction = run;
 	}
 	
 }

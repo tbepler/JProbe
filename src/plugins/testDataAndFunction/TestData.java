@@ -1,7 +1,7 @@
 package plugins.testDataAndFunction;
 
 import jprobe.services.data.Data;
-import jprobe.services.data.DataField;
+import jprobe.services.data.Field;
 import jprobe.services.data.DataListener;
 
 public class TestData implements Data{
@@ -11,13 +11,13 @@ public class TestData implements Data{
 	private StringField string;
 	private IntField integer;
 	private DecimalField decimal;
-	private DataField[][] table;
+	private Field[][] table;
 	
 	public TestData(){
 		string = new StringField("String");
 		integer = new IntField(1);
 		decimal = new DecimalField(2.5);
-		table = new DataField[1][3];
+		table = new Field[1][3];
 		table[0][0] = string;
 		table[0][1] = integer;
 		table[0][2] = decimal;
@@ -39,18 +39,18 @@ public class TestData implements Data{
 	}
 
 	@Override
-	public DataField[][] toTable() {
+	public Field[][] toTable() {
 		return table;
 	}
 
 	@Override
-	public boolean setValue(int row, int col, DataField value) {
+	public boolean setValue(int row, int col, Field value) {
 		table[row][col] = value;
 		return true;
 	}
 
 	@Override
-	public DataField getValue(int row, int col) {
+	public Field getValue(int row, int col) {
 		return table[row][col];
 	}
 	

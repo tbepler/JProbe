@@ -14,35 +14,32 @@ import org.osgi.framework.Bundle;
 import jprobe.services.DataManager;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
-import jprobe.services.data.DataField;
+import jprobe.services.data.Field;
 import jprobe.services.function.Function;
-import jprobe.services.function.FunctionEvent;
+import jprobe.services.function.ProgressEvent;
 import jprobe.services.function.FunctionExecutor;
-import jprobe.services.function.FunctionListener;
-import jprobe.services.function.FunctionParam;
+import jprobe.services.function.ProgressListener;
 
 public class SwingFunctionExecutor extends FunctionExecutor implements PropertyChangeListener{
 	
 	public static final int PROGRESS_BOUND = 100;
 	
-	class FunctionThread extends SwingWorker<Data, Data> implements FunctionListener{
+	class FunctionThread extends SwingWorker<Data, Data> implements ProgressListener{
 		
-		private Function function;
-		private FunctionParam params;
-		private int maxProgress = PROGRESS_BOUND;
+		private Function m_Function;
+		private int m_MaxProgress = PROGRESS_BOUND;
 		
-		FunctionThread(Function function, FunctionParam params){
-			this.function = function;
-			this.params = params;
-			this.function.addListener(this);
-			maxProgress = function.getProgressLength(params);
+		FunctionThread(Function function){
+			this.m_Function = function;
+			this.m_Function.addListener(this);
+			m_MaxProgress = function.getProgressLength();
 		}
 		
 		@Override
-		public void update(FunctionEvent event) {
+		public void update(ProgressEvent event) {
 			switch(event.getType()){
 			case UPDATE:
-				this.setProgress(event.getProgress()*maxProgress/PROGRESS_BOUND);
+				this.setProgress(event.getProgress()*m_MaxProgress/PROGRESS_BOUND);
 				break;
 			default:
 				break;
@@ -65,94 +62,94 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 
 		@Override
 		protected Data doInBackground() throws Exception {
-			return function.run(params);
+			return m_Function.run();
 		}
 		
 	}
 	
-	private boolean completed;
-	private boolean cancelled;
-	private Bundle bundle;
-	private DataManager dataManager;
-	private Data result;
-	private FunctionThread thread;
-	private ProgressWindow monitor;
+	private boolean m_Completed;
+	private boolean m_Cancelled;
+	private Bundle m_Bundle;
+	private DataManager m_DataManager;
+	private Data m_Result;
+	private FunctionThread m_Thread;
+	private ProgressWindow m_Monitor;
 	//private ProgressMonitor monitor;
 
-	public SwingFunctionExecutor(Function function, FunctionParam params, DataManager dataManager, Bundle bundle) {
-		super(function, params);
-		this.dataManager = dataManager;
-		this.bundle = bundle;
-		this.completed = false;
-		this.cancelled = false;
-		this.result = null;
-		this.thread = new FunctionThread(this.getFunction(), this.getParams());
+	public SwingFunctionExecutor(Function function, DataManager dataManager, Bundle bundle) {
+		super(function);
+		m_DataManager = dataManager;
+		m_Bundle = bundle;
+		m_Completed = false;
+		m_Cancelled = false;
+		m_Result = null;
+		m_Thread = new FunctionThread(this.getFunction());
 	}
 	
 	private void setResults(Data data){
-		this.result = data;
-		dataManager.addData(result, bundle);
+		this.m_Result = data;
+		m_DataManager.addData(m_Result, m_Bundle);
 	}
 	
 	private void setComplete(){
-		completed = true;
-		if(monitor != null){
-			monitor.dispose();
-			monitor = null;
+		m_Completed = true;
+		if(m_Monitor != null){
+			m_Monitor.dispose();
+			m_Monitor = null;
 		}
 	}
 	
 	private void setCancelled(){
-		cancelled = true;
-		if(monitor != null){
-			monitor.dispose();
-			monitor = null;
+		m_Cancelled = true;
+		if(m_Monitor != null){
+			m_Monitor.dispose();
+			m_Monitor = null;
 		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		//monitor.setProgress(thread.getProgress());
-		if(monitor != null){
-			monitor.setValue(thread.getProgress());
+		if(m_Monitor != null){
+			m_Monitor.setValue(m_Thread.getProgress());
 		}
 	}
 
 	@Override
 	public void execute() {
 		//this.monitor = new ProgressMonitor(null, thread.function.getName(), null, 0, PROGRESS_BOUND);
-		this.monitor = new ProgressWindow(thread.function.getName(), 0, PROGRESS_BOUND, new OnPress(){
+		this.m_Monitor = new ProgressWindow(m_Thread.m_Function.getName(), 0, PROGRESS_BOUND, new OnPress(){
 
 			@Override
 			public void act() {
-				thread.cancel(true);
+				m_Thread.cancel(true);
 			}
 			
 		});
-		thread.addPropertyChangeListener(this);
-		thread.execute();
+		m_Thread.addPropertyChangeListener(this);
+		m_Thread.execute();
 	}
 
 	@Override
 	public boolean isComplete() {
-		return completed;
+		return m_Completed;
 	}
 
 	@Override
 	public boolean isCancelled() {
-		return cancelled;
+		return m_Cancelled;
 	}
 
 	@Override
 	public void cancel() {
-		if(thread!=null){
-			thread.cancel(true);
+		if(m_Thread!=null){
+			m_Thread.cancel(true);
 		}
 	}
 
 	@Override
 	public Data getResults() {
-		return result;
+		return m_Result;
 	}
 	
 	

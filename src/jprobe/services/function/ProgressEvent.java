@@ -1,7 +1,7 @@
 package jprobe.services.function;
 
 
-public class FunctionEvent {
+public class ProgressEvent {
 	
 	public enum Type{
 		UPDATE,
@@ -13,13 +13,13 @@ public class FunctionEvent {
 	private Function source;
 	private int progress;
 	
-	public FunctionEvent(Function source, Type type){
+	public ProgressEvent(Function source, Type type){
 		this.type = type;
 		this.source = source;
 		this.progress = 0;
 	}
 	
-	public FunctionEvent(Function source, Type type, int progress){
+	public ProgressEvent(Function source, Type type, int progress){
 		this(source, type);
 		this.progress = progress;
 	}
