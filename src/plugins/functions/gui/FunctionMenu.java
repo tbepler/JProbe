@@ -34,7 +34,7 @@ public class FunctionMenu extends JMenu implements CoreListener{
 			items.put(f, new FunctionMenuItem(core.getDataManager(), bundle, f, functionWindow));
 			this.add(items.get(f));
 		}
-		this.add(new ErrorTest(bundle, core.getErrorHandler()));
+		this.add(new ErrorTest(bundle));
 		this.core.getFunctionManager().addListener(this);
 		this.setVisible(true);
 		this.setEnabled(true);

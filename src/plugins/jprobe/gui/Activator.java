@@ -11,33 +11,34 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
-import plugins.jprobe.gui.services.GUIErrorHandler;
+import plugins.jprobe.gui.services.GUIErrorManager;
 import plugins.jprobe.gui.services.JProbeGUI;
 
 public class Activator implements BundleActivator{
 	
-	private JProbeCore core;
-	private ErrorHandler errorHandler;
-	private JProbeGUIFrame gui;
-	private ServiceRegistration<JProbeGUI> register = null;
+	private JProbeCore m_Core;
+	private JProbeGUIFrame m_Gui;
+	private GUIErrorManager m_ErrorManager = null;
+	private ServiceRegistration<JProbeGUI> m_Registration = null;
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		ServiceReference ref = context.getServiceReference(JProbeCore.class);
-		core = (JProbeCore) context.getService(ref);
-		gui = new JProbeGUIFrame(core, "JProbe", context.getBundle());
-		errorHandler = new GUIErrorHandler(gui);
-		context.registerService(ErrorHandler.class, errorHandler, null);
-		gui.setVisible(true);
-		register = context.registerService(JProbeGUI.class, gui, null);
+		m_Core = (JProbeCore) context.getService(ref);
+		m_Gui = new JProbeGUIFrame(m_Core, "JProbe", context.getBundle());
+		m_Gui.setVisible(true);
+		m_ErrorManager = new GUIErrorManager(m_Gui);
+		ErrorHandler.getInstance().addErrorManager(m_ErrorManager);
+		m_Registration = context.registerService(JProbeGUI.class, m_Gui, null);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		if(register != null){
-			register.unregister();
+		if(m_Registration != null){
+			m_Registration.unregister();
 		}
-		gui.dispose();
+		ErrorHandler.getInstance().removeErrorManager(m_ErrorManager);
+		m_Gui.dispose();
 	}
 
 }

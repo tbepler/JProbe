@@ -10,14 +10,6 @@ public interface JProbeCore {
 	
 	public void shutdown();
 	
-	public Journal getLog();
-	
-	public Debug getDebugLevel();
-	
-	public ErrorHandler getErrorHandler();
-	public void addErrorHandler(ErrorHandler handler);
-	public void removeErrorHandler(ErrorHandler handler);
-	
 	public DataManager getDataManager();
 	public FunctionManager getFunctionManager();
 	

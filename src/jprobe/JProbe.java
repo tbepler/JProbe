@@ -9,11 +9,8 @@ import java.util.Properties;
 
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
-import jprobe.services.Debug;
-import jprobe.services.ErrorHandler;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
-import jprobe.services.Journal;
 import jprobe.services.Saveable;
 
 import org.apache.felix.framework.Felix;
@@ -28,17 +25,12 @@ public class JProbe implements JProbeCore{
 	//private JProbeGUIFrame frame;
 	private CoreDataManager dataManager;
 	private CoreFunctionManager functionManager;
-	private CoreErrorHandler errorHandler;
 	private JProbeActivator activator;
-	private Debug debugLevel;
 	private Felix felix;
-	private Journal log;
 	
 	public JProbe(Configuration config){
-		log = new LogImplem(new File(config.getLogFile()));
 		dataManager = new CoreDataManager(this);
 		functionManager = new CoreFunctionManager(this);
-		debugLevel = config.getDebugLevel();
 		//frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map felixConfig = new HashMap();
@@ -62,7 +54,6 @@ public class JProbe implements JProbeCore{
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, config.getAutoDeployPluginDirectory());
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
 			felix.init();
-			errorHandler = new CoreErrorHandler(felix.getBundleContext(), log);
 			AutoProcessor.process(props, felix.getBundleContext());
 			//start the felix instance
 			felix.start();
@@ -72,16 +63,6 @@ public class JProbe implements JProbeCore{
 		}
 		//frame.pack();
 		//frame.setVisible(true);
-	}
-	
-	@Override
-	public Journal getLog(){
-		return log;
-	}
-	
-	@Override
-	public Debug getDebugLevel(){
-		return debugLevel;
 	}
 	
 	@Override
@@ -136,21 +117,6 @@ public class JProbe implements JProbeCore{
 	@Override
 	public void load(File fromFile){
 		//TODO
-	}
-
-	@Override
-	public ErrorHandler getErrorHandler() {
-		return errorHandler;
-	}
-
-	@Override
-	public void addErrorHandler(ErrorHandler handler) {
-		errorHandler.addErrorHandler(handler);
-	}
-
-	@Override
-	public void removeErrorHandler(ErrorHandler handler) {
-		errorHandler.removeErrorHandler(handler);
 	}
 
 	@Override

@@ -27,11 +27,11 @@ import org.osgi.framework.Bundle;
 import plugins.jprobe.gui.services.GUIEvent;
 import plugins.jprobe.gui.services.GUIListener;
 import plugins.jprobe.gui.services.JProbeGUI;
-
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
+import jprobe.services.Log;
 
 public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private static final long serialVersionUID = 1L;
@@ -105,8 +105,9 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	}
 	
 	private void checkDebugAndLog(String message){
-		if(core.getDebugLevel() == Debug.LOG || core.getDebugLevel() == Debug.FULL){
-			core.getLog().write(bundle, message);
+		Debug debugLevel = Debug.getLevel();
+		if(debugLevel == Debug.LOG || debugLevel == Debug.FULL){
+			Log.getInstance().write(bundle, message);
 		}
 	}
 	

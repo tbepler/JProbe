@@ -5,20 +5,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import jprobe.services.Journal;
 
 import org.osgi.framework.Bundle;
 
-public class LogImplem implements Journal{
-	
-	private Calendar calendar;
+public class TimeStampJournal implements Journal{
+
 	private BufferedWriter writer;
 	
-	public LogImplem(File log){
-		calendar = new GregorianCalendar(TimeZone.getDefault());
+	public TimeStampJournal(File log){
 		try {
 			writer = new BufferedWriter(new FileWriter(log));
 		} catch (IOException e) {
@@ -30,7 +26,7 @@ public class LogImplem implements Journal{
 	@Override
 	public void write(Bundle bundle, String message) {
 		try {
-			writer.write("<"+calendar.getTime()+"><"+bundle.getSymbolicName()+">"+ message+"\n");
+			writer.write("<"+Calendar.getInstance().getTime()+"><"+bundle.getSymbolicName()+">"+ message+"\n");
 			writer.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

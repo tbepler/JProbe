@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import jprobe.services.Debug;
+import jprobe.services.ErrorHandler;
+import jprobe.services.Log;
 
 /**
  * This class is responsible for parsing the configuration file. The file should be formatted as:
@@ -78,6 +80,7 @@ public class Configuration {
 			while(s.hasNextLine()){
 				readLine(s.nextLine());
 			}
+			s.close();
 		} catch (FileNotFoundException e) {
 			System.err.println("Error: unable to find configuration file "+configFile.getAbsolutePath());
 			try {
@@ -88,7 +91,9 @@ public class Configuration {
 				//do nothing
 			}
 		}
-		
+		Debug.setLevel(debugLevel);
+		ErrorHandler.getInstance().init(new TimeStampJournal(new File(errorLogFile)));
+		Log.getInstance().init(new TimeStampJournal(new File(logFile)));
 	}
 
 	private void readLine(String line){

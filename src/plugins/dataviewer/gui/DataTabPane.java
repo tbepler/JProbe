@@ -23,13 +23,11 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	public static final Dimension PREFERRED = new Dimension(800, 800);
 	
 	private DataManager dataManager;
-	private Journal log;
 	private Map<Data, DataTab> tabs;
 	private GridBagConstraints constraints;
 	
-	public DataTabPane(DataManager dataManager, Journal log){
+	public DataTabPane(DataManager dataManager){
 		super();
-		this.log = log;
 		this.setPreferredSize(PREFERRED);
 		this.dataManager = dataManager;
 		constraints = new GridBagConstraints();

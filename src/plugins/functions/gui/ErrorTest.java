@@ -11,12 +11,10 @@ import jprobe.services.ErrorHandler;
 
 public class ErrorTest extends JMenuItem implements ActionListener{
 	
-	private ErrorHandler errorHandler;
 	private Bundle bundle;
 	
-	public ErrorTest(Bundle bundle, ErrorHandler errorHandler){
+	public ErrorTest(Bundle bundle){
 		super("Error");
-		this.errorHandler = errorHandler;
 		this.bundle = bundle;
 		this.setEnabled(true);
 		this.setVisible(true);
@@ -33,7 +31,7 @@ public class ErrorTest extends JMenuItem implements ActionListener{
 		try {
 			this.throwError();
 		} catch (Exception e1) {
-			errorHandler.handleException(bundle, e1);
+			ErrorHandler.getInstance().handleException(e1, bundle);
 		}
 	}
 

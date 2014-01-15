@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
+import jprobe.services.Log;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -38,12 +39,12 @@ public class Activator implements BundleActivator{
 	};
 	
 	private void initTabPane(){
-		tabPane = new DataTabPane(core.getDataManager(), core.getLog());
+		tabPane = new DataTabPane(core.getDataManager());
 		gui.addComponent(tabPane, tabPane.getGridBagConstraints(), bc.getBundle());
-		if(core.getDebugLevel() == Debug.FULL){
+		if(Debug.getLevel() == Debug.FULL){
 			System.out.println("DataViewer started");
 		}
-		core.getLog().write(bc.getBundle(), "DataViewer started.");
+		Log.getInstance().write(bc.getBundle(), "DataViewer started.");
 	}
 	
 	@Override
