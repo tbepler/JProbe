@@ -66,8 +66,26 @@
     </ownedEnd>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_fE19MH7PEeOej-1hX8fehA" name="Class1"/>
-  <packagedElement xmi:type="uml:Class" xmi:id="_hKYtYH7PEeOej-1hX8fehA" name="DataPanel"/>
-  <packagedElement xmi:type="uml:Class" xmi:id="_nqQT0H7PEeOej-1hX8fehA" name="FieldPanel"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_hKYtYH7PEeOej-1hX8fehA" name="DataPanel">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_KNFZQH7REeOej-1hX8fehA" name="jLabel" type="_6OM6sH7QEeOej-1hX8fehA" aggregation="composite" association="_KNGAUH7REeOej-1hX8fehA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_KNFZQX7REeOej-1hX8fehA" value="2"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_KNFZQn7REeOej-1hX8fehA" value="2"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_Q49bYH7REeOej-1hX8fehA" name="dataComboBox" type="_70TV0H7QEeOej-1hX8fehA" aggregation="composite" association="_Q4-CcH7REeOej-1hX8fehA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Q49bYX7REeOej-1hX8fehA" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Q49bYn7REeOej-1hX8fehA" value="1"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_nqQT0H7PEeOej-1hX8fehA" name="FieldPanel">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_hwNFUH7REeOej-1hX8fehA" name="jLabel" type="_6OM6sH7QEeOej-1hX8fehA" aggregation="composite" association="_hwNsYH7REeOej-1hX8fehA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hwNFUX7REeOej-1hX8fehA" value="2"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hwNFUn7REeOej-1hX8fehA" value="2"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_sP7zkH7REeOej-1hX8fehA" name="fieldEditor" type="_olzrMH7REeOej-1hX8fehA" aggregation="composite" association="_sP8aoH7REeOej-1hX8fehA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_sP7zkX7REeOej-1hX8fehA" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_sP7zkn7REeOej-1hX8fehA" value="1"/>
+    </ownedAttribute>
+  </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_9-aSYH7PEeOej-1hX8fehA" name="dataParamsPanel_dataPanel_1" memberEnd="_9-aSYX7PEeOej-1hX8fehA _9-ZrUH7PEeOej-1hX8fehA">
     <ownedEnd xmi:type="uml:Property" xmi:id="_9-aSYX7PEeOej-1hX8fehA" name="dataParamsPanel" type="_x1wT8H7OEeOej-1hX8fehA" association="_9-aSYH7PEeOej-1hX8fehA">
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_9-aSYn7PEeOej-1hX8fehA" value="1"/>
@@ -84,6 +102,33 @@
     <ownedEnd xmi:type="uml:Property" xmi:id="_XTxYIX7QEeOej-1hX8fehA" name="functionDialogHandler" type="_XXTKEH7MEeOej-1hX8fehA" association="_XTxYIH7QEeOej-1hX8fehA">
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_XTxYIn7QEeOej-1hX8fehA" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_XTxYI37QEeOej-1hX8fehA" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_6OM6sH7QEeOej-1hX8fehA" name="JLabel"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_70TV0H7QEeOej-1hX8fehA" name="DataComboBox"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_KNGAUH7REeOej-1hX8fehA" name="dataPanel_jLabel_1" memberEnd="_KNGAUX7REeOej-1hX8fehA _KNFZQH7REeOej-1hX8fehA">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_KNGAUX7REeOej-1hX8fehA" name="dataPanel" type="_hKYtYH7PEeOej-1hX8fehA" association="_KNGAUH7REeOej-1hX8fehA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_KNGAUn7REeOej-1hX8fehA" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_KNGAU37REeOej-1hX8fehA" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_Q4-CcH7REeOej-1hX8fehA" name="dataPanel_dataComboBox_1" memberEnd="_Q4-CcX7REeOej-1hX8fehA _Q49bYH7REeOej-1hX8fehA">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_Q4-CcX7REeOej-1hX8fehA" name="dataPanel" type="_hKYtYH7PEeOej-1hX8fehA" association="_Q4-CcH7REeOej-1hX8fehA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Q4-Ccn7REeOej-1hX8fehA" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Q4-Cc37REeOej-1hX8fehA" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_hwNsYH7REeOej-1hX8fehA" name="fieldPanel_jLabel_1" memberEnd="_hwNsYX7REeOej-1hX8fehA _hwNFUH7REeOej-1hX8fehA">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_hwNsYX7REeOej-1hX8fehA" name="fieldPanel" type="_nqQT0H7PEeOej-1hX8fehA" association="_hwNsYH7REeOej-1hX8fehA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hwNsYn7REeOej-1hX8fehA" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hwNsY37REeOej-1hX8fehA" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_olzrMH7REeOej-1hX8fehA" name="FieldEditor"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_sP8aoH7REeOej-1hX8fehA" name="fieldPanel_fieldEditor_1" memberEnd="_sP8aoX7REeOej-1hX8fehA _sP7zkH7REeOej-1hX8fehA">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_sP8aoX7REeOej-1hX8fehA" name="fieldPanel" type="_nqQT0H7PEeOej-1hX8fehA" association="_sP8aoH7REeOej-1hX8fehA">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_sP8aon7REeOej-1hX8fehA" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_sP8ao37REeOej-1hX8fehA" value="1"/>
     </ownedEnd>
   </packagedElement>
 </uml:Model>
