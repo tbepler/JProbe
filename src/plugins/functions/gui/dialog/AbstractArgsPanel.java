@@ -5,40 +5,61 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public abstract class AbstractArgsPanel<T> extends JPanel{
+import plugins.functions.gui.utils.StateListener;
+import plugins.functions.gui.utils.StateNotifier;
+
+public abstract class AbstractArgsPanel<T> extends JPanel implements StateNotifier{
 	private static final long serialVersionUID = 1L;
 
 	private List<T> m_Args;
 	private List<String> m_Headers;
+	private Collection<StateListener> m_Listeners = new HashSet<StateListener>();
 	
-	public AbstractArgsPanel(){
+	protected AbstractArgsPanel(){
 		super(new GridBagLayout());
 		m_Args = new ArrayList<T>();
 		m_Headers = new ArrayList<String>();
 	}
 	
-	public AbstractArgsPanel(Collection<T> args){
+	protected AbstractArgsPanel(Collection<T> args){
 		this();
 		m_Args.addAll(args);
 		this.layoutGrid();
 	}
 	
-	public AbstractArgsPanel(List<String> headers){
+	protected AbstractArgsPanel(List<String> headers){
 		this();
 		m_Headers.addAll(headers);
 		this.layoutGrid();
 	}
 	
-	public AbstractArgsPanel(Collection<T> args, List<String> headers){
+	protected AbstractArgsPanel(Collection<T> args, List<String> headers){
 		this();
 		m_Headers.addAll(headers);
 		m_Args.addAll(args);
 		this.layoutGrid();
+	}
+	
+	@Override
+	public void addStateListener(StateListener l){
+		m_Listeners.add(l);
+	}
+	
+	@Override
+	public void removeStateListener(StateListener l){
+		m_Listeners.remove(l);
+	}
+	
+	protected void notifyListeners(){
+		for(StateListener l : m_Listeners){
+			l.update(this);
+		}
 	}
 	
 	public void setHeaders(List<String> headers){
