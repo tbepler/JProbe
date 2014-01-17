@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 
 import org.osgi.framework.Bundle;
 
+import plugins.functions.gui.dialog.FunctionDialogHandler;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;

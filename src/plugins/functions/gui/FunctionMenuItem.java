@@ -8,6 +8,8 @@ import javax.swing.JMenuItem;
 
 import org.osgi.framework.Bundle;
 
+import plugins.functions.gui.dialog.FunctionDialogHandler;
+import plugins.functions.gui.dialog.FunctionPanel;
 import jprobe.services.DataManager;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;

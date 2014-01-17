@@ -1,4 +1,4 @@
-package plugins.functions.gui;
+package plugins.functions.gui.dialog;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -17,7 +17,7 @@ import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.function.DataParameter;
 
-public class DataChooser extends JPanel implements ItemListener, CoreListener{
+public class DataComboBox extends JPanel implements ItemListener, CoreListener{
 	private static final long serialVersionUID = 1L;
 	
 	private static final String SELECT_NOTHING = "-"; 
@@ -28,7 +28,7 @@ public class DataChooser extends JPanel implements ItemListener, CoreListener{
 	private JComboBox<String> m_ComboBox;
 	private Collection<ActionListener> m_Listeners = new HashSet<ActionListener>();
 	
-	public DataChooser(DataParameter dataParam, JProbeCore core){
+	public DataComboBox(DataParameter dataParam, JProbeCore core){
 		super();
 		m_DataParam = dataParam;
 		m_Core = core;

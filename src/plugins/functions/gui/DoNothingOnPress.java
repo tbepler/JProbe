@@ -1,5 +1,6 @@
 package plugins.functions.gui;
 
+
 public class DoNothingOnPress implements OnPress{
 
 	@Override

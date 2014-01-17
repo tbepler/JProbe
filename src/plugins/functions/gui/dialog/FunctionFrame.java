@@ -1,4 +1,4 @@
-package plugins.functions.gui;
+package plugins.functions.gui.dialog;
 
 import java.awt.Window;
 import javax.swing.JDialog;

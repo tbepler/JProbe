@@ -1,4 +1,4 @@
-package plugins.functions.gui;
+package plugins.functions.gui.dialog;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -10,6 +10,9 @@ import javax.swing.JPanel;
 
 import org.osgi.framework.Bundle;
 
+import plugins.functions.gui.DoNothingOnPress;
+import plugins.functions.gui.OnPress;
+import plugins.functions.gui.SwingFunctionExecutor;
 import jprobe.services.DataManager;
 import jprobe.services.ErrorHandler;
 import jprobe.services.function.Function;

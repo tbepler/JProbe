@@ -1,4 +1,4 @@
-package plugins.functions.gui;
+package plugins.functions.gui.dialog;
 
 import java.awt.Frame;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import plugins.functions.gui.OnPress;
 import jprobe.services.function.Function;
 
 public class FunctionDialogHandler{

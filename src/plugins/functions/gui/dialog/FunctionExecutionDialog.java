@@ -1,4 +1,4 @@
-package plugins.functions.gui;
+package plugins.functions.gui.dialog;
 
 public class FunctionExecutionDialog {
 
