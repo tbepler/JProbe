@@ -2,6 +2,7 @@ package plugins.functions.gui.dialog;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -17,7 +18,11 @@ public class DataPanel extends AbstractArgsPanel<DataParameter> implements State
 	public DataPanel(DataParameter[] dataParams){
 		super();
 		this.setHeaders(HEADER);
-		
+		Collection<DataParameter> args = new ArrayList<DataParameter>();
+		for(DataParameter param : dataParams){
+			args.add(param);
+		}
+		this.setArgs(args);
 	}
 	
 	private static List<String> generateHeader(){

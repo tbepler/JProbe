@@ -1,6 +1,5 @@
 package plugins.functions.gui.dialog;
 
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Collection;
@@ -11,13 +10,15 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import plugins.functions.gui.utils.StateListener;
+import plugins.functions.gui.utils.StateNotifier;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.function.DataParameter;
 
-public class DataComboBox extends JPanel implements ItemListener, CoreListener{
+public class DataComboBox extends JPanel implements ItemListener, CoreListener, StateNotifier{
 	private static final long serialVersionUID = 1L;
 	
 	private static final String SELECT_NOTHING = "-"; 
@@ -26,10 +27,12 @@ public class DataComboBox extends JPanel implements ItemListener, CoreListener{
 	private JProbeCore m_Core;
 	private Map<String, Data> m_Displayed;
 	private JComboBox<String> m_ComboBox;
-	private Collection<ActionListener> m_Listeners = new HashSet<ActionListener>();
+	private boolean m_Valid;
+	private Collection<StateListener> m_Listeners = new HashSet<StateListener>();
 	
 	public DataComboBox(DataParameter dataParam, JProbeCore core){
 		super();
+		m_Valid = false;
 		m_DataParam = dataParam;
 		m_Core = core;
 		m_Core.addCoreListener(this);
@@ -45,14 +48,6 @@ public class DataComboBox extends JPanel implements ItemListener, CoreListener{
 				m_ComboBox.addItem(name);
 			}
 		}
-	}
-	
-	public void addActionListener(ActionListener l){
-		m_Listeners.add(l);
-	}
-	
-	public void removeActionListener(ActionListener l){
-		m_Listeners.remove(l);
 	}
 	
 	public void cleanup(){
@@ -111,8 +106,33 @@ public class DataComboBox extends JPanel implements ItemListener, CoreListener{
 
 	@Override
 	public void itemStateChanged(ItemEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		try{
+			m_DataParam.setValue(m_Displayed.get(m_ComboBox.getSelectedItem()));
+			m_Valid = true;
+		} catch (Exception e){
+			m_Valid = false;
+		}
+		this.notifyListeners();
+	}
+	
+	public boolean isValid(){
+		return m_Valid;
+	}
+	
+	protected void notifyListeners(){
+		for(StateListener l : m_Listeners){
+			l.update(this);
+		}
+	}
+
+	@Override
+	public void addStateListener(StateListener l) {
+		m_Listeners.add(l);
+	}
+
+	@Override
+	public void removeStateListener(StateListener l) {
+		m_Listeners.remove(l);
 	}
 	
 }
