@@ -21,7 +21,7 @@ public abstract class DoubleField implements Field{
 	private static Set<Character> generateValidChars(){
 		Set<Character> valid = new HashSet<Character>();
 		for(char c : VALID_CHARS){
-			VALID_CHARS_SET.add(c);
+			valid.add(c);
 		}
 		return valid;
 	}

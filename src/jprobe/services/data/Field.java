@@ -1,7 +1,6 @@
 package jprobe.services.data;
 
 import java.io.Serializable;
-import java.util.Set;
 
 public interface Field extends Serializable{
 	

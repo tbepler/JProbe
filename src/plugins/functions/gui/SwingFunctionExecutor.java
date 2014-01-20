@@ -9,6 +9,7 @@ import org.osgi.framework.Bundle;
 
 import plugins.functions.gui.utils.OnPress;
 import jprobe.services.DataManager;
+import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
 import jprobe.services.function.Function;
 import jprobe.services.function.ProgressEvent;
@@ -50,8 +51,8 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 			try{
 				setResults(this.get());
 				setComplete();
-			} catch (Exception ignore){
-				
+			} catch (Exception e){
+				ErrorHandler.getInstance().handleException(e, m_Bundle);
 			}
 		}
 

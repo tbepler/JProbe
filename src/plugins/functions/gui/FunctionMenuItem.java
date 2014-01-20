@@ -34,11 +34,8 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	
 	private void doFunction(){
 		//code for executing function here
-		if(Debug.getLevel() == Debug.LOG || Debug.getLevel() == Debug.FULL){
-			Log.getInstance().write(m_Bundle, this.getName()+" clicked");
-		}
 		if(Debug.getLevel() == Debug.FULL){
-			System.out.println(this.getName()+" clicked");
+			Log.getInstance().write(m_Bundle, this.getText()+" clicked");
 		}
 		try {
 			m_FunctionDialog.display(m_FunctionPanel);

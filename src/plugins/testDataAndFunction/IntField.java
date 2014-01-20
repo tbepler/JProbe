@@ -43,7 +43,7 @@ public class IntField extends IntegerField{
 	}
 
 	@Override
-	public IntegerField parseInt(int value) {
+	public IntegerField parseInt(int value) throws Exception{
 		return new IntField(value);
 	}
 

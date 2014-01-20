@@ -30,7 +30,11 @@ public class ErrorHandler {
 	public synchronized void handleException(Exception e, Bundle thrower){
 		if(m_ErrorLog != null){
 			if(Debug.getLevel() == Debug.FULL){
-				m_ErrorLog.write(thrower, " ERROR: "+e.getMessage()+"\n"+e.getStackTrace());
+				String trace = "";
+				for(StackTraceElement elem : e.getStackTrace()){
+					trace += elem + "\n";
+				}
+				m_ErrorLog.write(thrower, " ERROR: "+e.getMessage()+"\n"+trace);
 			}else{
 				m_ErrorLog.write(thrower, " ERROR: "+e.getMessage());
 			}

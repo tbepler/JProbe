@@ -19,7 +19,7 @@ public class StringField implements Field{
 	}
 
 	@Override
-	public Field parseString(String s) {
+	public Field parseString(String s) throws Exception{
 		return new StringField(s);
 	}
 

@@ -3,7 +3,8 @@ package plugins.testDataAndFunction;
 import jprobe.services.data.DoubleField;
 
 public class DecimalField extends DoubleField{
-	
+	private static final long serialVersionUID = 1L;
+
 	public static final String TOOLTIP = "A decimal field with no bounds";
 	
 	private double value;
@@ -43,7 +44,7 @@ public class DecimalField extends DoubleField{
 	}
 
 	@Override
-	public DoubleField parseDouble(double value) {
+	public DoubleField parseDouble(double value) throws Exception{
 		return new DecimalField(value);
 	}
 

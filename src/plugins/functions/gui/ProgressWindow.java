@@ -71,6 +71,9 @@ public class ProgressWindow implements ActionListener{
 				prevTime = System.currentTimeMillis();
 			}else{
 				long curTime = System.currentTimeMillis();
+				if(value - progressBar.getValue() == 0){
+					return;
+				}
 				long approxTimeRequired = (progressBar.getMaximum()-progressBar.getValue())/(value-progressBar.getValue())
 					*(curTime - prevTime);
 				prevTime = curTime;
