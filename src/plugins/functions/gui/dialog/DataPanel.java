@@ -1,14 +1,12 @@
 package plugins.functions.gui.dialog;
 
 import java.awt.Component;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import plugins.functions.gui.utils.StateListener;

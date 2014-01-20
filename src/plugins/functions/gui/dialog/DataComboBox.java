@@ -37,6 +37,7 @@ public class DataComboBox extends JComboBox<String> implements ItemListener, Cor
 		m_Displayed = new HashMap<String, Data>();
 		if(m_DataParam.isOptional()){
 			this.addItem(SELECT_NOTHING);
+			m_Displayed.put(SELECT_NOTHING, null);
 		}
 		for(Data d : m_Core.getDataManager().getAllData()){
 			if(isValid(d)){

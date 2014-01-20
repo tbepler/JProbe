@@ -23,7 +23,6 @@ public class ValidLabel extends JLabel implements StateListener{
 			this.setIcon(m_InvalidIcon);
 		}
 		m_PrevState = m_Observed.isStateValid();
-		this.revalidate();
 	}
 	
 	private void updateIcon(){

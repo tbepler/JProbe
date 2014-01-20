@@ -9,6 +9,8 @@ import plugins.functions.gui.utils.StateListener;
 import plugins.functions.gui.utils.StateNotifier;
 import plugins.functions.gui.utils.ValidStateNotifier;
 import jprobe.services.JProbeCore;
+import jprobe.services.data.Data;
+import jprobe.services.data.Field;
 import jprobe.services.function.DataParameter;
 import jprobe.services.function.FieldParameter;
 
@@ -17,6 +19,7 @@ public class ParameterPanel extends JPanel implements ValidStateNotifier, StateL
 	
 	private FieldParameter[] m_FieldParams;
 	private DataPanel m_DataPanel;
+	private boolean m_Valid;
 	private Collection<StateListener> m_Listeners = new HashSet<StateListener>();
 	
 	public ParameterPanel(DataParameter[] dataParams, FieldParameter[] fieldParams, JProbeCore core){
@@ -24,7 +27,20 @@ public class ParameterPanel extends JPanel implements ValidStateNotifier, StateL
 		m_DataPanel = new DataPanel(dataParams, core);
 		m_DataPanel.addStateListener(this);
 		this.add(m_DataPanel);
+		m_Valid = this.componentsValid();
 		m_FieldParams = fieldParams;
+	}
+	
+	public Data[] getDataArgs(){
+		return m_DataPanel.getSelectedData();
+	}
+	
+	public Field[] getFieldArgs(){
+		return null;
+	}
+	
+	private boolean componentsValid(){
+		return m_DataPanel.isStateValid();
 	}
 
 	@Override
@@ -45,12 +61,16 @@ public class ParameterPanel extends JPanel implements ValidStateNotifier, StateL
 
 	@Override
 	public boolean isStateValid() {
-		return m_DataPanel.isStateValid();
+		return m_Valid;
 	}
 
 	@Override
 	public void update(StateNotifier source) {
-		this.notifyListeners();
+		boolean newState = this.componentsValid();
+		if(m_Valid != newState){
+			m_Valid = newState;
+			this.notifyListeners();
+		}
 	}
 	
 }

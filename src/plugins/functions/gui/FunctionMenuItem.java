@@ -1,6 +1,5 @@
 package plugins.functions.gui;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,29 +9,23 @@ import org.osgi.framework.Bundle;
 
 import plugins.functions.gui.dialog.FunctionDialogHandler;
 import plugins.functions.gui.dialog.FunctionPanel;
-import jprobe.services.DataManager;
+import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.data.Data;
-import jprobe.services.function.Function;
-import jprobe.services.function.FunctionExecutor;
+import jprobe.services.Log;
 import jprobe.services.function.FunctionPrototype;
 
 public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	
-	private FunctionPrototype m_FunctionPrototype;
-	private DataManager m_DataManager;
 	private Bundle m_Bundle;
 	private FunctionDialogHandler m_FunctionDialog;
 	private FunctionPanel m_FunctionPanel;
 	
-	public FunctionMenuItem(DataManager dataManager, Bundle bundle, FunctionPrototype functionPrototype, FunctionDialogHandler dialogWindow){
+	public FunctionMenuItem(JProbeCore core, Bundle bundle, FunctionPrototype functionPrototype, FunctionDialogHandler dialogWindow){
 		super(functionPrototype.getFunctionName());
-		m_DataManager = dataManager;
 		m_Bundle = bundle;
-		m_FunctionPrototype = functionPrototype;
 		m_FunctionDialog = dialogWindow;
-		m_FunctionPanel = new FunctionPanel(functionPrototype, dataManager, bundle);
+		m_FunctionPanel = new FunctionPanel(functionPrototype, core, bundle);
 		this.setEnabled(true);
 		this.setVisible(true);
 		this.setToolTipText(functionPrototype.getFunctionDescription());
@@ -41,7 +34,12 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	
 	private void doFunction(){
 		//code for executing function here
-		System.out.println(m_FunctionPrototype.getFunctionName()+" clicked");
+		if(Debug.getLevel() == Debug.LOG || Debug.getLevel() == Debug.FULL){
+			Log.getInstance().write(m_Bundle, this.getName()+" clicked");
+		}
+		if(Debug.getLevel() == Debug.FULL){
+			System.out.println(this.getName()+" clicked");
+		}
 		try {
 			m_FunctionDialog.display(m_FunctionPanel);
 			
