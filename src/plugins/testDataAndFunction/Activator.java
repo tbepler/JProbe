@@ -13,6 +13,7 @@ public class Activator implements BundleActivator{
 	private JProbeCore core;
 	private FunctionPrototype fun = new TestFunctionPrototype();
 	private FunctionPrototype longFun = null;
+	private FunctionPrototype dataParamFun = new DataParamFunctionPrototype();
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -21,6 +22,7 @@ public class Activator implements BundleActivator{
 		core = (JProbeCore) context.getService(ref);
 		core.getFunctionManager().addFunctionPrototype(fun, context.getBundle());
 		core.getFunctionManager().addFunctionPrototype(longFun, context.getBundle());
+		core.getFunctionManager().addFunctionPrototype(dataParamFun, context.getBundle());
 		System.out.println("Started test data and function plugin");
 	}
 
@@ -28,6 +30,7 @@ public class Activator implements BundleActivator{
 	public void stop(BundleContext context) throws Exception {
 		core.getFunctionManager().removeFunctionPrototype(fun, context.getBundle());
 		core.getFunctionManager().removeFunctionPrototype(longFun, context.getBundle());
+		core.getFunctionManager().removeFunctionPrototype(dataParamFun, context.getBundle());
 	}
 
 }
