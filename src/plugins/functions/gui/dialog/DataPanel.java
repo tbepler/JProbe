@@ -1,16 +1,20 @@
 package plugins.functions.gui.dialog;
 
 import java.awt.Component;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import plugins.functions.gui.utils.StateListener;
 import plugins.functions.gui.utils.StateNotifier;
+import plugins.functions.gui.utils.ValidLabel;
+import plugins.functions.gui.Constants;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.function.DataParameter;
@@ -35,6 +39,7 @@ public class DataPanel extends AbstractArgsPanel<DataParameter> implements State
 		m_ParamToBox = new HashMap<DataParameter, DataComboBox>();
 		for(int i=0; i<dataParams.length; i++){
 			m_DataBoxes[i] = new DataComboBox(dataParams[i], core);
+			m_DataBoxes[i].addStateListener(this);
 			m_ParamToBox.put(dataParams[i], m_DataBoxes[i]);
 		}
 	}
@@ -76,17 +81,20 @@ public class DataPanel extends AbstractArgsPanel<DataParameter> implements State
 		optionalTag.setToolTipText(argument.getDescription());
 		row.add(optionalTag);
 		//create label to show whether selection is valid or not
-		
-		//create data selection component
-		
+		JLabel validIconLabel = new ValidLabel(m_ParamToBox.get(argument), Constants.CHECK_ICON, Constants.X_ICON);
+		validIconLabel.setToolTipText(argument.getDescription());
+		row.add(validIconLabel);
+		//add DataComboBox
+		DataComboBox dataSelector = m_ParamToBox.get(argument);
+		dataSelector.setToolTipText(argument.getDescription());
+		row.add(dataSelector);
 		//return list
 		return row;
 	}
 
 	@Override
 	public void update(StateNotifier source) {
-		// TODO Auto-generated method stub
-		
+		this.notifyListeners();
 	}
 	
 	
