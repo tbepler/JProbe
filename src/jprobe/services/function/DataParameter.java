@@ -6,7 +6,5 @@ public interface DataParameter extends Parameter{
 	
 	public Class<? extends Data> getType();
 	public boolean isValid(Data data);
-	public void setValue(Data data) throws InvalidArgumentsException;
-	public Data getValue();
 	
 }

@@ -1,5 +1,7 @@
 package plugins.testDataAndFunction;
 
+import jprobe.services.data.Data;
+import jprobe.services.data.Field;
 import jprobe.services.function.DataParameter;
 import jprobe.services.function.FieldParameter;
 import jprobe.services.function.Function;
@@ -32,8 +34,8 @@ public class TestFunctionPrototype implements FunctionPrototype{
 	}
 
 	@Override
-	public Function newInstance(DataParameter[] dataParams,
-			FieldParameter[] fieldParams) throws InvalidArgumentsException {
+	public Function newInstance(Data[] dataParams,
+			Field[] fieldParams) throws InvalidArgumentsException {
 		return new TestFunction();
 	}
 

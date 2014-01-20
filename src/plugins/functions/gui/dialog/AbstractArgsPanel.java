@@ -12,9 +12,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import plugins.functions.gui.utils.StateListener;
-import plugins.functions.gui.utils.StateNotifier;
+import plugins.functions.gui.utils.ValidStateNotifier;
 
-public abstract class AbstractArgsPanel<T> extends JPanel implements StateNotifier{
+public abstract class AbstractArgsPanel<T> extends JPanel implements ValidStateNotifier{
 	private static final long serialVersionUID = 1L;
 
 	private List<T> m_Args;
@@ -62,29 +62,29 @@ public abstract class AbstractArgsPanel<T> extends JPanel implements StateNotifi
 		}
 	}
 	
-	public void setHeaders(List<String> headers){
+	protected void setHeaders(List<String> headers){
 		m_Headers.clear();
 		m_Headers.addAll(headers);
 		this.layoutGrid();
 	}
 	
-	public void addArg(T arg){
+	protected void addArg(T arg){
 		m_Args.add(arg);
 		this.layoutGrid();
 	}
 	
-	public void removeArg(T arg){
+	protected void removeArg(T arg){
 		m_Args.remove(arg);
 		this.layoutGrid();
 	}
 	
-	public void setArgs(Collection<T> args){
+	protected void setArgs(Collection<T> args){
 		m_Args.clear();
 		m_Args.addAll(args);
 		this.layoutGrid();
 	}
 	
-	public void clearArgs(){
+	protected void clearArgs(){
 		m_Args.clear();
 		this.layoutGrid();
 	}

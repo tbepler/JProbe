@@ -8,17 +8,16 @@ import java.util.HashSet;
 import java.util.Map;
 
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
 
 import plugins.functions.gui.utils.StateListener;
-import plugins.functions.gui.utils.StateNotifier;
+import plugins.functions.gui.utils.ValidStateNotifier;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.function.DataParameter;
 
-public class DataComboBox extends JPanel implements ItemListener, CoreListener, StateNotifier{
+public class DataComboBox extends JComboBox<String> implements ItemListener, CoreListener, ValidStateNotifier{
 	private static final long serialVersionUID = 1L;
 	
 	private static final String SELECT_NOTHING = "-"; 
@@ -26,26 +25,24 @@ public class DataComboBox extends JPanel implements ItemListener, CoreListener, 
 	private DataParameter m_DataParam;
 	private JProbeCore m_Core;
 	private Map<String, Data> m_Displayed;
-	private JComboBox<String> m_ComboBox;
 	private boolean m_Valid;
 	private Collection<StateListener> m_Listeners = new HashSet<StateListener>();
 	
 	public DataComboBox(DataParameter dataParam, JProbeCore core){
 		super();
-		m_Valid = false;
+		m_Valid = dataParam.isOptional();
 		m_DataParam = dataParam;
 		m_Core = core;
 		m_Core.addCoreListener(this);
 		m_Displayed = new HashMap<String, Data>();
-		m_ComboBox = new JComboBox<String>();
 		if(m_DataParam.isOptional()){
-			m_ComboBox.addItem(SELECT_NOTHING);
+			this.addItem(SELECT_NOTHING);
 		}
 		for(Data d : m_Core.getDataManager().getAllData()){
 			if(isValid(d)){
 				String name = m_Core.getDataManager().getDataName(d);
 				m_Displayed.put(name, d);
-				m_ComboBox.addItem(name);
+				this.addItem(name);
 			}
 		}
 	}
@@ -62,16 +59,16 @@ public class DataComboBox extends JPanel implements ItemListener, CoreListener, 
 	private void addData(Data d){
 		String name = m_Core.getDataManager().getDataName(d);
 		m_Displayed.put(name, d);
-		m_ComboBox.addItem(name);
-		m_ComboBox.revalidate();
+		this.addItem(name);
+		this.revalidate();
 	}
 	
 	private void removeData(Data d){
 		String name = m_Core.getDataManager().getDataName(d);
 		if(m_Displayed.containsKey(name)){
 			m_Displayed.remove(name);
-			m_ComboBox.removeItem(name);
-			m_ComboBox.revalidate();
+			this.removeItem(name);
+			this.revalidate();
 		}
 	}
 	
@@ -79,9 +76,9 @@ public class DataComboBox extends JPanel implements ItemListener, CoreListener, 
 		if(m_Displayed.containsKey(oldName)){
 			Data changed = m_Displayed.get(oldName);
 			m_Displayed.remove(oldName);
-			m_ComboBox.removeItem(oldName);
+			this.removeItem(oldName);
 			m_Displayed.put(newName, changed);
-			m_ComboBox.addItem(newName);
+			this.addItem(newName);
 		}
 	}
 
@@ -106,16 +103,16 @@ public class DataComboBox extends JPanel implements ItemListener, CoreListener, 
 
 	@Override
 	public void itemStateChanged(ItemEvent arg0) {
-		try{
-			m_DataParam.setValue(m_Displayed.get(m_ComboBox.getSelectedItem()));
-			m_Valid = true;
-		} catch (Exception e){
-			m_Valid = false;
-		}
+		m_Valid = m_DataParam.isValid(m_Displayed.get(this.getSelectedItem()));
 		this.notifyListeners();
 	}
 	
-	public boolean isValid(){
+	public Data getSelectedData(){
+		return m_Displayed.get(this.getSelectedItem());
+	}
+	
+	@Override
+	public boolean isStateValid(){
 		return m_Valid;
 	}
 	

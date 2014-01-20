@@ -1,5 +1,8 @@
 package jprobe.services.function;
 
+import jprobe.services.data.Data;
+import jprobe.services.data.Field;
+
 public interface FunctionPrototype {
 	
 	public String getFunctionName();
@@ -8,6 +11,6 @@ public interface FunctionPrototype {
 	public DataParameter[] getDataParameters();
 	public FieldParameter[] getFieldParameters();
 	
-	public Function newInstance(DataParameter[] dataParams, FieldParameter[] fieldParams) throws InvalidArgumentsException;
+	public Function newInstance(Data[] dataArgs, Field[] fieldArgs) throws InvalidArgumentsException;
 	
 }

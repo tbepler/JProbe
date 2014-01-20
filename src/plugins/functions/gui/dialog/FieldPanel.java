@@ -14,4 +14,10 @@ public class FieldPanel extends AbstractArgsPanel<FieldParameter>{
 		return null;
 	}
 
+	@Override
+	public boolean isStateValid() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
