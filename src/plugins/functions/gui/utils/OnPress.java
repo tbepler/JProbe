@@ -1,4 +1,4 @@
-package plugins.functions.gui;
+package plugins.functions.gui.utils;
 
 public interface OnPress {
 	

@@ -1,18 +1,22 @@
 package plugins.functions.gui.dialog;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.osgi.framework.Bundle;
 
-import plugins.functions.gui.DoNothingOnPress;
-import plugins.functions.gui.OnPress;
 import plugins.functions.gui.SwingFunctionExecutor;
+import plugins.functions.gui.utils.DoNothingOnPress;
+import plugins.functions.gui.utils.OnPress;
 import plugins.functions.gui.utils.StateListener;
 import plugins.functions.gui.utils.StateNotifier;
 import jprobe.services.ErrorHandler;
@@ -29,6 +33,9 @@ import jprobe.services.function.InvalidArgumentsException;
 public class FunctionPanel extends JPanel implements ActionListener, StateListener{
 	private static final long serialVersionUID = 1L;
 
+	private static final Dimension BUTTON_SPACING = new Dimension(5,0);
+	private static final Insets BUTTON_INSETS = new Insets(2,2,2,2);
+	
 	private FunctionPrototype m_FunctionPrototype;
 	private JProbeCore m_Core;
 	private Bundle m_Bundle;
@@ -51,23 +58,32 @@ public class FunctionPanel extends JPanel implements ActionListener, StateListen
 		m_ParamPanel = new ParameterPanel(dataParams, fieldParams, core);
 		m_ParamPanel.addStateListener(this);
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
 		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.7;
+		gbc.weighty = 0.7;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		this.add(m_ParamPanel, gbc);
 	}
 	
 	private void initButtons(){
-		m_CancelButton = new JButton("Cancel");
-		m_CancelButton.addActionListener(this);
+		JPanel buttonPanel = new JPanel();
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = BUTTON_INSETS;
+		this.add(buttonPanel, gbc);
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.add(Box.createHorizontalGlue());
 		m_RunButton = new JButton("Run");
 		m_RunButton.addActionListener(this);
 		m_RunButton.setEnabled(this.argumentsValid());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridy = 2;
-		gbc.gridx = 4;
-		this.add(m_RunButton, gbc);
-		gbc.gridx = 5;
-		this.add(m_CancelButton, gbc);
+		buttonPanel.add(m_RunButton);
+		buttonPanel.add(Box.createRigidArea(BUTTON_SPACING));
+		m_CancelButton = new JButton("Cancel");
+		m_CancelButton.addActionListener(this);
+		buttonPanel.add(m_CancelButton);
 	}
 	
 	private Data[] getDataArgs(){

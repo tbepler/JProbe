@@ -1,4 +1,5 @@
-package plugins.functions.gui;
+package plugins.functions.gui.utils;
+
 
 
 public class DoNothingOnPress implements OnPress{

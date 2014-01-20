@@ -13,7 +13,7 @@ import java.util.Queue;
 
 import javax.swing.JDialog;
 
-import plugins.functions.gui.OnPress;
+import plugins.functions.gui.utils.OnPress;
 
 public class FunctionDialogHandler{
 	

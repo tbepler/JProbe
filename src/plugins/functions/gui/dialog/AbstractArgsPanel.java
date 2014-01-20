@@ -3,6 +3,7 @@ package plugins.functions.gui.dialog;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,6 +18,8 @@ import plugins.functions.gui.utils.ValidStateNotifier;
 public abstract class AbstractArgsPanel<T> extends JPanel implements ValidStateNotifier{
 	private static final long serialVersionUID = 1L;
 
+	private static final Insets HEADER_INSETS = new Insets(2,3,2,3);
+	
 	private List<T> m_Args;
 	private List<String> m_Headers;
 	private Collection<StateListener> m_Listeners = new HashSet<StateListener>();
@@ -94,6 +97,7 @@ public abstract class AbstractArgsPanel<T> extends JPanel implements ValidStateN
 	private void layoutGrid(){
 		this.removeAll();
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = HEADER_INSETS;
 		for(int j=0; j<m_Headers.size(); j++){
 			gbc.gridx = j+1;
 			this.add(new JLabel(m_Headers.get(j)), gbc);

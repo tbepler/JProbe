@@ -12,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 
+import plugins.functions.gui.utils.OnPress;
+
 public class ProgressWindow implements ActionListener{
 	
 	public static final long MILLISEC_BEFORE_DISPLAY = 2000;
