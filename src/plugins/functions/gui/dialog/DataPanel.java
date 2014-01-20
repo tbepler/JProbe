@@ -26,13 +26,11 @@ public class DataPanel extends AbstractArgsPanel<DataParameter> implements State
 	private Map<DataParameter, DataComboBox> m_ParamToBox;
 	
 	public DataPanel(DataParameter[] dataParams, JProbeCore core){
-		super();
-		this.setHeaders(HEADER);
-		Collection<DataParameter> args = new ArrayList<DataParameter>();
-		for(DataParameter param : dataParams){
-			args.add(param);
-		}
-		this.setArgs(args);
+		super(HEADER);
+		this.setArgs(init(dataParams, core));
+	}
+	
+	private Collection<DataParameter> init(DataParameter[] dataParams, JProbeCore core){
 		m_DataBoxes = new DataComboBox[dataParams.length];
 		m_ParamToBox = new HashMap<DataParameter, DataComboBox>();
 		for(int i=0; i<dataParams.length; i++){
@@ -40,6 +38,11 @@ public class DataPanel extends AbstractArgsPanel<DataParameter> implements State
 			m_DataBoxes[i].addStateListener(this);
 			m_ParamToBox.put(dataParams[i], m_DataBoxes[i]);
 		}
+		Collection<DataParameter> args = new ArrayList<DataParameter>();
+		for(DataParameter param : dataParams){
+			args.add(param);
+		}
+		return args;
 	}
 	
 	@Override

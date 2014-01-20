@@ -17,11 +17,20 @@ import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.function.DataParameter;
 
-public class DataComboBox extends JComboBox<String> implements ItemListener, CoreListener, ValidStateNotifier{
+public class DataComboBox extends JComboBox<String> implements CoreListener, ValidStateNotifier{
 	private static final long serialVersionUID = 1L;
 	
 	private static final String SELECT_NOTHING = "-"; 
 	
+	private ItemListener m_ItemChangeListener = new ItemListener(){
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if(e.getStateChange() == ItemEvent.SELECTED){
+				m_Valid = m_DataParam.isValid(m_Displayed.get(getSelectedItem()));
+				notifyListeners();
+			}
+		}
+	};
 	private DataParameter m_DataParam;
 	private JProbeCore m_Core;
 	private Map<String, Data> m_Displayed;
@@ -30,6 +39,7 @@ public class DataComboBox extends JComboBox<String> implements ItemListener, Cor
 	
 	public DataComboBox(DataParameter dataParam, JProbeCore core){
 		super();
+		this.addItemListener(m_ItemChangeListener);
 		m_Valid = dataParam.isOptional();
 		m_DataParam = dataParam;
 		m_Core = core;
@@ -100,12 +110,6 @@ public class DataComboBox extends JComboBox<String> implements ItemListener, Cor
 			String newName = event.getNewName();
 			this.rename(oldName, newName);
 		}
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent arg0) {
-		m_Valid = m_DataParam.isValid(m_Displayed.get(this.getSelectedItem()));
-		this.notifyListeners();
 	}
 	
 	public Data getSelectedData(){

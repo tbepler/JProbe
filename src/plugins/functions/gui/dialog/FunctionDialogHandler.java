@@ -1,6 +1,8 @@
 package plugins.functions.gui.dialog;
 
 import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,11 +12,8 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import plugins.functions.gui.OnPress;
-import jprobe.services.function.Function;
 
 public class FunctionDialogHandler{
 	
@@ -25,13 +24,13 @@ public class FunctionDialogHandler{
 		
 		private IndexedDialog(Frame owner, String title, boolean modal, int index){
 			super(owner, title, modal);
+			this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 			this.index = index;
 		}
 		
 		public int getIndex(){
 			return index;
 		}
-		
 	}
 	
 	private class IndexedDialogComparator implements Comparator<IndexedDialog>{
@@ -73,16 +72,21 @@ public class FunctionDialogHandler{
 	public void display(final FunctionPanel panel){
 		if(visibleDialogs.containsKey(panel)){
 			visibleDialogs.get(panel).toFront();
+			visibleDialogs.get(panel).setVisible(true);
 			return;
 		}
 		final IndexedDialog dialog = getDialog(panel.getTitle());
+		dialog.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent e){
+				hide(dialog, panel);
+			}
+		});
 		dialog.setContentPane(panel);
 		OnPress close = new OnPress(){
 			@Override
 			public void act() {
-				dialog.setVisible(false);
-				availableDialogs.add(dialog);
-				visibleDialogs.remove(panel);
+				hide(dialog, panel);
 			}
 		};
 		panel.setCancelAction(close);
@@ -90,6 +94,12 @@ public class FunctionDialogHandler{
 		dialog.pack();
 		dialog.setVisible(true);
 		visibleDialogs.put(panel, dialog);
+	}
+	
+	private void hide(IndexedDialog dialog, FunctionPanel panel){
+		dialog.setVisible(false);
+		availableDialogs.add(dialog);
+		visibleDialogs.remove(panel);
 	}
 	
 }

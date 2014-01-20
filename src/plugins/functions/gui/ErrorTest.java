@@ -10,6 +10,7 @@ import org.osgi.framework.Bundle;
 import jprobe.services.ErrorHandler;
 
 public class ErrorTest extends JMenuItem implements ActionListener{
+	private static final long serialVersionUID = 1L;
 	
 	private Bundle bundle;
 	

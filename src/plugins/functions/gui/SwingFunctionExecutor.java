@@ -1,20 +1,14 @@
 package plugins.functions.gui;
 
-import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 
 import org.osgi.framework.Bundle;
 
 import jprobe.services.DataManager;
-import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
-import jprobe.services.data.Field;
 import jprobe.services.function.Function;
 import jprobe.services.function.ProgressEvent;
 import jprobe.services.function.FunctionExecutor;
