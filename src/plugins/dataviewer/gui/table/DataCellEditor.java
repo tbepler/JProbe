@@ -12,7 +12,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellEditor;
-import javax.swing.text.DefaultFormatter;
 
 import plugins.testDataAndFunction.DecimalField;
 import jprobe.services.data.Field;
@@ -20,6 +19,7 @@ import jprobe.services.data.DoubleField;
 import jprobe.services.data.IntegerField;
 
 public class DataCellEditor extends AbstractCellEditor implements TableCellEditor{
+	private static final long serialVersionUID = 1L;
 	
 	private static final Border red = new LineBorder(Color.red);
 	private static final Border black = new LineBorder(Color.black);
