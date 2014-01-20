@@ -14,16 +14,11 @@ public class DataFieldFormatter extends AbstractFormatter{
 	private static final long serialVersionUID = 1L;
 	
 	private Field field;
-	private Collection<Character> validChars;
 	private DocumentFilter filter;
 	
 	public DataFieldFormatter(Field field){
 		super();
 		this.field = field;
-		validChars = new HashSet<Character>();
-		for(char c : field.getValidChars()){
-			validChars.add(c);
-		}
 		filter = new DocumentFilter(){
 			@Override
 			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException{
@@ -42,7 +37,7 @@ public class DataFieldFormatter extends AbstractFormatter{
 	
 	private boolean isValidString(String s){
 		for(char c : s.toCharArray()){
-			if(!validChars.contains(c)){
+			if(!field.isCharacterAllowed(c)){
 				return false;
 			}
 		}
@@ -57,7 +52,11 @@ public class DataFieldFormatter extends AbstractFormatter{
 	@Override
 	public Object stringToValue(String s) throws ParseException {
 		if(field.isValid(s)){
-			return field.parseString(s);
+			try{
+				return field.parseString(s);
+			} catch (Exception e){
+				//do nothing, exception thrown next
+			}
 		}
 		throw new ParseException("String "+s+" is not a valid format for DataField "+field.getClass(), 0);
 	}

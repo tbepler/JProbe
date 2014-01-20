@@ -13,7 +13,9 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellEditor;
 
+import plugins.dataviewer.gui.Activator;
 import plugins.testDataAndFunction.DecimalField;
+import jprobe.services.ErrorHandler;
 import jprobe.services.data.Field;
 import jprobe.services.data.DoubleField;
 import jprobe.services.data.IntegerField;
@@ -52,9 +54,13 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 		IntegerField val = (IntegerField) value;
 		int i = (Integer) spinner.getValue();
 		if(val.isValid(i)){
-			value = val.parseInt(i);
-			this.fireEditingStopped();
-			return true;
+			try{
+				value = val.parseInt(i);
+				this.fireEditingStopped();
+				return true;
+			} catch (Exception e){
+				ErrorHandler.getInstance().handleException(e, Activator.BUNDLE);
+			}
 		}
 		spinner.setBorder(red);
 		return false;
@@ -75,9 +81,13 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 		DoubleField val = (DoubleField) value;
 		double d = (Double) spinner.getValue();
 		if(val.isValid(d)){
-			value = val.parseDouble(d);
-			this.fireEditingStopped();
-			return true;
+			try{
+				value = val.parseDouble(d);
+				this.fireEditingStopped();
+				return true;
+			} catch (Exception e){
+				ErrorHandler.getInstance().handleException(e, Activator.BUNDLE);
+			}
 		}
 		spinner.setBorder(red);
 		return false;

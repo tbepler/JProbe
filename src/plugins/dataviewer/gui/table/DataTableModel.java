@@ -2,6 +2,8 @@ package plugins.dataviewer.gui.table;
 
 import javax.swing.table.AbstractTableModel;
 
+import plugins.dataviewer.gui.Activator;
+import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataEvent;
 import jprobe.services.data.Field;
@@ -54,9 +56,13 @@ public class DataTableModel extends AbstractTableModel implements DataListener{
 			String val = (String) value;
 			Field field = data.getValue(row, col);
 			if(field.isValid(val)){
-				Field newField = field.parseString(val);
-				if(data.setValue(row, col, newField)){
-					fireTableCellUpdated(row, col);
+				try{
+					Field newField = field.parseString(val);
+					if(data.setValue(row, col, newField)){
+						fireTableCellUpdated(row, col);
+					}
+				} catch (Exception e){
+					ErrorHandler.getInstance().handleException(e, Activator.BUNDLE);
 				}
 			}
 		}
