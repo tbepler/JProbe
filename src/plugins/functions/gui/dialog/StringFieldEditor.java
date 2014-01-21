@@ -1,5 +1,6 @@
 package plugins.functions.gui.dialog;
 
+import java.awt.Component;
 import java.util.*;
 
 import javax.swing.JTextField;
@@ -10,12 +11,13 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.AttributeSet;
 
+import jprobe.services.ErrorHandler;
 import jprobe.services.data.Field;
 import jprobe.services.function.FieldParameter;
+import plugins.dataviewer.gui.Activator;
 import plugins.functions.gui.utils.StateListener;
-import plugins.functions.gui.utils.ValidStateNotifier;
 
-public class StringFieldEditor extends JTextField implements ValidStateNotifier, DocumentListener{
+public class StringFieldEditor extends JTextField implements FieldEditor, DocumentListener{
 	private static final long serialVersionUID = 1L;
 	
 	private FieldParameter m_FieldParam;
@@ -50,12 +52,17 @@ public class StringFieldEditor extends JTextField implements ValidStateNotifier,
 
 	@Override
 	public boolean isStateValid() {
-		// TODO Auto-generated method stub
-		return false;
+		return m_Valid;
 	}
 	
-	private boolean isTextValid(){
-		return m_FieldParam.getType().isValid(this.getText());
+	@Override
+	public Component getEditorComponent() {
+		return this;
+	}
+
+	@Override
+	public Field getValue() {
+		return m_Value;
 	}
 	
 	protected void notifyListeners(){
@@ -74,29 +81,37 @@ public class StringFieldEditor extends JTextField implements ValidStateNotifier,
 		m_Listeners.remove(l);
 	}
 	
+	private boolean isTextValid(){
+		return m_FieldParam.getType().isValid(this.getText());
+	}
+	
 	private void textChanged(){
 		if(isTextValid()){
-			
+			try {
+				m_Value = m_FieldParam.getType().parseString(this.getText());
+				m_Valid = m_FieldParam.isValid(m_Value);
+			} catch (Exception e) {
+				m_Valid = false;
+				ErrorHandler.getInstance().handleException(e, Activator.BUNDLE);
+			}
 		}
 	}
 
 	@Override
 	public void changedUpdate(DocumentEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		this.textChanged();
 	}
 
 	@Override
 	public void insertUpdate(DocumentEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		this.textChanged();
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		this.textChanged();
 	}
+
 
 
 }

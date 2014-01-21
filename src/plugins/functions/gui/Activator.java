@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import jprobe.services.JProbeCore;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
@@ -13,6 +14,8 @@ import org.osgi.framework.ServiceReference;
 import plugins.jprobe.gui.services.JProbeGUI;
 
 public class Activator implements BundleActivator{
+	
+	public static Bundle BUNDLE = null;
 	
 	private JProbeCore core;
 	private JProbeGUI gui;
@@ -44,6 +47,7 @@ public class Activator implements BundleActivator{
 	@Override
 	public void start(BundleContext context) throws Exception {
 		bc = context;
+		BUNDLE = context.getBundle();
 		String filter = "(objectclass="+JProbeGUI.class.getName()+")";
 		context.addServiceListener(sl, filter);
 		Collection<ServiceReference<JProbeGUI>> refs = context.getServiceReferences(JProbeGUI.class, null);
