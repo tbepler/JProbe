@@ -15,7 +15,7 @@ import plugins.jprobe.gui.services.JProbeGUI;
 
 public class Activator implements BundleActivator{
 	
-	public static Bundle BUNDLE = null;
+	private static Bundle BUNDLE = null;
 	
 	private JProbeCore core;
 	private JProbeGUI gui;
@@ -37,6 +37,10 @@ public class Activator implements BundleActivator{
 			}
 		}
 	};
+	
+	public static Bundle getBundle(){
+		return BUNDLE;
+	}
 	
 	private void initMenu(){
 		menu = new FunctionMenu( gui.getGUIFrame(), core, bc.getBundle());

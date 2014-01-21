@@ -14,7 +14,7 @@ import javax.swing.text.AttributeSet;
 import jprobe.services.ErrorHandler;
 import jprobe.services.data.Field;
 import jprobe.services.function.FieldParameter;
-import plugins.dataviewer.gui.Activator;
+import plugins.functions.gui.Activator;
 import plugins.functions.gui.utils.StateListener;
 
 public class StringFieldEditor extends JTextField implements FieldEditor, DocumentListener{
@@ -30,6 +30,8 @@ public class StringFieldEditor extends JTextField implements FieldEditor, Docume
 		m_FieldParam = fieldParam;
 		m_Value = m_FieldParam.getType();
 		this.setText(m_Value.asString());
+		m_Valid = m_FieldParam.isValid(m_Value);
+		this.getDocument().addDocumentListener(this);
 	}
 	
 	@Override
@@ -87,12 +89,17 @@ public class StringFieldEditor extends JTextField implements FieldEditor, Docume
 	
 	private void textChanged(){
 		if(isTextValid()){
+			boolean newState = m_Valid;
 			try {
 				m_Value = m_FieldParam.getType().parseString(this.getText());
-				m_Valid = m_FieldParam.isValid(m_Value);
+				newState = m_FieldParam.isValid(m_Value);
 			} catch (Exception e) {
-				m_Valid = false;
-				ErrorHandler.getInstance().handleException(e, Activator.BUNDLE);
+				newState = false;
+				ErrorHandler.getInstance().handleException(e, Activator.getBundle());
+			}
+			if(newState != m_Valid){
+				m_Valid = newState;
+				this.notifyListeners();
 			}
 		}
 	}

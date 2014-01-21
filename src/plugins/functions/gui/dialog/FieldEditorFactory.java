@@ -1,12 +1,20 @@
 package plugins.functions.gui.dialog;
 
+import jprobe.services.data.DoubleField;
+import jprobe.services.data.IntegerField;
 import jprobe.services.function.FieldParameter;
 
 public class FieldEditorFactory {
 	
 	public static FieldEditor newFieldEditor(FieldParameter fieldParam){
-		//TODO
-		return null;
+		if(fieldParam.getType() instanceof IntegerField){
+			IntegerField integer = (IntegerField) fieldParam.getType();
+			return new IntegerFieldEditor(fieldParam, integer);
+		}
+		if(fieldParam.getType() instanceof DoubleField){
+			
+		}
+		return new StringFieldEditor(fieldParam);
 	}
 	
 }
