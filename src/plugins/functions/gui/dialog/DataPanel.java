@@ -27,6 +27,9 @@ public class DataPanel extends AbstractArgsPanel<DataParameter> implements State
 	
 	public DataPanel(DataParameter[] dataParams, JProbeCore core){
 		super(HEADER);
+		if(dataParams == null){
+			dataParams = new DataParameter[]{};
+		}
 		this.setArgs(init(dataParams, core));
 	}
 	

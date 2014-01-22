@@ -1,6 +1,7 @@
 package plugins.functions.gui.dialog;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.*;
 
 import javax.swing.JTextField;
@@ -20,6 +21,8 @@ import plugins.functions.gui.utils.StateListener;
 public class StringFieldEditor extends JTextField implements FieldEditor, DocumentListener{
 	private static final long serialVersionUID = 1L;
 	
+	private static final Dimension MIN_SIZE = new Dimension(50, 10);
+	
 	private FieldParameter m_FieldParam;
 	private Field m_Value;
 	private boolean m_Valid;
@@ -33,6 +36,7 @@ public class StringFieldEditor extends JTextField implements FieldEditor, Docume
 		m_Valid = m_FieldParam.isValid(m_Value);
 		this.getDocument().addDocumentListener(this);
 		this.setToolTipText(m_Value.getTooltip());
+		this.setMinimumSize(MIN_SIZE);
 	}
 	
 	@Override

@@ -36,6 +36,9 @@ public class FieldPanel extends AbstractArgsPanel<FieldParameter> implements Sta
 	
 	public FieldPanel(FieldParameter[] fieldParams){
 		super(HEADER);
+		if(fieldParams == null){
+			fieldParams = new FieldParameter[]{};
+		}
 		m_FieldEditors = new FieldEditor[fieldParams.length];
 		m_ParamToEditor = new HashMap<FieldParameter, FieldEditor>();
 		for(int i=0; i<m_FieldEditors.length; i++){

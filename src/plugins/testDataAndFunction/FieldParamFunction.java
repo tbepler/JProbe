@@ -1,6 +1,9 @@
 package plugins.testDataAndFunction;
 
 import jprobe.services.data.Data;
+import jprobe.services.data.Field;
+import jprobe.services.data.IntegerField;
+import jprobe.services.data.DoubleField;
 import jprobe.services.function.Function;
 import jprobe.services.function.ProgressListener;
 
@@ -8,6 +11,16 @@ public class FieldParamFunction implements Function{
 
 	public static final String NAME = "Field Parameter Function";
 	public static final String DESCRIPTION = "A function that takes field parameters and returns a test data object with those values";
+	
+	private String m_String;
+	private int m_Int;
+	private double m_Double;
+	
+	public FieldParamFunction(Field[] fieldArgs){
+		m_String = fieldArgs[0].asString();
+		m_Int = ((IntegerField) fieldArgs[1]).getValue();
+		m_Double = ((DoubleField) fieldArgs[2]).getValue();
+	}
 	
 	@Override
 	public String getName() {
@@ -45,8 +58,7 @@ public class FieldParamFunction implements Function{
 
 	@Override
 	public Data run() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return new TestData(m_String, m_Int, m_Double);
 	}
 	
 	
