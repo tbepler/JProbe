@@ -23,6 +23,7 @@ public class DoubleFieldEditor extends AbstractFieldSpinner implements ChangeLis
 		m_FieldParam = fieldParam;
 		m_Valid = m_FieldParam.isValid(m_Value);
 		this.addChangeListener(this);
+		this.setToolTipText(m_Value.getTooltip());
 	}
 
 	@Override

@@ -23,6 +23,7 @@ public class IntegerFieldEditor extends AbstractFieldSpinner implements ChangeLi
 		m_FieldParam = fieldParam;
 		m_Valid = m_FieldParam.isValid(m_Value);
 		this.addChangeListener(this);
+		this.setToolTipText(m_Value.getTooltip());
 	}
 	
 	@Override

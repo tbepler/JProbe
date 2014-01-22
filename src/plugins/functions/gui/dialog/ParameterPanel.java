@@ -17,7 +17,7 @@ import jprobe.services.function.FieldParameter;
 public class ParameterPanel extends JPanel implements ValidStateNotifier, StateListener{
 	private static final long serialVersionUID = 1L;
 	
-	private FieldParameter[] m_FieldParams;
+	private FieldPanel m_FieldPanel;
 	private DataPanel m_DataPanel;
 	private boolean m_Valid;
 	private Collection<StateListener> m_Listeners = new HashSet<StateListener>();
@@ -27,20 +27,22 @@ public class ParameterPanel extends JPanel implements ValidStateNotifier, StateL
 		m_DataPanel = new DataPanel(dataParams, core);
 		m_DataPanel.addStateListener(this);
 		this.add(m_DataPanel);
+		m_FieldPanel = new FieldPanel(fieldParams);
+		m_FieldPanel.addStateListener(this);
+		this.add(m_FieldPanel);
 		m_Valid = this.componentsValid();
-		m_FieldParams = fieldParams;
 	}
 	
 	public Data[] getDataArgs(){
-		return m_DataPanel.getSelectedData();
+		return m_DataPanel.getDataArgs();
 	}
 	
 	public Field[] getFieldArgs(){
-		return null;
+		return m_FieldPanel.getFieldArgs();
 	}
 	
 	private boolean componentsValid(){
-		return m_DataPanel.isStateValid();
+		return m_DataPanel.isStateValid() && m_FieldPanel.isStateValid();
 	}
 
 	@Override

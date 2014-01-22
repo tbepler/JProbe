@@ -32,6 +32,7 @@ public class StringFieldEditor extends JTextField implements FieldEditor, Docume
 		this.setText(m_Value.asString());
 		m_Valid = m_FieldParam.isValid(m_Value);
 		this.getDocument().addDocumentListener(this);
+		this.setToolTipText(m_Value.getTooltip());
 	}
 	
 	@Override

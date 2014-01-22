@@ -53,7 +53,7 @@ public class DataPanel extends AbstractArgsPanel<DataParameter> implements State
 		return true;
 	}
 	
-	public Data[] getSelectedData(){
+	public Data[] getDataArgs(){
 		Data[] selectedData = new Data[m_DataBoxes.length];
 		for(int i=0; i<selectedData.length; i++){
 			selectedData[i] = m_DataBoxes[i].getSelectedData();
