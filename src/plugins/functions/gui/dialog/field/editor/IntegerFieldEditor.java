@@ -1,6 +1,5 @@
 package plugins.functions.gui.dialog.field.editor;
 
-import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -18,7 +17,8 @@ public class IntegerFieldEditor extends AbstractFieldSpinner implements ChangeLi
 	private boolean m_Valid;
 	
 	public IntegerFieldEditor(FieldParameter fieldParam, IntegerField intField){
-		super(new SpinnerNumberModel(intField.getValue(), intField.getMin(), intField.getMax(), intField.getIncrement()));
+		super(intField);
+		this.getModel().setValue(intField);
 		m_Value = intField;
 		m_FieldParam = fieldParam;
 		m_Valid = m_FieldParam.isValid(m_Value);
@@ -38,15 +38,12 @@ public class IntegerFieldEditor extends AbstractFieldSpinner implements ChangeLi
 
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
-		int value = (Integer) this.getModel().getValue();
-		if(m_Value.isValid(value)){
-			boolean newState = m_Valid;
-			try {
-				m_Value = m_Value.parseInt(value);
-				newState = m_FieldParam.isValid(m_Value);
-			} catch (Exception e) {
-				newState = false;
-				ErrorHandler.getInstance().handleException(e, Activator.getBundle());
+		Object o = this.getModel().getValue();
+		if(o instanceof IntegerField){
+			IntegerField field = (IntegerField) o;
+			boolean newState = m_FieldParam.isValid(field);
+			if(newState){
+				m_Value = field;
 			}
 			if(newState != m_Valid){
 				m_Valid = newState;

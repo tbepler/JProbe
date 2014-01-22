@@ -3,9 +3,6 @@ package plugins.functions.gui.dialog.field.editor;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import plugins.functions.gui.Activator;
-import plugins.functions.gui.dialog.field.editor.model.FieldSpinnerModel;
-import jprobe.services.ErrorHandler;
 import jprobe.services.data.DoubleField;
 import jprobe.services.data.Field;
 import jprobe.services.function.FieldParameter;
@@ -18,7 +15,8 @@ public class DoubleFieldEditor extends AbstractFieldSpinner implements ChangeLis
 	private boolean m_Valid;
 	
 	public DoubleFieldEditor(FieldParameter fieldParam, DoubleField doubleField){
-		super(new FieldSpinnerModel(doubleField));
+		super(doubleField);
+		this.getModel().setValue(doubleField);
 		m_Value = doubleField;
 		m_FieldParam = fieldParam;
 		m_Valid = m_FieldParam.isValid(m_Value);

@@ -57,6 +57,10 @@ public class IntFieldModel extends AbstractSpinnerModel{
 
 	@Override
 	public void setValue(Object value) {
+		if(value == null){
+			//do nothing if null
+			return;
+		}
 		if(value.getClass() == m_Field.getClass()){
 			m_Field = (IntegerField) value;
 			this.fireStateChanged();
