@@ -21,7 +21,8 @@ import plugins.functions.gui.utils.StateListener;
 public class StringFieldEditor extends JTextField implements FieldEditor, DocumentListener{
 	private static final long serialVersionUID = 1L;
 	
-	private static final Dimension MIN_SIZE = new Dimension(50, 10);
+	private static final Dimension PREF_SIZE = new Dimension(50, 10);
+	private static final int NUM_COLS = 10;
 	
 	private FieldParameter m_FieldParam;
 	private Field m_Value;
@@ -36,7 +37,8 @@ public class StringFieldEditor extends JTextField implements FieldEditor, Docume
 		m_Valid = m_FieldParam.isValid(m_Value);
 		this.getDocument().addDocumentListener(this);
 		this.setToolTipText(m_Value.getTooltip());
-		this.setMinimumSize(MIN_SIZE);
+		this.setColumns(NUM_COLS);
+		this.setHorizontalAlignment(JTextField.LEFT);
 	}
 	
 	@Override

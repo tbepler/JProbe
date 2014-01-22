@@ -57,7 +57,7 @@ public class FieldPanel extends AbstractArgsPanel<FieldParameter> implements Sta
 	public Field[] getFieldArgs(){
 		Field[] args = new Field[m_FieldEditors.length];
 		for(int i=0; i<args.length; i++){
-			args[i] = m_ParamToEditor.get(m_FieldEditors[i]).getValue();
+			args[i] = m_FieldEditors[i].getValue();
 		}
 		return args;
 	}
