@@ -5,6 +5,8 @@ import java.util.HashSet;
 
 import javax.swing.JPanel;
 
+import plugins.functions.gui.dialog.data.DataPanel;
+import plugins.functions.gui.dialog.field.FieldPanel;
 import plugins.functions.gui.utils.StateListener;
 import plugins.functions.gui.utils.StateNotifier;
 import plugins.functions.gui.utils.ValidStateNotifier;

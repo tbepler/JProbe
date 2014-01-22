@@ -1,4 +1,4 @@
-package plugins.functions.gui.dialog;
+package plugins.functions.gui.dialog.data;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;

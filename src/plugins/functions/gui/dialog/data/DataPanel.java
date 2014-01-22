@@ -1,4 +1,4 @@
-package plugins.functions.gui.dialog;
+package plugins.functions.gui.dialog.data;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.swing.JLabel;
 
+import plugins.functions.gui.dialog.AbstractArgsPanel;
 import plugins.functions.gui.utils.StateListener;
 import plugins.functions.gui.utils.StateNotifier;
 import plugins.functions.gui.utils.ValidLabel;

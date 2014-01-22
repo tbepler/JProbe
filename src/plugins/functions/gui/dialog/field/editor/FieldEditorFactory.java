@@ -1,4 +1,4 @@
-package plugins.functions.gui.dialog;
+package plugins.functions.gui.dialog.field.editor;
 
 import jprobe.services.data.DoubleField;
 import jprobe.services.data.IntegerField;
