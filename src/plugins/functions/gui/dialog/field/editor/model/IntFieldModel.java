@@ -13,6 +13,7 @@ public class IntFieldModel extends AbstractSpinnerModel{
 	private IntegerField m_Field;
 	
 	public IntFieldModel(IntegerField field){
+		super();
 		m_Field = field;
 	}
 	

@@ -1,6 +1,5 @@
 package plugins.functions.gui.dialog.field.editor;
 
-import java.awt.Color;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,8 +43,11 @@ public class FieldSpinnerEditor extends JSpinner.DefaultEditor implements ValidS
 		
 		@Override
 		public Object stringToValue(String text) throws ParseException {
+			if(text.equals("")){
+				return m_Template;
+			}
 			try {
-				Field entered = m_Template.parseString(text);
+				Field entered = m_Template.parseString(text.trim());
 				setValid(m_Param.isValid(entered));
 				return entered;
 			} catch (Exception e) {
@@ -80,10 +82,12 @@ public class FieldSpinnerEditor extends JSpinner.DefaultEditor implements ValidS
 
 	public FieldSpinnerEditor(JSpinner spinner, FieldParameter fieldParam) {
 		super(spinner);
+		System.out.println("Super done");
 		m_Param = fieldParam;
 		m_Template = m_Param.getType();
 		m_Valid = m_Param.isValid(m_Template);
 		this.getTextField().setFormatterFactory(new FieldFormatterFactory());
+		System.out.println("Formatter factory set");
 		this.getTextField().setHorizontalAlignment(JTextField.RIGHT);
 		if(this.getTextField().getColumns() < MIN_COLS){
 			this.getTextField().setColumns(MIN_COLS);
@@ -91,8 +95,6 @@ public class FieldSpinnerEditor extends JSpinner.DefaultEditor implements ValidS
 		if(this.getTextField().getColumns() > MAX_COLS){
 			this.getTextField().setColumns(MAX_COLS);
 		}
-		this.getTextField().setValue(spinner.getValue());
-		this.getTextField().setBackground(Color.white);
 		this.getTextField().setEditable(true);
 	}
 	

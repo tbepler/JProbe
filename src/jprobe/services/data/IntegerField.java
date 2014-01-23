@@ -7,8 +7,8 @@ import java.util.Set;
 public abstract class IntegerField implements Field{
 	private static final long serialVersionUID = 1L;
 	
-	public static final String INT_REGEX = "\\d+";
-	public static final char[] VALID_CHARS = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+	public static final String INT_REGEX = "^-?\\d+$";
+	public static final char[] VALID_CHARS = new char[]{'-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 	private static final Set<Character> VALID_CHARS_SET = generateValidChars();
 	
 	public abstract int getValue();

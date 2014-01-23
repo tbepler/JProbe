@@ -40,10 +40,7 @@ public abstract class AbstractFieldSpinner extends JSpinner implements FieldEdit
 		FieldSpinnerEditor editor = new FieldSpinnerEditor(this, m_Param);
 		editor.addStateListener(this);
 		this.setEditor(editor);
-		this.setValue(template);
 	}
-
-	protected abstract Field getFieldValue();
 	
 	@Override
 	public boolean isStateValid(){
@@ -64,7 +61,7 @@ public abstract class AbstractFieldSpinner extends JSpinner implements FieldEdit
 	
 	@Override
 	public Field getValue(){
-		return this.getFieldValue();
+		return (Field) this.getModel().getValue();
 	}
 	
 	protected void notifyListeners(){

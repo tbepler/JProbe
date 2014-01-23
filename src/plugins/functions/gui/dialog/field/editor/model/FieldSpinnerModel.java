@@ -16,12 +16,14 @@ public class FieldSpinnerModel extends AbstractSpinnerModel implements ChangeLis
 	private SpinnerModel m_Model;
 	
 	public FieldSpinnerModel(IntegerField intField){
+		super();
 		m_Model = new IntFieldModel(intField);
 		m_Template = intField;
 		m_Model.addChangeListener(this);
 	}
 	
 	public FieldSpinnerModel(DoubleField doubleField){
+		super();
 		m_Model = new DoubleFieldModel(doubleField);
 		m_Template = doubleField;
 		m_Model.addChangeListener(this);

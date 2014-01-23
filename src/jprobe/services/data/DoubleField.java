@@ -6,9 +6,8 @@ import java.util.Set;
 
 public abstract class DoubleField implements Field{
 	private static final long serialVersionUID = 1L;
-	
-	public static final String DOUBLE_REGEX = "\\d+\\.\\d+";
-	public static final char[] VALID_CHARS = new char[]{'.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+	public static final char[] VALID_CHARS = new char[]{'-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 	private static final Set<Character> VALID_CHARS_SET = generateValidChars();
 	
 	public abstract double getValue();
@@ -33,18 +32,17 @@ public abstract class DoubleField implements Field{
 	
 	@Override
 	public boolean isValid(String s){
-		if(s.matches(DOUBLE_REGEX)){
-			return isValid(Double.parseDouble(s));
+		try{
+			Double.parseDouble(s);
+			return true;
+		} catch (Exception e){
+			return false;
 		}
-		return false;
 	}
 	
 	@Override
 	public Field parseString(String s) throws Exception{
-		if(isValid(s)){
-			return parseDouble(Double.parseDouble(s));
-		}
-		return null;
+		return parseDouble(Double.parseDouble(s));
 	}
 	
 	@Override

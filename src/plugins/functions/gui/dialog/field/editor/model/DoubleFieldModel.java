@@ -12,6 +12,7 @@ public class DoubleFieldModel extends AbstractSpinnerModel{
 	private DoubleField m_Field;
 	
 	public DoubleFieldModel(DoubleField field){
+		super();
 		m_Field = field;
 	}
 	
