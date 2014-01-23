@@ -21,13 +21,11 @@ import jprobe.services.function.DataParameter;
 public class DataPanel extends AbstractArgsPanel<DataParameter> implements StateListener{
 	private static final long serialVersionUID = 1L;
 	
-	private static final List<String> HEADER = generateHeader();
-	
 	private DataComboBox[] m_DataBoxes;
 	private Map<DataParameter, DataComboBox> m_ParamToBox;
 	
 	public DataPanel(DataParameter[] dataParams, JProbeCore core){
-		super(HEADER);
+		super(Constants.DATAPANEL_HEADER);
 		if(dataParams == null){
 			dataParams = new DataParameter[]{};
 		}
@@ -63,15 +61,6 @@ public class DataPanel extends AbstractArgsPanel<DataParameter> implements State
 			selectedData[i] = m_DataBoxes[i].getSelectedData();
 		}
 		return selectedData;
-	}
-	
-	private static List<String> generateHeader(){
-		List<String> header = new ArrayList<String>();
-		header.add("Name");
-		header.add("Optional?");
-		header.add("Valid");
-		header.add("Data");
-		return header;
 	}
 	
 	@Override

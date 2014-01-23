@@ -1,10 +1,13 @@
 package plugins.functions.gui.dialog;
 
+import java.awt.Component;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import plugins.functions.gui.Constants;
 import plugins.functions.gui.dialog.data.DataPanel;
 import plugins.functions.gui.dialog.field.FieldPanel;
 import plugins.functions.gui.utils.StateListener;
@@ -26,25 +29,55 @@ public class ParameterPanel extends JPanel implements ValidStateNotifier, StateL
 	
 	public ParameterPanel(DataParameter[] dataParams, FieldParameter[] fieldParams, JProbeCore core){
 		super();
-		m_DataPanel = new DataPanel(dataParams, core);
-		m_DataPanel.addStateListener(this);
-		this.add(m_DataPanel);
-		m_FieldPanel = new FieldPanel(fieldParams);
-		m_FieldPanel.addStateListener(this);
-		this.add(m_FieldPanel);
+		if(dataParams!=null && dataParams.length>0){
+			m_DataPanel = new DataPanel(dataParams, core);
+			m_DataPanel.addStateListener(this);
+			this.add(this.createBorderedPanel(Constants.DATAPANEL_TITLE, m_DataPanel));
+		}else{
+			m_DataPanel = null;
+		}
+		if(fieldParams!=null && fieldParams.length>0){
+			m_FieldPanel = new FieldPanel(fieldParams);
+			m_FieldPanel.addStateListener(this);
+			this.add(this.createBorderedPanel(Constants.FIELDPANEL_TITLE, m_FieldPanel));
+		}else{
+			m_FieldPanel = null;
+		}
 		m_Valid = this.componentsValid();
+		
+	}
+	
+	private JPanel createBorderedPanel(String title, Component content){
+		JPanel bordered = new JPanel();
+		bordered.setBorder(BorderFactory.createTitledBorder(title));
+		bordered.add(content);
+		return bordered;
 	}
 	
 	public Data[] getDataArgs(){
+		if(m_DataPanel == null){
+			return new Data[]{};
+		}
 		return m_DataPanel.getDataArgs();
 	}
 	
 	public Field[] getFieldArgs(){
+		if(m_FieldPanel == null){
+			return new Field[]{};
+		}
 		return m_FieldPanel.getFieldArgs();
 	}
 	
 	private boolean componentsValid(){
-		return m_DataPanel.isStateValid() && m_FieldPanel.isStateValid();
+		return this.isDataValid() && this.isFieldValid();
+	}
+	
+	private boolean isDataValid(){
+		return m_DataPanel == null || m_DataPanel.isStateValid();
+	}
+	
+	private boolean isFieldValid(){
+		return m_FieldPanel == null || m_FieldPanel.isStateValid();
 	}
 
 	@Override

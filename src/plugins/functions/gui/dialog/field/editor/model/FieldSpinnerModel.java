@@ -6,20 +6,24 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import jprobe.services.data.DoubleField;
+import jprobe.services.data.Field;
 import jprobe.services.data.IntegerField;
 
 public class FieldSpinnerModel extends AbstractSpinnerModel implements ChangeListener{
 	private static final long serialVersionUID = 1L;
 	
+	private Field m_Template;
 	private SpinnerModel m_Model;
 	
 	public FieldSpinnerModel(IntegerField intField){
 		m_Model = new IntFieldModel(intField);
+		m_Template = intField;
 		m_Model.addChangeListener(this);
 	}
 	
 	public FieldSpinnerModel(DoubleField doubleField){
 		m_Model = new DoubleFieldModel(doubleField);
+		m_Template = doubleField;
 		m_Model.addChangeListener(this);
 	}
 	
@@ -46,6 +50,10 @@ public class FieldSpinnerModel extends AbstractSpinnerModel implements ChangeLis
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
 		this.fireStateChanged();
+	}
+	
+	public Field getTemplate(){
+		return m_Template;
 	}
 
 }

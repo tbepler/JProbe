@@ -9,14 +9,14 @@ import jprobe.services.data.Field;
 import jprobe.services.data.IntegerField;
 import jprobe.services.function.FieldParameter;
 
-public class IntegerFieldEditor extends AbstractFieldSpinner implements ChangeListener{
+public class IntegerFieldSpinner extends AbstractFieldSpinner implements ChangeListener{
 	private static final long serialVersionUID = 1L;
 	
 	private IntegerField m_Value;
 	private FieldParameter m_FieldParam;
 	private boolean m_Valid;
 	
-	public IntegerFieldEditor(FieldParameter fieldParam, IntegerField intField){
+	public IntegerFieldSpinner(FieldParameter fieldParam, IntegerField intField){
 		super(intField);
 		this.getModel().setValue(intField);
 		m_Value = intField;

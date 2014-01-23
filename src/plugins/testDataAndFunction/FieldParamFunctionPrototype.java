@@ -12,7 +12,7 @@ import jprobe.services.function.InvalidArgumentsException;
 public class FieldParamFunctionPrototype implements FunctionPrototype{
 
 	private static final FieldParameter[] PARAMS = new FieldParameter[]{
-		new BasicFieldParameter("String", "The TestData string field", false, new StringField("")),
+		new BasicFieldParameter("String", "The TestData string field", false, new StringField("default")),
 		new BasicFieldParameter("Integer", "The TestData integer field", false, new IntField(0)),
 		new BasicFieldParameter("Decimal", "The TestData decimal field", false, new DecimalField(0))	
 	};

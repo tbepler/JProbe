@@ -22,23 +22,12 @@ import jprobe.services.function.FieldParameter;
 public class FieldPanel extends AbstractArgsPanel<FieldParameter> implements StateListener{
 	private static final long serialVersionUID = 1L;
 	
-	private static final List<String> HEADER = generateHeader();
-	
-	private static List<String> generateHeader(){
-		List<String> header = new ArrayList<String>();
-		header.add("Name");
-		header.add("Optional?");
-		header.add("Valid");
-		header.add("Field");
-		return header;
-	}
-	
 	private FieldEditor[] m_FieldEditors;
 	private Map<FieldParameter, FieldEditor> m_ParamToEditor;
 	private boolean m_Valid;
 	
 	public FieldPanel(FieldParameter[] fieldParams){
-		super(HEADER);
+		super(Constants.FIELDPANEL_HEADER);
 		if(fieldParams == null){
 			fieldParams = new FieldParameter[]{};
 		}

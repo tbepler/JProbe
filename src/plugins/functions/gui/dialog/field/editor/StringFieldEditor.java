@@ -1,7 +1,6 @@
 package plugins.functions.gui.dialog.field.editor;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.util.*;
 
 import javax.swing.JTextField;
@@ -16,13 +15,13 @@ import jprobe.services.ErrorHandler;
 import jprobe.services.data.Field;
 import jprobe.services.function.FieldParameter;
 import plugins.functions.gui.Activator;
+import plugins.functions.gui.Constants;
 import plugins.functions.gui.utils.StateListener;
 
 public class StringFieldEditor extends JTextField implements FieldEditor, DocumentListener{
 	private static final long serialVersionUID = 1L;
 	
-	private static final Dimension PREF_SIZE = new Dimension(50, 10);
-	private static final int NUM_COLS = 10;
+	private static final int NUM_COLS = Constants.TEXTFIELD_NUM_COLS;
 	
 	private FieldParameter m_FieldParam;
 	private Field m_Value;

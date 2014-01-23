@@ -3,6 +3,8 @@ package plugins.functions.gui.dialog.field.editor;
 import java.awt.Color;
 import java.text.ParseException;
 
+import plugins.functions.gui.Constants;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
@@ -60,7 +62,8 @@ public class FieldSpinnerEditor extends JSpinner.DefaultEditor{
 		
 	}
 	
-	private static final int MIN_COLS = 5;
+	private static final int MIN_COLS = Constants.SPINNER_MIN_COLS;
+	private static final int MAX_COLS = Constants.SPINNER_MAX_COLS;
 
 	public FieldSpinnerEditor(JSpinner spinner, Field template) {
 		super(spinner);
@@ -68,6 +71,9 @@ public class FieldSpinnerEditor extends JSpinner.DefaultEditor{
 		this.getTextField().setHorizontalAlignment(JTextField.RIGHT);
 		if(this.getTextField().getColumns() < MIN_COLS){
 			this.getTextField().setColumns(MIN_COLS);
+		}
+		if(this.getTextField().getColumns() > MAX_COLS){
+			this.getTextField().setColumns(MAX_COLS);
 		}
 		this.getTextField().setValue(spinner.getValue());
 		this.getTextField().setBackground(Color.white);

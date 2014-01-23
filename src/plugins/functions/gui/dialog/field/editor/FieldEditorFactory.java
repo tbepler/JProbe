@@ -9,11 +9,11 @@ public class FieldEditorFactory {
 	public static FieldEditor newFieldEditor(FieldParameter fieldParam){
 		if(fieldParam.getType() instanceof IntegerField){
 			IntegerField integer = (IntegerField) fieldParam.getType();
-			return new IntegerFieldEditor(fieldParam, integer);
+			return new IntegerFieldSpinner(fieldParam, integer);
 		}
 		if(fieldParam.getType() instanceof DoubleField){
 			DoubleField doubleField = (DoubleField) fieldParam.getType();
-			return new DoubleFieldEditor(fieldParam, doubleField);
+			return new DoubleFieldSpinner(fieldParam, doubleField);
 		}
 		return new StringFieldEditor(fieldParam);
 	}

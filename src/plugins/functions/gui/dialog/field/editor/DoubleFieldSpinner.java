@@ -7,16 +7,16 @@ import jprobe.services.data.DoubleField;
 import jprobe.services.data.Field;
 import jprobe.services.function.FieldParameter;
 
-public class DoubleFieldEditor extends AbstractFieldSpinner implements ChangeListener{
+public class DoubleFieldSpinner extends AbstractFieldSpinner implements ChangeListener{
 	private static final long serialVersionUID = 1L;
 	
 	private DoubleField m_Value;
 	private FieldParameter m_FieldParam;
 	private boolean m_Valid;
 	
-	public DoubleFieldEditor(FieldParameter fieldParam, DoubleField doubleField){
+	public DoubleFieldSpinner(FieldParameter fieldParam, DoubleField doubleField){
 		super(doubleField);
-		this.getModel().setValue(doubleField);
+		this.setValue(doubleField);
 		m_Value = doubleField;
 		m_FieldParam = fieldParam;
 		m_Valid = m_FieldParam.isValid(m_Value);
