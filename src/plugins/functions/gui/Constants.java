@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import plugins.functions.gui.dialog.AbstractArgsPanel.Alignment;
+
 public class Constants {
 
 	//public static final String RESOURCES_PATH = File.separator+"plugins"+File.separator+"functions"+File.separator+"gui"+File.separator+"resources";
@@ -43,6 +45,17 @@ public class Constants {
 		header.add("Valid");
 		header.add("Field");
 		return Collections.unmodifiableList(header);
+	}
+	
+	public static final List<Alignment> ARGSPANEL_COL_ALIGNMENT = generateColumnAlignments();
+	
+	private static List<Alignment> generateColumnAlignments(){
+		List<Alignment> align = new ArrayList<Alignment>();
+		align.add(Alignment.CENTER);
+		align.add(Alignment.CENTER);
+		align.add(Alignment.CENTER);
+		align.add(Alignment.RIGHT);
+		return Collections.unmodifiableList(align);
 	}
 	
 }

@@ -30,6 +30,7 @@ public class DataPanel extends AbstractArgsPanel<DataParameter> implements State
 			dataParams = new DataParameter[]{};
 		}
 		this.setArgs(init(dataParams, core));
+		this.setColAlignment(Constants.ARGSPANEL_COL_ALIGNMENT);
 	}
 	
 	private Collection<DataParameter> init(DataParameter[] dataParams, JProbeCore core){

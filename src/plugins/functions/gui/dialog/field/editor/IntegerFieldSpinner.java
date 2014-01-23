@@ -11,22 +11,13 @@ public class IntegerFieldSpinner extends AbstractFieldSpinner implements ChangeL
 	private static final long serialVersionUID = 1L;
 	
 	private IntegerField m_Value;
-	private FieldParameter m_FieldParam;
-	private boolean m_Valid;
 	
 	public IntegerFieldSpinner(FieldParameter fieldParam, IntegerField intField){
-		super(intField);
+		super(fieldParam, intField);
 		this.getModel().setValue(intField);
 		m_Value = intField;
-		m_FieldParam = fieldParam;
-		m_Valid = m_FieldParam.isValid(m_Value);
 		this.addChangeListener(this);
 		this.setToolTipText(m_Value.getTooltip());
-	}
-	
-	@Override
-	public boolean isStateValid() {
-		return m_Valid;
 	}
 
 	@Override
@@ -39,14 +30,7 @@ public class IntegerFieldSpinner extends AbstractFieldSpinner implements ChangeL
 		Object o = this.getModel().getValue();
 		if(o instanceof IntegerField){
 			IntegerField field = (IntegerField) o;
-			boolean newState = m_FieldParam.isValid(field);
-			if(newState){
-				m_Value = field;
-			}
-			if(newState != m_Valid){
-				m_Valid = newState;
-				this.notifyListeners();
-			}
+			m_Value = field;
 		}
 	}
 

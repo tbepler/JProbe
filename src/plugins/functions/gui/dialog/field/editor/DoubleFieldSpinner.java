@@ -11,22 +11,13 @@ public class DoubleFieldSpinner extends AbstractFieldSpinner implements ChangeLi
 	private static final long serialVersionUID = 1L;
 	
 	private DoubleField m_Value;
-	private FieldParameter m_FieldParam;
-	private boolean m_Valid;
 	
 	public DoubleFieldSpinner(FieldParameter fieldParam, DoubleField doubleField){
-		super(doubleField);
+		super(fieldParam, doubleField);
 		this.setValue(doubleField);
 		m_Value = doubleField;
-		m_FieldParam = fieldParam;
-		m_Valid = m_FieldParam.isValid(m_Value);
 		this.addChangeListener(this);
 		this.setToolTipText(m_Value.getTooltip());
-	}
-
-	@Override
-	public boolean isStateValid() {
-		return m_Valid;
 	}
 
 	@Override
@@ -39,14 +30,7 @@ public class DoubleFieldSpinner extends AbstractFieldSpinner implements ChangeLi
 		Object o = this.getModel().getValue();
 		if(o instanceof DoubleField){
 			DoubleField field = (DoubleField) o;
-			boolean newState = m_FieldParam.isValid(field);
-			if(newState){
-				m_Value = field;
-			}
-			if(newState != m_Valid){
-				m_Valid = newState;
-				this.notifyListeners();
-			}
+			m_Value = field;
 		}
 	}
 

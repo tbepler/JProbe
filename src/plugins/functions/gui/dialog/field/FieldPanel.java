@@ -43,6 +43,7 @@ public class FieldPanel extends AbstractArgsPanel<FieldParameter> implements Sta
 			args.add(param);
 		}
 		this.setArgs(args);
+		this.setColAlignment(Constants.ARGSPANEL_COL_ALIGNMENT);
 		m_Valid = this.areEditorsValid();
 	}
 	

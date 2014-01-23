@@ -20,14 +20,22 @@ public abstract class AbstractArgsPanel<T> extends JPanel implements ValidStateN
 
 	private static final Insets HEADER_INSETS = new Insets(2,3,2,3);
 	
+	public enum Alignment{
+		LEFT,
+		CENTER,
+		RIGHT;
+	}
+	
 	private List<T> m_Args;
 	private List<String> m_Headers;
+	private List<Alignment> m_ColAlignment;
 	private Collection<StateListener> m_Listeners = new HashSet<StateListener>();
 	
 	protected AbstractArgsPanel(){
 		super(new GridBagLayout());
 		m_Args = new ArrayList<T>();
 		m_Headers = new ArrayList<String>();
+		m_ColAlignment = new ArrayList<Alignment>();
 	}
 	
 	protected AbstractArgsPanel(Collection<T> args){
@@ -71,6 +79,14 @@ public abstract class AbstractArgsPanel<T> extends JPanel implements ValidStateN
 		this.layoutGrid();
 	}
 	
+	protected void setColAlignment(List<Alignment> alignments){
+		m_ColAlignment.clear();
+		for(Alignment a : alignments){
+			m_ColAlignment.add(a);
+		}
+		this.layoutGrid();
+	}
+	
 	protected void addArg(T arg){
 		m_Args.add(arg);
 		this.layoutGrid();
@@ -107,6 +123,18 @@ public abstract class AbstractArgsPanel<T> extends JPanel implements ValidStateN
 			gbc.gridy = i+2;
 			List<Component> rowComponents = this.generateRowComponents(m_Args.get(i));
 			for(int j=0; j<rowComponents.size(); j++){
+				if(m_ColAlignment.size() > j){
+					switch(m_ColAlignment.get(j)){
+					case LEFT:
+						gbc.anchor = GridBagConstraints.WEST;
+						break;
+					case RIGHT:
+						gbc.anchor = GridBagConstraints.EAST;
+						break;
+					default:
+						break;
+					}
+				}
 				gbc.gridx = j+1;
 				this.add(rowComponents.get(j), gbc);
 			}
