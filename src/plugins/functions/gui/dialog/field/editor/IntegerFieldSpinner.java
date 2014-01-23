@@ -3,8 +3,6 @@ package plugins.functions.gui.dialog.field.editor;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import plugins.functions.gui.Activator;
-import jprobe.services.ErrorHandler;
 import jprobe.services.data.Field;
 import jprobe.services.data.IntegerField;
 import jprobe.services.function.FieldParameter;

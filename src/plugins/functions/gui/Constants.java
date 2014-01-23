@@ -22,6 +22,7 @@ public class Constants {
 	
 	public static final String DATAPANEL_TITLE = "Data";
 	public static final List<String> DATAPANEL_HEADER = generateDataPanelHeader();
+	public static final String DATACOMBOBOX_PROTOTYPE_DISPLAY = "SomeDataHere";
 	
 	private static List<String> generateDataPanelHeader(){
 		List<String> header = new ArrayList<String>();

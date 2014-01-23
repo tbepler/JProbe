@@ -15,6 +15,7 @@ public class Activator implements BundleActivator{
 	private FunctionPrototype longFun = null;
 	private FunctionPrototype dataParamFun = new DataParamFunctionPrototype();
 	private FunctionPrototype fieldParamFun = new FieldParamFunctionPrototype();
+	private FunctionPrototype dataFieldParamFun = new DataFieldFunctionPrototype();
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -25,6 +26,7 @@ public class Activator implements BundleActivator{
 		core.getFunctionManager().addFunctionPrototype(longFun, context.getBundle());
 		core.getFunctionManager().addFunctionPrototype(dataParamFun, context.getBundle());
 		core.getFunctionManager().addFunctionPrototype(fieldParamFun, context.getBundle());
+		core.getFunctionManager().addFunctionPrototype(dataFieldParamFun, context.getBundle());
 		System.out.println("Started test data and function plugin");
 	}
 
@@ -34,6 +36,7 @@ public class Activator implements BundleActivator{
 		core.getFunctionManager().removeFunctionPrototype(longFun, context.getBundle());
 		core.getFunctionManager().removeFunctionPrototype(dataParamFun, context.getBundle());
 		core.getFunctionManager().removeFunctionPrototype(fieldParamFun, context.getBundle());
+		core.getFunctionManager().removeFunctionPrototype(dataFieldParamFun, context.getBundle());
 	}
 
 }

@@ -25,6 +25,7 @@ public class FunctionDialogHandler{
 		private IndexedDialog(Frame owner, String title, boolean modal, int index){
 			super(owner, title, modal);
 			this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+			this.setResizable(false);
 			this.index = index;
 		}
 		

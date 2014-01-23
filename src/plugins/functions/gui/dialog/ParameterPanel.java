@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import plugins.functions.gui.Constants;
@@ -29,6 +30,7 @@ public class ParameterPanel extends JPanel implements ValidStateNotifier, StateL
 	
 	public ParameterPanel(DataParameter[] dataParams, FieldParameter[] fieldParams, JProbeCore core){
 		super();
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		if(dataParams!=null && dataParams.length>0){
 			m_DataPanel = new DataPanel(dataParams, core);
 			m_DataPanel.addStateListener(this);

@@ -1,5 +1,6 @@
 package plugins.functions.gui.dialog.data;
 
+import java.awt.Window;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Collection;
@@ -8,7 +9,9 @@ import java.util.HashSet;
 import java.util.Map;
 
 import javax.swing.JComboBox;
+import javax.swing.SwingUtilities;
 
+import plugins.functions.gui.Constants;
 import plugins.functions.gui.utils.StateListener;
 import plugins.functions.gui.utils.ValidStateNotifier;
 import jprobe.services.CoreEvent;
@@ -40,6 +43,7 @@ public class DataComboBox extends JComboBox<String> implements CoreListener, Val
 	public DataComboBox(DataParameter dataParam, JProbeCore core){
 		super();
 		this.addItemListener(m_ItemChangeListener);
+		this.setPrototypeDisplayValue(Constants.DATACOMBOBOX_PROTOTYPE_DISPLAY);
 		m_Valid = dataParam.isOptional();
 		m_DataParam = dataParam;
 		m_Core = core;
@@ -71,7 +75,8 @@ public class DataComboBox extends JComboBox<String> implements CoreListener, Val
 		String name = m_Core.getDataManager().getDataName(d);
 		m_Displayed.put(name, d);
 		this.addItem(name);
-		this.revalidate();
+		this.resizeWindow();
+		//this.revalidate();
 	}
 	
 	private void removeData(Data d){
@@ -79,7 +84,15 @@ public class DataComboBox extends JComboBox<String> implements CoreListener, Val
 		if(m_Displayed.containsKey(name)){
 			m_Displayed.remove(name);
 			this.removeItem(name);
-			this.revalidate();
+			this.resizeWindow();
+			//this.revalidate();
+		}
+	}
+	
+	private void resizeWindow(){
+		Window ancestor = SwingUtilities.getWindowAncestor(this);
+		if(ancestor != null){
+			ancestor.pack();
 		}
 	}
 	

@@ -81,7 +81,7 @@ public class CoreFunctionManager implements FunctionManager{
 	}
 	
 	private void notifyListeners(CoreEvent event){
-		for(CoreListener l : listeners){
+		for(CoreListener l : new HashSet<CoreListener>(listeners)){
 			l.update(event);
 		}
 	}
