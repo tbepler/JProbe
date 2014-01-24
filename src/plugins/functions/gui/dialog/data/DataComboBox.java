@@ -110,10 +110,27 @@ public class DataComboBox extends JComboBox<String> implements CoreListener, Val
 			Data changed = m_Displayed.get(oldName);
 			m_Data.put(changed, newName);
 			m_Displayed.remove(oldName);
-			this.removeItem(oldName);
-			m_Displayed.put(newName, changed);
-			this.addItem(newName);
+			if(this.getSelectedItem().equals(oldName)){
+				int index = this.getSelectedIndex();
+				this.removeItem(oldName);
+				m_Displayed.put(newName, changed);
+				this.insertItemAt(newName, index);
+				this.setSelectedIndex(index);
+			}else{
+				int index = this.getIndex(oldName);
+				if(index < 0) return;
+				this.removeItem(oldName);
+				m_Displayed.put(newName, changed);
+				this.insertItemAt(newName, index);
+			}
 		}
+	}
+	
+	private int getIndex(String item){
+		for(int i=0; i<this.getItemCount(); i++){
+			if(this.getItemAt(i).equals(item)) return i;
+		}
+		return -1;
 	}
 
 	@Override
