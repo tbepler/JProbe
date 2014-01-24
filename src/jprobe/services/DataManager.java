@@ -40,6 +40,8 @@ public interface DataManager {
 	public void rename(Data data, String name, Bundle responsible);
 	public String getDataName(Data data);
 	public Data getData(String name);
+	public boolean contains(String name);
+	public boolean contains(Data data);
 	public List<Data> getData(Class<? extends Data> type);
 	
 }

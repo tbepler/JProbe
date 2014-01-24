@@ -1,33 +1,44 @@
-package plugins.dataviewer.gui;
+package plugins.dataviewer.gui.datalist;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
+import plugins.dataviewer.gui.Constants;
+import plugins.dataviewer.gui.DataTabPane;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
-public class DataListPanel extends JScrollPane implements CoreListener{
+public class DataListPanel extends JPanel implements CoreListener{
 	private static final long serialVersionUID = 1L;
 	
 	private DataTabPane m_TabPane;
 	private JPanel m_InnerPanel;
+	private JTable m_Table;
+	private DefaultTableModel m_TableModel;
 	private JProbeCore m_Core;
 	private Map<Data, JLabel> m_NameLabels = new HashMap<Data, JLabel>();
 	private Map<Data, JLabel> m_TypeLabels = new HashMap<Data, JLabel>();
+	private Map<Data, Integer> m_RowIndex = new HashMap<Data, Integer>();
 	private int m_Row = 0;
 	
 	public DataListPanel(JProbeCore core, DataTabPane tabPane){
-		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		super(new BorderLayout());
+		//super(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		m_Core = core;
 		m_Core.addCoreListener(this);
 		m_TabPane = tabPane;
@@ -37,14 +48,22 @@ public class DataListPanel extends JScrollPane implements CoreListener{
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.gridx=i;
 			gbc.fill = GridBagConstraints.HORIZONTAL;
-			m_InnerPanel.add(new JLabel(header), gbc);
+			JLabel headerLabel = new JLabel(header);
+			headerLabel.setHorizontalTextPosition(JLabel.CENTER);
+			headerLabel.setBorder(BorderFactory.createLineBorder(Color.black));
+			m_InnerPanel.add(headerLabel, gbc);
 			m_InnerPanel.revalidate();
 		}
 		m_Row++;
 		for(Data data : m_Core.getDataManager().getAllData()){
 			this.add(data);
 		}
-		this.setViewportView(m_InnerPanel);
+		JScrollPane scroll = new JScrollPane(m_InnerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		TitledBorder border = BorderFactory.createTitledBorder("Data");
+		border.setTitleJustification(TitledBorder.CENTER);
+		scroll.setViewportBorder(border);
+		this.add(scroll, BorderLayout.CENTER);
+		//this.setViewportView(m_InnerPanel);
 		//this.add(m_InnerPanel, BorderLayout.NORTH);
 	}
 	
@@ -57,14 +76,16 @@ public class DataListPanel extends JScrollPane implements CoreListener{
 		gbc.gridy=m_Row;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
+		name.setBorder(BorderFactory.createLineBorder(Color.black));
 		m_InnerPanel.add(name, gbc);
 		gbc.gridx = 1;
+		type.setBorder(BorderFactory.createLineBorder(Color.black));
 		m_InnerPanel.add(type, gbc);
 		m_Row++;
 		m_InnerPanel.revalidate();
 	}
 	
-	void cleanup(){
+	public void cleanup(){
 		m_Core.removeCoreListener(this);
 	}
 	

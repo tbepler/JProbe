@@ -13,6 +13,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
+import plugins.dataviewer.gui.datalist.DataListPanel;
 import plugins.functions.gui.FunctionMenu;
 import plugins.jprobe.gui.services.JProbeGUI;
 

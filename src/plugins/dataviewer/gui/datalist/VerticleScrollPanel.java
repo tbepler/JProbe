@@ -1,4 +1,4 @@
-package plugins.dataviewer.gui;
+package plugins.dataviewer.gui.datalist;
 
 import java.awt.Dimension;
 import java.awt.LayoutManager;

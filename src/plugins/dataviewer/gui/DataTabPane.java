@@ -21,7 +21,7 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	
 	private DataManager m_DataManager;
 	private Map<Data, DataTab> m_Tabs;
-	private Map<Data, DataTabLable> m_TabLables;
+	private Map<Data, DataTabLabel> m_TabLables;
 	private GridBagConstraints m_Constraints;
 	
 	public DataTabPane(DataManager dataManager){
@@ -35,14 +35,14 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 		m_Constraints.gridheight = GridBagConstraints.REMAINDER;
 		m_Constraints.gridwidth = 3;
 		m_Tabs = new HashMap<Data, DataTab>();
-		m_TabLables = new HashMap<Data, DataTabLable>();
+		m_TabLables = new HashMap<Data, DataTabLabel>();
 		dataManager.addListener(this);
 		for(Data d : dataManager.getAllData()){
 			DataTab tab = new  DataTab(d);
 			m_Tabs.put(d, tab);
 			this.addTab("", tab);
 			int index = this.indexOfComponent(tab);
-			DataTabLable lable = new DataTabLable(this, tab, m_DataManager.getDataName(d));
+			DataTabLabel lable = new DataTabLabel(this, tab, m_DataManager.getDataName(d));
 			m_TabLables.put(d, lable);
 			this.setTabComponentAt(index, lable);
 		}
@@ -72,7 +72,7 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 			m_Tabs.put(data, tab);
 			this.addTab("", tab);
 			int index = this.indexOfComponent(tab);
-			DataTabLable lable = new DataTabLable(this, tab, m_DataManager.getDataName(data));
+			DataTabLabel lable = new DataTabLabel(this, tab, m_DataManager.getDataName(data));
 			m_TabLables.put(data, lable);
 			this.setTabComponentAt(index, lable);
 			this.revalidate();

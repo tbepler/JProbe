@@ -7,14 +7,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class DataTabLable extends JPanel implements ActionListener{
+public class DataTabLabel extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	
 	private DataTabPane m_TabbedPane;
 	private DataTab m_Tab;
 	private JLabel m_Label;	
 	
-	public DataTabLable(DataTabPane tabbedPane, DataTab tab, String title){
+	public DataTabLabel(DataTabPane tabbedPane, DataTab tab, String title){
 		super();
 		m_TabbedPane = tabbedPane;
 		m_Tab = tab;

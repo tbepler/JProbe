@@ -302,6 +302,16 @@ public class CoreDataManager implements DataManager{
 			throw e;
 		}
 	}
+
+	@Override
+	public boolean contains(String name) {
+		return nameToData.containsKey(name);
+	}
+
+	@Override
+	public boolean contains(Data data) {
+		return dataToName.containsKey(data);
+	}
 	
 	
 	
