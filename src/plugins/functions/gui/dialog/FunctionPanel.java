@@ -126,6 +126,10 @@ public class FunctionPanel extends JPanel implements ActionListener, StateListen
 	public void setRunAction(OnPress run){
 		this.m_RunAction = run;
 	}
+	
+	public JButton getRunButton(){
+		return m_RunButton;
+	}
 
 	@Override
 	public void update(StateNotifier source) {

@@ -92,6 +92,7 @@ public class FunctionDialogHandler{
 		};
 		panel.setCancelAction(close);
 		panel.setRunAction(close);
+		dialog.getRootPane().setDefaultButton(panel.getRunButton());
 		dialog.pack();
 		dialog.setVisible(true);
 		visibleDialogs.put(panel, dialog);

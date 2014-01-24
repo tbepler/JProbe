@@ -80,6 +80,15 @@ public class TestData implements Data{
 	@Override
 	public boolean setValue(int row, int col, Field value) {
 		m_Table[row][col] = value;
+		if(col == 0){
+			m_String = (StringField) value;
+		}
+		if(col == 1){
+			m_Integer = (IntField) value;
+		}
+		if(col == 2){
+			m_Decimal = (DecimalField) value;
+		}
 		this.notifyListeners(new DataEvent(this, DataEvent.Type.FIELD_UPDATED, value, row, col));
 		return true;
 	}

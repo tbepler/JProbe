@@ -32,11 +32,16 @@ public class DataComboBox extends JComboBox<String> implements CoreListener, Val
 				m_Valid = m_DataParam.isValid(m_Displayed.get(getSelectedItem()));
 				notifyListeners();
 			}
+			if(e.getStateChange() == ItemEvent.DESELECTED){
+				m_Valid = false;
+				notifyListeners();
+			}
 		}
 	};
 	private DataParameter m_DataParam;
 	private JProbeCore m_Core;
 	private Map<String, Data> m_Displayed;
+	private Map<Data, String> m_Data;
 	private boolean m_Valid;
 	private Collection<StateListener> m_Listeners = new HashSet<StateListener>();
 	
@@ -49,6 +54,7 @@ public class DataComboBox extends JComboBox<String> implements CoreListener, Val
 		m_Core = core;
 		m_Core.addCoreListener(this);
 		m_Displayed = new HashMap<String, Data>();
+		m_Data = new HashMap<Data, String>();
 		if(m_DataParam.isOptional()){
 			this.addItem(SELECT_NOTHING);
 			m_Displayed.put(SELECT_NOTHING, null);
@@ -57,6 +63,7 @@ public class DataComboBox extends JComboBox<String> implements CoreListener, Val
 			if(isValid(d)){
 				String name = m_Core.getDataManager().getDataName(d);
 				m_Displayed.put(name, d);
+				m_Data.put(d, name);
 				this.addItem(name);
 			}
 		}
@@ -74,15 +81,17 @@ public class DataComboBox extends JComboBox<String> implements CoreListener, Val
 	private void addData(Data d){
 		String name = m_Core.getDataManager().getDataName(d);
 		m_Displayed.put(name, d);
+		m_Data.put(d, name);
 		this.addItem(name);
 		this.resizeWindow();
 		//this.revalidate();
 	}
 	
 	private void removeData(Data d){
-		String name = m_Core.getDataManager().getDataName(d);
+		String name = m_Data.get(d);
 		if(m_Displayed.containsKey(name)){
 			m_Displayed.remove(name);
+			m_Data.remove(d);
 			this.removeItem(name);
 			this.resizeWindow();
 			//this.revalidate();
@@ -99,6 +108,7 @@ public class DataComboBox extends JComboBox<String> implements CoreListener, Val
 	private void rename(String oldName, String newName){
 		if(m_Displayed.containsKey(oldName)){
 			Data changed = m_Displayed.get(oldName);
+			m_Data.put(changed, newName);
 			m_Displayed.remove(oldName);
 			this.removeItem(oldName);
 			m_Displayed.put(newName, changed);
