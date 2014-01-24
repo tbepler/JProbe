@@ -20,10 +20,11 @@ public class Activator implements BundleActivator{
 	
 	public static Bundle BUNDLE = null;
 	
-	private JProbeCore core;
-	private JProbeGUI gui;
-	private BundleContext bc;
-	private DataTabPane tabPane;
+	private JProbeCore m_Core;
+	private JProbeGUI m_Gui;
+	private BundleContext m_BC;
+	private DataTabPane m_TabPane;
+	private DataListPanel m_ListPanel;
 
 	private ServiceListener sl = new ServiceListener() {
 		@Override
@@ -31,9 +32,9 @@ public class Activator implements BundleActivator{
 			ServiceReference sr = ev.getServiceReference();
 			switch(ev.getType()) {
 				case ServiceEvent.REGISTERED:
-					gui = (JProbeGUI) bc.getService(sr);
-					core = gui.getJProbeCore();
-					initTabPane();
+					m_Gui = (JProbeGUI) m_BC.getService(sr);
+					m_Core = m_Gui.getJProbeCore();
+					init();
 					break;
 				default:
 					break;
@@ -41,19 +42,21 @@ public class Activator implements BundleActivator{
 		}
 	};
 	
-	private void initTabPane(){
-		tabPane = new DataTabPane(core.getDataManager());
-		gui.addComponent(tabPane, tabPane.getGridBagConstraints(), bc.getBundle());
+	private void init(){
+		m_TabPane = new DataTabPane(m_Core.getDataManager());
+		m_Gui.addComponent(m_TabPane, m_TabPane.getGridBagConstraints(), m_BC.getBundle());
+		m_ListPanel = new DataListPanel(m_Core, m_TabPane);
+		m_Gui.addComponent(m_ListPanel, m_ListPanel.getGridBagConstraints(), m_BC.getBundle());
 		if(Debug.getLevel() == Debug.FULL){
 			System.out.println("DataViewer started");
 		}
-		Log.getInstance().write(bc.getBundle(), "DataViewer started.");
+		Log.getInstance().write(m_BC.getBundle(), "DataViewer started.");
 	}
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
-		bc = context;
-		BUNDLE = bc.getBundle();
+		m_BC = context;
+		BUNDLE = m_BC.getBundle();
 		String filter = "(objectclass="+JProbeGUI.class.getName()+")";
 		context.addServiceListener(sl, filter);
 		Collection<ServiceReference<JProbeGUI>> refs = context.getServiceReferences(JProbeGUI.class, null);
@@ -64,8 +67,10 @@ public class Activator implements BundleActivator{
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		tabPane.cleanup();
-		gui.removeComponent(tabPane, context.getBundle());;
+		m_TabPane.cleanup();
+		m_Gui.removeComponent(m_TabPane, context.getBundle());
+		m_ListPanel.cleanup();
+		m_Gui.removeComponent(m_ListPanel, context.getBundle());
 	}
 
 }

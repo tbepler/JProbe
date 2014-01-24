@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import plugins.dataviewer.gui.services.DataViewer;
 import jprobe.services.CoreEvent;
@@ -54,14 +55,28 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 
 	@Override
 	public void displayData(Data data) {
-		DataTab tab = new DataTab(data);
-		m_Tabs.put(data, tab);
-		this.addTab("", tab);
-		int index = this.indexOfComponent(tab);
-		DataTabLable lable = new DataTabLable(this, tab, m_DataManager.getDataName(data));
-		m_TabLables.put(data, lable);
-		this.setTabComponentAt(index, lable);
-		this.revalidate();
+		if(m_Tabs.containsKey(data)){
+			final DataTab select = m_Tabs.get(data);
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run() {
+					try{
+						DataTabPane.this.setSelectedComponent(select);
+					} catch (Exception e){
+						//do nothing
+					}
+				}
+			});
+		}else{
+			DataTab tab = new DataTab(data);
+			m_Tabs.put(data, tab);
+			this.addTab("", tab);
+			int index = this.indexOfComponent(tab);
+			DataTabLable lable = new DataTabLable(this, tab, m_DataManager.getDataName(data));
+			m_TabLables.put(data, lable);
+			this.setTabComponentAt(index, lable);
+			this.revalidate();
+		}
 	}
 
 	@Override
