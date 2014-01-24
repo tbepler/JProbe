@@ -14,6 +14,7 @@ public abstract class AbstractDataMenuItem extends JMenuItem implements ActionLi
 	protected AbstractDataMenuItem(String title, Data data){
 		super(title);
 		m_Data = data;
+		this.addActionListener(this);
 	}
 	
 	protected AbstractDataMenuItem(String title){

@@ -9,14 +9,17 @@ import javax.swing.SwingUtilities;
 import plugins.dataviewer.gui.Constants;
 import plugins.dataviewer.gui.DataTabPane;
 import jprobe.services.JProbeCore;
+import jprobe.services.data.Data;
 
 public class DataListTable extends JTable implements MouseListener{
 	private static final long serialVersionUID = 1L;
 	
 	DataListModel m_Model;
+	DataPopupMenu m_PopupMenu;
 	
 	public DataListTable(JProbeCore core, DataTabPane tabPane){
 		super();
+		m_PopupMenu = new DataPopupMenu(core, tabPane);
 		m_Model = new DataListModel(core, SwingUtilities.getWindowAncestor(this));
 		this.setModel(m_Model);
 		this.setDragEnabled(false);
@@ -54,9 +57,19 @@ public class DataListTable extends JTable implements MouseListener{
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mouseReleased(MouseEvent event) {
+		if(event.getButton() == MouseEvent.BUTTON3){
+			int row = this.rowAtPoint(event.getPoint());
+			if(row < 0 || row >= this.getRowCount()){
+				return;
+			}
+			Data selected = m_Model.getData(row);
+			if(selected != null){
+				this.setRowSelectionInterval(row, row);
+				m_PopupMenu.setData(selected);
+				m_PopupMenu.show(this, event.getX(), event.getY());
+			}
+		}
 	}
 	
 	

@@ -13,7 +13,6 @@ public class ViewDataMenuItem extends AbstractDataMenuItem{
 	public ViewDataMenuItem(DataTabPane tabPane, Data data){
 		super("View",  data);
 		m_TabPane = tabPane;
-		this.addActionListener(this);
 	}
 	
 	public ViewDataMenuItem(DataTabPane tabPane){
@@ -23,7 +22,7 @@ public class ViewDataMenuItem extends AbstractDataMenuItem{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(this.getData() != null){
-			m_TabPane.displayData(this.getData());
+			m_TabPane.selectData(this.getData());
 		}
 	}
 	

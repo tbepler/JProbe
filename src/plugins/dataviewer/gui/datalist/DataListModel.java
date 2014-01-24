@@ -36,6 +36,11 @@ public class DataListModel extends DefaultTableModel implements CoreListener{
 		this(core, null);
 	}
 	
+	public Data getData(int row){
+		String name = (String) this.getValueAt(row, 0);
+		return m_Core.getDataManager().getData(name);
+	}
+	
 	public void cleanup(){
 		m_Core.removeCoreListener(this);
 	}

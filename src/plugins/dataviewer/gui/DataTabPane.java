@@ -52,22 +52,28 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	public GridBagConstraints getGridBagConstraints(){
 		return m_Constraints;
 	}
-
+	
+	@Override
+	public void selectData(Data data){
+		if(!m_Tabs.containsKey(data)){
+			this.displayData(data);
+		}
+		final DataTab select = m_Tabs.get(data);
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run() {
+				try{
+					DataTabPane.this.setSelectedComponent(select);
+				} catch (Exception e){
+					//do nothing
+				}
+			}
+		});
+	}
+	
 	@Override
 	public void displayData(Data data) {
-		if(m_Tabs.containsKey(data)){
-			final DataTab select = m_Tabs.get(data);
-			SwingUtilities.invokeLater(new Runnable(){
-				@Override
-				public void run() {
-					try{
-						DataTabPane.this.setSelectedComponent(select);
-					} catch (Exception e){
-						//do nothing
-					}
-				}
-			});
-		}else{
+		if(!m_Tabs.containsKey(data)){
 			DataTab tab = new DataTab(data);
 			m_Tabs.put(data, tab);
 			this.addTab("", tab);
