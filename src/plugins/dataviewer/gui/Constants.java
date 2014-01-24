@@ -14,5 +14,6 @@ public class Constants {
 	public static final ImageIcon X_CLICKED_ICON = new ImageIcon(Constants.class.getResource(X_CLICKED_PATH));
 	
 	public static final String[] DATALIST_COL_HEADERS = new String[]{"Name", "Type"};
+	public static final int DATALIST_MIN_COL_WIDTH = 100;
 	
 }

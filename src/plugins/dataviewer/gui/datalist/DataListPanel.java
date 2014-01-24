@@ -58,8 +58,9 @@ public class DataListPanel extends JPanel{
 		JScrollPane scroll = new JScrollPane(m_Table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		TitledBorder border = BorderFactory.createTitledBorder("Data");
 		border.setTitleJustification(TitledBorder.CENTER);
-		scroll.setViewportBorder(border);
+		this.setBorder(border);
 		this.add(scroll, BorderLayout.CENTER);
+		this.setMinimumSize(this.getPreferredSize());
 		//this.setViewportView(m_InnerPanel);
 		//this.add(m_InnerPanel, BorderLayout.NORTH);
 	}
@@ -88,12 +89,12 @@ public class DataListPanel extends JPanel{
 	
 	public GridBagConstraints getGridBagConstraints(){
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
+		gbc.fill = GridBagConstraints.VERTICAL;
 		gbc.gridy = 0;
 		gbc.gridheight = GridBagConstraints.REMAINDER;
 		gbc.gridwidth = 1;
 		gbc.weighty = 0.7;
-		gbc.weightx = 0.1;
+		gbc.weightx = 0;
 		return gbc;
 	}
 

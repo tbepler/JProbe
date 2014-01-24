@@ -3,6 +3,7 @@ package plugins.dataviewer.gui.datalist;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
+import plugins.dataviewer.gui.Constants;
 import jprobe.services.JProbeCore;
 
 public class DataListTable extends JTable{
@@ -15,7 +16,12 @@ public class DataListTable extends JTable{
 		m_Model = new DataListModel(core, SwingUtilities.getWindowAncestor(this));
 		this.setModel(m_Model);
 		this.setDragEnabled(false);
-		
+		for(int i=0; i<this.getColumnCount(); i++){
+			this.getColumnModel().getColumn(i).setMinWidth(Constants.DATALIST_MIN_COL_WIDTH);
+		}
+		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		this.setPreferredScrollableViewportSize(this.getPreferredSize());
+		this.revalidate();
 	}
 	
 	public void cleanup(){
