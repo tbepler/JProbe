@@ -13,7 +13,7 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellEditor;
 
-import plugins.dataviewer.gui.Activator;
+import plugins.dataviewer.gui.DataviewerActivator;
 import plugins.testDataAndFunction.DecimalField;
 import jprobe.services.ErrorHandler;
 import jprobe.services.data.Field;
@@ -59,7 +59,7 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 				this.fireEditingStopped();
 				return true;
 			} catch (Exception e){
-				ErrorHandler.getInstance().handleException(e, Activator.BUNDLE);
+				ErrorHandler.getInstance().handleException(e, DataviewerActivator.getBundle());
 			}
 		}
 		spinner.setBorder(red);
@@ -86,7 +86,7 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 				this.fireEditingStopped();
 				return true;
 			} catch (Exception e){
-				ErrorHandler.getInstance().handleException(e, Activator.BUNDLE);
+				ErrorHandler.getInstance().handleException(e, DataviewerActivator.getBundle());
 			}
 		}
 		spinner.setBorder(red);

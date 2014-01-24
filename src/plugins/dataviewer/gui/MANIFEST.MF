@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Function GUI Plugin
 Bundle-SymbolicName: plugins.dataviewer.gui
 Bundle-Version: 1.0.0
-Bundle-Activator: plugins.dataviewer.gui.Activator
+Bundle-Activator: plugins.dataviewer.gui.DataviewerActivator
 Bundle-Vendor: Tristan Bepler
 Bundle-Localization: plugin
 Import-Package: org.osgi.framework,jprobe.services,jprobe.services.data,plugins.jprobe.gui.services,javax.swing,javax.swing.*

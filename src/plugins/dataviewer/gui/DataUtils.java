@@ -17,8 +17,12 @@ public class DataUtils {
 					+ "with the name \""+newName+"\" stored. Renaming will overwrite that object."
 							+ " Are you sure you want to proceed?", "Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, 
 							null, OPTIONS, OPTIONS[1]);
-			
+			if(result != 0){
+				return false;
+			}
 		}
+		core.getDataManager().rename(data, newName, DataviewerActivator.getBundle());
+		return true;
 	}
 	
 }

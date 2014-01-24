@@ -17,9 +17,9 @@ import plugins.dataviewer.gui.datalist.DataListPanel;
 import plugins.functions.gui.FunctionMenu;
 import plugins.jprobe.gui.services.JProbeGUI;
 
-public class Activator implements BundleActivator{
+public class DataviewerActivator implements BundleActivator{
 	
-	public static Bundle BUNDLE = null;
+	private static Bundle BUNDLE = null;
 	
 	private JProbeCore m_Core;
 	private JProbeGUI m_Gui;
@@ -42,6 +42,10 @@ public class Activator implements BundleActivator{
 			}
 		}
 	};
+	
+	public static Bundle getBundle(){
+		return BUNDLE;
+	}
 	
 	private void init(){
 		m_TabPane = new DataTabPane(m_Core.getDataManager());

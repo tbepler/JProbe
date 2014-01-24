@@ -2,7 +2,7 @@ package plugins.dataviewer.gui.table;
 
 import javax.swing.table.AbstractTableModel;
 
-import plugins.dataviewer.gui.Activator;
+import plugins.dataviewer.gui.DataviewerActivator;
 import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataEvent;
@@ -62,7 +62,7 @@ public class DataTableModel extends AbstractTableModel implements DataListener{
 						fireTableCellUpdated(row, col);
 					}
 				} catch (Exception e){
-					ErrorHandler.getInstance().handleException(e, Activator.BUNDLE);
+					ErrorHandler.getInstance().handleException(e, DataviewerActivator.getBundle());
 				}
 			}
 		}
