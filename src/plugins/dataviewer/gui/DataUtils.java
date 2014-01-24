@@ -13,9 +13,9 @@ public class DataUtils {
 	
 	public static boolean rename(Data data, String newName, JProbeCore core, Component parent){
 		if(core.getDataManager().contains(newName)){
-			int result = JOptionPane.showOptionDialog(parent, "Warning: there is already a data object "
-					+ "with the name \""+newName+"\" stored. Renaming will overwrite that object."
-							+ " Are you sure you want to proceed?", "Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, 
+			int result = JOptionPane.showOptionDialog(parent, "Warning:\nThere is already data "
+					+ "with the name \""+newName+"\" stored.\nRenaming will overwrite that data."
+							+ "\n\nAre you sure you want to proceed?", "Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, 
 							null, OPTIONS, OPTIONS[1]);
 			if(result != 0){
 				return false;
