@@ -8,13 +8,9 @@ import java.util.Map;
 import javax.swing.JTabbedPane;
 
 import plugins.dataviewer.gui.services.DataViewer;
-import plugins.dataviewer.gui.table.DataTab;
-import plugins.dataviewer.gui.table.DataTable;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
-import jprobe.services.JProbeCore;
-import jprobe.services.Journal;
 import jprobe.services.data.Data;
 
 public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer{
@@ -22,51 +18,69 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	
 	public static final Dimension PREFERRED = new Dimension(800, 800);
 	
-	private DataManager dataManager;
-	private Map<Data, DataTab> tabs;
-	private GridBagConstraints constraints;
+	private DataManager m_DataManager;
+	private Map<Data, DataTab> m_Tabs;
+	private Map<Data, DataTabLable> m_TabLables;
+	private GridBagConstraints m_Constraints;
 	
 	public DataTabPane(DataManager dataManager){
 		super();
 		this.setPreferredSize(PREFERRED);
-		this.dataManager = dataManager;
-		constraints = new GridBagConstraints();
-		constraints.fill = GridBagConstraints.BOTH;
-		constraints.weightx = 0.7;
-		constraints.weighty = 0.7;
-		constraints.gridheight = GridBagConstraints.REMAINDER;
-		constraints.gridwidth = 3;
-		tabs = new HashMap<Data, DataTab>();
+		this.m_DataManager = dataManager;
+		m_Constraints = new GridBagConstraints();
+		m_Constraints.fill = GridBagConstraints.BOTH;
+		m_Constraints.weightx = 0.7;
+		m_Constraints.weighty = 0.7;
+		m_Constraints.gridheight = GridBagConstraints.REMAINDER;
+		m_Constraints.gridwidth = 3;
+		m_Tabs = new HashMap<Data, DataTab>();
+		m_TabLables = new HashMap<Data, DataTabLable>();
 		dataManager.addListener(this);
 		for(Data d : dataManager.getAllData()){
 			DataTab tab = new  DataTab(d);
-			tabs.put(d, tab);
-			this.addTab(dataManager.getDataName(d), tab);
+			m_Tabs.put(d, tab);
+			this.addTab("", tab);
+			int index = this.indexOfComponent(tab);
+			DataTabLable lable = new DataTabLable(this, tab, m_DataManager.getDataName(d));
+			m_TabLables.put(d, lable);
+			this.setTabComponentAt(index, lable);
 		}
 		this.revalidate();
 	}
 	
 	public GridBagConstraints getGridBagConstraints(){
-		return constraints;
+		return m_Constraints;
 	}
 
 	@Override
 	public void displayData(Data data) {
 		DataTab tab = new DataTab(data);
-		tabs.put(data, tab);
-		this.addTab(dataManager.getDataName(data), tab);
+		m_Tabs.put(data, tab);
+		this.addTab("", tab);
+		int index = this.indexOfComponent(tab);
+		DataTabLable lable = new DataTabLable(this, tab, m_DataManager.getDataName(data));
+		m_TabLables.put(data, lable);
+		this.setTabComponentAt(index, lable);
 		this.revalidate();
 	}
 
 	@Override
 	public void closeData(Data data) {
-		this.remove(tabs.get(data));
-		tabs.remove(data);
+		this.remove(m_Tabs.get(data));
+		m_Tabs.remove(data);
+		m_TabLables.remove(data);
+		this.revalidate();
+	}
+	
+	public void closeTab(DataTab tab){
+		this.remove(tab);
+		m_Tabs.remove(tab.getData());
+		m_TabLables.remove(tab.getData());
 		this.revalidate();
 	}
 	
 	void cleanup(){
-		dataManager.removeListener(this);
+		m_DataManager.removeListener(this);
 	}
 	
 	@Override
@@ -78,7 +92,7 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 			closeData(event.getData());
 		}
 		if(event.type() == CoreEvent.Type.DATA_NAME_CHANGE){
-			this.setTitleAt(this.indexOfComponent(tabs.get(event.getData())), dataManager.getDataName(event.getData()));
+			m_TabLables.get(event.getData()).setTitle(m_DataManager.getDataName(event.getData()));
 		}
 	}
 
