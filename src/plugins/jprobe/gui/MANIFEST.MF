@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JProbe GUI
 Bundle-SymbolicName: plugins.jprobe.gui
 Bundle-Version: 1.0.0
-Bundle-Activator: plugins.jprobe.gui.Activator
+Bundle-Activator: plugins.jprobe.gui.GUIActivator
 Bundle-Vendor: Tristan Bepler
 Bundle-Localization: plugin
 Import-Package: org.osgi.framework,jprobe.services,jprobe.services.function,jprobe.services.data,javax.swing, plugins.jprobe.gui.services
