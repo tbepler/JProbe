@@ -71,16 +71,14 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		this.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent event){
-				if(JOptionPane.showConfirmDialog(JProbeGUIFrame.this, "Exit JProbe?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION){
-					JProbeGUIFrame.this.m_Core.shutdown();
-				}
+				JProbeGUIFrame.this.quit();
 			}
 		});
 		this.setPreferredSize(new Dimension(config.getWidth(), config.getHeight()));
 		this.pack();
 		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
 		this.setLocation(center.x-this.getWidth()/2, center.y-this.getHeight()/2);
-		m_FileMenu = new FileMenu(m_Core);
+		m_FileMenu = new FileMenu(this, m_Core);
 		m_MenuBar.add(m_FileMenu);
 		m_PreferencesWindow = new TabDialogueWindow(this, "Preferences", true);
 		m_HelpWindow = new TabDialogueWindow(this, "Help", true);
@@ -88,6 +86,12 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		m_MenuBar.add(m_PreferencesMenu);
 		m_HelpMenu = new DialogueMenu("Help", m_HelpWindow);
 		m_MenuBar.add(m_HelpMenu);
+	}
+	
+	public void quit(){
+		if(JOptionPane.showConfirmDialog(JProbeGUIFrame.this, "Exit JProbe?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION){
+			JProbeGUIFrame.this.m_Core.shutdown();
+		}
 	}
 	
 	@Override
