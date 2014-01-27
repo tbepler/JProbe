@@ -7,14 +7,11 @@ import jprobe.services.JProbeCore;
 
 public class FileMenu extends JMenu{
 	private static final long serialVersionUID = 1L;
-
-	private JProbeCore m_Core;
 	
 	public FileMenu(JProbeGUIFrame parentFrame, JProbeCore core){
 		super("File");
-		m_Core = core;
-		this.add(new ImportMenu(core));
-		this.add(new ExportMenu(core));
+		this.add(new ImportMenu(core, parentFrame.getImportChooser()));
+		this.add(new ExportMenu(core, parentFrame.getExportChooser()));
 		this.addSeparator();
 		this.add(new QuitMenuItem(parentFrame));
 	}

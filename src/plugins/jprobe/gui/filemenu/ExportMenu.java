@@ -19,11 +19,11 @@ public class ExportMenu extends JMenu implements CoreListener{
 	private JFileChooser m_FileChooser;
 	private Map<Data, JMenuItem> m_Items;
 	
-	public ExportMenu(JProbeCore core){
+	public ExportMenu(JProbeCore core, JFileChooser exportChooser){
 		super("Export");
 		m_Core = core;
 		m_Core.addCoreListener(this);
-		m_FileChooser = new JFileChooser();
+		m_FileChooser = exportChooser;
 		m_Items = new HashMap<Data, JMenuItem>();
 		this.checkAllCoreData();
 		this.setEnabled(!m_Items.isEmpty());

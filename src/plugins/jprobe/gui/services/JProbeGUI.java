@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 
 import jprobe.services.JProbeCore;
+import jprobe.services.data.Data;
 
 import org.osgi.framework.Bundle;
 
@@ -28,6 +29,12 @@ public interface JProbeGUI {
 	
 	public void addDropdownMenu(JMenu menu, Bundle responsible);
 	public void removeDropdownMenu(JMenu menu, Bundle responsible);
+	
+	public void save();
+	public void load();
+	
+	public void write(Data d);
+	public void read(Class<? extends Data> type);
 	
 	public JProbeCore getJProbeCore();
 	

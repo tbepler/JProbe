@@ -13,11 +13,11 @@ import java.awt.event.WindowEvent;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -33,11 +33,10 @@ import plugins.jprobe.gui.services.GUIListener;
 import plugins.jprobe.gui.services.JProbeGUI;
 import plugins.jprobe.gui.utils.DialogueMenu;
 import plugins.jprobe.gui.utils.TabDialogueWindow;
-import jprobe.services.CoreEvent;
-import jprobe.services.CoreListener;
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
 import jprobe.services.Log;
+import jprobe.services.data.Data;
 
 public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private static final long serialVersionUID = 1L;
@@ -52,10 +51,14 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private DialogueMenu m_PreferencesMenu;
 	private DialogueMenu m_HelpMenu;
 	private FileMenu m_FileMenu;
+	private JFileChooser m_ImportChooser;
+	private JFileChooser m_ExportChooser;
 	private Collection<GUIListener> m_Listeners;
 	
 	JProbeGUIFrame(JProbeCore core, String name, Bundle bundle, GUIConfig config){
 		super(name);
+		m_ImportChooser = new JFileChooser();
+		m_ExportChooser = new JFileChooser();
 		this.m_Bundle = bundle;
 		this.m_Core = core;
 		m_PluginMenuItems = new PriorityQueue<JMenu>(10, new Comparator<JMenu>(){
@@ -192,6 +195,36 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	public void removePreferencesTab(JComponent component, Bundle responsible) {
 		m_PreferencesWindow.removeTab(component);
 		checkDebugAndLog("Preferences tab "+component.toString()+" removed by plugin: "+responsible.getSymbolicName());
+	}
+	
+	public JFileChooser getExportChooser(){
+		return m_ExportChooser;
+	}
+	
+	public JFileChooser getImportChooser(){
+		return m_ImportChooser;
+	}
+
+	@Override
+	public void save() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void load() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void write(Data d) {
+		ExportImportUtil.exportData(d, m_Core, m_ExportChooser, this);
+	}
+
+	@Override
+	public void read(Class<? extends Data> type) {
+		ExportImportUtil.importData(type, m_Core, m_ImportChooser, this);
 	}
 	
 }
