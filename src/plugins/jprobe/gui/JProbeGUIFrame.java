@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 
 import org.osgi.framework.Bundle;
 
+import plugins.jprobe.gui.filemenu.FileMenu;
 import plugins.jprobe.gui.services.GUIEvent;
 import plugins.jprobe.gui.services.GUIListener;
 import plugins.jprobe.gui.services.JProbeGUI;

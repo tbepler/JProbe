@@ -1,10 +1,11 @@
 package jprobe.services.data;
 
-import java.util.Map;
 import java.util.Scanner;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public interface DataReader {
-	public Map<String, String[]> getValidReadFormats();
-	public Data read(String format, Scanner s) throws Exception;
+	public FileNameExtensionFilter[] getValidReadFormats();
+	public Data read(FileNameExtensionFilter format, Scanner s) throws Exception;
 }

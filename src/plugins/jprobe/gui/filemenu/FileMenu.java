@@ -1,4 +1,4 @@
-package plugins.jprobe.gui;
+package plugins.jprobe.gui.filemenu;
 
 import javax.swing.JMenu;
 
@@ -12,6 +12,7 @@ public class FileMenu extends JMenu{
 	public FileMenu(JProbeCore core){
 		super("File");
 		m_Core = core;
+		this.add(new ImportMenu(core));
 	}
 	
 }

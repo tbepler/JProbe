@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
@@ -19,7 +21,7 @@ public interface DataManager {
 	public void removeDataReader(DataReader reader, Bundle responsible);
 	public void removeDataReader(Class<? extends Data> type, Bundle responsible);
 	public Collection<Class<? extends Data>> getReadableDataTypes();
-	public String[] getValidReadFormats(Class<? extends Data> type);
+	public FileNameExtensionFilter[] getValidReadFormats(Class<? extends Data> type);
 	
 	public void addDataWriter(Class<? extends Data> write, DataWriter writer, Bundle responsible);
 	public void removeDataWriter(DataWriter writer, Bundle responsible);
@@ -27,7 +29,7 @@ public interface DataManager {
 	public Collection<Class<? extends Data>> getWritableDataTypes();
 	public String[] getValidWriteFormats(Class<? extends Data> type);
 	
-	public Data readData(File file, Class<? extends Data> type, String format, Bundle responsible) throws Exception;
+	public Data readData(File file, Class<? extends Data> type, FileNameExtensionFilter format, Bundle responsible) throws Exception;
 	public void writeData(File file, Data data, String format) throws Exception;
 	public boolean isReadable(Class<? extends Data> type);
 	public boolean isWritable(Class<? extends Data> type);

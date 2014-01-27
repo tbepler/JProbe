@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import org.osgi.framework.Bundle;
 
 import jprobe.services.CoreEvent;
@@ -250,13 +252,12 @@ public class CoreDataManager implements DataManager{
 	}
 
 	@Override
-	public String[] getValidReadFormats(Class<? extends Data> type) {
+	public FileNameExtensionFilter[] getValidReadFormats(Class<? extends Data> type) {
 		DataReader reader = typeToReader.get(type);
 		if(reader == null){
-			return new String[]{};
+			return new FileNameExtensionFilter[]{};
 		}
-		Map<String, String[]> formats = reader.getValidReadFormats();
-		return formats.keySet().toArray(new String[formats.size()]);
+		return reader.getValidReadFormats();
 	}
 
 	@Override
@@ -270,7 +271,7 @@ public class CoreDataManager implements DataManager{
 	}
 
 	@Override
-	public Data readData(File file, Class<? extends Data> type, String format, Bundle responsible) throws Exception {
+	public Data readData(File file, Class<? extends Data> type, FileNameExtensionFilter format, Bundle responsible) throws Exception {
 		if(!this.isReadable(type)){
 			throw new Exception(type+" not readable");
 		}
