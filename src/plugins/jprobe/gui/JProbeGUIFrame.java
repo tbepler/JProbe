@@ -1,11 +1,13 @@
 package plugins.jprobe.gui;
 
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collection;
@@ -21,6 +23,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import org.osgi.framework.Bundle;
 
@@ -28,6 +31,8 @@ import plugins.jprobe.gui.filemenu.FileMenu;
 import plugins.jprobe.gui.services.GUIEvent;
 import plugins.jprobe.gui.services.GUIListener;
 import plugins.jprobe.gui.services.JProbeGUI;
+import plugins.jprobe.gui.utils.DialogueMenu;
+import plugins.jprobe.gui.utils.TabDialogueWindow;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.Debug;
@@ -68,6 +73,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		m_MenuBar.setVisible(true);
 		m_ContentPane.setVisible(true);
 		//override window closing event to make sure Felix is shutdown correctly
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent event){
@@ -83,8 +89,12 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		m_PreferencesWindow = new TabDialogueWindow(this, "Preferences", true);
 		m_HelpWindow = new TabDialogueWindow(this, "Help", true);
 		m_PreferencesMenu = new DialogueMenu("Preferences", m_PreferencesWindow);
+		m_PreferencesMenu.setMnemonic(KeyEvent.VK_P);
+		m_PreferencesMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK));
 		m_MenuBar.add(m_PreferencesMenu);
 		m_HelpMenu = new DialogueMenu("Help", m_HelpWindow);
+		m_HelpMenu.setMnemonic(KeyEvent.VK_H);
+		m_HelpMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.CTRL_MASK));
 		m_MenuBar.add(m_HelpMenu);
 	}
 	

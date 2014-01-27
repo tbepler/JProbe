@@ -1,4 +1,4 @@
-package plugins.jprobe.gui;
+package plugins.jprobe.gui.utils;
 
 import java.awt.Frame;
 

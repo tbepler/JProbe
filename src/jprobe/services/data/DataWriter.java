@@ -1,12 +1,13 @@
 package jprobe.services.data;
 
 import java.io.BufferedWriter;
-import java.util.Map;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public interface DataWriter {
 	
-	public Map<String, String[]> getValidWriteFormats();
-	public void write(Data data, String format, BufferedWriter out) throws Exception;
+	public FileNameExtensionFilter[] getValidWriteFormats();
+	public void write(Data data, FileNameExtensionFilter format, BufferedWriter out) throws Exception;
 
 }

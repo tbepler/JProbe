@@ -27,10 +27,10 @@ public interface DataManager {
 	public void removeDataWriter(DataWriter writer, Bundle responsible);
 	public void removeDataWriter(Class<? extends Data> type, Bundle responsible);
 	public Collection<Class<? extends Data>> getWritableDataTypes();
-	public String[] getValidWriteFormats(Class<? extends Data> type);
+	public FileNameExtensionFilter[] getValidWriteFormats(Class<? extends Data> type);
 	
 	public Data readData(File file, Class<? extends Data> type, FileNameExtensionFilter format, Bundle responsible) throws Exception;
-	public void writeData(File file, Data data, String format) throws Exception;
+	public void writeData(File file, Data data, FileNameExtensionFilter format) throws Exception;
 	public boolean isReadable(Class<? extends Data> type);
 	public boolean isWritable(Class<? extends Data> type);
 	

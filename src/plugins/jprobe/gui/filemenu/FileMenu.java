@@ -14,6 +14,7 @@ public class FileMenu extends JMenu{
 		super("File");
 		m_Core = core;
 		this.add(new ImportMenu(core));
+		this.add(new ExportMenu(core));
 		this.addSeparator();
 		this.add(new QuitMenuItem(parentFrame));
 	}

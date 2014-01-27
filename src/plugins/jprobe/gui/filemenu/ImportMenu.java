@@ -23,7 +23,7 @@ public class ImportMenu extends JMenu implements CoreListener{
 		super("Import");
 		m_Core = core;
 		m_Core.addCoreListener(this);
-		m_FileChooser = new JFileChooser();
+		m_FileChooser = new JFileChooser("Import");
 		m_Items = new HashMap<Class<? extends Data>, JMenuItem>();
 		for(Class<? extends Data> readable : m_Core.getDataManager().getReadableDataTypes()){
 			this.addImportItem(readable);

@@ -261,13 +261,12 @@ public class CoreDataManager implements DataManager{
 	}
 
 	@Override
-	public String[] getValidWriteFormats(Class<? extends Data> type) {
+	public FileNameExtensionFilter[] getValidWriteFormats(Class<? extends Data> type) {
 		DataWriter writer = typeToWriter.get(type);
 		if(writer == null){
-			return new String[]{};
+			return new FileNameExtensionFilter[]{};
 		}
-		Map<String, String[]> formats = writer.getValidWriteFormats();
-		return formats.keySet().toArray(new String[formats.size()]);
+		return writer.getValidWriteFormats();
 	}
 
 	@Override
@@ -289,7 +288,7 @@ public class CoreDataManager implements DataManager{
 	}
 
 	@Override
-	public void writeData(File file, Data data, String format) throws Exception {
+	public void writeData(File file, Data data, FileNameExtensionFilter format) throws Exception {
 		if(!this.isWritable(data.getClass())){
 			throw new Exception(data.getClass()+" not writable");
 		}
