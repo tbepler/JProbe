@@ -50,7 +50,7 @@ public class DataviewerActivator implements BundleActivator{
 	private void init(){
 		m_TabPane = new DataTabPane(m_Core.getDataManager());
 		m_Gui.addComponent(m_TabPane, m_TabPane.getGridBagConstraints(), m_BC.getBundle());
-		m_ListPanel = new DataListPanel(m_Core, m_TabPane);
+		m_ListPanel = new DataListPanel(m_Core, m_Gui, m_TabPane);
 		m_Gui.addComponent(m_ListPanel, m_ListPanel.getGridBagConstraints(), m_BC.getBundle());
 		if(Debug.getLevel() == Debug.FULL){
 			System.out.println("DataViewer started");

@@ -9,6 +9,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
 import plugins.dataviewer.gui.DataTabPane;
+import plugins.jprobe.gui.services.JProbeGUI;
 import jprobe.services.JProbeCore;
 
 public class DataListPanel extends JPanel{
@@ -16,9 +17,9 @@ public class DataListPanel extends JPanel{
 
 	private DataListTable m_Table;
 	
-	public DataListPanel(JProbeCore core, DataTabPane tabPane){
+	public DataListPanel(JProbeCore core, JProbeGUI gui, DataTabPane tabPane){
 		super(new BorderLayout());
-		m_Table = new DataListTable(core, tabPane);
+		m_Table = new DataListTable(core, gui, tabPane);
 		JScrollPane scroll = new JScrollPane(m_Table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		TitledBorder border = BorderFactory.createTitledBorder("Data");
 		border.setTitleJustification(TitledBorder.CENTER);

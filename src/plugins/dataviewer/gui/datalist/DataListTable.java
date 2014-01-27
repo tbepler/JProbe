@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 
 import plugins.dataviewer.gui.Constants;
 import plugins.dataviewer.gui.DataTabPane;
+import plugins.jprobe.gui.services.JProbeGUI;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
@@ -17,9 +18,9 @@ public class DataListTable extends JTable implements MouseListener{
 	DataListModel m_Model;
 	DataPopupMenu m_PopupMenu;
 	
-	public DataListTable(JProbeCore core, DataTabPane tabPane){
+	public DataListTable(JProbeCore core, JProbeGUI gui, DataTabPane tabPane){
 		super();
-		m_PopupMenu = new DataPopupMenu(core, tabPane);
+		m_PopupMenu = new DataPopupMenu(core, gui, tabPane);
 		m_Model = new DataListModel(core, SwingUtilities.getWindowAncestor(this));
 		this.setModel(m_Model);
 		this.setDragEnabled(false);
