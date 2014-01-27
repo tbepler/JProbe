@@ -297,7 +297,9 @@ public class CoreDataManager implements DataManager{
 			throw new Exception(data.getClass()+" writer is null");
 		}
 		try{
-			writer.write(data, format, new BufferedWriter(new FileWriter(file)));
+			BufferedWriter buffer = new BufferedWriter(new FileWriter(file));
+			writer.write(data, format, buffer);
+			buffer.close();
 		} catch(Exception e){
 			throw e;
 		}

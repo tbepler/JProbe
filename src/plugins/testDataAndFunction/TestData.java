@@ -2,6 +2,8 @@ package plugins.testDataAndFunction;
 
 import java.util.*;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import jprobe.services.data.Data;
 import jprobe.services.data.DataEvent;
 import jprobe.services.data.Field;
@@ -11,6 +13,7 @@ public class TestData implements Data{
 	private static final long serialVersionUID = 1L;
 
 	public static final String TOOLTIP = "A test data object with three fields";
+	public static final FileNameExtensionFilter[] FORMATS = new FileNameExtensionFilter[]{new FileNameExtensionFilter("Text file", "txt")};
 	
 	private StringField m_String;
 	private IntField m_Integer;

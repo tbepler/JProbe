@@ -1,6 +1,8 @@
 package plugins.testDataAndFunction;
 
 import jprobe.services.JProbeCore;
+import jprobe.services.data.DataReader;
+import jprobe.services.data.DataWriter;
 import jprobe.services.function.Function;
 import jprobe.services.function.FunctionPrototype;
 
@@ -16,6 +18,8 @@ public class Activator implements BundleActivator{
 	private FunctionPrototype dataParamFun = new DataParamFunctionPrototype();
 	private FunctionPrototype fieldParamFun = new FieldParamFunctionPrototype();
 	private FunctionPrototype dataFieldParamFun = new DataFieldFunctionPrototype();
+	private DataReader testReader = new TestDataReader();
+	private DataWriter testWriter = new TestDataWriter();
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -27,6 +31,8 @@ public class Activator implements BundleActivator{
 		core.getFunctionManager().addFunctionPrototype(dataParamFun, context.getBundle());
 		core.getFunctionManager().addFunctionPrototype(fieldParamFun, context.getBundle());
 		core.getFunctionManager().addFunctionPrototype(dataFieldParamFun, context.getBundle());
+		core.getDataManager().addDataReader(TestData.class, testReader, context.getBundle());
+		core.getDataManager().addDataWriter(TestData.class, testWriter, context.getBundle());
 		System.out.println("Started test data and function plugin");
 	}
 
@@ -37,6 +43,8 @@ public class Activator implements BundleActivator{
 		core.getFunctionManager().removeFunctionPrototype(dataParamFun, context.getBundle());
 		core.getFunctionManager().removeFunctionPrototype(fieldParamFun, context.getBundle());
 		core.getFunctionManager().removeFunctionPrototype(dataFieldParamFun, context.getBundle());
+		core.getDataManager().removeDataReader(testReader, context.getBundle());
+		core.getDataManager().removeDataWriter(testWriter, context.getBundle());
 	}
 
 }

@@ -30,8 +30,8 @@ public class DataPopupMenu extends JPopupMenu{
 	
 	private void initMenuItems(final JProbeCore core, final JProbeGUI gui, final DataTabPane tabPane, final Data data, List<AbstractDataMenuItem> items){
 		items.add(new ViewDataMenuItem(tabPane, data));
-		items.add(new DeleteDataMenuItem(core, data));
 		items.add(new ExportDataMenuItem(core, gui));
+		items.add(new DeleteDataMenuItem(core, data));
 	}
 	
 	public void setData(Data data){
