@@ -59,11 +59,23 @@ public class ExportImportUtil {
 			File file = exportChooser.getSelectedFile();
 			try {
 				FileNameExtensionFilter format = (FileNameExtensionFilter) exportChooser.getFileFilter();
+				if(!fileEndsInValidExtension(file, format)){
+					file = new File(file.toString()+"."+format.getExtensions()[0]);
+				}
 				core.getDataManager().writeData(file, data, format);
 			} catch (Exception e) {
 				ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
 			}
 		}
+	}
+	
+	public static boolean fileEndsInValidExtension(File file, FileNameExtensionFilter filter){
+		for(String ext : filter.getExtensions()){
+			if(file.toString().endsWith("."+ext)){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	

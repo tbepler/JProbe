@@ -1,6 +1,7 @@
 package plugins.jprobe.gui;
 
 import java.awt.Component;
+import java.io.File;
 
 import javax.swing.JFileChooser;
 
@@ -15,8 +16,21 @@ public class SaveLoadUtil {
 		SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);
 		int returnVal = SAVE_LOAD_CHOOSER.showDialog(parent, "Save");
 		if(returnVal == JFileChooser.APPROVE_OPTION){
-			core.save(SAVE_LOAD_CHOOSER.getSelectedFile());
+			String fileName = SAVE_LOAD_CHOOSER.getSelectedFile().toString();
+			if(!stringEndsWithValidExtension(fileName)){
+				fileName += "." + Constants.SAVE_FILE_EXTENSIONS[0];
+			}
+			core.save(new File(fileName));
 		}
+	}
+	
+	public static boolean stringEndsWithValidExtension(String fileName){
+		for(String ext : Constants.SAVE_FILE_EXTENSIONS){
+			if(fileName.endsWith("."+ext)){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static void load(JProbeCore core, Component parent){
