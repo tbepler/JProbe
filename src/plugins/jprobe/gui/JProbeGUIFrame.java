@@ -207,14 +207,12 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 
 	@Override
 	public void save() {
-		// TODO Auto-generated method stub
-		
+		SaveLoadUtil.save(m_Core, this);
 	}
 
 	@Override
 	public void load() {
-		// TODO Auto-generated method stub
-		
+		SaveLoadUtil.load(m_Core, this);
 	}
 
 	@Override
