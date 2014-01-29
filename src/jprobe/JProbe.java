@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import jprobe.save.LoadException;
+import jprobe.save.SaveException;
+import jprobe.save.SaveManager;
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
+import jprobe.services.ErrorHandler;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 import jprobe.services.Saveable;
@@ -17,20 +21,23 @@ import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.main.AutoProcessor;
 import org.apache.felix.main.Main;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 
 public class JProbe implements JProbeCore{
 	
 	//private JProbeGUIFrame frame;
-	private CoreDataManager dataManager;
-	private CoreFunctionManager functionManager;
-	private JProbeActivator activator;
-	private Felix felix;
+	private CoreDataManager m_DataManager;
+	private CoreFunctionManager m_FunctionManager;
+	private SaveManager m_SaveManager;
+	private JProbeActivator m_Activator;
+	private Felix m_Felix;
 	
 	public JProbe(Configuration config){
-		dataManager = new CoreDataManager(this);
-		functionManager = new CoreFunctionManager(this);
+		m_DataManager = new CoreDataManager(this);
+		m_FunctionManager = new CoreFunctionManager(this);
+		m_SaveManager = new SaveManager();
 		//frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map felixConfig = new HashMap();
@@ -41,22 +48,22 @@ public class JProbe implements JProbeCore{
 		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*");
 		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, config.getFelixStorageClean());
 		//create activator and add to config map
-		activator = new JProbeActivator(this);
+		m_Activator = new JProbeActivator(this);
 		List<BundleActivator> l = new ArrayList<BundleActivator>();
-		l.add(activator);
+		l.add(m_Activator);
 		felixConfig.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, l);
 		
 		try{
 			//create and instance of the felix framework using the config map
-			felix = new Felix(felixConfig);
+			m_Felix = new Felix(felixConfig);
 			Properties props = new Properties();
 			Main.copySystemProperties(props);
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, config.getAutoDeployPluginDirectory());
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
-			felix.init();
-			AutoProcessor.process(props, felix.getBundleContext());
+			m_Felix.init();
+			AutoProcessor.process(props, m_Felix.getBundleContext());
 			//start the felix instance
-			felix.start();
+			m_Felix.start();
 		} catch (Exception e){
 			System.err.println("Error creating Felix framework: "+e);
 			e.printStackTrace();
@@ -69,7 +76,7 @@ public class JProbe implements JProbeCore{
 	public void shutdown(){
 		try{
 			System.out.println("Shutting down");
-			felix.stop();
+			m_Felix.stop();
 			//System.out.println("Waiting for stop");
 			//felix.waitForStop(0);
 			System.out.println("Felix stopped");
@@ -83,50 +90,56 @@ public class JProbe implements JProbeCore{
 	@Override
 	public void addCoreListener(CoreListener listener) {
 		//frame.addListener(listener);
-		dataManager.addListener(listener);
-		functionManager.addListener(listener);
+		m_DataManager.addListener(listener);
+		m_FunctionManager.addListener(listener);
 		
 	}
 
 	@Override
 	public void removeCoreListener(CoreListener listener) {
 		//frame.removeListener(listener);
-		dataManager.removeListener(listener);
-		functionManager.removeListener(listener);
+		m_DataManager.removeListener(listener);
+		m_FunctionManager.removeListener(listener);
 	}
 
 
 
 	@Override
-	public void addSaveable(Saveable add) {
-		// TODO Auto-generated method stub
-		
+	public void addSaveable(Saveable add, Bundle bundle) {
+		m_SaveManager.addSaveable(add, bundle.getSymbolicName());
 	}
 
 	@Override
-	public void removeSaveable(Saveable remove) {
-		// TODO Auto-generated method stub
-		
+	public void removeSaveable(Saveable remove, Bundle bundle) {
+		m_SaveManager.removeSaveable(remove, bundle.getSymbolicName());
 	}
 	
 	@Override
 	public void save(File toFile){
-		//TODO
+		try {
+			m_SaveManager.save(toFile);
+		} catch (SaveException e) {
+			ErrorHandler.getInstance().handleException(e, m_Activator.getBundleContext().getBundle());
+		}
 	}
 	
 	@Override
 	public void load(File fromFile){
-		//TODO
+		try {
+			m_SaveManager.load(fromFile);
+		} catch (LoadException e) {
+			ErrorHandler.getInstance().handleException(e, m_Activator.getBundleContext().getBundle());
+		}
 	}
 
 	@Override
 	public DataManager getDataManager() {
-		return dataManager;
+		return m_DataManager;
 	}
 
 	@Override
 	public FunctionManager getFunctionManager() {
-		return functionManager;
+		return m_FunctionManager;
 	}
 
 
