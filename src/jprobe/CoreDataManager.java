@@ -210,7 +210,6 @@ public class CoreDataManager implements DataManager, Saveable{
 	
 	@Override
 	public void addDataWriter(Class<? extends Data> type, DataWriter writer, Bundle responsible){
-		System.out.println("DataWriter for "+type+" added");
 		m_TypeToWriter.put(type, writer);
 		m_WriterToType.put(writer, type);
 		notifyListeners(new CoreEvent(m_Core, Type.DATAWRITER_ADDED, responsible, type));
