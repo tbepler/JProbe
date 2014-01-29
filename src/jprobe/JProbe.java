@@ -24,6 +24,7 @@ import org.apache.felix.main.Main;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
+import org.osgi.framework.wiring.BundleWiring;
 
 public class JProbe implements JProbeCore{
 	
@@ -35,7 +36,7 @@ public class JProbe implements JProbeCore{
 	private Felix m_Felix;
 	
 	public JProbe(Configuration config){
-		m_DataManager = new CoreDataManager(this);
+		m_DataManager = new CoreDataManager(this, null);
 		m_FunctionManager = new CoreFunctionManager(this);
 		m_SaveManager = new SaveManager();
 		m_SaveManager.addSaveable(m_DataManager, "core");
@@ -69,6 +70,7 @@ public class JProbe implements JProbeCore{
 			System.err.println("Error creating Felix framework: "+e);
 			e.printStackTrace();
 		}
+		m_DataManager.setBundleContext(m_Activator.getBundleContext());
 		//frame.pack();
 		//frame.setVisible(true);
 	}

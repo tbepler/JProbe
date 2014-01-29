@@ -20,7 +20,10 @@ import java.util.Scanner;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
+import utils.ClassLoaderObjectInputStream;
+import utils.OSGIUtils;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.data.Data;
@@ -38,7 +41,9 @@ public class CoreDataManager implements DataManager, Saveable{
 	
 	private Collection<CoreListener> m_Listeners;
 	
+	private BundleContext m_Context;
 	private Map<Class<? extends Data>, List<Data>> m_Data;
+	private Map<Class<? extends Data>, String> m_DataProviders;
 	private Map<String, Data> m_NameToData;
 	private Map<Data, String> m_DataToName;
 	private Map<Class<? extends Data>, Integer> m_Counts;
@@ -48,10 +53,12 @@ public class CoreDataManager implements DataManager, Saveable{
 	private Map<DataWriter, Class<? extends Data>> m_WriterToType;
 	private boolean m_ChangesSinceLastSave;
 	
-	public CoreDataManager(JProbeCore core){
-		this.m_Core = core;
+	public CoreDataManager(JProbeCore core, BundleContext context){
+		m_Core = core;
+		m_Context = context;
 		m_Listeners = new HashSet<CoreListener>();
 		m_Data = new HashMap<Class<? extends Data>, List<Data>>();
+		m_DataProviders = new HashMap<Class<? extends Data>, String>();
 		m_NameToData = new HashMap<String, Data>();
 		m_DataToName = new HashMap<Data, String>();
 		m_Counts = new HashMap<Class<? extends Data>, Integer>();
@@ -60,6 +67,10 @@ public class CoreDataManager implements DataManager, Saveable{
 		m_TypeToWriter = new HashMap<Class<? extends Data>, DataWriter>();
 		m_WriterToType = new HashMap<DataWriter, Class<? extends Data>>();
 		m_ChangesSinceLastSave = false;
+	}
+	
+	public void setBundleContext(BundleContext context){
+		m_Context = context;
 	}
 	
 	@Override
@@ -100,6 +111,7 @@ public class CoreDataManager implements DataManager, Saveable{
 			list.add(d);
 			m_Data.put(clazz, list);
 			m_Counts.put(clazz, 1);
+			m_DataProviders.put(clazz, OSGIUtils.getProvider(clazz, m_Context).getSymbolicName());
 		}else{
 			List<Data> list = m_Data.get(clazz);
 			if(!list.contains(d)){
@@ -198,6 +210,7 @@ public class CoreDataManager implements DataManager, Saveable{
 	
 	@Override
 	public void addDataWriter(Class<? extends Data> type, DataWriter writer, Bundle responsible){
+		System.out.println("DataWriter for "+type+" added");
 		m_TypeToWriter.put(type, writer);
 		m_WriterToType.put(writer, type);
 		notifyListeners(new CoreEvent(m_Core, Type.DATAWRITER_ADDED, responsible, type));
@@ -342,7 +355,9 @@ public class CoreDataManager implements DataManager, Saveable{
 			ObjectOutputStream oout = new ObjectOutputStream(out);
 			for(Data stored : this.getAllData()){
 				String name = this.getDataName(stored);
+				String bundle = m_DataProviders.get(stored.getClass());
 				oout.writeObject(name);
+				oout.writeObject(bundle);
 				oout.writeObject(stored);
 			}
 			oout.close();
@@ -354,11 +369,18 @@ public class CoreDataManager implements DataManager, Saveable{
 	@Override
 	public void load(InputStream in) {
 		try {
-			ObjectInputStream oin = new ObjectInputStream(in);
+			this.clearData();
+			ClassLoaderObjectInputStream oin = new ClassLoaderObjectInputStream(in, this.getClass().getClassLoader());
 			boolean finished = false;
 			while(!finished){
 				try {
+					oin.setClassLoader(this.getClass().getClassLoader());
 					String name = (String) oin.readObject();
+					String bundleName = (String) oin.readObject();
+					Bundle bundle = OSGIUtils.getBundleWithName(bundleName, m_Context);
+					if(bundle!=null){
+						oin.setClassLoader(OSGIUtils.getBundleClassLoader(bundle));
+					}
 					Data data = (Data) oin.readObject();
 					this.addData(data, name, JProbeActivator.getBundle());
 				} catch (ClassNotFoundException e) {
@@ -368,6 +390,7 @@ public class CoreDataManager implements DataManager, Saveable{
 					finished = true;
 				}
 			}
+			oin.close();
 		} catch (IOException e) {
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 		}
