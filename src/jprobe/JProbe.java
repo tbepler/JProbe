@@ -38,6 +38,7 @@ public class JProbe implements JProbeCore{
 		m_DataManager = new CoreDataManager(this);
 		m_FunctionManager = new CoreFunctionManager(this);
 		m_SaveManager = new SaveManager();
+		m_SaveManager.addSaveable(m_DataManager, "core");
 		//frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map felixConfig = new HashMap();

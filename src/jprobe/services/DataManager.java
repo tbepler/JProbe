@@ -46,4 +46,6 @@ public interface DataManager {
 	public boolean contains(Data data);
 	public List<Data> getData(Class<? extends Data> type);
 	
+	public boolean changesSinceLastSave();
+	
 }

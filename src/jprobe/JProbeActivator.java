@@ -9,35 +9,43 @@ import org.osgi.framework.ServiceRegistration;
 
 public class JProbeActivator implements BundleActivator{
 	
-	private BundleContext context = null;
-	private JProbeCore core = null;
-	private ServiceRegistration<JProbeCore> registration = null;
+	private static Bundle m_Bundle = null;
+	
+	private BundleContext m_Context = null;
+	private JProbeCore m_Core = null;
+	private ServiceRegistration<JProbeCore> m_Registration = null;
 	
 	JProbeActivator(JProbeCore core){
-		this.core = core;
+		this.m_Core = core;
+	}
+	
+	public static Bundle getBundle(){
+		return m_Bundle;
 	}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		this.context = context;
-		registration = context.registerService(JProbeCore.class, core, null);
+		m_Context = context;
+		m_Bundle = m_Context.getBundle();
+		m_Registration = context.registerService(JProbeCore.class, m_Core, null);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		if(registration!=null){
-			registration.unregister();
+		if(m_Registration!=null){
+			m_Registration.unregister();
 		}
-		this.context = null;
+		m_Bundle = null;
+		m_Context = null;
 	}
 	
 	public BundleContext getBundleContext(){
-		return context;
+		return m_Context;
 	}
 	
 	public Bundle[] getBundles(){
-		if(context!=null){
-			return context.getBundles();
+		if(m_Context!=null){
+			return m_Context.getBundles();
 		}
 		return null;
 	}
