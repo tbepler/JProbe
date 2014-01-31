@@ -1,5 +1,6 @@
 package plugins.genome;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -19,14 +20,15 @@ public abstract class AbstractServiceListener<S> implements ServiceListener{
 	@Override
 	public void serviceChanged(ServiceEvent ev) {
 		ServiceReference<?> sr = ev.getServiceReference();
+		Bundle bundle = sr.getBundle();
 		Object service = m_Context.getService(sr);
 		if(m_Target.isAssignableFrom(service.getClass())){
 			switch(ev.getType()) {
 			case ServiceEvent.REGISTERED:
-				register((S) service);
+				register((S) service, bundle);
 				break;
 			case ServiceEvent.UNREGISTERING:
-				unregister((S) service);
+				unregister((S) service, bundle);
 				break;
 			default:
 				break;
@@ -34,7 +36,7 @@ public abstract class AbstractServiceListener<S> implements ServiceListener{
 		}
 	}
 	
-	public abstract void register(S service);
-	public abstract void unregister(S service);
+	public abstract void register(S service, Bundle provider);
+	public abstract void unregister(S service, Bundle provider);
 	
 }

@@ -8,8 +8,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 import plugins.genome.gui.GenomeMenu;
+import plugins.genome.services.GenomeFunctionPrototype;
+import plugins.genome.services.GenomeService;
 import plugins.jprobe.gui.services.JProbeGUI;
 
 public class GenomeActivator implements BundleActivator{
@@ -23,19 +26,25 @@ public class GenomeActivator implements BundleActivator{
 	private JProbeCore m_Core = null;
 	private JProbeGUI m_Gui = null;
 	private ServiceListener m_GuiListener = null;
+	private GenomeService m_Service = null;
+	private ServiceRegistration<GenomeService> m_Registration = null;
+	private ServiceListener m_PrototypeListener = null;
 	
 	@Override
 	public void start(BundleContext bc) throws Exception {
 		BUNDLE = bc.getBundle();
 		m_GuiListener = new AbstractServiceListener<JProbeGUI>(JProbeGUI.class, bc){
+			
 			@Override
-			public void register(JProbeGUI service) {
+			public void register(JProbeGUI service, Bundle provider) {
 				GenomeActivator.this.register(service);
 			}
+			
 			@Override
-			public void unregister(JProbeGUI service) {
+			public void unregister(JProbeGUI service, Bundle provider) {
 				GenomeActivator.this.unregister(service);
 			}
+			
 		};
 		bc.addServiceListener(m_GuiListener);
 		ServiceReference<JProbeCore> sr = bc.getServiceReference(JProbeCore.class);
@@ -43,10 +52,37 @@ public class GenomeActivator implements BundleActivator{
 		for(ServiceReference<JProbeGUI> guiReference : bc.getServiceReferences(JProbeGUI.class, null)){
 			m_GuiListener.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, guiReference));
 		}
+		m_Service = new GenomeCore();
+		m_Registration = bc.registerService(GenomeService.class, m_Service, null);
+		m_PrototypeListener = new AbstractServiceListener<GenomeFunctionPrototype>(GenomeFunctionPrototype.class, bc){
+
+			@Override
+			public void register(GenomeFunctionPrototype service, Bundle provider) {
+				m_Service.addGenomeFunctionPrototype(service, provider);
+			}
+
+			@Override
+			public void unregister(GenomeFunctionPrototype service, Bundle provider) {
+				m_Service.removeGenomeFunctionPrototype(service, provider);
+			}
+			
+		};
+		bc.addServiceListener(m_PrototypeListener);
 	}
 
 	@Override
 	public void stop(BundleContext bc) throws Exception {
+		if(m_Registration != null){
+			m_Registration.unregister();
+			m_Registration = null;
+		}
+		if(m_Service != null){
+			m_Service = null;
+		}
+		if(m_PrototypeListener != null){
+			bc.removeServiceListener(m_PrototypeListener);
+			m_PrototypeListener = null;
+		}
 		if(m_GuiListener != null){
 			bc.removeServiceListener(m_GuiListener);
 			m_GuiListener = null;
@@ -62,10 +98,11 @@ public class GenomeActivator implements BundleActivator{
 		}
 	}
 	
-	private GenomeMenu m_Menu = new GenomeMenu();
+	private GenomeMenu m_Menu = null;
 	
 	private void register(JProbeGUI gui){
 		m_Gui = gui;
+		m_Menu = new GenomeMenu(m_Service);
 		m_Gui.addDropdownMenu(m_Menu, getBundle());
 		//add components and whatnot
 	}
@@ -74,6 +111,8 @@ public class GenomeActivator implements BundleActivator{
 		if(m_Gui == gui){
 			//remove components and whatnot
 			m_Gui.removeDropdownMenu(m_Menu, getBundle());
+			m_Menu.cleanup();
+			m_Menu = null;
 			m_Gui = null;
 		}
 	}
