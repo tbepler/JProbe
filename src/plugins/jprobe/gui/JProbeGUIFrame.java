@@ -63,8 +63,8 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		this.m_Core = core;
 		m_PluginMenuItems = new PriorityQueue<JMenu>(10, new Comparator<JMenu>(){
 			@Override
-			public int compare(JMenu arg0, JMenu arg1) {
-				return arg0.getName().compareTo(arg1.getName());
+			public int compare(JMenu arg0, JMenu arg1){
+				return arg0.getText().compareTo(arg1.getText());
 			}
 		});
 		m_Listeners = new HashSet<GUIListener>();
