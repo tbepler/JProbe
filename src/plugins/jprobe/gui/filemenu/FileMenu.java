@@ -11,6 +11,7 @@ public class FileMenu extends JMenu{
 	public FileMenu(JProbeGUIFrame parentFrame, JProbeCore core){
 		super("File");
 		this.add(new SaveMenuItem(core));
+		this.add(new SaveAsMenuItem(core));
 		this.add(new LoadMenuItem(core));
 		this.addSeparator();
 		this.add(new ImportMenu(core, parentFrame.getImportChooser()));

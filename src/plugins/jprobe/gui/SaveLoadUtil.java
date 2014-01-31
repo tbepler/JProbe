@@ -11,7 +11,9 @@ public class SaveLoadUtil {
 		
 	private static final JFileChooser SAVE_LOAD_CHOOSER = new JFileChooser();
 	
-	public static void save(JProbeCore core, Component parent){
+	private static File LAST_SAVE_FILE = null;
+	
+	public static void saveAs(JProbeCore core, Component parent){
 		SAVE_LOAD_CHOOSER.resetChoosableFileFilters();
 		SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);
 		int returnVal = SAVE_LOAD_CHOOSER.showDialog(parent, "Save");
@@ -20,7 +22,16 @@ public class SaveLoadUtil {
 			if(!stringEndsWithValidExtension(fileName)){
 				fileName += "." + Constants.SAVE_FILE_EXTENSIONS[0];
 			}
-			core.save(new File(fileName));
+			LAST_SAVE_FILE = new File(fileName);
+			core.save(LAST_SAVE_FILE);
+		}
+	}
+	
+	public static void save(JProbeCore core, Component parent){
+		if(LAST_SAVE_FILE == null){
+			saveAs(core, parent);
+		}else{
+			core.save(LAST_SAVE_FILE);
 		}
 	}
 	
