@@ -8,4 +8,4 @@ Bundle-Vendor: Tristan Bepler
 Bundle-Localization: plugin
 Import-Package: org.osgi.framework,jprobe.services,jprobe.services.function,jprobe.services.data,javax.swing, plugins.jprobe.gui.services
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: plugins.genome.services
+Export-Package: plugins.genome.services,plugins.genome.services.reader,plugins.genome.services.utils
