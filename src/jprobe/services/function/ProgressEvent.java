@@ -10,23 +10,33 @@ public class ProgressEvent {
 	}
 	
 	private final Type m_Type;
-	private final Function m_Source;
+	private final Object m_Source;
 	private final int m_Progress;
 	private final String m_Message;
+	private final boolean m_Indeterminant;
 	
-	public ProgressEvent(Function source, Type type){
+	public ProgressEvent(Object source, Type type){
 		this(source, type, 0);
 	}
 	
-	public ProgressEvent(Function source, Type type, int progress){
+	public ProgressEvent(Object source, Type type, int progress){
 		this(source, type, progress, null);
 	}
 	
-	public ProgressEvent(Function source, Type type, int progress, String message){
+	public ProgressEvent(Object source, Type type, int progress, String message){
+		this(source, type, progress, message, false);
+	}
+	
+	public ProgressEvent(Object source, Type type, int progress, String message, boolean indeterminant){
 		m_Type = type;
 		m_Source = source;
 		m_Progress = progress;
 		m_Message = message;
+		m_Indeterminant = indeterminant;
+	}
+	
+	public boolean isIndeterminant(){
+		return m_Indeterminant;
 	}
 	
 	public String getMessage(){
@@ -41,7 +51,7 @@ public class ProgressEvent {
 		return m_Type;
 	}
 	
-	public Function getSource(){
+	public Object getSource(){
 		return m_Source;
 	}
 	
