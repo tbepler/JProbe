@@ -11,10 +11,10 @@ public class GenomeServiceEvent {
 	
 	private Object m_Source;
 	private Type m_Type;
-	private GenomeFunctionPrototype m_Function;
+	private GenomeFunction m_Function;
 	private Bundle m_Responsible;
 	
-	public GenomeServiceEvent(Object source, Type type, GenomeFunctionPrototype changed, Bundle responsible){
+	public GenomeServiceEvent(Object source, Type type, GenomeFunction changed, Bundle responsible){
 		m_Source = source;
 		m_Type = type;
 		m_Function = changed;
@@ -29,7 +29,7 @@ public class GenomeServiceEvent {
 		return m_Type;
 	}
 	
-	public GenomeFunctionPrototype getChanged(){
+	public GenomeFunction getChanged(){
 		return m_Function;
 	}
 	

@@ -11,7 +11,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 import plugins.genome.gui.GenomeMenu;
-import plugins.genome.services.GenomeFunctionPrototype;
+import plugins.genome.services.GenomeFunction;
 import plugins.genome.services.GenomeService;
 import plugins.jprobe.gui.services.JProbeGUI;
 
@@ -54,16 +54,16 @@ public class GenomeActivator implements BundleActivator{
 		}
 		m_Service = new GenomeCore();
 		m_Registration = bc.registerService(GenomeService.class, m_Service, null);
-		m_PrototypeListener = new AbstractServiceListener<GenomeFunctionPrototype>(GenomeFunctionPrototype.class, bc){
+		m_PrototypeListener = new AbstractServiceListener<GenomeFunction>(GenomeFunction.class, bc){
 
 			@Override
-			public void register(GenomeFunctionPrototype service, Bundle provider) {
-				m_Service.addGenomeFunctionPrototype(service, provider);
+			public void register(GenomeFunction service, Bundle provider) {
+				m_Service.addGenomeFunction(service, provider);
 			}
 
 			@Override
-			public void unregister(GenomeFunctionPrototype service, Bundle provider) {
-				m_Service.removeGenomeFunctionPrototype(service, provider);
+			public void unregister(GenomeFunction service, Bundle provider) {
+				m_Service.removeGenomeFunction(service, provider);
 			}
 			
 		};

@@ -9,31 +9,40 @@ public class ProgressEvent {
 		COMPLETED;
 	}
 	
-	private Type type;
-	private Function source;
-	private int progress;
+	private final Type m_Type;
+	private final Function m_Source;
+	private final int m_Progress;
+	private final String m_Message;
 	
 	public ProgressEvent(Function source, Type type){
-		this.type = type;
-		this.source = source;
-		this.progress = 0;
+		this(source, type, 0);
 	}
 	
 	public ProgressEvent(Function source, Type type, int progress){
-		this(source, type);
-		this.progress = progress;
+		this(source, type, progress, null);
+	}
+	
+	public ProgressEvent(Function source, Type type, int progress, String message){
+		m_Type = type;
+		m_Source = source;
+		m_Progress = progress;
+		m_Message = message;
+	}
+	
+	public String getMessage(){
+		return m_Message;
 	}
 	
 	public int getProgress(){
-		return progress;
+		return m_Progress;
 	}
 	
 	public Type getType(){
-		return type;
+		return m_Type;
 	}
 	
 	public Function getSource(){
-		return source;
+		return m_Source;
 	}
 	
 }

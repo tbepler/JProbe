@@ -15,7 +15,7 @@ import jprobe.services.Log;
 
 import org.osgi.framework.Bundle;
 
-import plugins.genome.services.GenomeFunctionPrototype;
+import plugins.genome.services.GenomeFunction;
 import plugins.genome.services.GenomeService;
 import plugins.genome.services.GenomeServiceEvent;
 import plugins.genome.services.GenomeServiceEvent.Type;
@@ -23,23 +23,23 @@ import plugins.genome.services.GenomeServiceListener;
 
 public class GenomeCore implements GenomeService{
 	
-	public class GenomePrototypeComparator implements Comparator<GenomeFunctionPrototype>, Serializable{
+	public class GenomeFunctionComparator implements Comparator<GenomeFunction>, Serializable{
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public int compare(GenomeFunctionPrototype o1, GenomeFunctionPrototype o2) {
-			return o1.getGenomeFunctionName().compareTo(o2.getGenomeFunctionName());
+		public int compare(GenomeFunction o1, GenomeFunction o2) {
+			return o1.getFunctionName().compareTo(o2.getFunctionName());
 		}
 		
 	}
 	
-	private Queue<GenomeFunctionPrototype> m_Functions;
-	private Map<String, List<GenomeFunctionPrototype>> m_FunctionsByName;
+	private Queue<GenomeFunction> m_Functions;
+	private Map<String, List<GenomeFunction>> m_FunctionsByName;
 	private Collection<GenomeServiceListener> m_Listeners;
 	
 	public GenomeCore(){
-		m_Functions = new PriorityQueue<GenomeFunctionPrototype>(10, new GenomePrototypeComparator());
-		m_FunctionsByName = new HashMap<String, List<GenomeFunctionPrototype>>();
+		m_Functions = new PriorityQueue<GenomeFunction>(10, new GenomeFunctionComparator());
+		m_FunctionsByName = new HashMap<String, List<GenomeFunction>>();
 		m_Listeners = new HashSet<GenomeServiceListener>();
 	}
 
@@ -60,43 +60,43 @@ public class GenomeCore implements GenomeService{
 	}
 
 	@Override
-	public void addGenomeFunctionPrototype(GenomeFunctionPrototype prototype, Bundle adder) {
+	public void addGenomeFunction(GenomeFunction prototype, Bundle adder) {
 		m_Functions.add(prototype);
-		if(m_FunctionsByName.containsKey(prototype.getGenomeFunctionName())){
-			m_FunctionsByName.get(prototype.getGenomeFunctionName()).add(prototype);
+		if(m_FunctionsByName.containsKey(prototype.getFunctionName())){
+			m_FunctionsByName.get(prototype.getFunctionName()).add(prototype);
 		}else{
-			List<GenomeFunctionPrototype> list = new ArrayList<GenomeFunctionPrototype>();
+			List<GenomeFunction> list = new ArrayList<GenomeFunction>();
 			list.add(prototype);
-			m_FunctionsByName.put(prototype.getGenomeFunctionName(), list);
+			m_FunctionsByName.put(prototype.getFunctionName(), list);
 		}
-		Log.getInstance().write(GenomeActivator.getBundle(), "GenomeFunctionPrototype \""+prototype.getGenomeFunctionName()+
+		Log.getInstance().write(GenomeActivator.getBundle(), "GenomeFunctionPrototype \""+prototype.getFunctionName()+
 				"\" added by bundle \""+adder.getSymbolicName()+"\"");
 		this.notifyListeners(new GenomeServiceEvent(this, Type.FUNCTION_ADDED, prototype, adder));
 	}
 
 	@Override
-	public void removeGenomeFunctionPrototype(GenomeFunctionPrototype prototype, Bundle remover) {
-		if(m_Functions.contains(prototype)){
-			m_Functions.remove(prototype);
-			m_FunctionsByName.get(prototype.getGenomeFunctionName()).remove(prototype);
-			Log.getInstance().write(GenomeActivator.getBundle(), "GenomeFunctionPrototype \""+prototype.getGenomeFunctionName()+
+	public void removeGenomeFunction(GenomeFunction function, Bundle remover) {
+		if(m_Functions.contains(function)){
+			m_Functions.remove(function);
+			m_FunctionsByName.get(function.getFunctionName()).remove(function);
+			Log.getInstance().write(GenomeActivator.getBundle(), "GenomeFunctionPrototype \""+function.getFunctionName()+
 					"\" removed by bundle \""+remover.getSymbolicName()+"\"");
-			this.notifyListeners(new GenomeServiceEvent(this, Type.FUNCTION_REMOVED, prototype, remover));
+			this.notifyListeners(new GenomeServiceEvent(this, Type.FUNCTION_REMOVED, function, remover));
 		}
 	}
 
 	@Override
-	public GenomeFunctionPrototype[] getAllGenomeFunctinoPrototypes() {
-		return m_Functions.toArray(new GenomeFunctionPrototype[m_Functions.size()]);
+	public GenomeFunction[] getAllGenomeFunctions() {
+		return m_Functions.toArray(new GenomeFunction[m_Functions.size()]);
 	}
 
 	@Override
-	public GenomeFunctionPrototype[] getGenomeFunctionPrototypes(String name) {
+	public GenomeFunction[] getGenomeFunctions(String name) {
 		if(m_FunctionsByName.containsKey(name)){
-			List<GenomeFunctionPrototype> list = m_FunctionsByName.get(name);
-			return list.toArray(new GenomeFunctionPrototype[list.size()]);
+			List<GenomeFunction> list = m_FunctionsByName.get(name);
+			return list.toArray(new GenomeFunction[list.size()]);
 		}else{
-			return new GenomeFunctionPrototype[]{};
+			return new GenomeFunction[]{};
 		}
 	}
 
