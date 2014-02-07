@@ -1,6 +1,7 @@
 package plugins.genome.services.utils;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -57,6 +58,18 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	
 	public GenomicLocation getEnd(){
 		return m_End;
+	}
+	
+	public GenomicRegion union(GenomicRegion other, Comparator<GenomicLocation> comparator){
+		GenomicLocation newStart = comparator.compare(m_Start, other.m_Start) > 0 ? other.m_Start : m_Start;
+		GenomicLocation newEnd = comparator.compare(m_End, other.m_End) < 0 ? other.m_End : m_End;
+		return new GenomicRegion(newStart, newEnd);
+	}
+	
+	public GenomicRegion union(GenomicRegion other){
+		GenomicLocation newStart = m_Start.compareTo(other.m_Start) > 0 ? other.m_Start : m_Start;
+		GenomicLocation newEnd = m_End.compareTo(other.m_End) < 0 ? other.m_End : m_End;
+		return new GenomicRegion(newStart, newEnd);
 	}
 	
 	@Override

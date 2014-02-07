@@ -147,6 +147,14 @@ public class SequenceProvider {
 	
 	public boolean done(){
 		synchronized(m_WorkerLock){
+			while(!m_Initialized){
+				try {
+					m_WorkerLock.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			return m_Done;
 		}
 	}
