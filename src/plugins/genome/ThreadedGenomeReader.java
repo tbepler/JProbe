@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 
 import jprobe.services.ErrorHandler;
 import jprobe.services.function.ProgressEvent;
+import jprobe.services.function.ProgressEvent.Type;
 import plugins.genome.services.reader.AbstractGenomeReader;
 import plugins.genome.services.reader.LocationBoundedSequenceQuery;
 import plugins.genome.services.reader.LocationQuery;
@@ -89,6 +90,7 @@ public class ThreadedGenomeReader extends AbstractGenomeReader{
 			int numChrs = genomeComp.numChromosomes();
 			
 		} catch (FileNotFoundException e) {
+			this.notifyListeners(new ProgressEvent(this, Type.COMPLETED));
 			ErrorHandler.getInstance().handleException(e, GenomeActivator.getBundle());
 		}
 	}
