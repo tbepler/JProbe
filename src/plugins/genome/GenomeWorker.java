@@ -1,5 +1,6 @@
 package plugins.genome;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -22,11 +23,11 @@ public class GenomeWorker implements Runnable{
 	private final Queue<LocationQuery> m_LocationQueries;
 	private final Queue<LocationBoundedSequenceQuery> m_BoundedQueries;
 	private final List<SequenceQuery> m_SequenceQueries;
+	private final Map<SequenceQuery, GenomicLocation> m_LastLocationSearched;
 	private final Queue<LocationQuery> m_ActiveLocationQueries;
 	private final Queue<LocationBoundedSequenceQuery> m_ActiveBoundedQueries;
 	private final int m_MaxTargetLen;
-	private final TreeMap<GenomicLocation, Integer> m_LocationIndexes;
-	private final TreeMap<GenomicLocation, Integer> m_LocationJobCount;
+	private final Map<Chromosome, Integer> m_ChrIndexes;
 	private final LocationComparator m_Comparator;
 	private Chromosome m_CurChr;
 	private GenomicRegion m_CurSeqRegion;
@@ -39,6 +40,7 @@ public class GenomeWorker implements Runnable{
 		m_LocationQueries = locationQueries;
 		m_BoundedQueries = boundedQueries;
 		m_SequenceQueries = sequenceQueries;
+		m_LastLocationSearched = new HashMap<SequenceQuery, GenomicLocation>();
 		m_ActiveLocationQueries = new PriorityQueue<LocationQuery>(10, new Comparator<LocationQuery>(){
 			@Override
 			public int compare(LocationQuery o1, LocationQuery o2) {
@@ -52,8 +54,7 @@ public class GenomeWorker implements Runnable{
 			}
 		});
 		m_MaxTargetLen = this.findMaxTargetLength(sequenceQueries, boundedQueries);
-		m_LocationIndexes = new TreeMap<GenomicLocation, Integer>(genomeComp);
-		m_LocationJobCount = new TreeMap<GenomicLocation, Integer>(genomeComp);
+		m_ChrIndexes = new HashMap<Chromosome, Integer>();
 		m_CurChr = null;
 		m_CurSeqRegion = null;
 		m_CurSeq = "";
@@ -108,6 +109,58 @@ public class GenomeWorker implements Runnable{
 	private void updateSequence(String nextSeq, GenomicRegion nextRegion){
 		m_CurSeq += nextSeq;
 		m_CurSeqRegion = m_CurSeqRegion.union(nextRegion, m_Comparator);
+		if(!m_CurSeqRegion.getEnd().getChromosome().equals(m_CurSeqRegion.getStart().getChromosome())){
+			Chromosome chr = m_CurSeqRegion.getEnd().getChromosome();
+			if(m_ChrIndexes.containsKey(chr)){
+				return;
+			}
+			int index = m_CurSeq.length() - (int)(m_CurSeqRegion.getEnd().getBaseIndex() - 1);
+			m_ChrIndexes.put(chr, index);
+		}
+	}
+	
+	private GenomeWorker activateLocationQueries(){
+		while(!m_LocationQueries.isEmpty() && this.regionContains(m_CurSeqRegion, m_LocationQueries.peek().getStart())){
+			LocationQuery cur = m_LocationQueries.poll();
+			m_ActiveLocationQueries.add(cur);
+		}
+		return this;
+	}
+	
+	private GenomeWorker activateBoundedQueries(){
+		while(!m_BoundedQueries.isEmpty() && this.regionContains(m_CurSeqRegion, m_BoundedQueries.peek().getStart())){
+			LocationBoundedSequenceQuery cur = m_BoundedQueries.poll();
+			m_ActiveBoundedQueries.add(cur);
+		}
+		return this;
+	}
+	
+	private GenomicLocation getGenomicLocation(int index){
+		Chromosome chr = null;
+		int greatestLessThanIndex = -1;
+		for(Chromosome c : m_ChrIndexes.keySet()){
+			if(m_ChrIndexes.get(c) <= index && m_ChrIndexes.get(c) > greatestLessThanIndex){
+				greatestLessThanIndex = m_ChrIndexes.get(c);
+				chr = c;
+			}
+		}
+		long base = index - greatestLessThanIndex + 1;
+		return new GenomicLocation(chr, base);
+	}
+	
+	private List<GenomicRegion> find(String target, GenomicLocation startLocation){
+		List<GenomicRegion> results = new ArrayList<GenomicRegion>();
+		//TODO
+		return results;
+	}
+	
+	private GenomeWorker processSequenceQueries(){
+		for(SequenceQuery query : m_SequenceQueries){
+			String target = query.getTargetSequence();
+			List<GenomicRegion> results = this.find(target, m_LastLocationSearched.get(query));
+			
+		}
+		return this;
 	}
 	
 	@Override
@@ -120,8 +173,13 @@ public class GenomeWorker implements Runnable{
 			}
 			GenomicRegion nextRegion = m_Provider.getRegion();
 			if(this.recordSequence(nextRegion)){
-				//do important work
 				this.updateSequence(m_Provider.getSequence(), nextRegion);
+				m_Provider.processing();
+				//do important work
+				this.activateLocationQueries().activateBoundedQueries();
+				
+				
+				m_Provider.processingComplete();
 			}
 		}
 	}
