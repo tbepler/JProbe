@@ -118,7 +118,11 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 				chrNotGreaterThanIndex = curIndex;
 			}
 		}
-		return new GenomicLocation(chr, index - chrNotGreaterThanIndex + 1);
+		if(chr.equals(this.getStart().getChromosome())){
+			return new GenomicLocation(chr, index - chrNotGreaterThanIndex + this.getStart().getBaseIndex());
+		}else{
+			return new GenomicLocation(chr, index - chrNotGreaterThanIndex + 1);
+		}
 	}
 	
 	/**
