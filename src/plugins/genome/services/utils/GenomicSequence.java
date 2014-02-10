@@ -34,7 +34,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		Chromosome start = region.getStart().getChromosome();
 		chrMap.put(start, 0);
 		Chromosome end = region.getEnd().getChromosome();
-		chrMap.put(end, sequence.length() - (int) region.getEnd().getBaseIndex() + 1);
+		chrMap.put(end, sequence.length() - (int) region.getEnd().getBaseIndex());
 		return chrMap;
 	}
 	
@@ -83,7 +83,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	private int overlapLength(GenomicSequence next){
 		Chromosome firstChr = next.getStart().getChromosome();
 		if(m_ChrIndexes.containsKey(firstChr)){
-			return m_Sequence.length() - m_ChrIndexes.get(firstChr);
+			return (int) (m_Sequence.length() - m_ChrIndexes.get(firstChr) - next.getStart().getBaseIndex() + 1);
 		}
 		return 0;
 	}
@@ -115,6 +115,12 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		int index = getIndexOf(loc);
 	}
 	
+	/**
+	 * Tests whether the given GenomicLocation occurs within this GenomicSequence
+	 * @param loc - GenomicLocation to test
+	 * @param comparator - comparator to use for comparing GenomicLocations
+	 * @return True if the given location occurs within this sequence, False otherwise
+	 */
 	public boolean contains(GenomicLocation loc, Comparator<GenomicLocation> comparator){
 		return (loc != null && m_ChrIndexes.containsKey(loc.getChromosome()) && comparator.compare(this.getStart(), loc) <= 0 && comparator.compare(this.getEnd(), loc) >= 0);
 	}
@@ -147,13 +153,25 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		if(loc == null){
 			throw new RuntimeException("Error: genomic location may not be null");
 		}
+		if(loc.getBaseIndex() <= 0){
+			throw new RuntimeException("Error: base index "+loc.getBaseIndex()+" is not a valid base index. Base indexes must be > 0");
+		}
 		if(!m_ChrIndexes.containsKey(loc.getChromosome())){
 			throw new RuntimeException("Error: region does not contain chromosome "+loc.getChromosome());
+		}
+		if(loc.getChromosome().equals(this.getStart().getChromosome()) && loc.getBaseIndex() < this.getStart().getBaseIndex()){
+			throw new RuntimeException("Error: location is out of bounds of this sequence");
+		}
+		if(loc.getChromosome().equals(this.getEnd().getChromosome()) && loc.getBaseIndex() > this.getEnd().getBaseIndex()){
+			throw new RuntimeException("Error: location is out of bounds of this sequence");
 		}
 	}
 	
 	private int getIndexOf(GenomicLocation loc){
 		int chrIndex = m_ChrIndexes.get(loc.getChromosome());
+		if(loc.getChromosome().equals(this.getStart().getChromosome())){
+			return (int) (loc.getBaseIndex() - this.getStart().getBaseIndex());
+		}
 		return chrIndex + (int) loc.getBaseIndex() - 1;
 	}
 	
