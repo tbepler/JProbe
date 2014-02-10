@@ -18,6 +18,37 @@ public class GenomicSequenceTest extends junit.framework.TestCase{
 		
 	};
 	
+	public void testSplit(){
+		Chromosome chr1 = new Chromosome("1");
+		Chromosome chr2 = new Chromosome("2");
+		String chr1Seq = "ATGATAGAGTATAGATACCCCGCCTCGCTGCTATCGACGCTGACTGATTCGATGATGACTGATCGATCGTAGATGATGTCGATGTTATATATAGGCGCGCTCGATCGACTGACTGACTATCTC";
+		String chr2Seq = "CAGCTAGCTAGCGCGCGCTAATTAGACGATGAGCGCTAGCGTATATCGCGCCGCTCAGGCAAGACCAGAGCCATCAGTCAGCGCGCGTCAGCAGCAGTACTCAGACTACTACGCATAG"
+				+ "GATCGACTACGATCAGCTAGCTAGAGCTAATTATAGATATTATAGCGCGCGTCGACGTCAGACGACGAT";
+		GenomicRegion reg1 = new GenomicRegion(new GenomicLocation(chr1, 13), new GenomicLocation(chr1, chr1Seq.length()));
+		GenomicRegion reg2 = new GenomicRegion(new GenomicLocation(chr2, 1), new GenomicLocation(chr2, 26));
+		GenomicSequence seq = new GenomicSequence(chr1Seq.substring(12)+chr2Seq.substring(0, 26), reg1.union(reg2, m_LocComp));
+		GenomicSequence left = new GenomicSequence(chr1Seq.substring(12), reg1);
+		GenomicSequence right = new GenomicSequence(chr2Seq.substring(0, 26), reg2);
+		GenomicSequence[] split = seq.split(new GenomicLocation(chr2, 1));
+		assertEquals(left.getSequence(), split[0].getSequence());
+		assertEquals(left.getRegion(), split[0].getRegion());
+		assertEquals(left, split[0]);
+		assertEquals(right.getSequence(), split[1].getSequence());
+		assertEquals(right.getRegion(), split[1].getRegion());
+		assertEquals(right, split[1]);
+		assertFalse(right.equals(split[0]));
+		assertFalse(left.equals(split[1]));
+		
+		boolean error = false;
+		try{
+			split = seq.split(new GenomicLocation(chr1, 5));
+		} catch (Exception e){
+			error = true;
+		}
+		assertTrue(error);
+		
+	}
+	
 	public void testAppend(){
 		Chromosome chr1 = new Chromosome("1");
 		Chromosome chr2 = new Chromosome("2");
@@ -48,6 +79,18 @@ public class GenomicSequenceTest extends junit.framework.TestCase{
 		assertTrue(seq1.contains(testLoc, m_LocComp));
 		assertFalse(seq2.contains(testLoc, m_LocComp));
 		assertEquals(chr2Seq.charAt(1), test.getBaseAt(testLoc));
+		
+		test = test.append(seq3, m_LocComp);
+		assertEquals(chr1Seq.substring(9)+chr2Seq+chr3Seq.substring(0,chr3Seq.length()-3), test.getSequence());
+		assertEquals(reg1.union(reg2.union(reg3, m_LocComp), m_LocComp), test.getRegion());
+		testLoc = new GenomicLocation(chr3, 6);
+		assertTrue(test.contains(testLoc, m_LocComp));
+		assertEquals(chr3Seq.charAt(5), test.getBaseAt(testLoc));
+		assertFalse(seq2.contains(testLoc, m_LocComp));
+		testLoc = new GenomicLocation(chr3, 5);
+		assertTrue(test.contains(testLoc, m_LocComp));
+		assertTrue(seq2.contains(testLoc, m_LocComp));
+		assertFalse(seq3.contains(testLoc, m_LocComp));
 		
 	}
 	
