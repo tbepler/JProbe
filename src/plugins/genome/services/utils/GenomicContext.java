@@ -20,6 +20,7 @@ public interface GenomicContext extends Serializable{
 	public Chromosome getFirstChr();
 	public Chromosome getLastChr();
 	public List<Chromosome> getChrs();
+	public boolean hasChr(Chromosome chr);
 	public boolean hasChr(String id);
 	public Chromosome getChr(String id);
 	

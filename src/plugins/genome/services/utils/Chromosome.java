@@ -19,12 +19,20 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 		m_HashCode = new HashCodeBuilder(947, 569).append(m_Id).append(m_Size).append(m_Context).toHashCode();
 	}
 	
+	GenomicContext getGenomicContext(){
+		return m_Context;
+	}
+	
 	public Chromosome nextChr(){
 		return m_Context.nextChr(this);
 	}
 	
 	public Chromosome prevChr(){
 		return m_Context.prevChr(this);
+	}
+	
+	public String getId(){
+		return m_Id;
 	}
 	
 	public long getSize(){
@@ -46,7 +54,8 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 		if(o == null) return false;
 		if(this == o) return true;
 		if(o instanceof Chromosome){
-			return m_Id.equals(((Chromosome) o).m_Id);
+			Chromosome other = (Chromosome) o;
+			return m_Id.equals(other.m_Id) && m_Size == other.m_Size && m_Context == other.m_Context;
 		}
 		return false;
 	}

@@ -1,6 +1,7 @@
 package plugins.genome.services.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -122,8 +123,10 @@ public class Genome implements GenomicContext{
 	private Map<Chromosome, Integer> m_ChrPriority;
 	private Map<Chromosome, Chromosome> m_NextChr;
 	private Map<Chromosome, Chromosome> m_PrevChr;
+	private final String m_Name;
 
-	public Genome(Scanner genome){
+	public Genome(String name,  Scanner genome){
+		m_Name = name;
 		m_Chrs = new LinkedList<Chromosome>();
 		m_ChrPriority = new HashMap<Chromosome, Integer>();
 		m_NextChr = new HashMap<Chromosome, Chromosome>();
@@ -159,103 +162,95 @@ public class Genome implements GenomicContext{
 
 	@Override
 	public Comparator<Chromosome> getChrAscendingComparator() {
-		return new Comparator<Chromosome>(){
-			
-			@Override
-			public int compare(Chromosome o1, Chromosome o2) {
-				return m_ChrPriority.get(o1) - m_ChrPriority.get(o2);
-			}
-			
-		};
+		return CHR_ASCENDING;
 	}
 
 	@Override
 	public Comparator<Chromosome> getChrDescendingComparator() {
-		return new Comparator<Chromosome>(){
-
-			@Override
-			public int compare(Chromosome o1, Chromosome o2) {
-				return m_ChrPriority.get(o2) - m_ChrPriority.get(o1);
-			}
-			
-		};
+		return CHR_DESCENDING;
 	}
 
 	@Override
 	public Comparator<GenomicLocation> getLocationAscendingComparator() {
-		// TODO Auto-generated method stub
-		return null;
+		return LOC_ASCENDING;
 	}
 
 	@Override
 	public Comparator<GenomicLocation> getLocationDescendingComparator() {
-		// TODO Auto-generated method stub
-		return null;
+		return LOC_DESCENDING;
 	}
 
 	@Override
 	public Comparator<GenomicRegion> getStartAscendingComparator() {
-		// TODO Auto-generated method stub
-		return null;
+		return REGION_START_ASCENDING;
 	}
 
 	@Override
 	public Comparator<GenomicRegion> getStartDescendingComparator() {
-		// TODO Auto-generated method stub
-		return null;
+		return REGION_START_DESCENDING;
 	}
 
 	@Override
 	public Comparator<GenomicRegion> getEndAscendingComparator() {
-		// TODO Auto-generated method stub
-		return null;
+		return REGION_END_ASCENDING;
 	}
 
 	@Override
 	public Comparator<GenomicRegion> getEndDescendingComparator() {
-		// TODO Auto-generated method stub
-		return null;
+		return REGION_END_DESCENDING;
 	}
 
 	@Override
 	public Chromosome getFirstChr() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_Chrs.getFirst();
 	}
 
 	@Override
 	public Chromosome getLastChr() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_Chrs.getLast();
 	}
 
 	@Override
 	public List<Chromosome> getChrs() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.unmodifiableList(m_Chrs);
+	}
+	
+	@Override
+	public boolean hasChr(Chromosome chr){
+		return m_ChrPriority.containsKey(chr);
 	}
 
 	@Override
 	public boolean hasChr(String id) {
-		// TODO Auto-generated method stub
+		for(Chromosome chr : m_Chrs){
+			if(chr.getId().equals(id)){
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public Chromosome getChr(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		for(Chromosome chr : m_Chrs){
+			if(chr.getId().equals(id)){
+				return chr;
+			}
+		}
+		throw new RuntimeException("Error: no chromosome with id \""+id+"\" in genome "+this);
 	}
 
 	@Override
 	public GenomicLocation newGenomicLocation(Chromosome chr, long baseIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		return new GenomicLocation(this, chr, baseIndex);
+	}
+	
+	public GenomicLocation parseLocation(String s) throws ParsingException{
+		return GenomicLocation.parseString(this, s);
 	}
 
 	@Override
-	public GenomicRegion newGenomicRegion(GenomicLocation start,
-			GenomicLocation end) {
+	public GenomicRegion newGenomicRegion(GenomicLocation start, GenomicLocation end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -268,6 +263,11 @@ public class Genome implements GenomicContext{
 	@Override
 	public Chromosome prevChr(Chromosome cur) {
 		return m_PrevChr.get(cur);
+	}
+	
+	@Override
+	public String toString(){
+		return m_Name;
 	}
 	
 }
