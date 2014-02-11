@@ -90,7 +90,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	}
 	
 	public boolean contains(GenomicCoordinate coordinate){
-		return m_Start.compareTo(coordinate) <= 0 && m_End.compareTo(coordinate) >= 0;
+		return m_Start.compareTo(coordinate) <= 0 && m_End.compareTo(coordinate) >= 0 && m_Context == coordinate.getGenomicContext();
 	}
 	
 	public boolean contains(GenomicRegion other){
@@ -127,10 +127,39 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		return !this.overlaps(other) && (m_End.increment(1).equals(other.m_Start) || m_Start.decrement(1).equals(other.m_End));
 	}
 	
+	/**
+	 * This method creates a GenomicRegion that is the union of this region and the given region. The union
+	 * is represented as the region defined by smallest starting position to the largest ending position
+	 * of the two regions. In other words, if the regions do not overlap, then the inter-region space will
+	 * be included in the unioned region.
+	 * @param other - the region to union with this region
+	 * @return a new GenomicRegion that starts at the smalles start coordinate and ends at the largest end 
+	 * coordinate of the two regions
+	 */
 	public GenomicRegion union(GenomicRegion other){
 		GenomicCoordinate newStart = m_Start.compareTo(other.m_Start) > 0 ? other.m_Start : m_Start;
 		GenomicCoordinate newEnd = m_End.compareTo(other.m_End) < 0 ? other.m_End : m_End;
 		return new GenomicRegion(m_Context, newStart, newEnd);
+	}
+	
+	/**
+	 * Splits this genomic region into two regions around the given coordinate. The left region
+	 * is [start, coordinate) and the right region is [coordinate, end]. This will error
+	 * if the coordinate is not within this region or the coordinate is defined using a different
+	 * genome from this region.
+	 * @param coordinate - around which this region should be split
+	 * @return an array of {left region, right region}
+	 */
+	public GenomicRegion[] split(GenomicCoordinate coordinate){
+		if(m_Context != coordinate.getGenomicContext()){
+			throw new RuntimeException("Error: this regions genome "+m_Context+" does not match the given coordinates genome "+coordinate.getGenomicContext());
+		}
+		if(!this.contains(coordinate)){
+			throw new RuntimeException("Error: the region "+this+" cannot be split around the coordinate "+coordinate);
+		}
+		GenomicRegion left = new GenomicRegion(m_Context, m_Start, coordinate.decrement(1));
+		GenomicRegion right = new GenomicRegion(m_Context, coordinate, m_End);
+		return new GenomicRegion[]{left, right};
 	}
 	
 	@Override
