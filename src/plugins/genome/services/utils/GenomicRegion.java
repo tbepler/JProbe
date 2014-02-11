@@ -123,16 +123,14 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		return new GenomicRegion(m_Context, m_Start, other.m_End);
 	}
 	
-	public GenomicRegion union(GenomicRegion other, Comparator<GenomicCoordinate> comparator){
-		GenomicCoordinate newStart = comparator.compare(m_Start, other.m_Start) > 0 ? other.m_Start : m_Start;
-		GenomicCoordinate newEnd = comparator.compare(m_End, other.m_End) < 0 ? other.m_End : m_End;
-		return new GenomicRegion(newStart, newEnd);
+	public boolean adjacentTo(GenomicRegion other){
+		return !this.overlaps(other) && (m_End.increment(1).equals(other.m_Start) || m_Start.decrement(1).equals(other.m_End));
 	}
 	
 	public GenomicRegion union(GenomicRegion other){
 		GenomicCoordinate newStart = m_Start.compareTo(other.m_Start) > 0 ? other.m_Start : m_Start;
 		GenomicCoordinate newEnd = m_End.compareTo(other.m_End) < 0 ? other.m_End : m_End;
-		return new GenomicRegion(newStart, newEnd);
+		return new GenomicRegion(m_Context, newStart, newEnd);
 	}
 	
 	@Override

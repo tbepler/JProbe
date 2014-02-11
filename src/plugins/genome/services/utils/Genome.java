@@ -251,8 +251,11 @@ public class Genome implements GenomicContext{
 
 	@Override
 	public GenomicRegion newGenomicRegion(GenomicCoordinate start, GenomicCoordinate end) {
-		// TODO Auto-generated method stub
-		return null;
+		return new GenomicRegion(this, start, end);
+	}
+	
+	public GenomicRegion parseRegion(String s) throws ParsingException{
+		return GenomicRegion.parseString(this, s);
 	}
 
 	@Override

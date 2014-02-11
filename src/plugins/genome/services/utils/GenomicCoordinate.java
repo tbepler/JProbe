@@ -55,6 +55,31 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 		return m_Context;
 	}
 	
+	public GenomicCoordinate increment(int numBases){
+		long newIndex = m_BaseIndex + numBases;
+		if(newIndex > m_Chr.getSize()){
+			Chromosome chr = m_Chr;
+			while(newIndex > chr.getSize()){
+				newIndex -= chr.getSize();
+				chr = chr.nextChr();
+			}
+			return new GenomicCoordinate(m_Context, chr, newIndex);
+		}
+		if(newIndex < 1){
+			Chromosome chr = m_Chr;
+			while(newIndex < 1){
+				chr = m_Chr.prevChr();
+				newIndex += chr.getSize();
+			}
+			return new GenomicCoordinate(m_Context, chr, newIndex);
+		}
+		return new GenomicCoordinate(m_Context, m_Chr, newIndex);
+	}
+	
+	public GenomicCoordinate decrement(int numBases){
+		return this.increment(-numBases);
+	}
+	
 	public Chromosome getChromosome(){
 		return m_Chr;
 	}
