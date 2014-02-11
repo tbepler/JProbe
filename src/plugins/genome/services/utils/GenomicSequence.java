@@ -42,7 +42,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return new HashCodeBuilder(439, 61).append(m_Region).append(m_Sequence).toHashCode();
 	}
 	
-	private static Map<Chromosome, Integer> joinChrMaps(final Map<Chromosome, Integer> first, final Map<Chromosome, Integer> second, int firstSeqLen, GenomicLocation secondStart){
+	private static Map<Chromosome, Integer> joinChrMaps(final Map<Chromosome, Integer> first, final Map<Chromosome, Integer> second, int firstSeqLen, GenomicCoordinate secondStart){
 		Map<Chromosome, Integer> joined = new HashMap<Chromosome, Integer>();
 		for(Chromosome chr : first.keySet()){
 			joined.put(chr, first.get(chr));
@@ -101,14 +101,14 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 * @param comparator - Comparator for use in unioning the GenomicRegions 
 	 * @return a GenomicSequence that is this sequence with the next sequence appended to the end
 	 */
-	public GenomicSequence append(GenomicSequence next, Comparator<GenomicLocation> comparator){
+	public GenomicSequence append(GenomicSequence next, Comparator<GenomicCoordinate> comparator){
 		Map<Chromosome, Integer> joined = joinChrMaps(m_ChrIndexes, next.m_ChrIndexes, m_Sequence.length(), next.getStart());
 		GenomicRegion union = m_Region.union(next.m_Region, comparator);
 		String combinedSequence = m_Sequence + next.m_Sequence.substring(this.overlapLength(next));
 		return new GenomicSequence(combinedSequence, union, joined);
 	}
 	
-	private GenomicLocation getLocationAt(int index){
+	private GenomicCoordinate getLocationAt(int index){
 		Chromosome chr = null;
 		int chrNotGreaterThanIndex = -1;
 		for(Chromosome cur : m_ChrIndexes.keySet()){
@@ -119,9 +119,9 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 			}
 		}
 		if(chr.equals(this.getStart().getChromosome())){
-			return new GenomicLocation(chr, index - chrNotGreaterThanIndex + this.getStart().getBaseIndex());
+			return new GenomicCoordinate(chr, index - chrNotGreaterThanIndex + this.getStart().getBaseIndex());
 		}else{
-			return new GenomicLocation(chr, index - chrNotGreaterThanIndex + 1);
+			return new GenomicCoordinate(chr, index - chrNotGreaterThanIndex + 1);
 		}
 	}
 	
@@ -132,13 +132,13 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 * @return and array containing two GenomicSequences. The first being before the location and the second starting
 	 * at the location
 	 */
-	public GenomicSequence[] split(GenomicLocation loc){
+	public GenomicSequence[] split(GenomicCoordinate loc){
 		this.checkLocation(loc);
 		int index = getIndexOf(loc);
-		GenomicLocation leftStart = this.getStart();
-		GenomicLocation leftEnd = getLocationAt(index - 1);
-		GenomicLocation rightStart = loc;
-		GenomicLocation rightEnd = this.getEnd();
+		GenomicCoordinate leftStart = this.getStart();
+		GenomicCoordinate leftEnd = getLocationAt(index - 1);
+		GenomicCoordinate rightStart = loc;
+		GenomicCoordinate rightEnd = this.getEnd();
 		String leftSeq = m_Sequence.substring(0, index);
 		String rightSeq = m_Sequence.substring(index);
 		GenomicSequence left = new GenomicSequence(leftSeq, new GenomicRegion(leftStart, leftEnd));
@@ -152,7 +152,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 * @param comparator - comparator to use for comparing GenomicLocations
 	 * @return True if the given location occurs within this sequence, False otherwise
 	 */
-	public boolean contains(GenomicLocation loc, Comparator<GenomicLocation> comparator){
+	public boolean contains(GenomicCoordinate loc, Comparator<GenomicCoordinate> comparator){
 		return (loc != null && m_ChrIndexes.containsKey(loc.getChromosome()) && comparator.compare(this.getStart(), loc) <= 0 && comparator.compare(this.getEnd(), loc) >= 0);
 	}
 	
@@ -168,7 +168,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 * Returns the starting location of this GenomicSequence
 	 * @return a GenomicLocation representing the first position of this sequence
 	 */
-	public GenomicLocation getStart(){
+	public GenomicCoordinate getStart(){
 		return m_Region.getStart();
 	}
 	
@@ -176,11 +176,11 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 * Returns the ending location of this GenomicSequence
 	 * @return a GenomicLocation representing the last position of this sequence
 	 */
-	public GenomicLocation getEnd(){
+	public GenomicCoordinate getEnd(){
 		return m_Region.getEnd();
 	}
 	
-	private void checkLocation(GenomicLocation loc){
+	private void checkLocation(GenomicCoordinate loc){
 		if(loc == null){
 			throw new RuntimeException("Error: genomic location may not be null");
 		}
@@ -198,7 +198,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		}
 	}
 	
-	private int getIndexOf(GenomicLocation loc){
+	private int getIndexOf(GenomicCoordinate loc){
 		int chrIndex = m_ChrIndexes.get(loc.getChromosome());
 		if(loc.getChromosome().equals(this.getStart().getChromosome())){
 			return (int) (loc.getBaseIndex() - this.getStart().getBaseIndex());
@@ -212,7 +212,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 * @param loc - location of the base to be returned
 	 * @return a character representing the base within this GenomicSequence at the given GenomicLocation
 	 */
-	public char getBaseAt(GenomicLocation loc){
+	public char getBaseAt(GenomicCoordinate loc){
 		this.checkLocation(loc);
 		return m_Sequence.charAt(this.getIndexOf(loc));
 	}

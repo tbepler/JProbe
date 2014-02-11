@@ -1,7 +1,7 @@
 package plugins.genome.services.utils.tests;
 
 import plugins.genome.services.utils.Chromosome;
-import plugins.genome.services.utils.GenomicLocation;
+import plugins.genome.services.utils.GenomicCoordinate;
 import plugins.genome.services.utils.GenomicRegion;
 
 public class GenomicRegionTest extends junit.framework.TestCase{
@@ -16,13 +16,13 @@ public class GenomicRegionTest extends junit.framework.TestCase{
 		String chr2Seq = "LNALKKWNQQNT;QLWNEGKDSNLKDNGGGGGGGGGGGGGGGGGTTTTTASLDFA";
 		String chr3Seq = "AGTCTGAGTCGTGTGTGGTACCTGAGAGTC";
 		String chr4Seq = "PPQOWEAEROPAWEMRKNEWRRRRRRRRRRRAD;JSA;PSAVOJA;ELFSDNKFDJFBDFJDBIFAUDBIBKJDFKCNVLKCNVHDDFGASDFGXZYCVASGUZYXVCUAYVUAHFAHFBK";
-		GenomicRegion reg1 = new GenomicRegion(new GenomicLocation(chr1, 10), new GenomicLocation(chr2, 22));
-		GenomicRegion reg2 = new GenomicRegion(new GenomicLocation(chr2, 10), new GenomicLocation(chr3, 5));
-		GenomicRegion reg3 = new GenomicRegion(new GenomicLocation(chr3, 6), new GenomicLocation(chr3, chr3Seq.length()-3));
+		GenomicRegion reg1 = new GenomicRegion(new GenomicCoordinate(chr1, 10), new GenomicCoordinate(chr2, 22));
+		GenomicRegion reg2 = new GenomicRegion(new GenomicCoordinate(chr2, 10), new GenomicCoordinate(chr3, 5));
+		GenomicRegion reg3 = new GenomicRegion(new GenomicCoordinate(chr3, 6), new GenomicCoordinate(chr3, chr3Seq.length()-3));
 		
-		GenomicRegion reg12Union = new GenomicRegion(new GenomicLocation(chr1, 10), new GenomicLocation(chr3, 5));
-		GenomicRegion reg23Union = new GenomicRegion(new GenomicLocation(chr2,10), new GenomicLocation(chr3, chr3Seq.length()-3));
-		GenomicRegion reg123Union = new GenomicRegion(new GenomicLocation(chr1,10), new GenomicLocation(chr3, chr3Seq.length()-3));
+		GenomicRegion reg12Union = new GenomicRegion(new GenomicCoordinate(chr1, 10), new GenomicCoordinate(chr3, 5));
+		GenomicRegion reg23Union = new GenomicRegion(new GenomicCoordinate(chr2,10), new GenomicCoordinate(chr3, chr3Seq.length()-3));
+		GenomicRegion reg123Union = new GenomicRegion(new GenomicCoordinate(chr1,10), new GenomicCoordinate(chr3, chr3Seq.length()-3));
 		
 		assertEquals(reg12Union, reg1.union(reg2));
 		assertEquals(reg12Union, reg2.union(reg1));

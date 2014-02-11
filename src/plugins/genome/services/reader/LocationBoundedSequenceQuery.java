@@ -1,6 +1,6 @@
 package plugins.genome.services.reader;
 
-import plugins.genome.services.utils.GenomicLocation;
+import plugins.genome.services.utils.GenomicCoordinate;
 import plugins.genome.services.utils.GenomicRegion;
 
 public abstract class LocationBoundedSequenceQuery extends SequenceQuery{
@@ -17,11 +17,11 @@ public abstract class LocationBoundedSequenceQuery extends SequenceQuery{
 		return m_Region;
 	}
 	
-	public GenomicLocation getStart(){
+	public GenomicCoordinate getStart(){
 		return m_Region.getStart();
 	}
 	
-	public GenomicLocation getEnd(){
+	public GenomicCoordinate getEnd(){
 		return m_Region.getEnd();
 	}
 

@@ -9,8 +9,8 @@ public interface GenomicContext extends Serializable{
 	public Comparator<Chromosome> getChrAscendingComparator();
 	public Comparator<Chromosome> getChrDescendingComparator();
 	
-	public Comparator<GenomicLocation> getLocationAscendingComparator();
-	public Comparator<GenomicLocation> getLocationDescendingComparator();
+	public Comparator<GenomicCoordinate> getLocationAscendingComparator();
+	public Comparator<GenomicCoordinate> getLocationDescendingComparator();
 	
 	public Comparator<GenomicRegion> getStartAscendingComparator();
 	public Comparator<GenomicRegion> getStartDescendingComparator();
@@ -27,7 +27,7 @@ public interface GenomicContext extends Serializable{
 	public Chromosome nextChr(Chromosome cur);
 	public Chromosome prevChr(Chromosome cur);
 	
-	public GenomicLocation newGenomicLocation(Chromosome chr, long baseIndex);
-	public GenomicRegion newGenomicRegion(GenomicLocation start, GenomicLocation end);
+	public GenomicCoordinate newGenomicLocation(Chromosome chr, long baseIndex);
+	public GenomicRegion newGenomicRegion(GenomicCoordinate start, GenomicCoordinate end);
 	
 }

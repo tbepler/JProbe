@@ -22,14 +22,14 @@ import plugins.genome.services.reader.LocationBoundedSequenceQuery;
 import plugins.genome.services.reader.LocationQuery;
 import plugins.genome.services.reader.SequenceQuery;
 import plugins.genome.services.utils.Chromosome;
-import plugins.genome.services.utils.GenomicLocation;
+import plugins.genome.services.utils.GenomicCoordinate;
 
 public class ThreadedGenomeReader extends AbstractGenomeReader{
 	
 	private static final Map<String, LocationComparator> GENOME_INDEX_HASH = new HashMap<String, LocationComparator>();
 	private static final String CHR_TAG = ">chr";
 	
-	public static class LocationComparator implements Comparator<GenomicLocation>, Serializable{
+	public static class LocationComparator implements Comparator<GenomicCoordinate>, Serializable{
 		private static final long serialVersionUID = 1L;
 		
 		private final Map<Chromosome, Integer> m_ChrPriority = new HashMap<Chromosome, Integer>();
@@ -49,12 +49,12 @@ public class ThreadedGenomeReader extends AbstractGenomeReader{
 			return m_ChrPriority.containsKey(chr) ? m_ChrPriority.get(chr) : Integer.MAX_VALUE;
 		}
 		
-		private int getPriority(GenomicLocation loc){
+		private int getPriority(GenomicCoordinate loc){
 			return getPriority(loc.getChromosome());
 		}
 
 		@Override
-		public int compare(GenomicLocation arg0, GenomicLocation arg1) {
+		public int compare(GenomicCoordinate arg0, GenomicCoordinate arg1) {
 			if(arg0.getChromosome().equals(arg1.getChromosome())){
 				long start = arg0.getBaseIndex();
 				long end = arg0.getBaseIndex();

@@ -3,7 +3,7 @@ package plugins.genome.services.reader;
 import java.io.Serializable;
 
 import plugins.genome.services.utils.Chromosome;
-import plugins.genome.services.utils.GenomicLocation;
+import plugins.genome.services.utils.GenomicCoordinate;
 import plugins.genome.services.utils.GenomicRegion;
 
 public abstract class LocationQuery implements Serializable{
@@ -15,12 +15,12 @@ public abstract class LocationQuery implements Serializable{
 		m_Region = region;
 	}
 	
-	protected LocationQuery(GenomicLocation start, GenomicLocation end){
+	protected LocationQuery(GenomicCoordinate start, GenomicCoordinate end){
 		this(new GenomicRegion(start, end));
 	}
 	
 	protected LocationQuery(Chromosome startChr, long startBase, Chromosome endChr, long endBase){
-		this(new GenomicLocation(startChr, startBase), new GenomicLocation(endChr, endBase));
+		this(new GenomicCoordinate(startChr, startBase), new GenomicCoordinate(endChr, endBase));
 	}
 	
 	protected LocationQuery(Chromosome startChr, int startBase, Chromosome endChr, int endBase){
@@ -39,11 +39,11 @@ public abstract class LocationQuery implements Serializable{
 		return m_Region;
 	}
 	
-	public GenomicLocation getStart(){
+	public GenomicCoordinate getStart(){
 		return m_Region.getStart();
 	}
 	
-	public GenomicLocation getEnd(){
+	public GenomicCoordinate getEnd(){
 		return m_Region.getEnd();
 	}
 	

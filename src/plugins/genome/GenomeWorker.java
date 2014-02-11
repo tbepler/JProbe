@@ -14,7 +14,7 @@ import plugins.genome.services.reader.LocationBoundedSequenceQuery;
 import plugins.genome.services.reader.LocationQuery;
 import plugins.genome.services.reader.SequenceQuery;
 import plugins.genome.services.utils.Chromosome;
-import plugins.genome.services.utils.GenomicLocation;
+import plugins.genome.services.utils.GenomicCoordinate;
 import plugins.genome.services.utils.GenomicRegion;
 
 public class GenomeWorker implements Runnable{
@@ -23,7 +23,7 @@ public class GenomeWorker implements Runnable{
 	private final Queue<LocationQuery> m_LocationQueries;
 	private final Queue<LocationBoundedSequenceQuery> m_BoundedQueries;
 	private final List<SequenceQuery> m_SequenceQueries;
-	private final Map<SequenceQuery, GenomicLocation> m_LastLocationSearched;
+	private final Map<SequenceQuery, GenomicCoordinate> m_LastLocationSearched;
 	private final Queue<LocationQuery> m_ActiveLocationQueries;
 	private final Queue<LocationBoundedSequenceQuery> m_ActiveBoundedQueries;
 	private final int m_MaxTargetLen;
@@ -40,7 +40,7 @@ public class GenomeWorker implements Runnable{
 		m_LocationQueries = locationQueries;
 		m_BoundedQueries = boundedQueries;
 		m_SequenceQueries = sequenceQueries;
-		m_LastLocationSearched = new HashMap<SequenceQuery, GenomicLocation>();
+		m_LastLocationSearched = new HashMap<SequenceQuery, GenomicCoordinate>();
 		m_ActiveLocationQueries = new PriorityQueue<LocationQuery>(10, new Comparator<LocationQuery>(){
 			@Override
 			public int compare(LocationQuery o1, LocationQuery o2) {
@@ -80,7 +80,7 @@ public class GenomeWorker implements Runnable{
 				|| !m_ActiveBoundedQueries.isEmpty();
 	}
 	
-	private GenomicLocation getNextStartLocation(){
+	private GenomicCoordinate getNextStartLocation(){
 		if(m_LocationQueries.isEmpty() && m_BoundedQueries.isEmpty()){
 			return null;
 		}
@@ -90,14 +90,14 @@ public class GenomeWorker implements Runnable{
 		if(m_BoundedQueries.isEmpty()){
 			return m_LocationQueries.peek().getStart();
 		}
-		GenomicLocation a = m_LocationQueries.peek().getStart();
-		GenomicLocation b = m_BoundedQueries.peek().getStart();
+		GenomicCoordinate a = m_LocationQueries.peek().getStart();
+		GenomicCoordinate b = m_BoundedQueries.peek().getStart();
 		return m_Comparator.compare(a, b) > 0 ? b : a;
 	}
 	
-	private boolean regionContains(GenomicRegion region, GenomicLocation location){
-		GenomicLocation start = region.getStart();
-		GenomicLocation end = region.getEnd();
+	private boolean regionContains(GenomicRegion region, GenomicCoordinate location){
+		GenomicCoordinate start = region.getStart();
+		GenomicCoordinate end = region.getEnd();
 		return m_Comparator.compare(start, location) <= 0 && m_Comparator.compare(location, end) <= 0;
 	}
 	
@@ -135,7 +135,7 @@ public class GenomeWorker implements Runnable{
 		return this;
 	}
 	
-	private GenomicLocation getGenomicLocation(int index){
+	private GenomicCoordinate getGenomicLocation(int index){
 		Chromosome chr = null;
 		int greatestLessThanIndex = -1;
 		for(Chromosome c : m_ChrIndexes.keySet()){
@@ -145,10 +145,10 @@ public class GenomeWorker implements Runnable{
 			}
 		}
 		long base = index - greatestLessThanIndex + 1;
-		return new GenomicLocation(chr, base);
+		return new GenomicCoordinate(chr, base);
 	}
 	
-	private List<GenomicRegion> find(String target, GenomicLocation startLocation){
+	private List<GenomicRegion> find(String target, GenomicCoordinate startLocation){
 		List<GenomicRegion> results = new ArrayList<GenomicRegion>();
 		//TODO
 		return results;

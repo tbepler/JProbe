@@ -35,10 +35,10 @@ public class Genome implements GenomicContext{
 		
 	};
 	
-	private final Comparator<GenomicLocation> LOC_ASCENDING = new Comparator<GenomicLocation>(){
+	private final Comparator<GenomicCoordinate> LOC_ASCENDING = new Comparator<GenomicCoordinate>(){
 
 		@Override
-		public int compare(GenomicLocation o1, GenomicLocation o2) {
+		public int compare(GenomicCoordinate o1, GenomicCoordinate o2) {
 			if(o1.getChromosome().equals(o2.getChromosome())){
 				long base1 = o1.getBaseIndex();
 				long base2 = o2.getBaseIndex();
@@ -51,10 +51,10 @@ public class Genome implements GenomicContext{
 		
 	};
 	
-	private final Comparator<GenomicLocation> LOC_DESCENDING = new Comparator<GenomicLocation>(){
+	private final Comparator<GenomicCoordinate> LOC_DESCENDING = new Comparator<GenomicCoordinate>(){
 
 		@Override
-		public int compare(GenomicLocation o1, GenomicLocation o2) {
+		public int compare(GenomicCoordinate o1, GenomicCoordinate o2) {
 			if(o1.getChromosome().equals(o2.getChromosome())){
 				long base1 = o1.getBaseIndex();
 				long base2 = o2.getBaseIndex();
@@ -71,7 +71,7 @@ public class Genome implements GenomicContext{
 
 		@Override
 		public int compare(GenomicRegion o1, GenomicRegion o2) {
-			Comparator<GenomicLocation> locComp = getLocationAscendingComparator();
+			Comparator<GenomicCoordinate> locComp = getLocationAscendingComparator();
 			if(o1.getStart().equals(o2.getStart())){
 				return locComp.compare(o1.getEnd(), o2.getEnd());
 			}
@@ -84,7 +84,7 @@ public class Genome implements GenomicContext{
 
 		@Override
 		public int compare(GenomicRegion o1, GenomicRegion o2) {
-			Comparator<GenomicLocation> locComp = getLocationDescendingComparator();
+			Comparator<GenomicCoordinate> locComp = getLocationDescendingComparator();
 			if(o1.getStart().equals(o2.getStart())){
 				return locComp.compare(o1.getEnd(), o2.getEnd());
 			}
@@ -97,7 +97,7 @@ public class Genome implements GenomicContext{
 
 		@Override
 		public int compare(GenomicRegion o1, GenomicRegion o2) {
-			Comparator<GenomicLocation> locComp = getLocationAscendingComparator();
+			Comparator<GenomicCoordinate> locComp = getLocationAscendingComparator();
 			if(o1.getEnd().equals(o2.getEnd())){
 				return locComp.compare(o1.getStart(), o2.getStart());
 			}
@@ -110,7 +110,7 @@ public class Genome implements GenomicContext{
 
 		@Override
 		public int compare(GenomicRegion o1, GenomicRegion o2) {
-			Comparator<GenomicLocation> locComp = getLocationDescendingComparator();
+			Comparator<GenomicCoordinate> locComp = getLocationDescendingComparator();
 			if(o1.getEnd().equals(o2.getEnd())){
 				return locComp.compare(o1.getStart(), o2.getStart());
 			}
@@ -171,12 +171,12 @@ public class Genome implements GenomicContext{
 	}
 
 	@Override
-	public Comparator<GenomicLocation> getLocationAscendingComparator() {
+	public Comparator<GenomicCoordinate> getLocationAscendingComparator() {
 		return LOC_ASCENDING;
 	}
 
 	@Override
-	public Comparator<GenomicLocation> getLocationDescendingComparator() {
+	public Comparator<GenomicCoordinate> getLocationDescendingComparator() {
 		return LOC_DESCENDING;
 	}
 
@@ -241,16 +241,16 @@ public class Genome implements GenomicContext{
 	}
 
 	@Override
-	public GenomicLocation newGenomicLocation(Chromosome chr, long baseIndex) {
-		return new GenomicLocation(this, chr, baseIndex);
+	public GenomicCoordinate newGenomicLocation(Chromosome chr, long baseIndex) {
+		return new GenomicCoordinate(this, chr, baseIndex);
 	}
 	
-	public GenomicLocation parseLocation(String s) throws ParsingException{
-		return GenomicLocation.parseString(this, s);
+	public GenomicCoordinate parseLocation(String s) throws ParsingException{
+		return GenomicCoordinate.parseString(this, s);
 	}
 
 	@Override
-	public GenomicRegion newGenomicRegion(GenomicLocation start, GenomicLocation end) {
+	public GenomicRegion newGenomicRegion(GenomicCoordinate start, GenomicCoordinate end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
