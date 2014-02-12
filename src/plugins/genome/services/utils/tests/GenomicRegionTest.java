@@ -3,7 +3,6 @@ package plugins.genome.services.utils.tests;
 import java.util.ArrayList;
 import java.util.List;
 
-import plugins.genome.services.utils.Chromosome;
 import plugins.genome.services.utils.Genome;
 import plugins.genome.services.utils.GenomicCoordinate;
 import plugins.genome.services.utils.GenomicRegion;
@@ -115,6 +114,29 @@ public class GenomicRegionTest extends junit.framework.TestCase{
 		assertEquals(left, split[0]);
 		assertEquals(right, split[1]);
 		assertEquals(test.getSize(), split[0].getSize()+split[1].getSize());
+		
+		assertEquals(test, test.split(test.getStart())[0]);
+		assertEquals(test, test.split(test.getStart())[1]);
+		assertEquals(test.split(test.getStart())[0], test.split(test.getStart())[1]);
+	}
+	
+	public void testAdjacent(){
+		GenomicRegion test1 = m_Genome.newGenomicRegion(m_Genome.newGenomicCoordinate("2", 21), m_Genome.newGenomicCoordinate("3", 45));
+		GenomicRegion test2 = m_Genome.newGenomicRegion(m_Genome.newGenomicCoordinate("4", 1), m_Genome.newGenomicCoordinate("4", 49));
+		GenomicRegion test3 = m_Genome.newGenomicRegion(m_Genome.newGenomicCoordinate("1", 77), m_Genome.newGenomicCoordinate("2", 20));
+		GenomicRegion test4 = m_Genome.newGenomicRegion(m_Genome.newGenomicCoordinate("1", 7), m_Genome.newGenomicCoordinate("2", 13));
+		GenomicRegion test5 = m_Genome.newGenomicRegion(m_Genome.newGenomicCoordinate("3", 44), m_Genome.newGenomicCoordinate("4", 118));
+		
+		assertFalse(test1.adjacentTo(test1));
+		assertTrue(test1.adjacentTo(test2));
+		assertTrue(test2.adjacentTo(test1));
+		assertTrue(test1.adjacentTo(test3));
+		assertTrue(test3.adjacentTo(test1));
+		assertFalse(test1.adjacentTo(test4));
+		assertFalse(test4.adjacentTo(test1));
+		assertFalse(test1.adjacentTo(test1));
+		assertFalse(test5.adjacentTo(test1));
+				
 	}
 	
 	
