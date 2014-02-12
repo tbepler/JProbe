@@ -72,6 +72,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		cur = cur.nextChr();
 		while(!cur.equals(m_End.getChromosome())){
 			size += cur.getSize();
+			cur = cur.nextChr();
 		}
 		size += m_End.getBaseIndex();
 		return size;
@@ -89,15 +90,28 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		return m_Size;
 	}
 	
+	GenomicContext getGenomicContext(){
+		return m_Context;
+	}
+	
 	public boolean contains(GenomicCoordinate coordinate){
+		if(m_Context != coordinate.getGenomicContext()){
+			return false;
+		}
 		return m_Start.compareTo(coordinate) <= 0 && m_End.compareTo(coordinate) >= 0 && m_Context == coordinate.getGenomicContext();
 	}
 	
 	public boolean contains(GenomicRegion other){
+		if(m_Context != other.getGenomicContext()){
+			return false;
+		}
 		return this.contains(other.m_Start) && this.contains(other.m_End);
 	}
 	
 	public boolean overlaps(GenomicRegion other){
+		if(m_Context != other.getGenomicContext()){
+			return false;
+		}
 		return other.contains(this) || this.contains(other.m_Start) || this.contains(other.m_End);
 	}
 	
@@ -124,6 +138,9 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	}
 	
 	public boolean adjacentTo(GenomicRegion other){
+		if(m_Context != other.getGenomicContext()){
+			return false;
+		}
 		return !this.overlaps(other) && (m_End.increment(1).equals(other.m_Start) || m_Start.decrement(1).equals(other.m_End));
 	}
 	
@@ -137,6 +154,9 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	 * coordinate of the two regions
 	 */
 	public GenomicRegion union(GenomicRegion other){
+		if(m_Context != other.m_Context){
+			throw new RuntimeException("Error: cannot union regions with different GenomicContexts. "+m_Context+" != "+other.m_Context);
+		}
 		GenomicCoordinate newStart = m_Start.compareTo(other.m_Start) > 0 ? other.m_Start : m_Start;
 		GenomicCoordinate newEnd = m_End.compareTo(other.m_End) < 0 ? other.m_End : m_End;
 		return new GenomicRegion(m_Context, newStart, newEnd);
@@ -147,6 +167,11 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	 * is [start, coordinate) and the right region is [coordinate, end]. This will error
 	 * if the coordinate is not within this region or the coordinate is defined using a different
 	 * genome from this region.
+	 * <p>
+	 * Note that because the coordinate is included in the right side region, if the coordinate is
+	 * the start of this region, then the right side region will be the full region and the left
+	 * side region will contain no bases. Because a region cannot contain zero bases, the full region
+	 * will be returned as BOTH the left and right side regions of the array.
 	 * @param coordinate - around which this region should be split
 	 * @return an array of {left region, right region}
 	 */
@@ -156,6 +181,9 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		}
 		if(!this.contains(coordinate)){
 			throw new RuntimeException("Error: the region "+this+" cannot be split around the coordinate "+coordinate);
+		}
+		if(m_Start.equals(coordinate)){
+			return new GenomicRegion[]{this, this};
 		}
 		GenomicRegion left = new GenomicRegion(m_Context, m_Start, coordinate.decrement(1));
 		GenomicRegion right = new GenomicRegion(m_Context, coordinate, m_End);
@@ -191,6 +219,9 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	
 	@Override
 	public int compareTo(GenomicRegion o) {
+		if(m_Context != o.m_Context){
+			throw new RuntimeException("Error: cannot compare regions with different GenomicContexts. "+m_Context+" != "+o.m_Context);
+		}
 		Comparator<GenomicRegion> comparator = m_Context.getStartAscendingComparator();
 		return comparator.compare(this, o);
 	}

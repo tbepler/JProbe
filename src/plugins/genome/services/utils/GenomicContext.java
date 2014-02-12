@@ -27,7 +27,8 @@ public interface GenomicContext extends Serializable{
 	public Chromosome nextChr(Chromosome cur);
 	public Chromosome prevChr(Chromosome cur);
 	
-	public GenomicCoordinate newGenomicLocation(Chromosome chr, long baseIndex);
+	public GenomicCoordinate newGenomicCoordinate(Chromosome chr, long baseIndex);
+	public GenomicCoordinate newGenomicCoordinate(String chrId, long baseIndex);
 	public GenomicRegion newGenomicRegion(GenomicCoordinate start, GenomicCoordinate end);
 	
 }

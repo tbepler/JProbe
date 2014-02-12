@@ -153,6 +153,28 @@ public class Genome implements GenomicContext{
 		m_NextChr.put(prev, null);
 	}
 	
+	public Genome(String name, List<String> chrNames, List<Integer> chrSizes){
+		if(chrNames.size() != chrSizes.size()){
+			throw new RuntimeException("Error: unequal numbers of names and sizes. Names: "+chrNames.size()+", Sizes: "+chrSizes.size());
+		}
+		m_Name = name;
+		m_Chrs = new LinkedList<Chromosome>();
+		m_ChrPriority = new HashMap<Chromosome, Integer>();
+		m_NextChr = new HashMap<Chromosome, Chromosome>();
+		m_PrevChr = new HashMap<Chromosome, Chromosome>();
+		//initialize chromosomes and fill data structures
+		Chromosome prev = null;
+		for(int i=0; i<chrNames.size(); i++){
+			Chromosome chr = new Chromosome(this, chrNames.get(i), chrSizes.get(i));
+			m_Chrs.add(chr);
+			m_ChrPriority.put(chr, i+1);
+			m_NextChr.put(prev, chr);
+			m_PrevChr.put(chr, prev);
+			prev = chr;
+		}
+		m_NextChr.put(prev, null);
+	}
+	
 	private boolean isChrMarker(String line){
 		return line.matches(CHR_LINE);
 	}
@@ -238,8 +260,13 @@ public class Genome implements GenomicContext{
 	}
 
 	@Override
-	public GenomicCoordinate newGenomicLocation(Chromosome chr, long baseIndex) {
+	public GenomicCoordinate newGenomicCoordinate(Chromosome chr, long baseIndex) {
 		return new GenomicCoordinate(this, chr, baseIndex);
+	}
+	
+	@Override
+	public GenomicCoordinate newGenomicCoordinate(String chrId, long baseIndex){
+		return new GenomicCoordinate(this, this.getChr(chrId), baseIndex);
 	}
 	
 	public GenomicCoordinate parseLocation(String s) throws ParsingException{
