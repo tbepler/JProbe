@@ -1,13 +1,6 @@
 package plugins.genome.services.utils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class GenomicSequence implements Serializable, Comparable<GenomicSequence>{
@@ -48,12 +41,34 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return new GenomicSequence(seq, m_Region.union(other.getRegion()));
 	}
 	
-	private GenomicCoordinate getLocationAt(int index){
-		return this.getStart().increment(index);
-	}
-	
 	private int getIndexOf(GenomicCoordinate coord){
 		return (int) this.getStart().distance(coord);
+	}
+	
+	public GenomicSequence subsequence(GenomicCoordinate start, GenomicCoordinate end){
+		if(this.getGenomicContext() != start.getGenomicContext() || this.getGenomicContext() != end.getGenomicContext()){
+			throw new RuntimeException("Error: GenomicSequence cannot be subsequenced using coordinates from different genomes");
+		}
+		if(!this.contains(start) || !this.contains(end)){
+			throw new RuntimeException("Error: cannot subsequence using coordinates not contained by this GenomicSequence");
+		}
+		
+		if(start.compareTo(end) > 0){
+			GenomicCoordinate swap = start;
+			start = end;
+			end = swap;
+		}
+		int startIndex = this.getIndexOf(start);
+		int endIndex = this.getIndexOf(end);
+		
+		String subSeq = m_Sequence.substring(startIndex, endIndex + 1);
+		GenomicRegion subRegion = new GenomicRegion(this.getGenomicContext(), start, end);
+		
+		return new GenomicSequence(subSeq, subRegion);
+	}
+	
+	public GenomicSequence subsequence(GenomicCoordinate start){
+		return this.subsequence(start, this.getEnd());
 	}
 	
 	/**
