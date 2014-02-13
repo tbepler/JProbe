@@ -15,97 +15,37 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	
 	private final String m_Sequence;
 	private final GenomicRegion m_Region;
-	private final Map<Chromosome, Integer> m_ChrIndexes;
 	private final int m_HashCode;
 	
-	public GenomicSequence(String sequence, GenomicRegion region, Map<Chromosome, Integer> chrIndexes){
+	public GenomicSequence(String sequence, GenomicRegion region){
+		if(sequence.length() != region.getSize()){
+			throw new RuntimeException("Error: sequence and region are of different sizes");
+		}
 		m_Sequence = sequence;
 		m_Region = region;
-		m_ChrIndexes = new HashMap<Chromosome, Integer>(chrIndexes);
 		m_HashCode = this.computeHash();
-	}
-	
-	public GenomicSequence(String sequence, GenomicRegion region){
-		this(sequence, region, generateChrMap(sequence, region));
-	}
-	
-	private static Map<Chromosome, Integer> generateChrMap(String sequence, GenomicRegion region){
-		Map<Chromosome, Integer> chrMap = new HashMap<Chromosome, Integer>();
-		Chromosome start = region.getStart().getChromosome();
-		chrMap.put(start, 0);
-		Chromosome end = region.getEnd().getChromosome();
-		chrMap.put(end, sequence.length() - (int) region.getEnd().getBaseIndex());
-		return chrMap;
 	}
 	
 	private int computeHash(){
 		return new HashCodeBuilder(439, 61).append(m_Region).append(m_Sequence).toHashCode();
 	}
 	
-	private static Map<Chromosome, Integer> joinChrMaps(final Map<Chromosome, Integer> first, final Map<Chromosome, Integer> second, int firstSeqLen, GenomicCoordinate secondStart){
-		Map<Chromosome, Integer> joined = new HashMap<Chromosome, Integer>();
-		for(Chromosome chr : first.keySet()){
-			joined.put(chr, first.get(chr));
-		}
-		PriorityQueue<Chromosome> chrQ = new PriorityQueue<Chromosome>(10, new Comparator<Chromosome>(){
-			@Override
-			public int compare(Chromosome o1, Chromosome o2) {
-				return second.get(o1) - second.get(o2);
-			}
-		});
-		for(Chromosome chr : second.keySet()){
-			chrQ.add(chr);
-		}
-		Chromosome prev = null;
-		int prevIndex = 0;
-		while(!chrQ.isEmpty()){
-			Chromosome chr = chrQ.poll();
-			if(joined.containsKey(chr)){
-				prev = chr;
-				if(chr.equals(secondStart.getChromosome())){
-					prevIndex = (int) (joined.get(prev) + secondStart.getBaseIndex()-1);
-				}else{
-					prevIndex = joined.get(prev);
-				}
-				continue;
-			}else{
-				if(prev == null){
-					joined.put(chr, firstSeqLen);
-					prev = chr;
-					prevIndex = firstSeqLen;
-				}else{
-					
-					int delta = second.get(chr) - second.get(prev);
-					joined.put(chr, prevIndex + delta);
-					prev = chr;
-					prevIndex = prevIndex + delta;
-				}
-			}
-		}
-		return joined;
+	GenomicContext getGenomicContext(){
+		return m_Region.getGenomicContext();
 	}
 	
-	private int overlapLength(GenomicSequence next){
-		Chromosome firstChr = next.getStart().getChromosome();
-		if(m_ChrIndexes.containsKey(firstChr)){
-			return (int) (m_Sequence.length() - m_ChrIndexes.get(firstChr) - next.getStart().getBaseIndex() + 1);
+	public GenomicSequence join(GenomicSequence other){
+		if(this.getGenomicContext() != other.getGenomicContext()){
+			throw new RuntimeException("Error: cannot join sequences from different genomes "+this.getGenomicContext()+" and "+other.getGenomicContext());
 		}
-		return 0;
-	}
-	
-	/**
-	 * Appends the given GenomicSequence to the END of this sequence. This does not check to make sure there is
-	 * no extra space between the sequences or whether the given sequence should actually follow this sequence.
-	 * Therefore, if those conditions are not met, results may be unpredictable.
-	 * @param next - the GenomicSequence to append to the end of this sequence
-	 * @param comparator - Comparator for use in unioning the GenomicRegions 
-	 * @return a GenomicSequence that is this sequence with the next sequence appended to the end
-	 */
-	public GenomicSequence append(GenomicSequence next, Comparator<GenomicCoordinate> comparator){
-		Map<Chromosome, Integer> joined = joinChrMaps(m_ChrIndexes, next.m_ChrIndexes, m_Sequence.length(), next.getStart());
-		GenomicRegion union = m_Region.union(next.m_Region, comparator);
-		String combinedSequence = m_Sequence + next.m_Sequence.substring(this.overlapLength(next));
-		return new GenomicSequence(combinedSequence, union, joined);
+		if(!m_Region.adjacentTo(other.getRegion()) && !m_Region.overlaps(other.getRegion())){
+			throw new RuntimeException("Error: cannot join two GenomicSequences that are not overlapping or adjacent");
+		}
+		GenomicSequence first = m_Region.compareTo(other.getRegion()) < 1 ? this : other;
+		GenomicSequence second = first != this ? this : other;
+		int overlap = (int) m_Region.getOverlap(other.getRegion());
+		String seq = first.getSequence() + second.getSequence().substring(overlap);
+		return new GenomicSequence(seq, m_Region.union(other.getRegion()));
 	}
 	
 	private GenomicCoordinate getLocationAt(int index){

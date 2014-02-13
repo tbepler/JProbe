@@ -5,12 +5,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public enum DNA {
+public enum DNA{
 	
 	A('A'),
-	T('T'),
+	C('C'),
 	G('G'),
-	C('C');
+	T('T');
 	
 	private static final Map<DNA, DNA> COMPLIMENTS = generateCompliments();
 	private static final Map<DNA, Set<DNA>> MATCHES = generateMatches();

@@ -55,6 +55,27 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 		return m_Context;
 	}
 	
+	public long distance(GenomicCoordinate other){
+		if(m_Context != other.getGenomicContext()){
+			throw new RuntimeException("Error: cannot find the distance between coordinates from different genomes. "+m_Context+" and "+other.getGenomicContext());
+		}
+		GenomicCoordinate start = this.compareTo(other) < 1 ? this : other;
+		GenomicCoordinate end = start != this ? this : other;
+		Chromosome cur = start.getChromosome();
+		if(cur.equals(end.getChromosome())){
+			return end.getBaseIndex() - start.getBaseIndex();
+		}
+		long size = 0;
+		size += cur.getSize() - start.getBaseIndex() + 1;
+		cur = cur.nextChr();
+		while(!cur.equals(end.getChromosome())){
+			size += cur.getSize();
+			cur = cur.nextChr();
+		}
+		size += end.getBaseIndex() - 1;
+		return size;
+	}
+	
 	public GenomicCoordinate increment(int numBases){
 		long newIndex = m_BaseIndex + numBases;
 		if(newIndex > m_Chr.getSize()){

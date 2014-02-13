@@ -63,19 +63,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	}
 	
 	private long computeSize(){
-		Chromosome cur = m_Start.getChromosome();
-		if(cur.equals(m_End.getChromosome())){
-			return m_End.getBaseIndex() - m_Start.getBaseIndex() + 1;
-		}
-		long size = 0;
-		size += cur.getSize() - m_Start.getBaseIndex() + 1;
-		cur = cur.nextChr();
-		while(!cur.equals(m_End.getChromosome())){
-			size += cur.getSize();
-			cur = cur.nextChr();
-		}
-		size += m_End.getBaseIndex();
-		return size;
+		return m_Start.distance(m_End) + 1;
 	}
 	
 	public GenomicCoordinate getStart(){
