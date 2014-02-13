@@ -77,6 +77,7 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 	}
 	
 	public GenomicCoordinate increment(int numBases){
+		if(numBases == 0) return this;
 		long newIndex = m_BaseIndex + numBases;
 		if(newIndex > m_Chr.getSize()){
 			Chromosome chr = m_Chr;
