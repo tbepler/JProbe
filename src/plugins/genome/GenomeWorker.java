@@ -28,7 +28,6 @@ public class GenomeWorker implements Runnable{
 	private final Queue<LocationBoundedSequenceQuery> m_ActiveBoundedQueries;
 	private final int m_MaxTargetLen;
 	private final Map<Chromosome, Integer> m_ChrIndexes;
-	private final LocationComparator m_Comparator;
 	private Chromosome m_CurChr;
 	private GenomicRegion m_CurSeqRegion;
 	private String m_CurSeq;
