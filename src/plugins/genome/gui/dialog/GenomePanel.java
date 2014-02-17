@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -13,6 +15,7 @@ import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.data.Field;
 import plugins.functions.gui.dialog.ParameterPanel;
+import plugins.genome.Constants;
 import plugins.genome.services.GenomeFunction;
 import util.gui.DoNothingOnPress;
 import util.gui.OnPress;
@@ -34,6 +37,7 @@ public class GenomePanel extends JPanel implements ActionListener, StateListener
 	public GenomePanel(GenomeFunction function, GenomeFilePanel filePanel, JProbeCore core){
 		super(new GridBagLayout());
 		this.initPanels(filePanel);
+		this.initButtons();
 	}
 	
 	private void initPanels(GenomeFilePanel filePanel){
@@ -50,6 +54,26 @@ public class GenomePanel extends JPanel implements ActionListener, StateListener
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weighty = 0.7;
 		this.add(m_ParamPanel, gbc);
+	}
+	
+	private void initButtons(){
+		JPanel buttonPanel = new JPanel();
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = Constants.GENOME_BUTTON_INSETS;
+		this.add(buttonPanel, gbc);
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.add(Box.createHorizontalGlue());
+		m_Run = new JButton(Constants.RUN_BUTTON_TEXT);
+		m_Run.addActionListener(this);
+		m_Run.setEnabled(this.argumentsValid());
+		buttonPanel.add(m_Run);
+		buttonPanel.add(Box.createRigidArea(Constants.GENOME_BUTTON_SPACING));
+		m_Cancel = new JButton(Constants.CANCEL_BUTTON_TEXT);
+		m_Cancel.addActionListener(this);
+		buttonPanel.add(m_Cancel);
 	}
 	
 	public void setRunAction(OnPress runAction){
@@ -72,7 +96,7 @@ public class GenomePanel extends JPanel implements ActionListener, StateListener
 		return m_ParamPanel.getFieldArgs();
 	}
 	
-	private boolean isStateValid(){
+	private boolean argumentsValid(){
 		return m_FilePanel.isStateValid() && m_ParamPanel.isStateValid();
 	}
 
@@ -91,7 +115,7 @@ public class GenomePanel extends JPanel implements ActionListener, StateListener
 	
 	@Override
 	public void update(StateNotifier source) {
-		m_Run.setEnabled(this.isStateValid());
+		m_Run.setEnabled(this.argumentsValid());
 	}
 
 }

@@ -28,7 +28,7 @@ public class GenomeCore implements GenomeService{
 
 		@Override
 		public int compare(GenomeFunction o1, GenomeFunction o2) {
-			return o1.getFunctionName().compareTo(o2.getFunctionName());
+			return o1.getName().compareTo(o2.getName());
 		}
 		
 	}
@@ -62,14 +62,14 @@ public class GenomeCore implements GenomeService{
 	@Override
 	public void addGenomeFunction(GenomeFunction prototype, Bundle adder) {
 		m_Functions.add(prototype);
-		if(m_FunctionsByName.containsKey(prototype.getFunctionName())){
-			m_FunctionsByName.get(prototype.getFunctionName()).add(prototype);
+		if(m_FunctionsByName.containsKey(prototype.getName())){
+			m_FunctionsByName.get(prototype.getName()).add(prototype);
 		}else{
 			List<GenomeFunction> list = new ArrayList<GenomeFunction>();
 			list.add(prototype);
-			m_FunctionsByName.put(prototype.getFunctionName(), list);
+			m_FunctionsByName.put(prototype.getName(), list);
 		}
-		Log.getInstance().write(GenomeActivator.getBundle(), "GenomeFunctionPrototype \""+prototype.getFunctionName()+
+		Log.getInstance().write(GenomeActivator.getBundle(), "GenomeFunctionPrototype \""+prototype.getName()+
 				"\" added by bundle \""+adder.getSymbolicName()+"\"");
 		this.notifyListeners(new GenomeServiceEvent(this, Type.FUNCTION_ADDED, prototype, adder));
 	}
@@ -78,8 +78,8 @@ public class GenomeCore implements GenomeService{
 	public void removeGenomeFunction(GenomeFunction function, Bundle remover) {
 		if(m_Functions.contains(function)){
 			m_Functions.remove(function);
-			m_FunctionsByName.get(function.getFunctionName()).remove(function);
-			Log.getInstance().write(GenomeActivator.getBundle(), "GenomeFunctionPrototype \""+function.getFunctionName()+
+			m_FunctionsByName.get(function.getName()).remove(function);
+			Log.getInstance().write(GenomeActivator.getBundle(), "GenomeFunctionPrototype \""+function.getName()+
 					"\" removed by bundle \""+remover.getSymbolicName()+"\"");
 			this.notifyListeners(new GenomeServiceEvent(this, Type.FUNCTION_REMOVED, function, remover));
 		}
