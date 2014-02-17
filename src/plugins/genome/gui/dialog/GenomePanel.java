@@ -76,6 +76,14 @@ public class GenomePanel extends JPanel implements ActionListener, StateListener
 		buttonPanel.add(m_Cancel);
 	}
 	
+	public JButton getRunButton(){
+		return m_Run;
+	}
+	
+	public String getTitle(){
+		return m_Function.getName();
+	}
+	
 	public void setRunAction(OnPress runAction){
 		m_RunAction = runAction;
 	}

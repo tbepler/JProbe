@@ -44,7 +44,7 @@ public class GenomeDialogHandler{
 	}
 	
 	private Queue<IndexedDialog> availableDialogs;
-	private Map<FunctionPanel, IndexedDialog> visibleDialogs;
+	private Map<GenomePanel, IndexedDialog> visibleDialogs;
 	private List<IndexedDialog> allDialogs;
 	private Frame owner;
 	private boolean modal;
@@ -53,7 +53,7 @@ public class GenomeDialogHandler{
 		this.owner = owner;
 		this.modal = modal;
 		availableDialogs = new PriorityQueue<IndexedDialog>(10, new IndexedDialogComparator());
-		visibleDialogs = new HashMap<FunctionPanel, IndexedDialog>();
+		visibleDialogs = new HashMap<GenomePanel, IndexedDialog>();
 		allDialogs = new ArrayList<IndexedDialog>();
 	}
 	
@@ -70,7 +70,7 @@ public class GenomeDialogHandler{
 		}
 	}
 	
-	public void display(final FunctionPanel panel){
+	public void display(final GenomePanel panel){
 		if(visibleDialogs.containsKey(panel)){
 			visibleDialogs.get(panel).toFront();
 			visibleDialogs.get(panel).setVisible(true);
@@ -98,7 +98,7 @@ public class GenomeDialogHandler{
 		visibleDialogs.put(panel, dialog);
 	}
 	
-	private void hide(IndexedDialog dialog, FunctionPanel panel){
+	private void hide(IndexedDialog dialog, GenomePanel panel){
 		dialog.setVisible(false);
 		availableDialogs.add(dialog);
 		visibleDialogs.remove(panel);
