@@ -10,9 +10,9 @@ import plugins.genome.util.GenomicSequence;
 
 public class LocationQueryProcessor implements QueryProcessor{
 		
-	private Queue<LocationQuery> m_Remaining;
-	private Queue<LocationQuery> m_Active;
-	private TreeSet<LocationQuery> m_ActiveStarts;
+	private final Queue<LocationQuery> m_Remaining;
+	private final Queue<LocationQuery> m_Active;
+	private final TreeSet<LocationQuery> m_ActiveStarts;
 	private GenomicSequence m_Seq;
 	
 	public LocationQueryProcessor(List<LocationQuery> queries){

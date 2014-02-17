@@ -8,9 +8,9 @@ import plugins.genome.util.GenomicSequence;
 
 public class BoundedQueryProcessor implements QueryProcessor{
 	
-	private Queue<LocationBoundedSequenceQuery> m_Remaining;
-	private Queue<LocationBoundedSequenceQuery> m_Active;
-	private Map<LocationBoundedSequenceQuery, GenomicCoordinate> m_ProcessedTo; 
+	private final Queue<LocationBoundedSequenceQuery> m_Remaining;
+	private final Queue<LocationBoundedSequenceQuery> m_Active;
+	private final Map<LocationBoundedSequenceQuery, GenomicCoordinate> m_ProcessedTo; 
 	private GenomicSequence m_Seq;
 	
 	public BoundedQueryProcessor(List<LocationBoundedSequenceQuery> queries){
