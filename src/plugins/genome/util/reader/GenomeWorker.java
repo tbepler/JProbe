@@ -1,4 +1,4 @@
-package plugins.genome;
+package plugins.genome.util.reader;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,13 +9,13 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.TreeMap;
 
-import plugins.genome.ThreadedGenomeReader.LocationComparator;
-import plugins.genome.services.reader.LocationBoundedSequenceQuery;
-import plugins.genome.services.reader.LocationQuery;
-import plugins.genome.services.reader.SequenceQuery;
-import plugins.genome.services.utils.Chromosome;
-import plugins.genome.services.utils.GenomicCoordinate;
-import plugins.genome.services.utils.GenomicRegion;
+import plugins.genome.util.Chromosome;
+import plugins.genome.util.GenomicCoordinate;
+import plugins.genome.util.GenomicRegion;
+import plugins.genome.util.reader.ThreadedGenomeReader.LocationComparator;
+import plugins.genome.util.reader.query.LocationBoundedSequenceQuery;
+import plugins.genome.util.reader.query.LocationQuery;
+import plugins.genome.util.reader.query.SequenceQuery;
 
 public class GenomeWorker implements Runnable{
 	

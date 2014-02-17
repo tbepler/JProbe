@@ -1,6 +1,6 @@
-package plugins.genome;
+package plugins.genome.util.reader;
 
-import plugins.genome.services.utils.GenomicRegion;
+import plugins.genome.util.GenomicRegion;
 
 public class SequenceProvider {
 	

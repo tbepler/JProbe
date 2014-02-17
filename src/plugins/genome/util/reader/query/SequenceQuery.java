@@ -1,8 +1,8 @@
-package plugins.genome.services.reader;
+package plugins.genome.util.reader.query;
 
 import java.io.Serializable;
 
-import plugins.genome.services.utils.GenomicRegion;
+import plugins.genome.util.GenomicRegion;
 
 public abstract class SequenceQuery implements Serializable{
 	private static final long serialVersionUID = 1L;

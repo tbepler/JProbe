@@ -1,4 +1,4 @@
-package plugins.genome.services.utils;
+package plugins.genome.util;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,10 +1,10 @@
-package plugins.genome.services.reader;
+package plugins.genome.util.reader.query;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
-import plugins.genome.services.utils.GenomicCoordinate;
-import plugins.genome.services.utils.GenomicRegion;
+import plugins.genome.util.GenomicCoordinate;
+import plugins.genome.util.GenomicRegion;
 
 public abstract class LocationQuery implements Serializable{
 	private static final long serialVersionUID = 1L;

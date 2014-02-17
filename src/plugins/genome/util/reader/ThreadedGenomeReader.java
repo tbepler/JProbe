@@ -1,4 +1,4 @@
-package plugins.genome;
+package plugins.genome.util.reader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,11 +10,11 @@ import java.util.concurrent.Executors;
 
 import jprobe.services.ErrorHandler;
 import jprobe.services.function.ProgressEvent;
-import plugins.genome.services.reader.AbstractGenomeReader;
-import plugins.genome.services.reader.LocationBoundedSequenceQuery;
-import plugins.genome.services.reader.LocationQuery;
-import plugins.genome.services.reader.SequenceQuery;
-import plugins.genome.services.utils.Genome;
+import plugins.genome.GenomeActivator;
+import plugins.genome.util.Genome;
+import plugins.genome.util.reader.query.LocationBoundedSequenceQuery;
+import plugins.genome.util.reader.query.LocationQuery;
+import plugins.genome.util.reader.query.SequenceQuery;
 
 public class ThreadedGenomeReader extends AbstractGenomeReader{
 	

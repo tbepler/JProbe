@@ -1,13 +1,12 @@
-package plugins.genome;
+package plugins.genome.util.reader.query;
 
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.TreeSet;
 
-import plugins.genome.services.reader.LocationQuery;
-import plugins.genome.services.utils.GenomicCoordinate;
-import plugins.genome.services.utils.GenomicSequence;
+import plugins.genome.util.GenomicCoordinate;
+import plugins.genome.util.GenomicSequence;
 
 public class LocationQueryProcessor implements QueryProcessor{
 		
@@ -51,12 +50,17 @@ public class LocationQueryProcessor implements QueryProcessor{
 			cur.process(subseq.getSequence());
 		}
 		//trim sequence
-		m_Seq = m_Seq.subsequence(this.getFirstActiveStart());
+		GenomicCoordinate firstStart = this.getFirstActiveStart();
+		if(m_Seq.contains(firstStart)){
+			m_Seq = m_Seq.subsequence(firstStart);
+		}else{
+			m_Seq = null;
+		}
 		
 	}
 
 	@Override
-	public boolean allQueriesProcessed() {
+	public boolean done() {
 		return m_Remaining.isEmpty() && m_Active.isEmpty();
 	}
 

@@ -1,6 +1,9 @@
-package plugins.genome.services.reader;
+package plugins.genome.util.reader;
 
-import plugins.genome.services.utils.Genome;
+import plugins.genome.util.Genome;
+import plugins.genome.util.reader.query.LocationBoundedSequenceQuery;
+import plugins.genome.util.reader.query.LocationQuery;
+import plugins.genome.util.reader.query.SequenceQuery;
 import jprobe.services.function.ProgressListener;
 
 public interface GenomeReader {

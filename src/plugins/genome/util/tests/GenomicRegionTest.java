@@ -1,11 +1,11 @@
-package plugins.genome.services.utils.tests;
+package plugins.genome.util.tests;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import plugins.genome.services.utils.Genome;
-import plugins.genome.services.utils.GenomicCoordinate;
-import plugins.genome.services.utils.GenomicRegion;
+import plugins.genome.util.Genome;
+import plugins.genome.util.GenomicCoordinate;
+import plugins.genome.util.GenomicRegion;
 
 public class GenomicRegionTest extends junit.framework.TestCase{
 	

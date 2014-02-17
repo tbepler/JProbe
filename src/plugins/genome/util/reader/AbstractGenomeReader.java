@@ -1,4 +1,4 @@
-package plugins.genome.services.reader;
+package plugins.genome.util.reader;
 
 import java.util.Collection;
 import java.util.HashSet;

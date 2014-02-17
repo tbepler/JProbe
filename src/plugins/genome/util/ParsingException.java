@@ -1,4 +1,4 @@
-package plugins.genome.services.utils;
+package plugins.genome.util;
 
 public class ParsingException extends Exception{
 	public ParsingException() {

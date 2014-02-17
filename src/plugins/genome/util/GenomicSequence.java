@@ -1,4 +1,4 @@
-package plugins.genome.services.utils;
+package plugins.genome.util;
 
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -103,6 +103,28 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 */
 	public boolean contains(GenomicCoordinate coord){
 		return m_Region.contains(coord);
+	}
+	
+	/**
+	 * Tests whether the given GenomicSequence occurs within this GenomicSequence. This requires
+	 * that the given sequence's region is contained by this sequence and that the strings match
+	 * exactly at that location.
+	 * @param sequence - GenomicSequence to test
+	 * @return True if the given GenomicSequence is contained within this sequence as defined above.
+	 * False otherwise.
+	 */
+	public boolean contains(GenomicSequence sequence){
+		if(!this.contains(sequence.getStart()) || !this.contains(this.getEnd())){
+			return false;
+		}
+		GenomicCoordinate cur = sequence.getStart();
+		while(cur.compareTo(sequence.getEnd()) <= 0){
+			if(this.getBaseAt(cur) != sequence.getBaseAt(cur)){
+				return false;
+			}
+			cur = cur.increment(1);
+		}
+		return true;
 	}
 	
 	/**
