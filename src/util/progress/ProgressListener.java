@@ -1,4 +1,4 @@
-package jprobe.services.function;
+package util.progress;
 
 
 public interface ProgressListener {

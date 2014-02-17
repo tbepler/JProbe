@@ -1,4 +1,4 @@
-package jprobe.services.function;
+package util.progress;
 
 
 public class ProgressEvent {
@@ -17,7 +17,7 @@ public class ProgressEvent {
 	private final boolean m_Indeterminant;
 	
 	public ProgressEvent(Object source, Type type){
-		this(source, type, 0);
+		this(source, type, -1);
 	}
 	
 	public ProgressEvent(Object source, Type type, int progress){

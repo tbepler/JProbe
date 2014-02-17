@@ -10,13 +10,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import jprobe.services.ErrorHandler;
-import jprobe.services.function.ProgressEvent;
 import plugins.genome.GenomeActivator;
 import util.genome.Genome;
 import util.genome.reader.AbstractGenomeReader;
 import util.genome.reader.query.LocationBoundedSequenceQuery;
 import util.genome.reader.query.LocationQuery;
 import util.genome.reader.query.SequenceQuery;
+import util.progress.ProgressEvent;
 
 public class ThreadedGenomeReader extends AbstractGenomeReader{
 	

@@ -8,7 +8,7 @@ import util.genome.Genome;
 import util.genome.reader.query.LocationBoundedSequenceQuery;
 import util.genome.reader.query.LocationQuery;
 import util.genome.reader.query.SequenceQuery;
-import jprobe.services.function.ProgressListener;
+import util.progress.ProgressListener;
 
 public interface GenomeReader {
 	

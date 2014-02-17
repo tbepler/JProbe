@@ -1,11 +1,11 @@
 package plugins.testDataAndFunction;
 
+import util.progress.ProgressListener;
 import jprobe.services.data.Data;
 import jprobe.services.data.Field;
 import jprobe.services.data.IntegerField;
 import jprobe.services.data.DoubleField;
 import jprobe.services.function.Function;
-import jprobe.services.function.ProgressListener;
 
 public class FieldParamFunction implements Function{
 

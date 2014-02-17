@@ -1,8 +1,8 @@
 package plugins.testDataAndFunction;
 
+import util.progress.ProgressListener;
 import jprobe.services.data.Data;
 import jprobe.services.function.Function;
-import jprobe.services.function.ProgressListener;
 
 public class DataParamFunction implements Function{
 

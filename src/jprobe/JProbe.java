@@ -46,7 +46,8 @@ public class JProbe implements JProbeCore{
 		//export the core service package
 		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0," +
 				"jprobe.services.data;version=1.0.0," +
-				"jprobe.services.function;version=1.0.0");
+				"jprobe.services.function;version=1.0.0,"+
+				"util.progress;version=1.0.0");
 		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*");
 		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, config.getFelixStorageClean());
 		//create activator and add to config map

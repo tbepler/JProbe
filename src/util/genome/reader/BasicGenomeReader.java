@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import jprobe.services.ErrorHandler;
-import jprobe.services.function.ProgressEvent;
-import jprobe.services.function.ProgressEvent.Type;
 import plugins.genome.GenomeActivator;
 import util.genome.Chromosome;
 import util.genome.Genome;
@@ -20,6 +18,8 @@ import util.genome.reader.query.LocationQuery;
 import util.genome.reader.query.LocationQueryProcessor;
 import util.genome.reader.query.SequenceQuery;
 import util.genome.reader.query.SequenceQueryProcessor;
+import util.progress.ProgressEvent;
+import util.progress.ProgressEvent.Type;
 
 public class BasicGenomeReader extends AbstractGenomeReader{
 	

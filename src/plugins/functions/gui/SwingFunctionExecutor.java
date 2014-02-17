@@ -8,13 +8,13 @@ import javax.swing.SwingWorker;
 import org.osgi.framework.Bundle;
 
 import util.gui.OnPress;
+import util.progress.ProgressEvent;
+import util.progress.ProgressListener;
 import jprobe.services.DataManager;
 import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
 import jprobe.services.function.Function;
-import jprobe.services.function.ProgressEvent;
 import jprobe.services.function.FunctionExecutor;
-import jprobe.services.function.ProgressListener;
 
 public class SwingFunctionExecutor extends FunctionExecutor implements PropertyChangeListener{
 	

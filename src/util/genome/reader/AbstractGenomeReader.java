@@ -8,9 +8,9 @@ import java.util.Scanner;
 
 import plugins.genome.GenomeActivator;
 import util.genome.Genome;
+import util.progress.ProgressEvent;
+import util.progress.ProgressListener;
 import jprobe.services.ErrorHandler;
-import jprobe.services.function.ProgressEvent;
-import jprobe.services.function.ProgressListener;
 
 public abstract class AbstractGenomeReader implements GenomeReader{
 	

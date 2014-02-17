@@ -1,12 +1,12 @@
 package plugins.genome.services;
 
 import util.genome.reader.GenomeReader;
+import util.progress.ProgressListener;
 import jprobe.services.data.Data;
 import jprobe.services.data.Field;
 import jprobe.services.function.DataParameter;
 import jprobe.services.function.FieldParameter;
 import jprobe.services.function.InvalidArgumentsException;
-import jprobe.services.function.ProgressListener;
 
 public interface GenomeFunction {
 	

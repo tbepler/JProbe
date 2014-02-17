@@ -6,11 +6,11 @@ import java.util.HashSet;
 
 import org.osgi.framework.Bundle;
 
+import util.progress.ProgressEvent;
+import util.progress.ProgressListener;
 import jprobe.services.Log;
 import jprobe.services.data.Data;
 import jprobe.services.function.Function;
-import jprobe.services.function.ProgressEvent;
-import jprobe.services.function.ProgressListener;
 
 public class LongFunction implements Function{
 	
