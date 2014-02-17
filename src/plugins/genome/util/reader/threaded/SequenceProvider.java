@@ -1,4 +1,4 @@
-package plugins.genome.util.reader;
+package plugins.genome.util.reader.threaded;
 
 import plugins.genome.util.GenomicRegion;
 

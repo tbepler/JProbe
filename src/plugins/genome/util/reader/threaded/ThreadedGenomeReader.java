@@ -1,8 +1,9 @@
-package plugins.genome.util.reader;
+package plugins.genome.util.reader.threaded;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -12,13 +13,12 @@ import jprobe.services.ErrorHandler;
 import jprobe.services.function.ProgressEvent;
 import plugins.genome.GenomeActivator;
 import plugins.genome.util.Genome;
+import plugins.genome.util.reader.AbstractGenomeReader;
 import plugins.genome.util.reader.query.LocationBoundedSequenceQuery;
 import plugins.genome.util.reader.query.LocationQuery;
 import plugins.genome.util.reader.query.SequenceQuery;
 
 public class ThreadedGenomeReader extends AbstractGenomeReader{
-	
-	private static final Map<String, Genome> GENOME_HASH = new HashMap<String, Genome>();
 	
 	private final int PROCESSORS = Runtime.getRuntime().availableProcessors();
 	
@@ -26,28 +26,8 @@ public class ThreadedGenomeReader extends AbstractGenomeReader{
 	private final Genome m_Genome;
 	
 	public ThreadedGenomeReader(File genomeFile){
-		m_Genome = this.getGenome(genomeFile);
+		m_Genome = this.prereadGenome(genomeFile);
 		m_ThreadPool = Executors.newFixedThreadPool(PROCESSORS > 1 ? PROCESSORS -1 : 1);
-	}
-	
-	protected Genome getGenome(File genomeFile){
-		String key = genomeFile.getAbsolutePath();
-		synchronized(GENOME_HASH){	
-			if(GENOME_HASH.containsKey(key)){
-				return GENOME_HASH.get(key);
-			}
-		}
-		try {
-			this.notifyListeners(new ProgressEvent(this, ProgressEvent.Type.UPDATE, 0, "Prereading genome file: "+genomeFile.getPath(), true));
-			Genome genome = new Genome(genomeFile.getName(), new Scanner(genomeFile));
-			synchronized(GENOME_HASH){
-				GENOME_HASH.put(key, genome);
-			}
-			return genome;
-		} catch (FileNotFoundException e) {
-			ErrorHandler.getInstance().handleException(e, GenomeActivator.getBundle());
-		}
-		return null;
 	}
 	
 	@Override
@@ -56,8 +36,9 @@ public class ThreadedGenomeReader extends AbstractGenomeReader{
 	}
 
 	@Override
-	public void read(LocationQuery[] locationQueries, SequenceQuery[] sequenceQueries, LocationBoundedSequenceQuery[] boundedQueries) {
-		//TODO
+	public void read(List<LocationQuery> locationQueries, List<SequenceQuery> sequenceQueries, List<LocationBoundedSequenceQuery> boundedQueries) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

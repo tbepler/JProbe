@@ -1,5 +1,6 @@
 package plugins.genome.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -116,7 +117,7 @@ public class Genome implements GenomicContext{
 		
 	};
 	
-	private LinkedList<Chromosome> m_Chrs;
+	private List<Chromosome> m_Chrs;
 	private Map<Chromosome, Integer> m_ChrPriority;
 	private Map<Chromosome, Chromosome> m_NextChr;
 	private Map<Chromosome, Chromosome> m_PrevChr;
@@ -124,7 +125,7 @@ public class Genome implements GenomicContext{
 
 	public Genome(String name,  Scanner genome){
 		m_Name = name;
-		m_Chrs = new LinkedList<Chromosome>();
+		m_Chrs = new ArrayList<Chromosome>();
 		m_ChrPriority = new HashMap<Chromosome, Integer>();
 		m_NextChr = new HashMap<Chromosome, Chromosome>();
 		m_PrevChr = new HashMap<Chromosome, Chromosome>();
@@ -221,12 +222,12 @@ public class Genome implements GenomicContext{
 
 	@Override
 	public Chromosome getFirstChr() {
-		return m_Chrs.getFirst();
+		return m_Chrs.get(0);
 	}
 
 	@Override
 	public Chromosome getLastChr() {
-		return m_Chrs.getLast();
+		return m_Chrs.get(m_Chrs.size()-1);
 	}
 
 	@Override
@@ -295,6 +296,21 @@ public class Genome implements GenomicContext{
 	@Override
 	public String toString(){
 		return m_Name;
+	}
+
+	@Override
+	public int getNumChrs() {
+		return m_Chrs.size();
+	}
+
+	@Override
+	public int indexOf(Chromosome chr) {
+		return m_Chrs.indexOf(chr);
+	}
+
+	@Override
+	public Chromosome getChr(int index) {
+		return m_Chrs.get(index);
 	}
 	
 }

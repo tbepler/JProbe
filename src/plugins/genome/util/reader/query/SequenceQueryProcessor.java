@@ -79,8 +79,8 @@ public class SequenceQueryProcessor implements QueryProcessor{
 
 	@Override
 	public boolean done() {
-		//never done till whole genome read
-		return false;
+		//never done till whole genome read unless no queries given
+		return m_Queries.isEmpty();
 	}
 
 }

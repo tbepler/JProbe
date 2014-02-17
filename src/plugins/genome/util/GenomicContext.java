@@ -17,6 +17,9 @@ public interface GenomicContext extends Serializable{
 	public Comparator<GenomicRegion> getEndAscendingComparator();
 	public Comparator<GenomicRegion> getEndDescendingComparator();
 	
+	public int getNumChrs();
+	public int indexOf(Chromosome chr);
+	public Chromosome getChr(int index);
 	public Chromosome getFirstChr();
 	public Chromosome getLastChr();
 	public List<Chromosome> getChrs();
