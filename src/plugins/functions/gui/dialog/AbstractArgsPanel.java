@@ -12,8 +12,8 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import plugins.functions.gui.utils.StateListener;
-import plugins.functions.gui.utils.ValidStateNotifier;
+import util.gui.StateListener;
+import util.gui.ValidStateNotifier;
 
 public abstract class AbstractArgsPanel<T> extends JPanel implements ValidStateNotifier{
 	private static final long serialVersionUID = 1L;

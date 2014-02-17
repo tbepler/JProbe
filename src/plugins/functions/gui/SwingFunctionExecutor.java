@@ -7,7 +7,7 @@ import javax.swing.SwingWorker;
 
 import org.osgi.framework.Bundle;
 
-import plugins.functions.gui.utils.OnPress;
+import util.gui.OnPress;
 import jprobe.services.DataManager;
 import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;

@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 
-import plugins.functions.gui.utils.OnPress;
+import util.gui.OnPress;
 
 public class ProgressWindow implements ActionListener{
 	

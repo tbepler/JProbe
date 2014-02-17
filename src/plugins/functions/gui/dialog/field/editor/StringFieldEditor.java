@@ -16,7 +16,7 @@ import jprobe.services.data.Field;
 import jprobe.services.function.FieldParameter;
 import plugins.functions.gui.Activator;
 import plugins.functions.gui.Constants;
-import plugins.functions.gui.utils.StateListener;
+import util.gui.StateListener;
 
 public class StringFieldEditor extends JTextField implements FieldEditor, DocumentListener{
 	private static final long serialVersionUID = 1L;

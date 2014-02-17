@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Genome.makejar" default="makejar" basedir=".">
 	<target name="makejar" description="Package the Genome plugin jar">
-		<jar manifest="src/plugins/genome/MANIFEST.MF" jarfile="plugins/Genome.jar" includes="plugins/genome/**" basedir="bin"/>
+		<jar manifest="src/plugins/genome/MANIFEST.MF" jarfile="plugins/Genome.jar" includes="plugins/genome/**,util/gui/**,util/genome/**,plugins/function/gui/dialog/**" basedir="bin"/>
 	</target>
 </project>

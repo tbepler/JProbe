@@ -15,10 +15,10 @@ import javax.swing.JPanel;
 import org.osgi.framework.Bundle;
 
 import plugins.functions.gui.SwingFunctionExecutor;
-import plugins.functions.gui.utils.DoNothingOnPress;
-import plugins.functions.gui.utils.OnPress;
-import plugins.functions.gui.utils.StateListener;
-import plugins.functions.gui.utils.StateNotifier;
+import util.gui.DoNothingOnPress;
+import util.gui.OnPress;
+import util.gui.StateListener;
+import util.gui.StateNotifier;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;

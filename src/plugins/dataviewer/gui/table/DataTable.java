@@ -2,8 +2,7 @@ package plugins.dataviewer.gui.table;
 
 import javax.swing.JTable;
 
-import utils.TableFormatter;
-
+import util.TableFormatter;
 import jprobe.services.data.Data;
 import jprobe.services.data.Field;
 

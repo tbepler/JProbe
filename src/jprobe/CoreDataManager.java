@@ -22,8 +22,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import utils.ClassLoaderObjectInputStream;
-import utils.OSGIUtils;
+import util.ClassLoaderObjectInputStream;
+import util.OSGIUtils;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.data.Data;

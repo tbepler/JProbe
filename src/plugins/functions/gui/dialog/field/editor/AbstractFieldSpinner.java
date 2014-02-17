@@ -11,9 +11,9 @@ import jprobe.services.data.Field;
 import jprobe.services.data.IntegerField;
 import jprobe.services.function.FieldParameter;
 import plugins.functions.gui.dialog.field.editor.model.FieldSpinnerModel;
-import plugins.functions.gui.utils.StateListener;
-import plugins.functions.gui.utils.StateNotifier;
-import plugins.functions.gui.utils.ValidStateNotifier;
+import util.gui.StateListener;
+import util.gui.StateNotifier;
+import util.gui.ValidStateNotifier;
 
 public abstract class AbstractFieldSpinner extends JSpinner implements FieldEditor, StateListener{
 	private static final long serialVersionUID = 1L;

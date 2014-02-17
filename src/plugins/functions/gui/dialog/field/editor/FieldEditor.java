@@ -2,8 +2,8 @@ package plugins.functions.gui.dialog.field.editor;
 
 import java.awt.Component;
 
+import util.gui.ValidStateNotifier;
 import jprobe.services.data.Field;
-import plugins.functions.gui.utils.ValidStateNotifier;
 
 public interface FieldEditor extends ValidStateNotifier{
 	

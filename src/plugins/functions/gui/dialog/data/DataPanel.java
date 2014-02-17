@@ -10,10 +10,10 @@ import java.util.Map;
 import javax.swing.JLabel;
 
 import plugins.functions.gui.dialog.AbstractArgsPanel;
-import plugins.functions.gui.utils.StateListener;
-import plugins.functions.gui.utils.StateNotifier;
-import plugins.functions.gui.utils.ValidLabel;
 import plugins.functions.gui.Constants;
+import util.gui.StateListener;
+import util.gui.StateNotifier;
+import util.gui.ValidLabel;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.function.DataParameter;

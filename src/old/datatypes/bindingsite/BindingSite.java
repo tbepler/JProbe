@@ -1,7 +1,7 @@
 package old.datatypes.bindingsite;
 
 import old.datatypes.sequence.Sequence;
-import utils.MathUtils;
+import util.MathUtils;
 
 /**
  * This class is used to represent binding sites associated with particular sequences and provides various methods
@@ -21,7 +21,7 @@ public class BindingSite {
 	 * with start being less than end. Specifically they should adhere to (0<=start<=end{@literal <}seq.length()). If the
 	 * start index is greater than the end index, then start and end values are flipped during construction. If either
 	 * the start or end fall outside of the range of the sequence, they are clamped to that range
-	 * (see {@link utils.MathUtils#clamp}).
+	 * (see {@link util.MathUtils#clamp}).
 	 * @param seq the reference sequence for this binding site
 	 * @param start the starting index, inclusive
 	 * @param end the ending index, inclusive

@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import plugins.functions.gui.Constants;
-import plugins.functions.gui.utils.StateListener;
-import plugins.functions.gui.utils.ValidStateNotifier;
+import util.gui.StateListener;
+import util.gui.ValidStateNotifier;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;

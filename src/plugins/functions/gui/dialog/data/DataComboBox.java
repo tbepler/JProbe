@@ -12,8 +12,8 @@ import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 
 import plugins.functions.gui.Constants;
-import plugins.functions.gui.utils.StateListener;
-import plugins.functions.gui.utils.ValidStateNotifier;
+import util.gui.StateListener;
+import util.gui.ValidStateNotifier;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;

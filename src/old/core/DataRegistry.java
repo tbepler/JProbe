@@ -10,8 +10,8 @@ import old.readwrite.DataWriter;
 
 import org.xml.sax.SAXException;
 
-import utils.ExtensionUtils;
-import utils.XMLParser;
+import util.ExtensionUtils;
+import util.XMLParser;
 
 public class DataRegistry {
 	
