@@ -102,7 +102,7 @@ public class GenomeActivator implements BundleActivator{
 	
 	private void register(JProbeGUI gui){
 		m_Gui = gui;
-		m_Menu = new GenomeMenu(m_Service);
+		m_Menu = new GenomeMenu(m_Gui.getGUIFrame(), m_Core, m_Service);
 		m_Gui.addDropdownMenu(m_Menu, getBundle());
 		//add components and whatnot
 	}
