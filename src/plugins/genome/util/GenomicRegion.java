@@ -58,6 +58,10 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		m_Hash = this.computeHash();
 	}
 	
+	public GenomicRegion(GenomicCoordinate start, GenomicCoordinate end){
+		this(start.getGenomicContext(), start, end);
+	}
+	
 	private int computeHash(){
 		return new HashCodeBuilder(367, 821).append(m_Start).append(m_End).append(m_Context).toHashCode();
 	}
@@ -80,6 +84,14 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	
 	GenomicContext getGenomicContext(){
 		return m_Context;
+	}
+	
+	public GenomicRegion increment(int numBases){
+		return new GenomicRegion(m_Start.increment(numBases), m_End.increment(numBases));
+	}
+	
+	public GenomicRegion decrement(int numBases){
+		return new GenomicRegion(m_Start.decrement(numBases), m_End.decrement(numBases));
 	}
 	
 	public boolean contains(GenomicCoordinate coordinate){
