@@ -16,6 +16,14 @@ public abstract class AbstractGenomeReader implements GenomeReader{
 	
 	private Collection<ProgressListener> m_Listeners = new HashSet<ProgressListener>();
 	
+	protected AbstractGenomeReader(){
+		//do nothing
+	}
+	
+	protected AbstractGenomeReader(Collection<ProgressListener> listeners){
+		m_Listeners.addAll(listeners);
+	}
+	
 	protected Genome prereadGenome(File genomeFile){
 		String key = genomeFile.getAbsolutePath();
 		synchronized(GENOME_HASH){	

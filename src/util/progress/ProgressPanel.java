@@ -58,6 +58,7 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 				this.setMax(e.getMaxProgress());
 			}
 			this.setIndeterminant(e.isIndeterminant());
+			this.setProgressTextPainted(!this.isIndeterminant());
 			if(e.getMessage() != null){
 				this.setLabelText(e.getMessage());
 			}

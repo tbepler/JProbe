@@ -2,6 +2,7 @@ package util.genome.reader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,6 +21,7 @@ import util.genome.reader.query.SequenceQuery;
 import util.genome.reader.query.SequenceQueryProcessor;
 import util.progress.ProgressEvent;
 import util.progress.ProgressEvent.Type;
+import util.progress.ProgressListener;
 
 public class BasicGenomeReader extends AbstractGenomeReader{
 	
@@ -29,6 +31,12 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 	private final Genome m_Genome;
 	
 	public BasicGenomeReader(File genomeFile){
+		m_GenomeFile = genomeFile;
+		m_Genome = this.prereadGenome(genomeFile);
+	}
+	
+	public BasicGenomeReader(File genomeFile, Collection<ProgressListener> listeners){
+		super(listeners);
 		m_GenomeFile = genomeFile;
 		m_Genome = this.prereadGenome(genomeFile);
 	}

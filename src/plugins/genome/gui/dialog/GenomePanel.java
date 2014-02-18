@@ -16,6 +16,7 @@ import jprobe.services.data.Data;
 import jprobe.services.data.Field;
 import plugins.functions.gui.dialog.ParameterPanel;
 import plugins.genome.Constants;
+import plugins.genome.gui.GenomeExecutor;
 import plugins.genome.services.GenomeFunction;
 import util.gui.DoNothingOnPress;
 import util.gui.OnPress;
@@ -112,7 +113,8 @@ public class GenomePanel extends JPanel implements ActionListener, StateListener
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == m_Run){
 			//do run stuff
-			
+			GenomeExecutor ex = new GenomeExecutor(m_Core, m_Function, this.getGenomeFile(), this.getDataArgs(), this.getFieldArgs());
+			ex.executeFunction();
 			//finally
 			m_RunAction.act();
 		}

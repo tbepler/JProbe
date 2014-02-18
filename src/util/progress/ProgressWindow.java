@@ -13,6 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class ProgressWindow extends JFrame implements ProgressListener, ActionListener{
@@ -125,15 +126,22 @@ public class ProgressWindow extends JFrame implements ProgressListener, ActionLi
 	private boolean m_ShouldDisplay = true;
 	
 	@Override
-	public void update(ProgressEvent event) {
-		if(event.getType() == ProgressEvent.Type.UPDATE){
-			if(m_Timer == null){
-				m_Timer = new Timer(m_MiliSecsBeforeVisible, this);
-				m_Timer.setRepeats(false);
-				m_Timer.start();
+	public void update(final ProgressEvent event) {
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				if(event.getType() == ProgressEvent.Type.UPDATE){
+					if(m_Timer == null){
+						m_Timer = new Timer(m_MiliSecsBeforeVisible, ProgressWindow.this);
+						m_Timer.setRepeats(false);
+						m_Timer.start();
+					}
+				}
+				m_Panel.update(event);
 			}
-		}
-		m_Panel.update(event);
+			
+		});
 	}
 
 	@Override
