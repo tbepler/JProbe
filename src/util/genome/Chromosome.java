@@ -7,6 +7,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class Chromosome implements Comparable<Chromosome>, Serializable{
 	private static final long serialVersionUID = 1L;
 	
+	public static final String CHR_TAG = "chr";
+	public static final String FASTA_CHR_TAG = ">"+CHR_TAG;
+	
 	private final String m_Id;
 	private final long m_Size;
 	private final GenomicContext m_Context;
@@ -14,7 +17,13 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 	
 	Chromosome(GenomicContext context, String id, long size){
 		m_Context = context;
-		m_Id = id.trim().toLowerCase();
+		if(id.startsWith(CHR_TAG)){
+			m_Id = id.substring(CHR_TAG.length()).trim().toLowerCase();
+		}else if(id.startsWith(FASTA_CHR_TAG)){
+			m_Id = id.substring(FASTA_CHR_TAG.length()).trim().toLowerCase();
+		}else{
+			m_Id = id.trim().toLowerCase();
+		}
 		m_Size = size;
 		m_HashCode = new HashCodeBuilder(947, 569).append(m_Id).append(m_Size).append(m_Context).toHashCode();
 	}
