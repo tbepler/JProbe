@@ -11,7 +11,7 @@ import plugins.functions.gui.dialog.AbstractArgsPanel.Alignment;
 public class Constants {
 
 	//public static final String RESOURCES_PATH = File.separator+"plugins"+File.separator+"functions"+File.separator+"gui"+File.separator+"resources";
-	public static final String RESOURCES_PATH = "resources";
+	public static final String RESOURCES_PATH = "/resources";
 	public static final String CHECK_ICON_PATH = RESOURCES_PATH +"/check.jpg";
 	public static final String X_ICON_PATH = RESOURCES_PATH + "/x.jpg";
 	

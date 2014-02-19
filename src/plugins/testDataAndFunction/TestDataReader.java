@@ -2,6 +2,7 @@ package plugins.testDataAndFunction;
 
 import java.util.Scanner;
 
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import jprobe.services.data.Data;
@@ -17,7 +18,7 @@ public class TestDataReader implements DataReader{
 	}
 
 	@Override
-	public Data read(FileNameExtensionFilter format, Scanner s) throws Exception {
+	public Data read(FileFilter format, Scanner s) throws Exception {
 		boolean validFormat = false;
 		for(FileNameExtensionFilter f : READ_FORMATS){
 			if(format == f){

@@ -13,8 +13,8 @@ public class Parser {
 	
 	public static final String WHITESPACE_REGEX = "\\s";
 	public static final String[][] FORMATS = new String[][]{
-		{"BED format", "bed"},
-		{"ENCODE peak", "*"}
+		{"BED format (.bed)", "bed"},
+		{"ENCODE peak (.*)", "*"}
 	};
 
 	public static Peak parsePeak(String s) throws ParsingException{
@@ -76,18 +76,14 @@ public class Parser {
 		}
 	}
 	
-	public static final String PEAK_LINE_REGEX = "^(chr)\\d+.*$";
-	
 	public static PeakGroup parsePeakGroup(Scanner s){
 		List<Peak> peaks = new ArrayList<Peak>();
 		while(s.hasNextLine()){
 			String line = s.nextLine();
-			if(line.matches(PEAK_LINE_REGEX)){
-				try {
-					peaks.add(parsePeak(line));
-				} catch (ParsingException e) {
-					//ignore and continue
-				}
+			try {
+				peaks.add(parsePeak(line));
+			} catch (ParsingException e) {
+				System.err.println(e.getMessage());
 			}
 		}
 		return new PeakGroup(peaks);

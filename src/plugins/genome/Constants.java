@@ -2,6 +2,7 @@ package plugins.genome;
 
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -20,7 +21,7 @@ public class Constants {
 	public static final String GENOME_FILE_PANEL_TITLE = "Genome File";
 	public static final Border GENOME_FILE_PANEL_BORDER = BorderFactory.createTitledBorder(GENOME_FILE_PANEL_TITLE);
 	
-	public static final String RESOURCES_PATH = "resources";
+	public static final String RESOURCES_PATH = "/resources";
 	public static final String CHECK_PATH = RESOURCES_PATH + "/check.jpg";
 	public static final String X_PATH = RESOURCES_PATH + "/x.jpg";
 	

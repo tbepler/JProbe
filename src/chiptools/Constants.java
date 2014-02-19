@@ -2,6 +2,9 @@ package chiptools;
 
 public class Constants {
 	
+	public static final int NUM_PEAK_FIELDS = 10;
+	public static final String PEAKS_TOOLTIP = "A peak group data structure";
+	
 	public static final String POSITIVE_INT_REGEX  = "[0-9]+";
 	
 	public static final String STRING_FIELD_TOOLTIP = "A field containing any String";

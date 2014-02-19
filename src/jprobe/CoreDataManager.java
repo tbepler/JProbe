@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.osgi.framework.Bundle;
@@ -274,10 +274,10 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 
 	@Override
-	public FileNameExtensionFilter[] getValidReadFormats(Class<? extends Data> type) {
+	public FileFilter[] getValidReadFormats(Class<? extends Data> type) {
 		DataReader reader = m_TypeToReader.get(type);
 		if(reader == null){
-			return new FileNameExtensionFilter[]{};
+			return new FileFilter[]{};
 		}
 		return reader.getValidReadFormats();
 	}
@@ -292,7 +292,7 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 
 	@Override
-	public Data readData(File file, Class<? extends Data> type, FileNameExtensionFilter format, Bundle responsible) throws Exception {
+	public Data readData(File file, Class<? extends Data> type, FileFilter format, Bundle responsible) throws Exception {
 		if(!this.isReadable(type)){
 			throw new Exception(type+" not readable");
 		}

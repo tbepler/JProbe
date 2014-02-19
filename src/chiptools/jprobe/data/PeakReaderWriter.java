@@ -1,6 +1,10 @@
 package chiptools.jprobe.data;
 
 import java.io.BufferedWriter;
+import java.io.File;
+
+import javax.swing.filechooser.FileFilter;
+
 import java.util.Scanner;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -15,13 +19,30 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 	private static final FileNameExtensionFilter[] WRITE_FILTERS = new FileNameExtensionFilter[]{
 		new FileNameExtensionFilter("ENCODE peak format", "encodePeak", "*")
 	};
-	private static final FileNameExtensionFilter[] READ_FILTERS = generateReadFilters();
+	private static final FileFilter[] READ_FILTERS = generateReadFilters();
 	
-	private static FileNameExtensionFilter[] generateReadFilters(){
-		FileNameExtensionFilter[] filters = new FileNameExtensionFilter[PeakGroup.FORMATS.length];
+	private static FileFilter[] generateReadFilters(){
+		FileFilter[] filters = new FileFilter[PeakGroup.FORMATS.length];
 		for(int i=0; i<filters.length; i++){
-			String[] format = PeakGroup.FORMATS[i];
-			filters[i] = new FileNameExtensionFilter(format[0], format[1]);
+			final String[] format = PeakGroup.FORMATS[i];
+			if(format[1].equals("*")){
+				filters[i] = new FileFilter(){
+
+					@Override
+					public boolean accept(File arg0) {
+						return true;
+					}
+
+					@Override
+					public String getDescription() {
+						return format[0];
+					}
+
+					
+				};
+			}else{
+				filters[i] = new FileNameExtensionFilter(format[0], format[1]);
+			}
 		}
 		return filters;
 	}
@@ -33,19 +54,19 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 
 	@Override
 	public void write(Data data, FileNameExtensionFilter format, BufferedWriter out) throws Exception {
-		// TODO Auto-generated method stub
-		
+		Peaks p = (Peaks) data;
+		out.write(p.toString());
 	}
 
 	@Override
-	public FileNameExtensionFilter[] getValidReadFormats() {
+	public FileFilter[] getValidReadFormats() {
 		return READ_FILTERS;
 	}
 
 	@Override
-	public Data read(FileNameExtensionFilter format, Scanner s) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Data read(FileFilter format, Scanner s) throws Exception {
+		PeakGroup peaks = PeakGroup.parsePeakGroup(s);
+		return new Peaks(peaks);
 	}
 
 }
