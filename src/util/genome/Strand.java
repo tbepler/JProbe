@@ -18,7 +18,7 @@ public enum Strand {
 		}
 	}
 	
-	public static Strand parseString(String s){
+	public static Strand parseStrand(String s){
 		if(s.equals(PLUS.toString())) return PLUS;
 		if(s.equals(MINUS.toString())) return MINUS;
 		return UNKNOWN;

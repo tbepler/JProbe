@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import util.genome.ParsingException;
 import util.genome.Strand;
 
 public class Peak implements Serializable{
@@ -26,6 +27,10 @@ public class Peak implements Serializable{
 	
 	public static final String POINT_SOURCE = "pointsource";
 	public static final int DEFAULT_POINT_SOURCE = -1;
+	
+	public static Peak parsePeak(String s) throws ParsingException{
+		return Parser.parsePeak(s);
+	}
 	
 	private String m_Chrom;
 	private long m_ChromStart;
