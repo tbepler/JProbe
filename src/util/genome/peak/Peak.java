@@ -6,11 +6,16 @@ import java.util.Map;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import util.genome.Chromosome;
+import util.genome.GenomicCoordinate;
+import util.genome.GenomicRegion;
 import util.genome.ParsingException;
 import util.genome.Strand;
 
 public class Peak implements Serializable{
 	private static final long serialVersionUID = 1L;
+	
+	public static final String[][] FORMATS = Parser.FORMATS;
 	
 	public static final String NAME = "name";
 	public static final String DEFAULT_NAME = ".";
@@ -34,9 +39,7 @@ public class Peak implements Serializable{
 		return Parser.parsePeak(s);
 	}
 	
-	private String m_Chrom;
-	private long m_ChromStart;
-	private long m_ChromEnd;
+	private GenomicRegion m_Region;
 	private String m_Name;
 	private int m_Score;
 	private Strand m_Strand;
@@ -50,9 +53,8 @@ public class Peak implements Serializable{
 	}
 	
 	public Peak(String chrom, long chromStart, long chromEnd, double signalVal, Map<String, Object> optionalParams){
-		m_Chrom = chrom;
-		m_ChromStart = chromStart;
-		m_ChromEnd = chromEnd;
+		Chromosome chr = new Chromosome(chrom);
+		m_Region = new GenomicRegion(new GenomicCoordinate(chr, chromStart), new GenomicCoordinate(chr, chromEnd));
 		m_SignalVal = signalVal;
 		m_Name = optionalParams.containsKey(NAME) && optionalParams.get(NAME) instanceof String ? (String)optionalParams.get(NAME) : DEFAULT_NAME;
 		m_Score = optionalParams.containsKey(SCORE) && optionalParams.get(SCORE) instanceof Integer ? (Integer)optionalParams.get(SCORE) : DEFAULT_SCORE;
@@ -66,9 +68,8 @@ public class Peak implements Serializable{
 	public Peak(String chrom, long chromStart, long chromEnd,
 			String name, int score, Strand strand, double signalVal,
 			double pVal, double qVal, int pointSource) {
-		this.m_Chrom = chrom;
-		this.m_ChromStart = chromStart;
-		this.m_ChromEnd = chromEnd;
+		Chromosome chr = new Chromosome(chrom);
+		m_Region = new GenomicRegion(new GenomicCoordinate(chr, chromStart), new GenomicCoordinate(chr, chromEnd));
 		this.m_Name = name;
 		this.m_Score = score;
 		this.m_Strand = strand;
@@ -80,13 +81,13 @@ public class Peak implements Serializable{
 	
 	@Override
 	public String toString(){
-		return m_Chrom + "\t" +m_ChromStart + "\t" + m_ChromEnd + "\t" +m_Name + "\t" +m_Score + "\t" +m_Strand + "\t" +m_SignalVal
+		return this.getChrom() + "\t" + this.getChromStart() + "\t" + this.getChromEnd() + "\t" +m_Name + "\t" +m_Score + "\t" +m_Strand + "\t" +m_SignalVal
 				+ "\t" + m_PVal + "\t" + m_QVal + "\t" + m_PointSource;
 	}
 	
 	@Override
 	public int hashCode(){
-		return new HashCodeBuilder(283, 977).append(m_Chrom).append(m_ChromStart).append(m_ChromEnd).append(m_Name).append(m_Score).append(m_Strand)
+		return new HashCodeBuilder(283, 977).append(m_Region).append(m_Name).append(m_Score).append(m_Strand)
 				.append(m_SignalVal).append(m_PVal).append(m_QVal).append(m_PointSource).toHashCode();
 	}
 	
@@ -96,7 +97,7 @@ public class Peak implements Serializable{
 		if(o == this) return true;
 		if(o instanceof Peak){
 			Peak other = (Peak) o;
-			return m_Chrom.equals(other.m_Chrom) && m_ChromStart == other.m_ChromStart && m_ChromEnd == other.m_ChromEnd
+			return m_Region.equals(other.m_Region)
 					&& m_Name.equals(other.m_Name) && m_Score == other.m_Score && m_Strand == other.m_Strand
 					&& m_SignalVal == other.m_SignalVal && m_PVal == other.m_PVal && m_QVal == other.m_QVal
 					&& m_PointSource == other.m_PointSource;
@@ -104,15 +105,30 @@ public class Peak implements Serializable{
 		return false;
 	}
 	
-	public String getChrom() {
-		return m_Chrom;
+	public GenomicRegion getRegion(){
+		return m_Region;
 	}
+	
+	public GenomicCoordinate getStart(){
+		return m_Region.getStart();
+	}
+	
+	public GenomicCoordinate getEnd(){
+		return m_Region.getEnd();
+	}
+	
+	public Chromosome getChrom() {
+		return m_Region.getStart().getChromosome();
+	}
+	
 	public long getChromStart() {
-		return m_ChromStart;
+		return this.getStart().getBaseIndex();
 	}
+	
 	public long getChromEnd() {
-		return m_ChromEnd;
+		return this.getEnd().getBaseIndex();
 	}
+	
 	public String getName() {
 		return m_Name;
 	}

@@ -12,6 +12,10 @@ import util.genome.Strand;
 public class Parser {
 	
 	public static final String WHITESPACE_REGEX = "\\s";
+	public static final String[][] FORMATS = new String[][]{
+		{"BED format", "bed"},
+		{"ENCODE peak", "*"}
+	};
 
 	public static Peak parsePeak(String s) throws ParsingException{
 		try{

@@ -11,6 +11,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class PeakGroup implements Serializable, Iterable<Peak>{
 	private static final long serialVersionUID = 1L;
 	
+	public static final String[][] FORMATS = Parser.FORMATS;
+	
 	public static PeakGroup parsePeakGroup(Scanner s){
 		return Parser.parsePeakGroup(s);
 	}
