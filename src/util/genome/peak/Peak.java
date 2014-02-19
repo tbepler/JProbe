@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import util.genome.ParsingException;
 import util.genome.Strand;
 
@@ -75,6 +77,33 @@ public class Peak implements Serializable{
 		this.m_QVal = qVal;
 		this.m_PointSource = pointSource;
 	}
+	
+	@Override
+	public String toString(){
+		return m_Chrom + "\t" +m_ChromStart + "\t" + m_ChromEnd + "\t" +m_Name + "\t" +m_Score + "\t" +m_Strand + "\t" +m_SignalVal
+				+ "\t" + m_PVal + "\t" + m_QVal + "\t" + m_PointSource;
+	}
+	
+	@Override
+	public int hashCode(){
+		return new HashCodeBuilder(283, 977).append(m_Chrom).append(m_ChromStart).append(m_ChromEnd).append(m_Name).append(m_Score).append(m_Strand)
+				.append(m_SignalVal).append(m_PVal).append(m_QVal).append(m_PointSource).toHashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o == null) return false;
+		if(o == this) return true;
+		if(o instanceof Peak){
+			Peak other = (Peak) o;
+			return m_Chrom.equals(other.m_Chrom) && m_ChromStart == other.m_ChromStart && m_ChromEnd == other.m_ChromEnd
+					&& m_Name.equals(other.m_Name) && m_Score == other.m_Score && m_Strand == other.m_Strand
+					&& m_SignalVal == other.m_SignalVal && m_PVal == other.m_PVal && m_QVal == other.m_QVal
+					&& m_PointSource == other.m_PointSource;
+		}
+		return false;
+	}
+	
 	public String getChrom() {
 		return m_Chrom;
 	}

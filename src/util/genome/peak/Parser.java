@@ -1,7 +1,10 @@
 package util.genome.peak;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import util.genome.ParsingException;
 import util.genome.Strand;
@@ -69,6 +72,22 @@ public class Parser {
 		}
 	}
 	
+	public static final String PEAK_LINE_REGEX = "^(chr)\\d+.*$";
+	
+	public static PeakGroup parsePeakGroup(Scanner s){
+		List<Peak> peaks = new ArrayList<Peak>();
+		while(s.hasNextLine()){
+			String line = s.nextLine();
+			if(line.matches(PEAK_LINE_REGEX)){
+				try {
+					peaks.add(parsePeak(line));
+				} catch (ParsingException e) {
+					//ignore and continue
+				}
+			}
+		}
+		return new PeakGroup(peaks);
+	}
 	
 	
 	
