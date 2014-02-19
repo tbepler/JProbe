@@ -8,15 +8,15 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	private static final String PREFIX = "Chr";
 	private static final char SEP = ':';
 	
-	static GenomicCoordinate parseString(GenomicContext context, String s) throws ParsingException{
+	public static GenomicCoordinate parseString(String s) throws ParsingException{
+		return parseString(null, s);
+	}
+	
+	public static GenomicCoordinate parseString(GenomicContext context, String s) throws ParsingException{
 		try{
 			String chr = s.substring(0, s.indexOf(SEP));
-			if(chr.startsWith(PREFIX)){
-				chr = chr.substring(PREFIX.length());
-			}
 			Chromosome c = context.getChr(chr);
 			long baseIndex = Long.parseLong(s.substring(s.indexOf(SEP)+1));
 			return new GenomicCoordinate(context, c, baseIndex);
@@ -30,11 +30,19 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 	private final GenomicContext m_Context;
 	private final int m_Hash;
 	
-	GenomicCoordinate(GenomicContext context, Chromosome chr, long baseIndex){
-		if(chr.getGenomicContext() != context){
+	public GenomicCoordinate(Chromosome chr, int baseIndex){
+		this(null, chr, baseIndex);
+	}
+	
+	public GenomicCoordinate(Chromosome chr, long baseIndex){
+		this(chr.getGenomicContext(), chr, baseIndex);
+	}
+	
+	public GenomicCoordinate(GenomicContext context, Chromosome chr, long baseIndex){
+		if(context != null && !context.hasChr(chr)){
 			throw new RuntimeException("Error: chromosome "+chr+" not found in genome "+context);
 		}
-		if(baseIndex > chr.getSize()){
+		if(chr.getSize() >= 0 && baseIndex > chr.getSize()){
 			throw new RuntimeException("Error: index "+baseIndex+" is out of bounds on chromosome "+chr+"\n"+chr+" is only "+chr.getSize()+" bases long");
 		}
 		m_Chr = chr;
@@ -43,7 +51,7 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 		m_Hash = this.computeHash();
 	}
 	
-	GenomicCoordinate(GenomicContext context, Chromosome chr, int baseIndex){
+	public GenomicCoordinate(GenomicContext context, Chromosome chr, int baseIndex){
 		this(context, chr, (long) baseIndex); 
 	}
 	
@@ -51,11 +59,18 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 		return new HashCodeBuilder(11, 461).append(m_Chr).append(m_BaseIndex).append(m_Context).toHashCode();
 	}
 	
-	GenomicContext getGenomicContext(){
+	public GenomicContext getGenomicContext(){
 		return m_Context;
 	}
 	
+	public boolean hasReferenceGenome(){
+		return m_Context != null;
+	}
+	
 	public long distance(GenomicCoordinate other){
+		if(m_Context == null && !m_Chr.equals(other.m_Chr)){
+			throw new RuntimeException("Error: cannot find the distance between coordinates on different chromosomes without a reference genome");
+		}
 		if(m_Context != other.getGenomicContext()){
 			throw new RuntimeException("Error: cannot find the distance between coordinates from different genomes. "+m_Context+" and "+other.getGenomicContext());
 		}
@@ -79,6 +94,15 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 	public GenomicCoordinate increment(int numBases){
 		if(numBases == 0) return this;
 		long newIndex = m_BaseIndex + numBases;
+		if(newIndex < 1 && m_Context == null){
+			throw new RuntimeException("Error: cannot decrement to a base index less than one without a reference genome");
+		}
+		if(m_Chr.getSize() < 0 && newIndex >= 1){
+			return new GenomicCoordinate(m_Context, m_Chr, newIndex);
+		}
+		if(m_Chr.getSize() >= 0 && newIndex > m_Chr.getSize() && m_Context == null){
+			throw new RuntimeException("Error: cannot increment to a base index larger than chromosome size without a reference genome");
+		}
 		if(newIndex > m_Chr.getSize()){
 			Chromosome chr = m_Chr;
 			while(newIndex > chr.getSize()){
@@ -112,7 +136,7 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 	
 	@Override
 	public String toString(){
-		return PREFIX+m_Chr+SEP+m_BaseIndex;
+		return m_Chr.toString()+SEP+m_BaseIndex;
 	}
 	
 	@Override
@@ -130,9 +154,25 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 	public int hashCode(){
 		return m_Hash;
 	}
+	
+	protected int naturalCompareTo(GenomicCoordinate o){
+		int chrComp = m_Chr.compareTo(o.m_Chr);
+		if(chrComp != 0) return chrComp;
+		if(m_BaseIndex > o.m_BaseIndex){
+			return 1;
+		}
+		if(m_BaseIndex < o.m_BaseIndex){
+			return -1;
+		}
+		return 0;
+	}
 
 	@Override
 	public int compareTo(GenomicCoordinate o) {
+		if(o == null) return -1;
+		if(m_Context == null){
+			return this.naturalCompareTo(o);
+		}
 		Comparator<GenomicCoordinate> comparator = m_Context.getLocationAscendingComparator();
 		return comparator.compare(this, o);
 	}

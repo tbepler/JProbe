@@ -1,6 +1,7 @@
 package util.genome;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -15,28 +16,46 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 	private final GenomicContext m_Context;
 	private final int m_HashCode;
 	
-	Chromosome(GenomicContext context, String id, long size){
+	public Chromosome(String id){
+		this(id, -1);
+	}
+	
+	public Chromosome(String id, long size){
+		this(null, id, size);
+	}
+	
+	public Chromosome(GenomicContext context, String id, long size){
 		m_Context = context;
 		if(id.startsWith(CHR_TAG)){
-			m_Id = id.substring(CHR_TAG.length()).trim().toLowerCase();
+			m_Id = id.substring(CHR_TAG.length()).trim();
 		}else if(id.startsWith(FASTA_CHR_TAG)){
-			m_Id = id.substring(FASTA_CHR_TAG.length()).trim().toLowerCase();
+			m_Id = id.substring(FASTA_CHR_TAG.length()).trim();
 		}else{
-			m_Id = id.trim().toLowerCase();
+			m_Id = id.trim();
 		}
 		m_Size = size;
 		m_HashCode = new HashCodeBuilder(947, 569).append(m_Id).append(m_Size).append(m_Context).toHashCode();
 	}
 	
-	GenomicContext getGenomicContext(){
+	public GenomicContext getGenomicContext(){
 		return m_Context;
 	}
 	
+	public boolean hasReferenceGenome(){
+		return m_Context != null;
+	}
+	
 	public Chromosome nextChr(){
+		if(m_Context == null){
+			return null;
+		}
 		return m_Context.nextChr(this);
 	}
 	
 	public Chromosome prevChr(){
+		if(m_Context == null){
+			return null;
+		}
 		return m_Context.prevChr(this);
 	}
 	
@@ -50,7 +69,7 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 	
 	@Override
 	public String toString(){
-		return m_Id;
+		return CHR_TAG + m_Id;
 	}
 	
 	@Override
@@ -68,10 +87,34 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 		}
 		return false;
 	}
+	
+	protected int naturalCompareTo(Chromosome o){
+		try{
+			int chr = Integer.parseInt(m_Id);
+			try{
+				int oChr = Integer.parseInt(o.m_Id);
+				return chr - oChr;
+			} catch (Exception e){
+				return -1;
+			}
+		} catch (Exception e){
+			try{
+				Integer.parseInt(o.m_Id);
+				return 1;
+			} catch (Exception e1){
+				return m_Id.compareTo(o.m_Id);
+			}
+		}
+	}
 
 	@Override
 	public int compareTo(Chromosome o) {
-		return m_Id.compareTo(o.m_Id);
+		if(o == null) return -1;
+		if(m_Context == null){
+			return this.naturalCompareTo(o);
+		}
+		Comparator<Chromosome> comparator = m_Context.getChrAscendingComparator();
+		return comparator.compare(this, o);
 	}
 	
 }

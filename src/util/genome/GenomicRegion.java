@@ -14,7 +14,11 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	
 	private static final String SAME_CHR_REGEX = "^"+CHR_PREFIX+".+"+CHR_SEP+"\\d+"+LOC_SEP+"\\d+$";
 	
-	static GenomicRegion parseString(GenomicContext context, String s) throws ParsingException{
+	public static GenomicRegion parseString(String s) throws ParsingException{
+		return parseString(null, s);
+	}
+	
+	public static GenomicRegion parseString(GenomicContext context, String s) throws ParsingException{
 		s = s.trim();
 		try{
 			if(s.matches(SAME_CHR_REGEX)){
@@ -37,7 +41,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	private final long m_Size;
 	private final int m_Hash;
 	
-	GenomicRegion(GenomicContext context, GenomicCoordinate start, GenomicCoordinate end){
+	public GenomicRegion(GenomicContext context, GenomicCoordinate start, GenomicCoordinate end){
 		if(context != start.getGenomicContext()){
 			throw new RuntimeException("Error: genomic coordinate "+start+" does not occur within the genome "+context);
 		}
@@ -45,6 +49,9 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 			throw new RuntimeException("Error: genomic coordinate "+end+" does not occur within the genome "+context);
 		}
 		m_Context = context;
+		if(m_Context == null && !start.getChromosome().equals(end.getChromosome())){
+			throw new RuntimeException("Error: cannot create multiple chromosome regions without a reference genome");
+		}
 		if(start.compareTo(end) > 0){
 			//start should be before end, so flip them
 			m_Start = end;
@@ -82,8 +89,12 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		return m_Size;
 	}
 	
-	GenomicContext getGenomicContext(){
+	public GenomicContext getGenomicContext(){
 		return m_Context;
+	}
+	
+	public boolean hasReferenceGenome(){
+		return m_Context != null;
 	}
 	
 	public GenomicRegion increment(int numBases){
@@ -98,7 +109,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		if(m_Context != coordinate.getGenomicContext()){
 			return false;
 		}
-		return m_Start.compareTo(coordinate) <= 0 && m_End.compareTo(coordinate) >= 0 && m_Context == coordinate.getGenomicContext();
+		return m_Start.compareTo(coordinate) <= 0 && m_End.compareTo(coordinate) >= 0;
 	}
 	
 	public boolean contains(GenomicRegion other){
@@ -217,10 +228,20 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		return m_Hash;
 	}
 	
+	protected int naturalCompareTo(GenomicRegion o){
+		int startComp = m_Start.compareTo(o.m_Start);
+		if(startComp != 0) return startComp;
+		return m_End.compareTo(o.m_End);
+	}
+	
 	@Override
 	public int compareTo(GenomicRegion o) {
+		if(o == null) return -1;
 		if(m_Context != o.m_Context){
 			throw new RuntimeException("Error: cannot compare regions with different GenomicContexts. "+m_Context+" != "+o.m_Context);
+		}
+		if(m_Context == null){
+			return this.naturalCompareTo(o);
 		}
 		Comparator<GenomicRegion> comparator = m_Context.getStartAscendingComparator();
 		return comparator.compare(this, o);
