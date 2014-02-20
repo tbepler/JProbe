@@ -6,16 +6,86 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import util.genome.GenomicRegion;
+import util.genome.GenomicSequence;
 import util.genome.ParsingException;
 import util.genome.Strand;
 
 public class Parser {
 	
 	public static final String WHITESPACE_REGEX = "\\s";
-	public static final String[][] FORMATS = new String[][]{
+	public static final String[][] PEAK_FORMATS = new String[][]{
 		{"BED format (.bed)", "bed"},
 		{"ENCODE peak (.*)", "*"}
 	};
+	public static final String[][] PEAK_SEQ_FORMATS = new String[][]{
+		{"PeakSeq format (.peakSeq, .*)", "peakSeq", "*"}
+	};
+	
+	public static PeakSequence parsePeakSequence(String s) throws ParsingException{
+		try{
+			String[] split = s.split(WHITESPACE_REGEX);
+			String sequence = "";
+			GenomicRegion region = null;
+			String name = "";
+			int score = -1;
+			Strand strand = Strand.UNKNOWN;
+			double signalVal = -1;
+			double pVal = -1;
+			double qVal = -1;
+			int pointSource = -1;
+			for(int i=1; i<=PeakSequence.ELEMENTS && i<=split.length; i++){
+				String cur = split[i-1];
+				switch(i){
+				case 1:
+					sequence = cur;
+					break;
+				case 2:
+					region = GenomicRegion.parseString(cur);
+					break;
+				case 3:
+					name = cur;
+					break;
+				case 4:
+					score = Integer.parseInt(cur);
+					break;
+				case 5:
+					strand = Strand.parseStrand(cur);
+					break;
+				case 6:
+					signalVal = Double.parseDouble(cur);
+					break;
+				case 7:
+					pVal = Double.parseDouble(cur);
+					break;
+				case 8:
+					qVal = Double.parseDouble(cur);
+					break;
+				case 9:
+					pointSource = Integer.parseInt(cur);
+					break;
+				default:
+					break;
+				}
+			}
+			return new PeakSequence(new GenomicSequence(sequence, region), name, score, strand, signalVal, pVal, qVal, pointSource);
+		} catch (Exception e){
+			throw new ParsingException(e);
+		}
+	}
+	
+	public static PeakSequenceGroup parsePeakSeqGroup(Scanner s) throws ParsingException{
+		List<PeakSequence> peakSeqs = new ArrayList<PeakSequence>();
+		while(s.hasNextLine()){
+			String line = s.nextLine();
+			try{
+				peakSeqs.add(parsePeakSequence(line));
+			} catch (Exception e){
+				//do nothing
+			}
+		}
+		return new PeakSequenceGroup(peakSeqs);
+	}
 
 	public static Peak parsePeak(String s) throws ParsingException{
 		try{
@@ -85,7 +155,7 @@ public class Parser {
 			try {
 				peaks.add(parsePeak(line));
 			} catch (ParsingException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return new PeakGroup(peaks);

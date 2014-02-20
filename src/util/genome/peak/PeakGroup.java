@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class PeakGroup implements Serializable, Iterable<Peak>{
 	private static final long serialVersionUID = 1L;
 	
-	public static final String[][] FORMATS = Parser.FORMATS;
+	public static final String[][] FORMATS = Parser.PEAK_FORMATS;
 	
 	public static PeakGroup parsePeakGroup(Scanner s){
 		return Parser.parsePeakGroup(s);
@@ -32,7 +32,7 @@ public class PeakGroup implements Serializable, Iterable<Peak>{
 	}
 	
 	private int computeHash(){
-		HashCodeBuilder builder = new HashCodeBuilder();
+		HashCodeBuilder builder = new HashCodeBuilder(349, 269);
 		for(Peak p : this){
 			builder.append(p);
 		}
@@ -65,7 +65,6 @@ public class PeakGroup implements Serializable, Iterable<Peak>{
 				}
 				return true;
 			}
-			return false;
 		}
 		return false;
 	}

@@ -17,7 +17,7 @@ import jprobe.services.data.DataWriter;
 public class PeakReaderWriter implements DataReader, DataWriter{
 	
 	private static final FileNameExtensionFilter[] WRITE_FILTERS = new FileNameExtensionFilter[]{
-		new FileNameExtensionFilter("ENCODE peak format", "encodePeak", "*")
+		new FileNameExtensionFilter("ENCODE peak format (.encodePeak, .*)", "encodePeak", "*")
 	};
 	private static final FileFilter[] READ_FILTERS = generateReadFilters();
 	

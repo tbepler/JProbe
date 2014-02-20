@@ -15,7 +15,7 @@ import util.genome.Strand;
 public class Peak implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	public static final String[][] FORMATS = Parser.FORMATS;
+	public static final String[][] FORMATS = Parser.PEAK_FORMATS;
 	
 	public static final String NAME = "name";
 	public static final String DEFAULT_NAME = ".";
@@ -47,6 +47,32 @@ public class Peak implements Serializable{
 	private double m_PVal;
 	private double m_QVal;
 	private int m_PointSource;
+	
+	Peak(GenomicRegion region, Peak peak){
+		if(!region.getStart().getChromosome().getId().equals(peak.getChrom().getId()) || region.getStart().getBaseIndex() != peak.getChromStart()
+				|| region.getEnd().getBaseIndex() != peak.getChromEnd()){
+			throw new RuntimeException("Error: region: "+region+" does not match with peak: "+peak);
+		}
+		m_Region = region;
+		m_Name = peak.getName();
+		m_Score = peak.getScore();
+		m_Strand = peak.getStrand();
+		m_SignalVal = peak.getSignalVal();
+		m_PVal = peak.getPVal();
+		m_QVal = peak.getQVal();
+		m_PointSource = peak.getPointSource();
+	}
+	
+	public Peak(GenomicRegion region, String name, int score, Strand strand, double signalVal, double pVal, double qVal, int pointSource){
+		m_Region = region;
+		m_Name = name;
+		m_Score = score;
+		m_Strand = strand;
+		m_SignalVal = signalVal;
+		m_PVal = pVal;
+		m_QVal = qVal;
+		m_PointSource = pointSource;
+	}
 	
 	public Peak(String chrom, long chromStart, long chromEnd, double signalVal){
 		this(chrom, chromStart, chromEnd, signalVal, new HashMap<String, Object>());
