@@ -6,6 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: plugins.genome.GenomeActivator
 Bundle-Vendor: Tristan Bepler
 Bundle-Localization: plugin
-Import-Package: org.osgi.framework,jprobe.services,jprobe.services.function,jprobe.services.data,javax.swing, plugins.jprobe.gui.services
+Import-Package: org.osgi.framework,jprobe.services,jprobe.services.function,jprobe.services.data, plugins.jprobe.gui.services, util.gui,util.progress,util.genome.reader,util.genome.reader.query,util.genome.peak
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: plugins.genome.services,util.genome,util.genome.reader,util.genome.reader.query
+Export-Package: plugins.genome.services

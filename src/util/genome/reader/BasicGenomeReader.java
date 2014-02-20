@@ -96,6 +96,7 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 				sequenceProcessor.process(seq);
 				boundedProcessor.process(seq);
 				seqStart = seq.getEnd().increment(1);
+				if(seqStart == null) break;
 				lineCount++;
 			}
 			this.notifyCompleted();

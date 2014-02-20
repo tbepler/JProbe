@@ -1,6 +1,7 @@
 package util.genome;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -8,6 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import util.progress.ProgressEvent;
+import util.progress.ProgressListener;
+import util.progress.ProgressEvent.Type;
 
 public class Genome implements GenomicContext{
 	private static final long serialVersionUID = 1L;
@@ -122,8 +127,12 @@ public class Genome implements GenomicContext{
 	private Map<Chromosome, Chromosome> m_NextChr;
 	private Map<Chromosome, Chromosome> m_PrevChr;
 	private final String m_Name;
-
-	public Genome(String name,  Scanner genome){
+	
+	public Genome(String name, Scanner genome){
+		this(null, name, genome);
+	}
+	
+	public Genome(Collection<ProgressListener> listeners, String name,  Scanner genome){
 		m_Name = name;
 		m_Chrs = new ArrayList<Chromosome>();
 		m_ChrPriority = new HashMap<Chromosome, Integer>();
@@ -139,7 +148,12 @@ public class Genome implements GenomicContext{
 					m_Chrs.add(chr);
 					m_ChrPriority.put(chr, m_Chrs.size());
 				}
-				curTag = line.replaceFirst(CHR_MARKER, "");
+				curTag = line;
+				if(listeners != null){
+					for(ProgressListener l : listeners){
+						l.update(new ProgressEvent(this, Type.UPDATE, 0, "Prereading "+name+": "+curTag, true));
+					}
+				}
 				count = 0;
 			}else{
 				count += line.length();

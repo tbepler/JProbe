@@ -10,8 +10,7 @@ public class PeakSequence extends Peak{
 	private static final long serialVersionUID = 1L;
 	
 	public static final String[][] FORMATS = Parser.PEAK_SEQ_FORMATS;
-	
-	static final int ELEMENTS = 9;
+	public static final int ELEMENTS = 9;
 	
 	public static PeakSequence parsePeakSequence(String s) throws ParsingException{
 		return Parser.parsePeakSequence(s);

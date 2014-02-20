@@ -2,31 +2,33 @@ package chiptools.jprobe.data;
 
 import java.io.BufferedWriter;
 import java.io.File;
-
-import javax.swing.filechooser.FileFilter;
-
 import java.util.Scanner;
 
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import chiptools.Constants;
-import util.genome.peak.PeakGroup;
+import util.genome.peak.PeakSequenceGroup;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
 
-public class PeakReaderWriter implements DataReader, DataWriter{
+public class PeakSequenceReaderWriter implements DataReader, DataWriter{
 	
 	private static final FileNameExtensionFilter[] WRITE_FILTERS = new FileNameExtensionFilter[]{
-		new FileNameExtensionFilter("ENCODE peak format (.encodePeak, .*)", "encodePeak", "*")
+		new FileNameExtensionFilter("PeakSeq format (.peakSeq, .*)", "peakSeq", "*")
 	};
+	
 	private static final FileFilter[] READ_FILTERS = generateReadFilters();
 	
 	private static FileFilter[] generateReadFilters(){
-		FileFilter[] filters = new FileFilter[PeakGroup.FORMATS.length];
+		FileFilter[] filters = new FileFilter[PeakSequenceGroup.FORMATS.length];
 		for(int i=0; i<filters.length; i++){
-			final String[] format = PeakGroup.FORMATS[i];
-			if(format[1].equals(Constants.FILE_WILDCARD)){
+			String[] format = PeakSequenceGroup.FORMATS[i];
+			final String descrip = format[0];
+			final String[] exts = new String[format.length-1];
+			System.arraycopy(format, 1, exts, 0, exts.length);
+			if(containsWildcard(exts)){
 				filters[i] = new FileFilter(){
 
 					@Override
@@ -36,18 +38,26 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 
 					@Override
 					public String getDescription() {
-						return format[0];
+						return descrip;
 					}
-
 					
 				};
 			}else{
-				filters[i] = new FileNameExtensionFilter(format[0], format[1]);
+				filters[i] = new FileNameExtensionFilter(descrip, exts);
 			}
 		}
 		return filters;
 	}
 	
+	private static boolean containsWildcard(String[] exts){
+		for(String s : exts){
+			if(s.equals(Constants.FILE_WILDCARD)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public FileNameExtensionFilter[] getValidWriteFormats() {
 		return WRITE_FILTERS;
@@ -55,8 +65,8 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 
 	@Override
 	public void write(Data data, FileNameExtensionFilter format, BufferedWriter out) throws Exception {
-		Peaks p = (Peaks) data;
-		out.write(p.toString());
+		PeakSequences peakSeqs = (PeakSequences) data;
+		out.write(peakSeqs.toString());
 	}
 
 	@Override
@@ -66,8 +76,8 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 
 	@Override
 	public Data read(FileFilter format, Scanner s) throws Exception {
-		PeakGroup peaks = PeakGroup.parsePeakGroup(s);
-		return new Peaks(peaks);
+		PeakSequenceGroup peakSeqs = PeakSequenceGroup.parsePeakSeqGroup(s);
+		return new PeakSequences(peakSeqs);
 	}
 
 }

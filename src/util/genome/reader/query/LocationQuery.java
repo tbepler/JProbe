@@ -5,6 +5,7 @@ import java.util.Comparator;
 
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
+import util.genome.GenomicSequence;
 
 public abstract class LocationQuery implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -51,6 +52,6 @@ public abstract class LocationQuery implements Serializable{
 		return m_Region.getEnd();
 	}
 	
-	public abstract void process(String locationSequence);
+	public abstract void process(GenomicSequence found);
 	
 }

@@ -49,7 +49,7 @@ public class SequenceQueryProcessor implements QueryProcessor{
 		GenomicSequence search = new GenomicSequence(target, new GenomicRegion(startFrom, startFrom.increment(target.length()-1)));
 		while(search.getEnd().compareTo(searchTo) <= 0){
 			if(m_Seq.contains(search)){
-				query.process(search.getRegion());
+				query.process(search);
 			}
 			search = new GenomicSequence(target, search.getRegion().increment(1));
 		}

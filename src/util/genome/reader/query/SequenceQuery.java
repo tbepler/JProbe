@@ -2,7 +2,7 @@ package util.genome.reader.query;
 
 import java.io.Serializable;
 
-import util.genome.GenomicRegion;
+import util.genome.GenomicSequence;
 
 public abstract class SequenceQuery implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -17,6 +17,6 @@ public abstract class SequenceQuery implements Serializable{
 		return m_Target;
 	}
 	
-	public abstract void process(GenomicRegion location);
+	public abstract void process(GenomicSequence found);
 	
 }

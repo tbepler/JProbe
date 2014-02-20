@@ -14,7 +14,7 @@ public class BoundedQueryProcessor implements QueryProcessor{
 	private GenomicSequence m_Seq;
 	
 	public BoundedQueryProcessor(List<LocationBoundedSequenceQuery> queries){
-		m_Remaining = new PriorityQueue<LocationBoundedSequenceQuery>(queries.size(), LocationBoundedSequenceQuery.START_COMPARATOR);
+		m_Remaining = new PriorityQueue<LocationBoundedSequenceQuery>(queries.size() >= 1 ? queries.size() : 1, LocationBoundedSequenceQuery.START_COMPARATOR);
 		for(LocationBoundedSequenceQuery q : queries){
 			m_Remaining.add(q);
 		}
@@ -59,7 +59,7 @@ public class BoundedQueryProcessor implements QueryProcessor{
 		GenomicSequence search = new GenomicSequence(target, new GenomicRegion(startFrom, startFrom.increment(target.length()-1)));
 		while(search.getEnd().compareTo(searchTo) <= 0){
 			if(m_Seq.contains(search)){
-				query.process(search.getRegion());
+				query.process(m_Seq);
 			}
 			search = new GenomicSequence(target, search.getRegion().increment(1));
 		}

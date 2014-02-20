@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private static final String CHR_PREFIX = "Chr";
+	private static final String CHR_PREFIX = "[Cc][Hh][Rr]";
 	private static final char CHR_SEP = ':';
 	private static final char LOC_SEP = '-';
 	
@@ -22,7 +22,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		s = s.trim();
 		try{
 			if(s.matches(SAME_CHR_REGEX)){
-				Chromosome chr = context.getChr(s.substring(CHR_PREFIX.length(),s.indexOf(CHR_SEP)));
+				Chromosome chr = context.getChr(s.substring(0,s.indexOf(CHR_SEP)));
 				long start = Long.parseLong(s.substring(s.indexOf(CHR_SEP)+1, s.indexOf(LOC_SEP)));
 				long end = Long.parseLong(s.substring(s.indexOf(LOC_SEP)+1));
 				return new GenomicRegion(context, new GenomicCoordinate(context, chr, start), new GenomicCoordinate(context, chr, end));
@@ -205,7 +205,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	public String toString(){
 		if(m_Start.getChromosome().equals(m_End.getChromosome())){
 			//chromosomes are the same, so write in condensed chromosome form
-			return CHR_PREFIX+m_Start.getChromosome()+CHR_SEP+m_Start.getBaseIndex()+LOC_SEP+m_End.getBaseIndex();
+			return m_Start.getChromosome().toString()+CHR_SEP+m_Start.getBaseIndex()+LOC_SEP+m_End.getBaseIndex();
 		}else{
 			//chromosomes are different, so write both chromosomes
 			return m_Start.toString() + LOC_SEP + m_End.toString();

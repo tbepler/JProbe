@@ -22,6 +22,10 @@ public class Peaks implements Data{
 		}
 	}
 	
+	public PeakGroup getPeaks(){
+		return m_Peaks;
+	}
+	
 	@Override
 	public String toString(){
 		return m_Peaks.toString();

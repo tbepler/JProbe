@@ -33,7 +33,7 @@ public abstract class AbstractGenomeReader implements GenomeReader{
 		}
 		try {
 			this.notifyListeners(new ProgressEvent(this, ProgressEvent.Type.UPDATE, 0, "Prereading genome file: "+genomeFile.getPath(), true));
-			Genome genome = new Genome(genomeFile.getName(), new Scanner(genomeFile));
+			Genome genome = new Genome(m_Listeners, genomeFile.getName(), new Scanner(genomeFile));
 			synchronized(GENOME_HASH){
 				GENOME_HASH.put(key, genome);
 			}

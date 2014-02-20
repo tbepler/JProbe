@@ -108,6 +108,7 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 			while(newIndex > chr.getSize()){
 				newIndex -= chr.getSize();
 				chr = chr.nextChr();
+				if(chr == null) return null;
 			}
 			return new GenomicCoordinate(m_Context, chr, newIndex);
 		}
@@ -115,6 +116,7 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 			Chromosome chr = m_Chr;
 			while(newIndex < 1){
 				chr = m_Chr.prevChr();
+				if(chr == null) return null;
 				newIndex += chr.getSize();
 			}
 			return new GenomicCoordinate(m_Context, chr, newIndex);

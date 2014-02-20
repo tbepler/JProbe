@@ -38,6 +38,7 @@ public class GenomeExecutor extends SwingWorker<Data, Object>{
 	
 	@Override
 	protected Data doInBackground() throws Exception {
+		try{
 		ProgressWindow monitor = new ProgressWindow(m_Function.getName()){
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -49,6 +50,12 @@ public class GenomeExecutor extends SwingWorker<Data, Object>{
 			protected void onClose(){
 				this.onCancel();
 			}
+			public void complete(){
+				this.onComplete();
+			}
+			public void cancel(){
+				super.onCancel();
+			}
 			@Override
 			protected ProgressPanel createProgressPanel(){
 				return new ProgressPanel(){
@@ -59,11 +66,11 @@ public class GenomeExecutor extends SwingWorker<Data, Object>{
 					}
 					@Override
 					protected void onCanceled(Object source) {
-						//do nothing
+						cancel();
 					}
 					@Override
 					protected void onCompleted(Object source) {
-						//do nothing
+						complete();
 					}
 				};
 			}
@@ -72,6 +79,10 @@ public class GenomeExecutor extends SwingWorker<Data, Object>{
 		l.add(monitor);
 		GenomeReader r = new BasicGenomeReader(m_GenomeFile, l);
 		return m_Function.run(r, m_DataArgs, m_FieldArgs);
+		} catch (Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	@Override
@@ -85,7 +96,7 @@ public class GenomeExecutor extends SwingWorker<Data, Object>{
 	
 	public void executeFunction(){
 		try {
-			this.doInBackground();
+			this.execute();
 		} catch (Exception e) {
 			ErrorHandler.getInstance().handleException(e, GenomeActivator.getBundle());
 		}

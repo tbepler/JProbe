@@ -16,7 +16,7 @@ public class LocationQueryProcessor implements QueryProcessor{
 	private GenomicSequence m_Seq;
 	
 	public LocationQueryProcessor(List<LocationQuery> queries){
-		m_Remaining = new PriorityQueue<LocationQuery>(queries.size(), LocationQuery.START_COMPARATOR);
+		m_Remaining = new PriorityQueue<LocationQuery>(queries.size() >= 1 ? queries.size() : 1, LocationQuery.START_COMPARATOR);
 		for(LocationQuery q : queries){
 			m_Remaining.add(q);
 		}
@@ -47,15 +47,20 @@ public class LocationQueryProcessor implements QueryProcessor{
 			LocationQuery cur = m_Active.poll();
 			m_ActiveStarts.remove(cur);
 			GenomicSequence subseq = m_Seq.subsequence(cur.getStart(), cur.getEnd());
-			cur.process(subseq.getSequence());
+			cur.process(subseq);
 		}
 		//trim sequence
-		GenomicCoordinate firstStart = this.getFirstActiveStart();
-		if(m_Seq.contains(firstStart)){
-			m_Seq = m_Seq.subsequence(firstStart);
+		if(!m_Active.isEmpty()){
+			GenomicCoordinate firstStart = this.getFirstActiveStart();
+			if(m_Seq.contains(firstStart)){
+				m_Seq = m_Seq.subsequence(firstStart);
+			}else{
+				m_Seq = null;
+			}
 		}else{
 			m_Seq = null;
 		}
+		
 		
 	}
 

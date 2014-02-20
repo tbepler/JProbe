@@ -37,6 +37,8 @@ public class GenomePanel extends JPanel implements ActionListener, StateListener
 	
 	public GenomePanel(GenomeFunction function, GenomeFilePanel filePanel, JProbeCore core){
 		super(new GridBagLayout());
+		m_Function = function;
+		m_Core = core;
 		this.initPanels(filePanel);
 		this.initButtons();
 	}

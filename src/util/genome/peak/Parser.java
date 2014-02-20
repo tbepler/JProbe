@@ -10,6 +10,10 @@ import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.ParsingException;
 import util.genome.Strand;
+import util.genome.reader.GenomeReader;
+import util.genome.reader.query.LocationBoundedSequenceQuery;
+import util.genome.reader.query.LocationQuery;
+import util.genome.reader.query.SequenceQuery;
 
 public class Parser {
 	
@@ -21,6 +25,16 @@ public class Parser {
 	public static final String[][] PEAK_SEQ_FORMATS = new String[][]{
 		{"PeakSeq format (.peakSeq, .*)", "peakSeq", "*"}
 	};
+	
+	public static PeakSequenceGroup readFromGenome(GenomeReader reader, PeakGroup peaks){
+		List<PeakSequence> peakSeqs = new ArrayList<PeakSequence>();
+		List<LocationQuery> queries = new ArrayList<LocationQuery>();
+		for(Peak p : peaks){
+			queries.add(new PeakQuery(p, reader.getGenome(), peakSeqs));
+		}
+		reader.read(queries, new ArrayList<SequenceQuery>(), new ArrayList<LocationBoundedSequenceQuery>());
+		return new PeakSequenceGroup(peakSeqs);
+	}
 	
 	public static PeakSequence parsePeakSequence(String s) throws ParsingException{
 		try{

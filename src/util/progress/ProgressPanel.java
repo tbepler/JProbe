@@ -15,7 +15,9 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 	
 	private static final Insets LABEL_INSETS = new Insets(25, 50, 5, 50);
 	private static final Insets BAR_INSETS = new Insets(5, 50, 15, 50);
-	private static final Dimension LABEL_DEFAULT_MIN = new Dimension(5, 20);
+	private static final Dimension LABEL_DEFAULT_MIN = new Dimension(30, 20);
+	
+	private static final int MIN_BAR_WIDTH = 200;
 	
 	private JProgressBar m_ProgressBar;
 	private JLabel m_Label;
@@ -64,6 +66,7 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 			}
 			this.onUpdate(e.getSource(), e.getProgress(), e.getMaxProgress(), e.getMessage(), e.isIndeterminant());
 			m_ProgressBar.revalidate();
+			m_Label.setMinimumSize(m_Label.getPreferredSize());
 			m_Label.revalidate();
 			break;
 		case CANCELED:
@@ -78,6 +81,9 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 	protected JProgressBar createProgressBar(){
 		JProgressBar bar = new JProgressBar();
 		bar.setStringPainted(true);
+		Dimension min = bar.getMinimumSize();
+		min.setSize(MIN_BAR_WIDTH, bar.getMinimumSize().getHeight());
+		bar.setMinimumSize(min);
 		return bar;
 	}
 	

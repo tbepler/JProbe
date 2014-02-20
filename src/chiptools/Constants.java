@@ -1,6 +1,15 @@
 package chiptools;
 
+import util.genome.peak.PeakSequence;
+
 public class Constants {
+	
+	public static final String GENOME_PEAK_FINDER_NAME = "Find peaks";
+	public static final String GENOME_PEAK_FINDER_TOOLTIP = "This function extracts the sequences for a group of peaks from the genome.";
+	public static final String PEAK_PARAM_NAME = "Peaks";
+	public static final String PEAK_PARAM_TOOLTIP = "The peaks to extract sequences for";
+	
+	public static final String FILE_WILDCARD = "*";
 	
 	public static final int NUM_PEAK_FIELDS = 10;
 	public static final String PEAKS_TOOLTIP = "A peak group data structure";
@@ -17,7 +26,23 @@ public class Constants {
 		"peak"
 	};
 	
+	public static final int NUM_PEAK_SEQ_FIELDS = PeakSequence.ELEMENTS;
+	public static final String PEAK_SEQ_TOOLTIP = "A group of peak sequences";
+	public static final String[] PEAK_SEQ_HEADER = new String[]{
+		"sequence",
+		"region",
+		"name",
+		"score",
+		"strand",
+		"signalValue",
+		"pValue",
+		"qValue",
+		"peak"
+	};
+	
 	public static final String POSITIVE_INT_REGEX  = "[0-9]+";
+	
+	public static final String GENOMIC_REGION_FIELD_TOOLTIP = "A genomic region";
 	
 	public static final String STRING_FIELD_TOOLTIP = "A field containing any String";
 	

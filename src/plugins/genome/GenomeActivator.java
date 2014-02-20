@@ -68,6 +68,9 @@ public class GenomeActivator implements BundleActivator{
 			
 		};
 		bc.addServiceListener(m_PrototypeListener);
+		for(ServiceReference<GenomeFunction> genomeFunctionReference : bc.getServiceReferences(GenomeFunction.class, null)){
+			m_PrototypeListener.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, genomeFunctionReference));
+		}
 	}
 
 	@Override

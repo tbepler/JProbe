@@ -100,6 +100,7 @@ public class ProgressWindow extends JFrame implements ProgressListener, ActionLi
 		this.setResizable(false);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
+		gbc.anchor = GridBagConstraints.CENTER;
 		this.add(progressPanel, gbc);
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -107,6 +108,7 @@ public class ProgressWindow extends JFrame implements ProgressListener, ActionLi
 		buttonPanel.add(cancel);
 		gbc.gridx = 0;
 		gbc.insets = CANCEL_INSETS;
+		gbc.fill = GridBagConstraints.BOTH;
 		this.add(buttonPanel, gbc);
 	}
 	

@@ -9,6 +9,7 @@ import java.util.Scanner;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import util.genome.ParsingException;
+import util.genome.reader.GenomeReader;
 
 public class PeakSequenceGroup implements Serializable, Iterable<PeakSequence>{
 	private static final long serialVersionUID = 1L;
@@ -17,6 +18,10 @@ public class PeakSequenceGroup implements Serializable, Iterable<PeakSequence>{
 	
 	public static PeakSequenceGroup parsePeakSeqGroup(Scanner s) throws ParsingException{
 		return Parser.parsePeakSeqGroup(s);
+	}
+	
+	public static PeakSequenceGroup readFromGenome(GenomeReader reader, PeakGroup peaks){
+		return Parser.readFromGenome(reader, peaks);
 	}
 	
 	private final List<PeakSequence> m_PeakSeqs = new ArrayList<PeakSequence>();

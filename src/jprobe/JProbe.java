@@ -47,8 +47,17 @@ public class JProbe implements JProbeCore{
 		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0," +
 				"jprobe.services.data;version=1.0.0," +
 				"jprobe.services.function;version=1.0.0,"+
-				"util.progress;version=1.0.0");
-		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*");
+				"util.progress;version=1.0.0,"
+				+ "util.gui;version=1.0.0,"
+				+ "util;version=1.0.0,"
+				+ "util.genome;version=1.0.0,"
+				+ "util.genome.reader;version=1.0.0,"
+				+ "util.genome.reader.query;version=1.0.0,"
+				+ "util.genome.reader.threaded;version=1.0.0,"
+				+ "util.genome.peak;version=1.0.0,"
+				+ "util.xmlserializer;version=1.0.0");
+		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,"
+				+ "javax.swing.*");
 		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, config.getFelixStorageClean());
 		//create activator and add to config map
 		m_Activator = new JProbeActivator(this);

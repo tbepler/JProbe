@@ -14,6 +14,9 @@ import jprobe.services.data.Data;
 
 public class ExportImportUtil {
 	
+	public static final String WILDCARD = "*";
+	public static final String FILE_NAME_WITH_EXTENSION_REGEX = "^.*\\..+$";
+
 	public static void importData(Class<? extends Data> type, JProbeCore core, JFileChooser importChooser, Component parent){
 		//retrieve the registered file extension filters
 		FileFilter[] formats = core.getDataManager().getValidReadFormats(type);
@@ -72,7 +75,7 @@ public class ExportImportUtil {
 	
 	public static boolean fileEndsInValidExtension(File file, FileNameExtensionFilter filter){
 		for(String ext : filter.getExtensions()){
-			if(file.toString().endsWith("."+ext)){
+			if(file.toString().endsWith("."+ext) || (ext.equals(WILDCARD) && file.toString().matches(FILE_NAME_WITH_EXTENSION_REGEX))){
 				return true;
 			}
 		}
