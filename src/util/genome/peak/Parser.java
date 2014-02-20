@@ -59,8 +59,10 @@ public class Parser {
 					break;
 				case 9:
 					optional.put(Peak.QVAL, Double.parseDouble(cur));
+					break;
 				case 10:
 					optional.put(Peak.POINT_SOURCE, Integer.parseInt(cur));
+					break;
 				default:
 					break;
 				}
@@ -83,7 +85,7 @@ public class Parser {
 			try {
 				peaks.add(parsePeak(line));
 			} catch (ParsingException e) {
-				System.err.println(e.getMessage());
+				e.printStackTrace();
 			}
 		}
 		return new PeakGroup(peaks);

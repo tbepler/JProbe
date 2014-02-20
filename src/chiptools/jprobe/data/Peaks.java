@@ -89,4 +89,9 @@ public class Peaks implements Data{
 		return Constants.PEAKS_TOOLTIP;
 	}
 
+	@Override
+	public String[] getHeaders() {
+		return Constants.PEAK_HEADER;
+	}
+
 }

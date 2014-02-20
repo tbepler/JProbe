@@ -20,6 +20,11 @@ public class DataTableModel extends AbstractTableModel implements DataListener{
 	}
 	
 	@Override
+	public String getColumnName(int col){
+		return data.getHeaders()[col];
+	}
+	
+	@Override
 	public int getColumnCount() {
 		return data.getNumCols();
 	}

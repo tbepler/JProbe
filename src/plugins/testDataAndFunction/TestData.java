@@ -115,5 +115,10 @@ public class TestData implements Data{
 	public String getTooltip() {
 		return TOOLTIP;
 	}
+
+	@Override
+	public String[] getHeaders() {
+		return new String[]{"String", "Integer", "Decimal"};
+	}
 	
 }

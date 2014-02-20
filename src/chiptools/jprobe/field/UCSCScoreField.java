@@ -1,5 +1,6 @@
 package chiptools.jprobe.field;
 
+import util.MathUtils;
 import chiptools.Constants;
 import jprobe.services.data.IntegerField;
 
@@ -11,6 +12,7 @@ public class UCSCScoreField extends IntegerField{
 	private final short m_Score;
 	
 	public UCSCScoreField(short score){
+		score = MathUtils.clamp(score, Constants.UCSC_SCORE_MIN, Constants.UCSC_SCORE_MAX);
 		if(!this.isValid(score)){
 			throw new RuntimeException("Error: score out of bounds. Score="+score+", max="+Constants.UCSC_SCORE_MAX+", min="+Constants.UCSC_SCORE_MIN);
 		}

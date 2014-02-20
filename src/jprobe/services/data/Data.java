@@ -11,6 +11,7 @@ public interface Data extends Serializable{
 	
 	public boolean isModifiable(int row, int col);
 	
+	public String[] getHeaders();
 	public Field[][] toTable();
 	public boolean setValue(int row, int col, Field value);
 	public Field getValue(int row, int col);

@@ -4,6 +4,18 @@ public class Constants {
 	
 	public static final int NUM_PEAK_FIELDS = 10;
 	public static final String PEAKS_TOOLTIP = "A peak group data structure";
+	public static final String[] PEAK_HEADER = new String[]{
+		"chrom",
+		"chromStart",
+		"chromEnd",
+		"name",
+		"score",
+		"strand",
+		"signalValue",
+		"pValue",
+		"qValue",
+		"peak"
+	};
 	
 	public static final String POSITIVE_INT_REGEX  = "[0-9]+";
 	
