@@ -71,10 +71,21 @@ public class DataviewerActivator implements BundleActivator{
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		m_TabPane.cleanup();
-		m_Gui.removeComponent(m_TabPane, context.getBundle());
-		m_ListPanel.cleanup();
-		m_Gui.removeComponent(m_ListPanel, context.getBundle());
+		if(m_TabPane != null){
+			m_TabPane.cleanup();
+			if(m_Gui != null){
+				m_Gui.removeComponent(m_TabPane, context.getBundle());
+			}
+		}
+		if(m_ListPanel != null){
+			m_ListPanel.cleanup();
+			if(m_Gui != null){
+				m_Gui.removeComponent(m_ListPanel, context.getBundle());
+			}
+		}
+		if(m_Gui != null){
+			m_Gui = null;
+		}
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
 			Log.getInstance().write(m_BC.getBundle(), "DataViewer stopped.");
 		}

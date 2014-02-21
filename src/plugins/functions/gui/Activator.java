@@ -66,8 +66,15 @@ public class Activator implements BundleActivator{
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		menu.cleanup();
-		gui.removeDropdownMenu(menu, context.getBundle());
+		if(menu != null){
+			menu.cleanup();
+			if(gui != null){
+				gui.removeDropdownMenu(menu, context.getBundle());
+			}
+		}
+		if(gui != null){
+			gui = null;
+		}
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
 			Log.getInstance().write(BUNDLE, "Function menu stopped.");
 		}

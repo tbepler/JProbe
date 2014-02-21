@@ -41,11 +41,10 @@ public class PeakFinder implements Command{
 	public static final String GENOME_TAG = "-g";
 	public static final String PEAK_TAG = "-p";
 	public static final String OUTPUT_TAG = "-o";
+	public static final String SUPPRESS_TAG = "-s";
 	public static final String HELP_TAG = "-help";
 	
 	private static final String USAGE = readUsage();
-	private static final InputStream ORIGINAL_IN = System.in;
-	private static final PrintStream ORIGINAL_OUT = System.out;
 	
 	private static String readUsage(){
 		String usage = "Author: "+Constants.AUTHOR+"\n";
@@ -59,6 +58,22 @@ public class PeakFinder implements Command{
 			//stuff
 		}
 		return usage;
+	}
+	
+	private class Config{
+		
+		public final InputStream ORIGINAL_INPUT;
+		public final PrintStream ORIGINAL_OUTPUT;
+		public final File GENOME;
+		public final boolean SUPPRESS;
+		
+		public Config(InputStream oin, PrintStream oout, File genome, boolean suppress){
+			ORIGINAL_INPUT = oin;
+			ORIGINAL_OUTPUT = oout;
+			GENOME = genome;
+			SUPPRESS = suppress;
+		}
+		
 	}
 	
 	
@@ -89,9 +104,19 @@ public class PeakFinder implements Command{
 		}
 	}
 	
-	protected File parseArgs(String[] args){
+	protected Config parseArgs(String[] args){
+		InputStream oin = System.in;
+		PrintStream oout = System.out;
 		File genome = null;
+		boolean suppress = false;
+		if(args.length == 0){
+			System.out.println(USAGE);
+			return null;
+		}
 		for(int i=0; i<args.length; i++){
+			if(args[i].equals(SUPPRESS_TAG)){
+				suppress = true;
+			}
 			if(args[i].equals(HELP_TAG)){
 				System.out.println(USAGE);
 				return null;
@@ -119,25 +144,28 @@ public class PeakFinder implements Command{
 		if(genome == null){
 			ErrorHandler.getInstance().handleException(new Exception("Error: no genome file specified"), ChiptoolsActivator.getBundle());
 		}
-		return genome;
+		return new Config(oin, oout, genome, suppress);
 	}
 	
 	protected void executeCommand(String[] args){
-		File genome = this.parseArgs(args);
-		if(genome == null){
+		Config config = this.parseArgs(args);
+		if(config == null || config.GENOME == null){
 			return;
 		}
+		File genome = config.GENOME;
 		PeakGroup peaks = PeakGroup.parsePeakGroup(System.in);
 		Collection<ProgressListener> l = new HashSet<ProgressListener>();
-		l.add(new ProgressListener(){
+		if(!config.SUPPRESS){
+			l.add(new ProgressListener(){
 
-			@Override
-			public void update(ProgressEvent event) {
-				if(event.getMessage() == null) return;
-				System.err.println(event.getMessage());
-			}
-			
-		});
+				@Override
+				public void update(ProgressEvent event) {
+					if(event.getMessage() == null) return;
+					System.err.println(event.getMessage());
+				}
+
+			});
+		}
 		GenomeReader reader = GenomeReaderFactory.createGenomeReader(genome, l);
 		reader.setUpdateMode(UpdateMode.CHROM_ONLY);
 		List<LocationQuery> queries = new ArrayList<LocationQuery>();
@@ -154,9 +182,9 @@ public class PeakFinder implements Command{
 			});
 		}
 		reader.read(queries, new ArrayList<SequenceQuery>(), new ArrayList<LocationBoundedSequenceQuery>());
-		System.setIn(ORIGINAL_IN);
+		System.setIn(config.ORIGINAL_INPUT);
 		System.out.flush();
-		System.setOut(ORIGINAL_OUT);
+		System.setOut(config.ORIGINAL_OUTPUT);
 	}
 
 	

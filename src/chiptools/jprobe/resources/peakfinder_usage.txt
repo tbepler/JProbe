@@ -1,4 +1,5 @@
-Usage: peakfinder [-help] -g genome_file [-p peak_file] [-o output_file] < [peak_file] > [output_file]
+Usage: peakfinder [-help] -g genome_file [-s] [-p peak_file] [-o output_file] < [peak_file] > [output_file]
 -g genome_file: the genome file peak sequences should be extracted from
 [-p peak_file] or < [peak_file]: the peak file can either be specified using the -p flag or peaks can be piped in through stdin
 [-o output_file]: the output file peak sequences should be written to. peak seqs are written to stdout if none is given
+[-s]: suppresses progress output

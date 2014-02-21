@@ -44,15 +44,17 @@ public class ChiptoolsActivator implements BundleActivator{
 
 	@Override
 	public void stop(BundleContext c) throws Exception {
-		m_Core.getDataManager().removeDataReader(m_PeakRW, c.getBundle());
-		m_Core.getDataManager().removeDataWriter(m_PeakRW, c.getBundle());
-		m_Core.getDataManager().removeDataReader(m_PeakSeqRW, c.getBundle());
-		m_Core.getDataManager().removeDataWriter(m_PeakSeqRW, c.getBundle());
+		if(m_Core != null){
+			m_Core.getDataManager().removeDataReader(m_PeakRW, c.getBundle());
+			m_Core.getDataManager().removeDataWriter(m_PeakRW, c.getBundle());
+			m_Core.getDataManager().removeDataReader(m_PeakSeqRW, c.getBundle());
+			m_Core.getDataManager().removeDataWriter(m_PeakSeqRW, c.getBundle());
+			m_Core = null;
+		}
 		if(m_PeakFinderReg != null){
 			m_PeakFinderReg.unregister();
 			m_PeakFinderReg = null;
 		}
-		m_Core = null;
 		m_CmdProvider.stop(c);
 		BUNDLE = null;
 	}
