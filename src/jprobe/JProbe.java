@@ -29,8 +29,8 @@ import org.osgi.framework.Constants;
 
 public class JProbe implements JProbeCore{
 	
-	//private JProbeGUIFrame frame;
 	private Mode m_Mode;
+	private CommandManager m_CmdManager;
 	private CoreDataManager m_DataManager;
 	private CoreFunctionManager m_FunctionManager;
 	private SaveManager m_SaveManager;
@@ -56,14 +56,14 @@ public class JProbe implements JProbeCore{
 		m_FunctionManager = new CoreFunctionManager(this);
 		m_SaveManager = new SaveManager();
 		m_SaveManager.addSaveable(m_DataManager, "core");
-		//frame = new JProbeGUIFrame(this, "JProbe");
 		//create felix config map
 		Map felixConfig = new HashMap();
 		//export the core service package
 		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0," +
 				"jprobe.services.data;version=1.0.0," +
-				"jprobe.services.function;version=1.0.0,"+
-				"util.progress;version=1.0.0,"
+				"jprobe.services.function;version=1.0.0,"
+				+"probe.services.command;version=1.0.0,"
+				+"util.progress;version=1.0.0,"
 				+ "util.gui;version=1.0.0,"
 				+ "util;version=1.0.0,"
 				+ "util.genome;version=1.0.0,"
@@ -97,14 +97,12 @@ public class JProbe implements JProbeCore{
 			e.printStackTrace();
 		}
 		m_DataManager.setBundleContext(m_Activator.getBundleContext());
-		//frame.pack();
-		//frame.setVisible(true);
+		m_CmdManager = m_Activator.getCommandManager();
+		if(m_Mode == Mode.COMMAND){
+			m_CmdManager.execute(this, args);
+			System.exit(0);
+		}
 	}
-	
-	private void printHelpStatement(){
-		//TODO
-	}
-	
 	
 	@Override
 	public void shutdown(){

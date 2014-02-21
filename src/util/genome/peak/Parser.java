@@ -99,7 +99,7 @@ public class Parser {
 				try{
 					peakSeqs.add(parsePeakSequence(line));
 				} catch (Exception e){
-					//do nothing
+					e.printStackTrace();
 				}
 			}
 		} catch (IOException e) {

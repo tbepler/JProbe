@@ -1,3 +1,2 @@
-<Thu Feb 20 21:20:37 EST 2014><plugins.genome>GenomeFunctionPrototype "Find peaks" added by bundle "chiptools.jprobe"
-<Thu Feb 20 21:20:37 EST 2014><plugins.dataviewer.gui>DataViewer started.
-<Thu Feb 20 21:21:33 EST 2014><plugins.genome>Find peaks clicked
+<Fri Feb 21 00:23:13 EST 2014><org.apache.felix.framework>JProbe started.
+<Fri Feb 21 00:23:13 EST 2014><plugins.genome>GenomeFunctionPrototype "Find peaks" added by bundle "chiptools.jprobe"

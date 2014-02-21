@@ -41,7 +41,7 @@ public class Configuration {
 	
 	private static final String DEFAULT_FILE = "//debug values: 0=off, 1=log, 2=full\n"+TAG_DEBUG_LEVEL+": "+
 	DEFAULT_DEBUG_LEVEL+"\n"+ "//the mode that jprobe will be started in when no arguments are passed\n//values: "+Mode.COMMAND+
-	" or "+Mode.INTERACTIVE + TAG_MODE+": "+ DEFAULT_MODE+"\n"+TAG_AUTODEPLOY_DIRECTORY+": "+DEFAULT_AUTODEPLOY_DIRECTORY+"\n"+TAG_STORAGE_CLEAN+
+	" or "+Mode.INTERACTIVE +"\n"+ TAG_MODE+": "+ DEFAULT_MODE+"\n"+TAG_AUTODEPLOY_DIRECTORY+": "+DEFAULT_AUTODEPLOY_DIRECTORY+"\n"+TAG_STORAGE_CLEAN+
 	": "+DEFAULT_STORAGE_CLEAN+"\n"+TAG_LOG_FILE+": "+DEFAULT_LOG_FILE+"\n"+TAG_ERROR_LOG_FILE+": "+DEFAULT_ERROR_LOG_FILE;
 	
 	private enum Tag{
@@ -94,7 +94,7 @@ public class Configuration {
 			}
 			s.close();
 		} catch (FileNotFoundException e) {
-			System.err.println("Error: unable to find configuration file "+configFile.getAbsolutePath());
+			System.err.println("Error: unable to find configuration file "+configFile.getAbsolutePath()+" creating it.");
 			try {
 				BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
 				writer.write(DEFAULT_FILE);
@@ -132,7 +132,7 @@ public class Configuration {
 				errorLogFile = value;
 				break;
 			case MODE:
-				mode = value.equals(Mode.COMMAND) ? Mode.COMMAND : Mode.INTERACTIVE;
+				mode = value.equals(Mode.COMMAND.toString()) ? Mode.COMMAND : Mode.INTERACTIVE;
 				break;
 			default:
 				break;

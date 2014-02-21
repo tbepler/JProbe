@@ -18,6 +18,7 @@ public class JProbeActivator implements BundleActivator{
 	private ServiceListener[] m_Listeners;
 	private JProbeCore m_Core = null;
 	private ServiceRegistration<JProbeCore> m_Registration = null;
+	private CommandManager m_CmdManager = null;
 	
 	JProbeActivator(JProbeCore core, ServiceListener ... listeners){
 		this.m_Core = core;
@@ -27,11 +28,17 @@ public class JProbeActivator implements BundleActivator{
 	public static Bundle getBundle(){
 		return m_Bundle;
 	}
+	
+	public CommandManager getCommandManager(){
+		return m_CmdManager;
+	}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		m_Context = context;
 		m_Bundle = m_Context.getBundle();
+		m_CmdManager = new CommandManager(m_Context);
+		m_Context.addServiceListener(m_CmdManager);
 		m_Registration = context.registerService(JProbeCore.class, m_Core, null);
 		for(ServiceListener l : m_Listeners){
 			m_Context.addServiceListener(l);
@@ -45,6 +52,10 @@ public class JProbeActivator implements BundleActivator{
 	public void stop(BundleContext context) throws Exception {
 		if(m_Registration!=null){
 			m_Registration.unregister();
+		}
+		if(m_CmdManager != null){
+			m_Context.removeServiceListener(m_CmdManager);
+			m_CmdManager = null;
 		}
 		for(ServiceListener l : m_Listeners){
 			m_Context.removeServiceListener(l);

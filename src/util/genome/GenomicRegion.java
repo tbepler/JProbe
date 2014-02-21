@@ -22,7 +22,12 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		s = s.trim();
 		try{
 			if(s.matches(SAME_CHR_REGEX)){
-				Chromosome chr = context.getChr(s.substring(0,s.indexOf(CHR_SEP)));
+				Chromosome chr;
+				if(context != null){
+					chr = context.getChr(s.substring(0,s.indexOf(CHR_SEP)));
+				}else{
+					chr = new Chromosome(s.substring(0,s.indexOf(CHR_SEP)));
+				}
 				long start = Long.parseLong(s.substring(s.indexOf(CHR_SEP)+1, s.indexOf(LOC_SEP)));
 				long end = Long.parseLong(s.substring(s.indexOf(LOC_SEP)+1));
 				return new GenomicRegion(context, new GenomicCoordinate(context, chr, start), new GenomicCoordinate(context, chr, end));

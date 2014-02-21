@@ -60,7 +60,7 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 						Type.UPDATE,
 						this.percentComplete(count, chr),
 						100,
-						"Reading "+m_GenomeFile.getName()+": "+chr+" ("+m_Genome.indexOf(chr)+"//"+m_Genome.getNumChrs()+")"
+						"Reading "+m_GenomeFile.getName()+": "+chr+" ("+m_Genome.indexOf(chr)+"/"+m_Genome.getNumChrs()+")"
 						)
 				);
 	}

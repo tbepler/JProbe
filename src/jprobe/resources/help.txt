@@ -1,0 +1,9 @@
+
+Usage: jprobe [-help] [-interactive] [-command] <command> [<args>]
+
+Built in commands:
+[-help]	Displays this help statement
+[-interactive]	Runs JProbe in interactive mode, ignoring the default mode
+[-command]	Runs JProbe in command mode, ignoring the default mode
+
+Additional commands:

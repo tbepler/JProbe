@@ -2,6 +2,7 @@ package plugins.jprobe.gui;
 
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
+import jprobe.services.JProbeCore.Mode;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -30,6 +31,9 @@ public class GUIActivator implements BundleActivator{
 		m_Bundle = context.getBundle();
 		ServiceReference ref = context.getServiceReference(JProbeCore.class);
 		m_Core = (JProbeCore) context.getService(ref);
+		if(m_Core.getMode() == Mode.COMMAND){
+			return;
+		}
 		m_Gui = new JProbeGUIFrame(m_Core, "JProbe", context.getBundle(), new GUIConfig(Constants.CONFIG_FILE));
 		m_Gui.setVisible(true);
 		m_ErrorManager = new GUIErrorManager(m_Gui);
@@ -41,9 +45,16 @@ public class GUIActivator implements BundleActivator{
 	public void stop(BundleContext context) throws Exception {
 		if(m_Registration != null){
 			m_Registration.unregister();
+			m_Registration = null;
 		}
-		ErrorHandler.getInstance().removeErrorManager(m_ErrorManager);
-		m_Gui.dispose();
+		if(m_ErrorManager != null){
+			ErrorHandler.getInstance().removeErrorManager(m_ErrorManager);
+			m_ErrorManager = null;
+		}
+		if(m_Gui != null){
+			m_Gui.dispose();
+			m_Gui = null;
+		}
 		m_Bundle = null;
 	}
 
