@@ -41,5 +41,11 @@ public class ThreadedGenomeReader extends AbstractGenomeReader{
 		
 	}
 
+	@Override
+	public void setUpdateMode(UpdateMode mode) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

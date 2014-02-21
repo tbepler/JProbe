@@ -1,9 +1,9 @@
-<Fri Feb 21 00:35:55 EST 2014><org.apache.felix.framework>JProbe started.
-<Fri Feb 21 00:35:55 EST 2014><plugins.genome>GenomeFunctionPrototype "Find peaks" added by bundle "chiptools.jprobe"
-<Fri Feb 21 00:35:56 EST 2014><plugins.dataviewer.gui>DataViewer started.
-<Fri Feb 21 00:35:56 EST 2014><plugins.functions.gui>Function menu started.
-<Fri Feb 21 00:35:56 EST 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
-<Fri Feb 21 00:36:56 EST 2014><org.apache.felix.framework>JProbe shutting down.
-<Fri Feb 21 00:36:56 EST 2014><plugins.testDataAndFunction.Activator>TestPlugin stopped.
-<Fri Feb 21 00:36:56 EST 2014><plugins.functions.gui>Function menu stopped.
-<Fri Feb 21 00:36:56 EST 2014><plugins.dataviewer.gui>DataViewer stopped.
+<Fri Feb 21 02:51:57 EST 2014><org.apache.felix.framework>JProbe started.
+<Fri Feb 21 02:51:57 EST 2014><plugins.genome>GenomeFunctionPrototype "Find peaks" added by bundle "chiptools.jprobe"
+<Fri Feb 21 02:51:57 EST 2014><plugins.dataviewer.gui>DataViewer started.
+<Fri Feb 21 02:51:57 EST 2014><plugins.functions.gui>Function menu started.
+<Fri Feb 21 02:51:57 EST 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
+<Fri Feb 21 02:51:59 EST 2014><org.apache.felix.framework>JProbe shutting down.
+<Fri Feb 21 02:51:59 EST 2014><plugins.testDataAndFunction.Activator>TestPlugin stopped.
+<Fri Feb 21 02:51:59 EST 2014><plugins.functions.gui>Function menu stopped.
+<Fri Feb 21 02:51:59 EST 2014><plugins.dataviewer.gui>DataViewer stopped.

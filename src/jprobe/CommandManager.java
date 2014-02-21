@@ -14,6 +14,9 @@ import jprobe.services.command.Command;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceReference;
 
 public class CommandManager extends AbstractServiceListener<Command>{
 	
@@ -22,7 +25,14 @@ public class CommandManager extends AbstractServiceListener<Command>{
 	private Map<String, List<Command>> m_Commands = new HashMap<String, List<Command>>();
 	
 	public CommandManager(BundleContext context) {
-		super(Command.class, context);	
+		super(Command.class, context);
+		try {
+			for(ServiceReference<Command> ref : context.getServiceReferences(Command.class, null)){
+				this.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, ref));
+			}
+		} catch (InvalidSyntaxException e) {
+			//do nothing
+		}
 	}
 	
 	private void printHelpStatement(){

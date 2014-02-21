@@ -1,2 +1,3 @@
-<Fri Feb 21 00:23:13 EST 2014><org.apache.felix.framework>JProbe started.
-<Fri Feb 21 00:23:13 EST 2014><plugins.genome>GenomeFunctionPrototype "Find peaks" added by bundle "chiptools.jprobe"
+<Fri Feb 21 02:52:10 EST 2014><org.apache.felix.framework>JProbe started.
+<Fri Feb 21 02:52:10 EST 2014><plugins.genome>GenomeFunctionPrototype "Find peaks" added by bundle "chiptools.jprobe"
+<Fri Feb 21 02:53:51 EST 2014><org.apache.felix.framework>JProbe shutting down.

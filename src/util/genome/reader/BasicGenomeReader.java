@@ -31,6 +31,7 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 	
 	private final File m_GenomeFile;
 	private final Genome m_Genome;
+	private UpdateMode m_Mode = UpdateMode.FULL;
 	
 	public BasicGenomeReader(File genomeFile){
 		m_GenomeFile = genomeFile;
@@ -60,7 +61,7 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 						Type.UPDATE,
 						this.percentComplete(count, chr),
 						100,
-						"Reading "+m_GenomeFile.getName()+": "+chr+" ("+m_Genome.indexOf(chr)+"/"+m_Genome.getNumChrs()+")"
+						"Reading "+m_GenomeFile.getName()+": "+chr+" ("+(m_Genome.indexOf(chr)+1)+"/"+m_Genome.getNumChrs()+")"
 						)
 				);
 	}
@@ -84,12 +85,15 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 			try {
 				while((line = reader.readLine()) != null){
 					count += line.length();
-					if(lineCount % LINES_PER_NOTIFY == 0){
+					if(m_Mode == UpdateMode.FULL && lineCount % LINES_PER_NOTIFY == 0){
 						this.notifyReadProgress(count, seqStart.getChromosome());
 					}
 					if(line.startsWith(">")){
 						//only reset the char count to zero
 						//preread genome knows when to advance to next chromosome already
+						if(m_Mode == UpdateMode.CHROM_ONLY && seqStart.getChromosome()!=null){
+							this.notifyReadProgress(count, seqStart.getChromosome());
+						}
 						lineCount = 0;
 						count = 0;
 						continue;
@@ -115,6 +119,11 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 			ErrorHandler.getInstance().handleException(e, GenomeActivator.getBundle());
 		}
 		
+	}
+
+	@Override
+	public void setUpdateMode(UpdateMode mode) {
+		m_Mode = mode;
 	}
 
 	

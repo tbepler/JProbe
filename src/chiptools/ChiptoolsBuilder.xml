@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Chiptools.makejar" default="makejar" basedir=".">
 	<target name="makejar" description="Package the chiptools jar">
-		<jar manifest="src/chiptools/jprobe/MANIFEST.MF" jarfile="plugins/chiptools.jar" includes="chiptools/**,util/**" basedir="bin">
+		<jar manifest="src/chiptools/jprobe/MANIFEST.MF" jarfile="plugins/chiptools.jar" includes="chiptools/**" basedir="bin">
 	        <zipgroupfileset dir="libraries/" includes="**/*.jar" />
 		</jar>
 	</target>

@@ -2,6 +2,7 @@ package chiptools.jprobe;
 
 import jprobe.services.JProbeCore;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -16,13 +17,21 @@ import chiptools.jprobe.function.GenomePeakFinder;
 
 public class ChiptoolsActivator implements BundleActivator{
 	
+	public static Bundle getBundle(){
+		return BUNDLE;
+	}
+	
+	private static Bundle BUNDLE = null;
+	
 	private JProbeCore m_Core = null;
 	private PeakReaderWriter m_PeakRW = new PeakReaderWriter();
 	private PeakSequenceReaderWriter m_PeakSeqRW = new PeakSequenceReaderWriter();
 	private ServiceRegistration<GenomeFunction> m_PeakFinderReg = null;
+	private CommandProvider m_CmdProvider = new CommandProvider();
 	
 	@Override
 	public void start(BundleContext c) throws Exception {
+		BUNDLE = c.getBundle();
 		ServiceReference<JProbeCore> ref = c.getServiceReference(JProbeCore.class);
 		m_Core = c.getService(ref);
 		m_Core.getDataManager().addDataReader(Peaks.class, m_PeakRW, c.getBundle());
@@ -30,6 +39,7 @@ public class ChiptoolsActivator implements BundleActivator{
 		m_Core.getDataManager().addDataReader(PeakSequences.class, m_PeakSeqRW, c.getBundle());
 		m_Core.getDataManager().addDataWriter(PeakSequences.class, m_PeakSeqRW, c.getBundle());
 		m_PeakFinderReg = c.registerService(GenomeFunction.class, new GenomePeakFinder(), null);
+		m_CmdProvider.start(c);
 	}
 
 	@Override
@@ -43,6 +53,8 @@ public class ChiptoolsActivator implements BundleActivator{
 			m_PeakFinderReg = null;
 		}
 		m_Core = null;
+		m_CmdProvider.stop(c);
+		BUNDLE = null;
 	}
 
 }

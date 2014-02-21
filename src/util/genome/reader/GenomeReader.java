@@ -12,8 +12,14 @@ import util.progress.ProgressListener;
 
 public interface GenomeReader {
 	
+	public enum UpdateMode{
+		FULL,
+		CHROM_ONLY;
+	}
+	
 	public static final Map<String, Genome> GENOME_HASH = new HashMap<String, Genome>();
 	
+	public void setUpdateMode(UpdateMode mode);
 	public Genome getGenome();
 	public void read(List<LocationQuery> locationQueries, List<SequenceQuery> sequenceQueries, List<LocationBoundedSequenceQuery> boundedQueries);
 	

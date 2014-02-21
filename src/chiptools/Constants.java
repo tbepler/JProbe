@@ -1,8 +1,97 @@
 package chiptools;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jprobe.services.command.Command;
 import util.genome.peak.PeakSequence;
 
 public class Constants {
+	
+	public static final String AUTHOR = "Tristan Bepler";
+	
+	public static final String RESOURCES_PATH = "/chiptools/jprobe/resources";
+	public static final String CMD_NAMES_FILE = "/chiptools/jprobe/resources/command_names.txt";
+	public static final String CMD_DESCRIPTIONS_FILE = "/chiptools/jprobe/resources/command_descriptions.txt";
+	
+	public static final String CMD_PACKAGE = "chiptools.jprobe.command.";
+	
+	public static final List<Class<? extends Command>> CMD_CLASSES = getCommandClasses();
+	
+	@SuppressWarnings("unchecked")
+	private static List<Class<? extends Command>> getCommandClasses(){
+		List<Class<? extends Command>> list = new ArrayList<Class<? extends Command>>();
+		try{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(CMD_NAMES_FILE)));
+			String line;
+			while((line = reader.readLine()) != null){
+				try{
+					String[] split = line.split("\\s+");
+					Class<?> clazz = Class.forName(CMD_PACKAGE+split[0]);
+					if(Command.class.isAssignableFrom(clazz)){
+						list.add((Class<? extends Command>) clazz);
+					}
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			reader.close();
+		} catch (Exception e){
+			//do nothing
+		}
+		return Collections.unmodifiableList(list);
+	}
+	
+	public static final Map<Class<?>, String> CMD_NAMES = readCmdNames();
+			
+	private static Map<Class<?>, String> readCmdNames(){
+		Map<Class<?>, String> map = new HashMap<Class<?>, String>();
+		try{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(CMD_NAMES_FILE)));
+			String line;
+			while((line = reader.readLine()) != null){
+				try{
+					String[] split = line.split("\\s+");
+					Class<?> clazz = Class.forName(CMD_PACKAGE+split[0]);
+					map.put(clazz, split[1]);
+				}catch (Exception e){
+					//do nothing
+				}
+			}
+			reader.close();
+		} catch (Exception e){
+			//do nothing
+		}
+		return Collections.unmodifiableMap(map);
+	}
+	
+	public static final Map<Class<?>, String> CMD_DESCRIPTIONS = readCmdDescriptions();
+	
+	private static Map<Class<?>, String> readCmdDescriptions(){
+		Map<Class<?>, String> map = new HashMap<Class<?>, String>();
+		try{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(CMD_DESCRIPTIONS_FILE)));
+			String line;
+			while((line = reader.readLine()) != null){
+				try{
+					String[] split = line.split("(---)");
+					Class<?> clazz = Class.forName(CMD_PACKAGE+split[0]);
+					map.put(clazz, split[1]);
+				}catch (Exception e){
+					//do nothing
+				}
+			}
+			reader.close();
+		} catch (Exception e){
+			//do nothing
+		}
+		return Collections.unmodifiableMap(map);
+	}
 	
 	public static final String GENOME_PEAK_FINDER_NAME = "Find peaks";
 	public static final String GENOME_PEAK_FINDER_TOOLTIP = "This function extracts the sequences for a group of peaks from the genome.";
