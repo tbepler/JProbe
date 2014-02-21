@@ -22,4 +22,9 @@ public class GUIErrorManager implements ErrorManager{
 		JOptionPane.showMessageDialog(parent, e.getMessage(), thrower.getSymbolicName(), JOptionPane.ERROR_MESSAGE);
 	}
 
+	@Override
+	public void handleWarning(String warning, Bundle thrower) {
+		JOptionPane.showMessageDialog(parent, warning, thrower.getSymbolicName(), JOptionPane.WARNING_MESSAGE);
+	}
+
 }

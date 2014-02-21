@@ -1,4 +1,4 @@
-package plugins.genome;
+package jprobe.services;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

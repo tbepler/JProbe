@@ -1,5 +1,6 @@
 package plugins.genome;
 
+import jprobe.services.AbstractServiceListener;
 import jprobe.services.JProbeCore;
 
 import org.osgi.framework.Bundle;

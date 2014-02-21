@@ -7,6 +7,26 @@ import org.osgi.framework.Bundle;
 
 public interface JProbeCore {
 	
+	public enum Mode{
+		COMMAND,
+		INTERACTIVE;
+		
+		@Override
+		public String toString(){
+			switch(this){
+			case COMMAND:
+				return "command";
+			case INTERACTIVE:
+				return "interactive";
+			default:
+				return null;
+			}
+		}
+		
+	}
+	
+	public Mode getMode();
+	
 	public void addCoreListener(CoreListener listener);
 	public void removeCoreListener(CoreListener listener);
 	

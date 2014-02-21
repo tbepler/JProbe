@@ -52,10 +52,9 @@ public class DataviewerActivator implements BundleActivator{
 		m_Gui.addComponent(m_TabPane, m_TabPane.getGridBagConstraints(), m_BC.getBundle());
 		m_ListPanel = new DataListPanel(m_Core, m_Gui, m_TabPane);
 		m_Gui.addComponent(m_ListPanel, m_ListPanel.getGridBagConstraints(), m_BC.getBundle());
-		if(Debug.getLevel() == Debug.FULL){
-			System.out.println("DataViewer started");
+		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
+			Log.getInstance().write(m_BC.getBundle(), "DataViewer started.");
 		}
-		Log.getInstance().write(m_BC.getBundle(), "DataViewer started.");
 	}
 	
 	@Override
@@ -76,6 +75,9 @@ public class DataviewerActivator implements BundleActivator{
 		m_Gui.removeComponent(m_TabPane, context.getBundle());
 		m_ListPanel.cleanup();
 		m_Gui.removeComponent(m_ListPanel, context.getBundle());
+		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
+			Log.getInstance().write(m_BC.getBundle(), "DataViewer stopped.");
+		}
 	}
 
 }

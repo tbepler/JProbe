@@ -1,6 +1,8 @@
 package plugins.testDataAndFunction;
 
+import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
+import jprobe.services.Log;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
 import jprobe.services.function.Function;
@@ -33,7 +35,9 @@ public class Activator implements BundleActivator{
 		core.getFunctionManager().addFunctionPrototype(dataFieldParamFun, context.getBundle());
 		core.getDataManager().addDataReader(TestData.class, testReader, context.getBundle());
 		core.getDataManager().addDataWriter(TestData.class, testWriter, context.getBundle());
-		System.out.println("Started test data and function plugin");
+		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
+			Log.getInstance().write(context.getBundle(), "TestPlugin started.");
+		}
 	}
 
 	@Override
@@ -45,6 +49,9 @@ public class Activator implements BundleActivator{
 		core.getFunctionManager().removeFunctionPrototype(dataFieldParamFun, context.getBundle());
 		core.getDataManager().removeDataReader(testReader, context.getBundle());
 		core.getDataManager().removeDataWriter(testWriter, context.getBundle());
+		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
+			Log.getInstance().write(context.getBundle(), "TestPlugin stopped.");
+		}
 	}
 
 }

@@ -2,7 +2,9 @@ package plugins.functions.gui;
 
 import java.util.Collection;
 
+import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
+import jprobe.services.Log;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -45,7 +47,9 @@ public class Activator implements BundleActivator{
 	private void initMenu(){
 		menu = new FunctionMenu( gui.getGUIFrame(), core, bc.getBundle());
 		gui.addDropdownMenu(menu, bc.getBundle());
-		System.out.println("Function menu started");
+		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
+			Log.getInstance().write(BUNDLE, "Function menu started.");
+		}
 	}
 	
 	@Override
@@ -64,6 +68,9 @@ public class Activator implements BundleActivator{
 	public void stop(BundleContext context) throws Exception {
 		menu.cleanup();
 		gui.removeDropdownMenu(menu, context.getBundle());
+		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
+			Log.getInstance().write(BUNDLE, "Function menu stopped.");
+		}
 	}
 
 }

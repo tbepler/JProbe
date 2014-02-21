@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import jprobe.services.Debug;
 import jprobe.services.ErrorHandler;
+import jprobe.services.JProbeCore.Mode;
 import jprobe.services.Log;
 
 /**
@@ -25,23 +26,27 @@ import jprobe.services.Log;
 public class Configuration {
 	
 	private static final Debug DEFAULT_DEBUG_LEVEL = Debug.LOG;
+	private static final Mode DEFAULT_MODE = Mode.INTERACTIVE;
 	private static final String DEFAULT_STORAGE_CLEAN = "onFirstInit";
 	private static final String DEFAULT_AUTODEPLOY_DIRECTORY = "plugins";
 	private static final String DEFAULT_LOG_FILE = "jprobe.log";
 	private static final String DEFAULT_ERROR_LOG_FILE = "jprobe_error.log";
 		
 	public static final String TAG_DEBUG_LEVEL = "debug";
+	public static final String TAG_MODE = "default_mode";
 	public static final String TAG_STORAGE_CLEAN = "felix_storage_clean";
 	public static final String TAG_AUTODEPLOY_DIRECTORY = "autodeploy_plugin_directory";
 	public static final String TAG_LOG_FILE = "log_file";
 	public static final String TAG_ERROR_LOG_FILE = "error_log_file";
 	
 	private static final String DEFAULT_FILE = "//debug values: 0=off, 1=log, 2=full\n"+TAG_DEBUG_LEVEL+": "+
-	DEFAULT_DEBUG_LEVEL+"\n"+TAG_AUTODEPLOY_DIRECTORY+": "+DEFAULT_AUTODEPLOY_DIRECTORY+"\n"+TAG_STORAGE_CLEAN+
+	DEFAULT_DEBUG_LEVEL+"\n"+ "//the mode that jprobe will be started in when no arguments are passed\n//values: "+Mode.COMMAND+
+	" or "+Mode.INTERACTIVE + TAG_MODE+": "+ DEFAULT_MODE+"\n"+TAG_AUTODEPLOY_DIRECTORY+": "+DEFAULT_AUTODEPLOY_DIRECTORY+"\n"+TAG_STORAGE_CLEAN+
 	": "+DEFAULT_STORAGE_CLEAN+"\n"+TAG_LOG_FILE+": "+DEFAULT_LOG_FILE+"\n"+TAG_ERROR_LOG_FILE+": "+DEFAULT_ERROR_LOG_FILE;
 	
 	private enum Tag{
 		DEBUG,
+		MODE,
 		STORAGE_CLEAN,
 		AUTODEPLOY,
 		LOG_FILE,
@@ -51,6 +56,9 @@ public class Configuration {
 		public static Tag fromString(String s){
 			if(s.equalsIgnoreCase(TAG_AUTODEPLOY_DIRECTORY)){
 				return AUTODEPLOY;
+			}
+			if(s.equalsIgnoreCase(TAG_MODE)){
+				return MODE;
 			}
 			if(s.equalsIgnoreCase(TAG_DEBUG_LEVEL)){
 				return DEBUG;
@@ -68,13 +76,17 @@ public class Configuration {
 		}
 	}
 	
+	private String[] cmdLineArgs;
+	
 	private Debug debugLevel = DEFAULT_DEBUG_LEVEL;
 	private String felixStorageClean = DEFAULT_STORAGE_CLEAN;
 	private String autoDeployPluginDirectory = DEFAULT_AUTODEPLOY_DIRECTORY;
 	private String logFile = DEFAULT_LOG_FILE;
 	private String errorLogFile = DEFAULT_ERROR_LOG_FILE;
+	private Mode mode = DEFAULT_MODE;
 	
-	public Configuration(File configFile){
+	public Configuration(File configFile, String[] args){
+		cmdLineArgs = args;
 		try {
 			Scanner s = new Scanner(configFile);
 			while(s.hasNextLine()){
@@ -119,6 +131,9 @@ public class Configuration {
 			case ERROR_FILE:
 				errorLogFile = value;
 				break;
+			case MODE:
+				mode = value.equals(Mode.COMMAND) ? Mode.COMMAND : Mode.INTERACTIVE;
+				break;
 			default:
 				break;
 			}
@@ -127,6 +142,14 @@ public class Configuration {
 			e.printStackTrace();
 			//do nothing, line was unreadable
 		}
+	}
+	
+	public String[] getArgs(){
+		return cmdLineArgs;
+	}
+	
+	public Mode getDefaultMode(){
+		return mode;
 	}
 	
 	public String getErrorLogFile(){

@@ -12,9 +12,11 @@ import jprobe.save.SaveException;
 import jprobe.save.SaveManager;
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
+import jprobe.services.Debug;
 import jprobe.services.ErrorHandler;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
+import jprobe.services.Log;
 import jprobe.services.Saveable;
 
 import org.apache.felix.framework.Felix;
@@ -24,11 +26,11 @@ import org.apache.felix.main.Main;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
-import org.osgi.framework.wiring.BundleWiring;
 
 public class JProbe implements JProbeCore{
 	
 	//private JProbeGUIFrame frame;
+	private Mode m_Mode;
 	private CoreDataManager m_DataManager;
 	private CoreFunctionManager m_FunctionManager;
 	private SaveManager m_SaveManager;
@@ -36,6 +38,20 @@ public class JProbe implements JProbeCore{
 	private Felix m_Felix;
 	
 	public JProbe(Configuration config){
+		m_Mode = config.getDefaultMode();
+		String[] args = config.getArgs();
+		if(args.length > 0){
+			if(args[0].equals(jprobe.Constants.ARG_INTERACTIVE_MODE)){
+				m_Mode = Mode.INTERACTIVE;
+			}else if(args[0].equals(jprobe.Constants.ARG_COMMAND_MODE)){
+				m_Mode = Mode.COMMAND;
+				String[] newArgs = new String[args.length-1];
+				System.arraycopy(args, 1, newArgs, 0, newArgs.length);
+				args = newArgs;
+			}else{
+				m_Mode = Mode.COMMAND;
+			}
+		}
 		m_DataManager = new CoreDataManager(this, null);
 		m_FunctionManager = new CoreFunctionManager(this);
 		m_SaveManager = new SaveManager();
@@ -85,17 +101,23 @@ public class JProbe implements JProbeCore{
 		//frame.setVisible(true);
 	}
 	
+	private void printHelpStatement(){
+		//TODO
+	}
+	
+	
 	@Override
 	public void shutdown(){
 		try{
-			System.out.println("Shutting down");
+			if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
+				Log.getInstance().write(JProbeActivator.getBundle(), "JProbe shutting down.");
+			}
 			m_Felix.stop();
 			//System.out.println("Waiting for stop");
-			//felix.waitForStop(0);
-			System.out.println("Felix stopped");
+			//m_Felix.waitForStop(0);
 			System.exit(0);
 		} catch (Exception e){
-			System.err.println("Error shutting down Felix framework: "+e);
+			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			e.printStackTrace();
 		}
 	}
@@ -153,6 +175,11 @@ public class JProbe implements JProbeCore{
 	@Override
 	public FunctionManager getFunctionManager() {
 		return m_FunctionManager;
+	}
+
+	@Override
+	public Mode getMode() {
+		return m_Mode;
 	}
 
 

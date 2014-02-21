@@ -27,7 +27,18 @@ public class ErrorHandler {
 		}
 	}
 	
+	public synchronized void handleWarning(String warning, Bundle thrower){
+		System.err.println("Warning: "+warning);
+		if(m_ErrorLog != null){
+			m_ErrorLog.write(thrower, " "+warning);
+		}
+		for(ErrorManager em : m_ErrorManagers){
+			em.handleWarning(warning, thrower);
+		}
+	}
+	
 	public synchronized void handleException(Exception e, Bundle thrower){
+		System.err.println("Error: "+e.getMessage());
 		if(m_ErrorLog != null){
 			if(Debug.getLevel() == Debug.FULL){
 				String trace = "";
