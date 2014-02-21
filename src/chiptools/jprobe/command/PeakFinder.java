@@ -54,6 +54,7 @@ public class PeakFinder implements Command{
 			while((line = reader.readLine()) != null){
 				usage += "\n"+line;
 			}
+			usage += "\n";
 		} catch (IOException e) {
 			//stuff
 		}

@@ -4,6 +4,7 @@ import java.io.File;
 
 public class Launcher {
 	
+	public static final String JAR_PATH = ClassLoader.getSystemClassLoader().getResource(".").getPath();
 	public static final String CONFIG_FILE = "config.txt";
 	
 	public static void main(String[] args){
