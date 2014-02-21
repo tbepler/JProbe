@@ -2,6 +2,7 @@ package jprobe;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -301,8 +300,10 @@ public class CoreDataManager implements DataManager, Saveable{
 			throw new Exception(type+" reader is null");
 		}
 		try{
-			Data read = reader.read(format, new Scanner(file));
+			FileInputStream in = new FileInputStream(file);
+			Data read = reader.read(format, in);
 			this.addData(read, responsible);
+			in.close();
 			return read;
 		} catch(Exception e){
 			throw e;

@@ -1,11 +1,11 @@
 package util.genome.reader;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Scanner;
-
 import plugins.genome.GenomeActivator;
 import util.genome.Genome;
 import util.progress.ProgressEvent;
@@ -33,7 +33,16 @@ public abstract class AbstractGenomeReader implements GenomeReader{
 		}
 		try {
 			this.notifyListeners(new ProgressEvent(this, ProgressEvent.Type.UPDATE, 0, "Prereading genome file: "+genomeFile.getPath(), true));
-			Genome genome = new Genome(m_Listeners, genomeFile.getName(), new Scanner(genomeFile));
+			FileInputStream in = new FileInputStream(genomeFile);
+			Genome genome = new Genome(m_Listeners, genomeFile.getName(), in);
+			try {
+				in.close();
+			} catch (IOException e) {
+				//do nothing
+			}
+			if(Thread.interrupted()){
+				return null;
+			}
 			synchronized(GENOME_HASH){
 				GENOME_HASH.put(key, genome);
 			}

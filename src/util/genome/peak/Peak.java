@@ -26,6 +26,9 @@ public class Peak implements Serializable{
 	public static final String STRAND = "strand";
 	public static final Strand DEFAULT_STRAND = Strand.UNKNOWN;
 	
+	public static final String SIGNAL_VAL = "signalval";
+	public static final double DEFAULT_SIGNAL_VAL = -1;
+	
 	public static final String PVAL = "pval";
 	public static final double DEFAULT_PVAL = -1;
 	
@@ -74,14 +77,14 @@ public class Peak implements Serializable{
 		m_PointSource = pointSource;
 	}
 	
-	public Peak(String chrom, long chromStart, long chromEnd, double signalVal){
-		this(chrom, chromStart, chromEnd, signalVal, new HashMap<String, Object>());
+	public Peak(String chrom, long chromStart, long chromEnd){
+		this(chrom, chromStart, chromEnd, new HashMap<String, Object>());
 	}
 	
-	public Peak(String chrom, long chromStart, long chromEnd, double signalVal, Map<String, Object> optionalParams){
+	public Peak(String chrom, long chromStart, long chromEnd, Map<String, Object> optionalParams){
 		Chromosome chr = new Chromosome(chrom);
 		m_Region = new GenomicRegion(new GenomicCoordinate(chr, chromStart), new GenomicCoordinate(chr, chromEnd));
-		m_SignalVal = signalVal;
+		m_SignalVal = optionalParams.containsKey(SIGNAL_VAL) && optionalParams.get(SIGNAL_VAL) instanceof Double ? (Double)optionalParams.get(SIGNAL_VAL) : DEFAULT_SIGNAL_VAL;
 		m_Name = optionalParams.containsKey(NAME) && optionalParams.get(NAME) instanceof String ? (String)optionalParams.get(NAME) : DEFAULT_NAME;
 		m_Score = optionalParams.containsKey(SCORE) && optionalParams.get(SCORE) instanceof Integer ? (Integer)optionalParams.get(SCORE) : DEFAULT_SCORE;
 		m_Strand = optionalParams.containsKey(STRAND) && optionalParams.get(STRAND) instanceof Strand ? (Strand)optionalParams.get(STRAND) : DEFAULT_STRAND;

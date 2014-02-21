@@ -1,11 +1,10 @@
 package util.genome.peak;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class PeakGroup implements Serializable, Iterable<Peak>{
@@ -13,7 +12,7 @@ public class PeakGroup implements Serializable, Iterable<Peak>{
 	
 	public static final String[][] FORMATS = Parser.PEAK_FORMATS;
 	
-	public static PeakGroup parsePeakGroup(Scanner s){
+	public static PeakGroup parsePeakGroup(InputStream s){
 		return Parser.parsePeakGroup(s);
 	}
 	

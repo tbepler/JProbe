@@ -1,11 +1,13 @@
 package util.genome.reader;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
-
 import jprobe.services.ErrorHandler;
 import plugins.genome.GenomeActivator;
 import util.genome.Chromosome;
@@ -74,33 +76,41 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 		BoundedQueryProcessor boundedProcessor = new BoundedQueryProcessor(boundedQueries);
 		
 		try {
-			Scanner s = new Scanner(m_GenomeFile);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(m_GenomeFile)));
 			GenomicCoordinate seqStart = m_Genome.newGenomicCoordinate(m_Genome.getFirstChr(), 1);
 			long count = 0;
 			int lineCount = 0;
-			while(s.hasNextLine()){
-				String line = s.nextLine();
-				count += line.length();
-				if(lineCount % LINES_PER_NOTIFY == 0){
-					this.notifyReadProgress(count, seqStart.getChromosome());
+			String line;
+			try {
+				while((line = reader.readLine()) != null){
+					count += line.length();
+					if(lineCount % LINES_PER_NOTIFY == 0){
+						this.notifyReadProgress(count, seqStart.getChromosome());
+					}
+					if(line.startsWith(">")){
+						//only reset the char count to zero
+						//preread genome knows when to advance to next chromosome already
+						lineCount = 0;
+						count = 0;
+						continue;
+					}
+					GenomicSequence seq = new GenomicSequence(line, new GenomicRegion(seqStart, seqStart.increment(line.length()-1)));
+					locationProcessor.process(seq);
+					sequenceProcessor.process(seq);
+					boundedProcessor.process(seq);
+					seqStart = seq.getEnd().increment(1);
+					if(seqStart == null) break;
+					lineCount++;
 				}
-				if(line.startsWith(">")){
-					//only reset the char count to zero
-					//preread genome knows when to advance to next chromosome already
-					lineCount = 0;
-					count = 0;
-					continue;
-				}
-				GenomicSequence seq = new GenomicSequence(line, new GenomicRegion(seqStart, seqStart.increment(line.length()-1)));
-				locationProcessor.process(seq);
-				sequenceProcessor.process(seq);
-				boundedProcessor.process(seq);
-				seqStart = seq.getEnd().increment(1);
-				if(seqStart == null) break;
-				lineCount++;
+			} catch (IOException e) {
+				//do nothing
 			}
 			this.notifyCompleted();
-			s.close();
+			try {
+				reader.close();
+			} catch (IOException e) {
+				//do nothing
+			}
 		} catch (FileNotFoundException e) {
 			ErrorHandler.getInstance().handleException(e, GenomeActivator.getBundle());
 		}

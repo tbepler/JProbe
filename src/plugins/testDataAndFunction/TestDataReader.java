@@ -1,7 +1,8 @@
 package plugins.testDataAndFunction;
 
-import java.util.Scanner;
-
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -18,7 +19,7 @@ public class TestDataReader implements DataReader{
 	}
 
 	@Override
-	public Data read(FileFilter format, Scanner s) throws Exception {
+	public Data read(FileFilter format, InputStream s) throws Exception {
 		boolean validFormat = false;
 		for(FileNameExtensionFilter f : READ_FORMATS){
 			if(format == f){
@@ -29,18 +30,14 @@ public class TestDataReader implements DataReader{
 		if(!validFormat){
 			throw new Exception(format.getDescription()+ " is not a valid read format");
 		}
+		BufferedReader reader = new BufferedReader(new InputStreamReader(s));
 		String string = null;
 		Integer integer = null;
 		Double d = null;
-		if(s.hasNext()){
-			string = s.next();
-		}
-		if(s.hasNextInt()){
-			integer = s.nextInt();
-		}
-		if(s.hasNextDouble()){
-			d = s.nextDouble();
-		}
+		String[] split = reader.readLine().split("\\s");
+		string = split[0];
+		integer = Integer.parseInt(split[1]);
+		d = Double.parseDouble(split[2]);
 		if(string == null || integer == null || d == null){
 			throw new Exception("Fields are missing from the read data");
 		}

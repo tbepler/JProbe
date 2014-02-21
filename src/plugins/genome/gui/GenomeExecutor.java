@@ -39,46 +39,52 @@ public class GenomeExecutor extends SwingWorker<Data, Object>{
 	@Override
 	protected Data doInBackground() throws Exception {
 		try{
-		ProgressWindow monitor = new ProgressWindow(m_Function.getName()){
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void onCancel(){
-				GenomeExecutor.this.cancel(true);
-				super.onCancel();
+			ProgressWindow monitor = new ProgressWindow(m_Function.getName()){
+				private static final long serialVersionUID = 1L;
+				@Override
+				protected void onCancel(){
+					GenomeExecutor.this.cancel(true);
+					super.onCancel();
+				}
+				@Override
+				protected void onClose(){
+					this.onCancel();
+				}
+				public void complete(){
+					this.onComplete();
+				}
+				public void cancel(){
+					super.onCancel();
+				}
+				@Override
+				protected ProgressPanel createProgressPanel(){
+					return new ProgressPanel(){
+						private static final long serialVersionUID = 1L;
+						@Override
+						protected void onUpdate(Object source, int progress, int maxProgress, String message, boolean indeterminant) {
+							this.setProgressText(String.valueOf(progress)+"%");
+						}
+						@Override
+						protected void onCanceled(Object source) {
+							cancel();
+						}
+						@Override
+						protected void onCompleted(Object source) {
+							complete();
+						}
+					};
+				}
+			};
+			Collection<ProgressListener> l = new HashSet<ProgressListener>();
+			l.add(monitor);
+			if(this.isCancelled()){
+				return null;
 			}
-			@Override
-			protected void onClose(){
-				this.onCancel();
+			GenomeReader r = new BasicGenomeReader(m_GenomeFile, l);
+			if(this.isCancelled()){
+				return null;
 			}
-			public void complete(){
-				this.onComplete();
-			}
-			public void cancel(){
-				super.onCancel();
-			}
-			@Override
-			protected ProgressPanel createProgressPanel(){
-				return new ProgressPanel(){
-					private static final long serialVersionUID = 1L;
-					@Override
-					protected void onUpdate(Object source, int progress, int maxProgress, String message, boolean indeterminant) {
-						this.setProgressText(String.valueOf(progress)+"%");
-					}
-					@Override
-					protected void onCanceled(Object source) {
-						cancel();
-					}
-					@Override
-					protected void onCompleted(Object source) {
-						complete();
-					}
-				};
-			}
-		};
-		Collection<ProgressListener> l = new HashSet<ProgressListener>();
-		l.add(monitor);
-		GenomeReader r = new BasicGenomeReader(m_GenomeFile, l);
-		return m_Function.run(r, m_DataArgs, m_FieldArgs);
+			return m_Function.run(r, m_DataArgs, m_FieldArgs);
 		} catch (Exception e){
 			e.printStackTrace();
 			return null;
@@ -88,10 +94,16 @@ public class GenomeExecutor extends SwingWorker<Data, Object>{
 	@Override
 	protected void done(){
 		try {
-			m_Core.getDataManager().addData(this.get(), GenomeActivator.getBundle());
+			if(!this.isCancelled()){
+				Data d = this.get();
+				if(d != null){
+					m_Core.getDataManager().addData(d, GenomeActivator.getBundle());
+				}
+			}
 		} catch (Exception e){
 			ErrorHandler.getInstance().handleException(e, GenomeActivator.getBundle());
 		}
+		System.gc();
 	}
 	
 	public void executeFunction(){

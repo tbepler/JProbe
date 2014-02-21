@@ -58,7 +58,7 @@ public class Constants {
 	
 	public static final String SIGNAL_VALUE_FIELD_TOOLTIP = "Measurement of overall enrichment";
 	public static final double SIGNAL_VALUE_MAX = Double.POSITIVE_INFINITY;
-	public static final double SIGNAL_VALUE_MIN = 0;
+	public static final double SIGNAL_VALUE_MIN = -1;
 	
 	public static final String PVALUE_FIELD_TOOLTIP = "Measurment of statistical significance (-log10). -1 if no value is assigned.";
 	public static final double PVALUE_MIN = -1;

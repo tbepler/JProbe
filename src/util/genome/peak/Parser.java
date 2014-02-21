@@ -1,11 +1,13 @@
 package util.genome.peak;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.ParsingException;
@@ -88,15 +90,20 @@ public class Parser {
 		}
 	}
 	
-	public static PeakSequenceGroup parsePeakSeqGroup(Scanner s) throws ParsingException{
+	public static PeakSequenceGroup parsePeakSeqGroup(InputStream s) throws ParsingException{
 		List<PeakSequence> peakSeqs = new ArrayList<PeakSequence>();
-		while(s.hasNextLine()){
-			String line = s.nextLine();
-			try{
-				peakSeqs.add(parsePeakSequence(line));
-			} catch (Exception e){
-				//do nothing
+		BufferedReader reader = new BufferedReader(new InputStreamReader(s));
+		String line;
+		try {
+			while((line = reader.readLine()) != null){
+				try{
+					peakSeqs.add(parsePeakSequence(line));
+				} catch (Exception e){
+					//do nothing
+				}
 			}
+		} catch (IOException e) {
+			//do nothing
 		}
 		return new PeakSequenceGroup(peakSeqs);
 	}
@@ -107,7 +114,6 @@ public class Parser {
 			String chrom = "";
 			long chromStart = -1;
 			long chromEnd = -1;
-			double signalVal = -1;
 			String[] split = s.split(WHITESPACE_REGEX);
 			for(int i=1; i<=10 && i<=split.length; i++){
 				String cur = split[i-1];
@@ -128,15 +134,15 @@ public class Parser {
 					try{
 						optional.put(Peak.SCORE, Integer.parseInt(cur));
 					} catch (Exception e){
-						signalVal = Double.parseDouble(cur);
-						return new Peak(chrom, chromStart, chromEnd, signalVal, optional);
+						optional.put(Peak.QVAL, Double.parseDouble(cur));
+						return new Peak(chrom, chromStart, chromEnd, optional);
 					}
 					break;
 				case 6:
 					optional.put(Peak.STRAND, Strand.parseStrand(cur));
 					break;
 				case 7:
-					signalVal = Double.parseDouble(cur);
+					optional.put(Peak.SIGNAL_VAL, Double.parseDouble(cur));
 					break;
 				case 8:
 					optional.put(Peak.PVAL, Double.parseDouble(cur));
@@ -151,10 +157,10 @@ public class Parser {
 					break;
 				}
 			}
-			if(chrom.equals("") || chromStart == -1 || chromEnd == -1 || signalVal == -1){
-				throw new ParsingException("Error: peaks require values for chromosome, chromosomeStart, chromosomeEnd, and signalValue at the minimum");
+			if(chrom.equals("") || chromStart == -1 || chromEnd == -1){
+				throw new ParsingException("Error: peaks require values for chromosome, chromosomeStart, and chromosomeEnd at the minimum");
 			}
-			return new Peak(chrom, chromStart, chromEnd, signalVal, optional);
+			return new Peak(chrom, chromStart, chromEnd, optional);
 		} catch(ParsingException e){
 			throw e;
 		} catch(Exception e){
@@ -162,15 +168,21 @@ public class Parser {
 		}
 	}
 	
-	public static PeakGroup parsePeakGroup(Scanner s){
+	public static PeakGroup parsePeakGroup(InputStream s){
 		List<Peak> peaks = new ArrayList<Peak>();
-		while(s.hasNextLine()){
-			String line = s.nextLine();
-			try {
-				peaks.add(parsePeak(line));
-			} catch (ParsingException e) {
-				//e.printStackTrace();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(s));
+		String line;
+		try {
+			while((line = reader.readLine()) != null){
+				try {
+					peaks.add(parsePeak(line));
+				} catch (ParsingException e) {
+					//e.printStackTrace();
+				}
 			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return new PeakGroup(peaks);
 	}

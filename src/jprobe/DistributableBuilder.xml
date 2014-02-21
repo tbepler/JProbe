@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Genome.makejar" default="makejar" basedir=".">
-	<target name="makejar" description="Package the Genome plugin jar">
+<project name="Distributable.makejar" default="makejar" basedir=".">
+	<target name="makejar" description="Package the core distro into a runnable jar">
 		<jar manifest="src/plugins/genome/MANIFEST.MF"
 			 jarfile="plugins/Genome.jar"
 			 includes="plugins/genome/**,plugins/functions/gui/dialog/**,plugins/functions/gui/Constants.*,resources/**" 

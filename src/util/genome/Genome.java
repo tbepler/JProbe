@@ -1,5 +1,10 @@
 package util.genome;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,13 +13,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 import util.progress.ProgressEvent.Type;
 
-public class Genome implements GenomicContext{
+public class Genome implements GenomicContext, Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private static final String CHR_LINE = "^((>[Cc]hr)|(>[Cc]hromosome)).+$";
@@ -128,11 +131,11 @@ public class Genome implements GenomicContext{
 	private Map<Chromosome, Chromosome> m_PrevChr;
 	private final String m_Name;
 	
-	public Genome(String name, Scanner genome){
+	public Genome(String name, InputStream genome){
 		this(null, name, genome);
 	}
 	
-	public Genome(Collection<ProgressListener> listeners, String name,  Scanner genome){
+	public Genome(Collection<ProgressListener> listeners, String name,  InputStream genome){
 		m_Name = name;
 		m_Chrs = new ArrayList<Chromosome>();
 		m_ChrPriority = new HashMap<Chromosome, Integer>();
@@ -140,24 +143,29 @@ public class Genome implements GenomicContext{
 		m_PrevChr = new HashMap<Chromosome, Chromosome>();
 		String curTag = null;
 		long count = 0;
-		while(genome.hasNextLine()){
-			String line = genome.nextLine();
-			if(isChrMarker(line)){
-				if(curTag != null){
-					Chromosome chr = new Chromosome(this, curTag, count);
-					m_Chrs.add(chr);
-					m_ChrPriority.put(chr, m_Chrs.size());
-				}
-				curTag = line;
-				if(listeners != null){
-					for(ProgressListener l : listeners){
-						l.update(new ProgressEvent(this, Type.UPDATE, 0, "Prereading "+name+": "+curTag, true));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(genome));
+		String line;
+		try {
+			while((line = reader.readLine()) != null){
+				if(isChrMarker(line)){
+					if(curTag != null){
+						Chromosome chr = new Chromosome(this, curTag, count);
+						m_Chrs.add(chr);
+						m_ChrPriority.put(chr, m_Chrs.size());
 					}
+					curTag = line;
+					if(listeners != null){
+						for(ProgressListener l : listeners){
+							l.update(new ProgressEvent(this, Type.UPDATE, 0, "Prereading "+name+": "+curTag, true));
+						}
+					}
+					count = 0;
+				}else{
+					count += line.length();
 				}
-				count = 0;
-			}else{
-				count += line.length();
 			}
+		} catch (IOException e) {
+			//do nothing
 		}
 		Chromosome prev = null;
 		for(Chromosome cur : m_Chrs){

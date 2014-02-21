@@ -2,10 +2,9 @@ package chiptools.jprobe.data;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.InputStream;
 
 import javax.swing.filechooser.FileFilter;
-
-import java.util.Scanner;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -65,7 +64,7 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 	}
 
 	@Override
-	public Data read(FileFilter format, Scanner s) throws Exception {
+	public Data read(FileFilter format, InputStream s) throws Exception {
 		PeakGroup peaks = PeakGroup.parsePeakGroup(s);
 		return new Peaks(peaks);
 	}
