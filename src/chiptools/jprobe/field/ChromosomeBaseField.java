@@ -11,8 +11,8 @@ public class ChromosomeBaseField implements Field{
 	private final long m_Base;
 	
 	public ChromosomeBaseField(Chromosome chrom, long base){
-		if(!this.baseLegal(chrom, base)){
-			throw new RuntimeException("Error: cannot create a chromosome base field for a base index that is off the chromosome");
+		if(base <= 0){
+			throw new RuntimeException("Cannot create a chromosome base field for a base index less than 1");
 		}
 		m_Chrom = chrom;
 		m_Base = base;
@@ -34,11 +34,7 @@ public class ChromosomeBaseField implements Field{
 	}
 	
 	private boolean baseLegal(long base){
-		return this.baseLegal(m_Chrom, base);
-	}
-	
-	private boolean baseLegal(Chromosome chrom, long base){
-		return base >= 1 && (chrom.getSize() < 0 || chrom.getSize() >= base);
+		return base > 0;
 	}
 
 	@Override

@@ -20,14 +20,14 @@ public class GenomicRegionField implements Field{
 
 	@Override
 	public Field parseString(String s) throws Exception {
-		GenomicRegion newRegion = GenomicRegion.parseString(m_Region.getGenomicContext(), s);
+		GenomicRegion newRegion = GenomicRegion.parseString(s);
 		return new GenomicRegionField(newRegion);
 	}
 
 	@Override
 	public boolean isValid(String s) {
 		try{
-			GenomicRegion.parseString(m_Region.getGenomicContext(), s);
+			GenomicRegion.parseString(s);
 			return true;
 		} catch (Exception e){
 			return false;

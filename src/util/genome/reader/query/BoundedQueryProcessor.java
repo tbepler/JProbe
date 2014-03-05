@@ -2,21 +2,28 @@ package util.genome.reader.query;
 
 import java.util.*;
 
+import util.genome.Chromosome;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 
 public class BoundedQueryProcessor implements QueryProcessor{
 	
-	private final Queue<LocationBoundedSequenceQuery> m_Remaining;
+	private final Map<Chromosome, Queue<LocationBoundedSequenceQuery>> m_Remaining = new HashMap<Chromosome, Queue<LocationBoundedSequenceQuery>>();
 	private final Queue<LocationBoundedSequenceQuery> m_Active;
 	private final Map<LocationBoundedSequenceQuery, GenomicCoordinate> m_ProcessedTo; 
 	private GenomicSequence m_Seq;
 	
 	public BoundedQueryProcessor(List<LocationBoundedSequenceQuery> queries){
-		m_Remaining = new PriorityQueue<LocationBoundedSequenceQuery>(queries.size() >= 1 ? queries.size() : 1, LocationBoundedSequenceQuery.START_COMPARATOR);
 		for(LocationBoundedSequenceQuery q : queries){
-			m_Remaining.add(q);
+			Chromosome chrom = q.getChromosome();
+			if(m_Remaining.containsKey(chrom)){
+				m_Remaining.get(chrom).add(q);
+			}else{
+				Queue<LocationBoundedSequenceQuery> queue = new PriorityQueue<LocationBoundedSequenceQuery>(10, LocationBoundedSequenceQuery.START_COMPARATOR);
+				queue.add(q);
+				m_Remaining.put(chrom, queue);
+			}
 		}
 		m_Active = new PriorityQueue<LocationBoundedSequenceQuery>(10, LocationBoundedSequenceQuery.END_COMPARATOR);
 		m_ProcessedTo = new HashMap<LocationBoundedSequenceQuery, GenomicCoordinate>();
@@ -70,15 +77,23 @@ public class BoundedQueryProcessor implements QueryProcessor{
 	@Override
 	public void process(GenomicSequence next) {
 		//update the current sequence with the new sequence
-		if(m_Seq != null){
-			m_Seq = m_Seq.join(next);
-		}else{
+		if(m_Seq == null){
 			m_Seq = next;
+		}else if(!next.getChromosome().equals(m_Seq.getChromosome())){
+			m_Seq = next;
+			m_Active.clear();
+			m_ProcessedTo.clear();
+		}else{
+			m_Seq = m_Seq.join(next);
 		}
 		//move remaining queries that start in sequence to active queries
-		while(!m_Remaining.isEmpty() && m_Seq.contains(m_Remaining.peek().getStart())){
-			LocationBoundedSequenceQuery query = m_Remaining.poll();
-			m_Active.add(query);
+		Chromosome chrom = m_Seq.getChromosome();
+		if(m_Remaining.containsKey(chrom)){
+			Queue<LocationBoundedSequenceQuery> queue = m_Remaining.get(chrom);
+			while(!queue.isEmpty() && m_Seq.contains(queue.peek().getStart())){
+				LocationBoundedSequenceQuery query = queue.poll();
+				m_Active.add(query);
+			}
 		}
 		//process active queries
 		for(LocationBoundedSequenceQuery query : m_Active){

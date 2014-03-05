@@ -1,24 +1,33 @@
 package util.genome.reader.query;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.TreeSet;
 
+import util.genome.Chromosome;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicSequence;
 
 public class LocationQueryProcessor implements QueryProcessor{
-		
-	private final Queue<LocationQuery> m_Remaining;
+	
+	private final Map<Chromosome, Queue<LocationQuery>> m_Remaining = new HashMap<Chromosome, Queue<LocationQuery>>();
 	private final Queue<LocationQuery> m_Active;
 	private final TreeSet<LocationQuery> m_ActiveStarts;
 	private GenomicSequence m_Seq;
 	
 	public LocationQueryProcessor(List<LocationQuery> queries){
-		m_Remaining = new PriorityQueue<LocationQuery>(queries.size() >= 1 ? queries.size() : 1, LocationQuery.START_COMPARATOR);
 		for(LocationQuery q : queries){
-			m_Remaining.add(q);
+			Chromosome chrom = q.getChromosome();
+			if(m_Remaining.containsKey(chrom)){
+				m_Remaining.get(chrom).add(q);
+			}else{
+				Queue<LocationQuery> queue = new PriorityQueue<LocationQuery>(10, LocationQuery.START_COMPARATOR);
+				queue.add(q);
+				m_Remaining.put(chrom, queue);
+			}
 		}
 		m_Active = new PriorityQueue<LocationQuery>(10, LocationQuery.END_COMPARATOR);
 		m_ActiveStarts = new TreeSet<LocationQuery>(LocationQuery.START_COMPARATOR);
@@ -33,14 +42,22 @@ public class LocationQueryProcessor implements QueryProcessor{
 	public void process(GenomicSequence next) {
 		if(m_Seq == null){
 			m_Seq = next;
+		}else if(!next.getChromosome().equals(m_Seq.getChromosome())){
+			m_Active.clear();
+			m_ActiveStarts.clear();
+			m_Seq = next;
 		}else{
 			m_Seq = m_Seq.join(next);
 		}
 		//move queries that start in the region to the active queries q
-		while(!m_Remaining.isEmpty() && m_Seq.contains(m_Remaining.peek().getStart())){
-			LocationQuery cur = m_Remaining.poll();
-			m_Active.add(cur);
-			m_ActiveStarts.add(cur);
+		Chromosome chrom = m_Seq.getChromosome();
+		if(m_Remaining.containsKey(chrom)){
+			Queue<LocationQuery> queries = m_Remaining.get(chrom);
+			while(!queries.isEmpty() && m_Seq.contains(queries.peek().getStart())){
+				LocationQuery cur = queries.poll();
+				m_Active.add(cur);
+				m_ActiveStarts.add(cur);
+			}
 		}
 		//process active queries that end within the current region
 		while(!m_Active.isEmpty() && m_Seq.contains(m_Active.peek().getEnd())){

@@ -53,6 +53,10 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 		m_Hash = this.computeHash();
 	}
 	
+	public GenomicCoordinate(String chrom, long baseIndex){
+		this(new Chromosome(chrom), baseIndex);
+	}
+	
 	private int computeHash(){
 		return new HashCodeBuilder(11, 461).append(m_Chr).append(m_BaseIndex).toHashCode();
 	}

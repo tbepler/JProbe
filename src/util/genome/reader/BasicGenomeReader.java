@@ -11,7 +11,6 @@ import java.util.List;
 import jprobe.services.ErrorHandler;
 import plugins.genome.GenomeActivator;
 import util.genome.Chromosome;
-import util.genome.Genome;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
@@ -30,38 +29,23 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 	public static final int LINES_PER_NOTIFY = 10;
 	
 	private final File m_GenomeFile;
-	private final Genome m_Genome;
-	private UpdateMode m_Mode = UpdateMode.FULL;
 	
 	public BasicGenomeReader(File genomeFile){
 		m_GenomeFile = genomeFile;
-		m_Genome = this.prereadGenome(genomeFile);
 	}
 	
 	public BasicGenomeReader(File genomeFile, Collection<ProgressListener> listeners){
 		super(listeners);
 		m_GenomeFile = genomeFile;
-		m_Genome = this.prereadGenome(genomeFile);
-	}
-
-	@Override
-	public Genome getGenome() {
-		return m_Genome;
 	}
 	
-	private int percentComplete(long baseIndex, Chromosome chr){
-		double p = ((double) baseIndex / (double) chr.getSize()) * 100.0;
-		return (int) p;
-	}
-	
-	protected void notifyReadProgress(long count, Chromosome chr){
+	protected void notifyReadProgress(Chromosome chr){
 		this.notifyListeners(
 				new ProgressEvent(
 						this,
 						Type.UPDATE,
-						this.percentComplete(count, chr),
-						100,
-						"Reading "+m_GenomeFile.getName()+": "+chr+" ("+(m_Genome.indexOf(chr)+1)+"/"+m_Genome.getNumChrs()+")"
+						"Reading "+m_GenomeFile.getName()+": "+chr,
+						true
 						)
 				);
 	}
@@ -78,24 +62,15 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 		
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(m_GenomeFile)));
-			GenomicCoordinate seqStart = m_Genome.newGenomicCoordinate(m_Genome.getFirstChr(), 1);
-			long count = 0;
-			int lineCount = 0;
+			GenomicCoordinate seqStart = null;
 			String line;
 			try {
 				while((line = reader.readLine()) != null){
-					count += line.length();
-					if(m_Mode == UpdateMode.FULL && lineCount % LINES_PER_NOTIFY == 0){
-						this.notifyReadProgress(count, seqStart.getChromosome());
-					}
 					if(line.startsWith(">")){
-						//only reset the char count to zero
-						//preread genome knows when to advance to next chromosome already
-						if(m_Mode == UpdateMode.CHROM_ONLY && seqStart.getChromosome()!=null){
-							this.notifyReadProgress(count, seqStart.getChromosome());
-						}
-						lineCount = 0;
-						count = 0;
+						//new chromosome reached
+						Chromosome chrom = new Chromosome(line);
+						seqStart = new GenomicCoordinate(chrom, 1);
+						this.notifyReadProgress(seqStart.getChromosome());
 						continue;
 					}
 					GenomicSequence seq = new GenomicSequence(line, new GenomicRegion(seqStart, seqStart.increment(line.length()-1)));
@@ -103,8 +78,6 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 					sequenceProcessor.process(seq);
 					boundedProcessor.process(seq);
 					seqStart = seq.getEnd().increment(1);
-					if(seqStart == null) break;
-					lineCount++;
 				}
 			} catch (IOException e) {
 				//do nothing
@@ -119,11 +92,6 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 			ErrorHandler.getInstance().handleException(e, GenomeActivator.getBundle());
 		}
 		
-	}
-
-	@Override
-	public void setUpdateMode(UpdateMode mode) {
-		m_Mode = mode;
 	}
 
 	

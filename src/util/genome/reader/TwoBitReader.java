@@ -1,12 +1,10 @@
 package util.genome.reader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.List;
 
-import util.genome.Genome;
 import util.genome.reader.query.LocationBoundedSequenceQuery;
 import util.genome.reader.query.LocationQuery;
 import util.genome.reader.query.SequenceQuery;
@@ -88,18 +86,6 @@ public class TwoBitReader extends AbstractGenomeReader{
 	 */
 	private int readInt() throws IOException{
 		return m_ByteSwap ? Integer.reverseBytes(m_GenomeFile.readInt()) : m_GenomeFile.readInt();
-	}
-
-	@Override
-	public void setUpdateMode(UpdateMode mode) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Genome getGenome() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

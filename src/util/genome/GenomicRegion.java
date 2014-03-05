@@ -66,7 +66,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	
 	public GenomicRegion(GenomicCoordinate start, GenomicCoordinate end){
 		if(!start.getChromosome().equals(end.getChromosome())){
-			throw new RuntimeException("Cannot create multiple chromosome regions");
+			throw new RuntimeException("Region start and end must be on the same chromosome");
 		}
 		if(start.compareTo(end) > 0){
 			//start should be before end, so flip them
@@ -91,6 +91,10 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	
 	private long computeSize(){
 		return m_Start.distance(m_End) + 1;
+	}
+	
+	public Chromosome getChromosome(){
+		return m_Start.getChromosome();
 	}
 	
 	public GenomicCoordinate getStart(){

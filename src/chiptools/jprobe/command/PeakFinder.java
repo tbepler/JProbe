@@ -22,7 +22,6 @@ import util.genome.peak.PeakGroup;
 import util.genome.peak.PeakSequence;
 import util.genome.reader.GenomeReader;
 import util.genome.reader.GenomeReaderFactory;
-import util.genome.reader.GenomeReader.UpdateMode;
 import util.genome.reader.query.LocationBoundedSequenceQuery;
 import util.genome.reader.query.LocationQuery;
 import util.genome.reader.query.SequenceQuery;
@@ -168,10 +167,9 @@ public class PeakFinder implements Command{
 			});
 		}
 		GenomeReader reader = GenomeReaderFactory.createGenomeReader(genome, l);
-		reader.setUpdateMode(UpdateMode.CHROM_ONLY);
 		List<LocationQuery> queries = new ArrayList<LocationQuery>();
 		for(Peak peak : peaks){
-			queries.add(new AbstractPeakQuery(peak, reader.getGenome()){
+			queries.add(new AbstractPeakQuery(peak){
 				private static final long serialVersionUID = 1L;
 
 				@Override

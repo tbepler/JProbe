@@ -36,6 +36,10 @@ public class ProgressEvent {
 		this(source, type, progress, maxProgress, message, false);
 	}
 	
+	public ProgressEvent(Object source, Type type, String message, boolean indeterminant){
+		this(source, type, 0, 0, message, indeterminant);
+	}
+	
 	public ProgressEvent(Object source, Type type, int progress, String message, boolean indeterminant){
 		this(source, type, progress, -1, message, indeterminant);
 	}

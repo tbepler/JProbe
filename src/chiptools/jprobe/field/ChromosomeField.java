@@ -21,12 +21,6 @@ public class ChromosomeField implements Field{
 	@Override
 	public Field parseString(String s) throws Exception {
 		try{
-			if(m_Chrom.hasReferenceGenome()){
-				if(!m_Chrom.getGenomicContext().hasChr(s)){
-					throw new Exception("Error: genome "+m_Chrom.getGenomicContext()+" does not contain a chromosome named "+s);
-				}
-				return new ChromosomeField(m_Chrom.getGenomicContext().getChr(s));
-			}
 			return new ChromosomeField(new Chromosome(s));
 		} catch(Exception e){
 			throw e;
@@ -35,9 +29,6 @@ public class ChromosomeField implements Field{
 
 	@Override
 	public boolean isValid(String s) {
-		if(m_Chrom.hasReferenceGenome()){
-			return m_Chrom.getGenomicContext().hasChr(s);
-		}
 		return true;
 	}
 

@@ -2,6 +2,7 @@ package util.genome.reader.query;
 
 import java.util.Comparator;
 
+import util.genome.Chromosome;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 
@@ -37,6 +38,10 @@ public abstract class LocationBoundedSequenceQuery extends SequenceQuery{
 	protected LocationBoundedSequenceQuery(String targetSequence, GenomicRegion searchRegion){
 		super(targetSequence);
 		m_Region = searchRegion;
+	}
+	
+	public Chromosome getChromosome(){
+		return m_Region.getChromosome();
 	}
 	
 	public GenomicRegion getRegion(){

@@ -32,7 +32,7 @@ public class Parser {
 		List<PeakSequence> peakSeqs = new ArrayList<PeakSequence>();
 		List<LocationQuery> queries = new ArrayList<LocationQuery>();
 		for(Peak p : peaks){
-			queries.add(new PeakQuery(p, reader.getGenome(), peakSeqs));
+			queries.add(new PeakQuery(p, peakSeqs));
 		}
 		reader.read(queries, new ArrayList<SequenceQuery>(), new ArrayList<LocationBoundedSequenceQuery>());
 		return new PeakSequenceGroup(peakSeqs);

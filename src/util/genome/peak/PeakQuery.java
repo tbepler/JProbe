@@ -2,7 +2,6 @@ package util.genome.peak;
 
 import java.util.List;
 
-import util.genome.Genome;
 import util.genome.GenomicSequence;
 
 public class PeakQuery extends AbstractPeakQuery{
@@ -10,8 +9,8 @@ public class PeakQuery extends AbstractPeakQuery{
 
 	private final List<PeakSequence> m_PeakSeqs;
 	
-	public PeakQuery(Peak peak, Genome genome, List<PeakSequence> peakSeqs) {
-		super(peak, genome);
+	public PeakQuery(Peak peak, List<PeakSequence> peakSeqs) {
+		super(peak);
 		m_PeakSeqs = peakSeqs;
 	}
 

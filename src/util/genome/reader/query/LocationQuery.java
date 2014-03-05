@@ -3,6 +3,7 @@ package util.genome.reader.query;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import util.genome.Chromosome;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
@@ -38,6 +39,10 @@ public abstract class LocationQuery implements Serializable{
 	
 	protected LocationQuery(GenomicRegion region){
 		m_Region = region;
+	}
+	
+	public Chromosome getChromosome(){
+		return m_Region.getChromosome();
 	}
 	
 	public GenomicRegion getRegion(){

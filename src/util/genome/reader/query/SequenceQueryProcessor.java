@@ -60,10 +60,10 @@ public class SequenceQueryProcessor implements QueryProcessor{
 	@Override
 	public void process(GenomicSequence next) {
 		//update sequence with next sequence
-		if(m_Seq != null){
-			m_Seq.join(next);
-		}else{
+		if(m_Seq == null || !next.getChromosome().equals(m_Seq.getChromosome())){
 			m_Seq = next;
+		}else{
+			m_Seq.join(next);
 		}
 		//process
 		for(SequenceQuery query : m_Queries){

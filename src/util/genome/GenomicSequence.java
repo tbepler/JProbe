@@ -52,7 +52,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		int endIndex = this.getIndexOf(end);
 		
 		String subSeq = m_Sequence.substring(startIndex, endIndex + 1);
-		GenomicRegion subRegion = new GenomicRegion(this.getGenomicContext(), start, end);
+		GenomicRegion subRegion = new GenomicRegion(start, end);
 		
 		return new GenomicSequence(subSeq, subRegion);
 	}
@@ -69,11 +69,8 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 * at the location
 	 */
 	public GenomicSequence[] split(GenomicCoordinate coord){
-		if(this.getGenomicContext() != coord.getGenomicContext()){
-			throw new RuntimeException("Error: cannot split this sequence around a coordinate from a different genome. "+this.getGenomicContext()+" and "+coord.getGenomicContext());
-		}
 		if(!m_Region.contains(coord)){
-			throw new RuntimeException("Error: coordinate "+coord+" does not fall within this sequence.");
+			throw new RuntimeException("Coordinate "+coord+" does not fall within this sequence.");
 		}
 		if(coord.equals(this.getStart())){
 			return new GenomicSequence[]{this, this};
@@ -126,6 +123,14 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	}
 	
 	/**
+	 * Returns the chromosome on which this sequence occurs.
+	 * @return
+	 */
+	public Chromosome getChromosome(){
+		return m_Region.getChromosome();
+	}
+	
+	/**
 	 * Returns the starting location of this GenomicSequence
 	 * @return a GenomicLocation representing the first position of this sequence
 	 */
@@ -148,11 +153,8 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 * @return a character representing the base within this GenomicSequence at the given GenomicLocation
 	 */
 	public char getBaseAt(GenomicCoordinate coord){
-		if(this.getGenomicContext() != coord.getGenomicContext()){
-			throw new RuntimeException("Error: cannot find base for a coordinate in a different genome. "+this.getGenomicContext()+" and "+coord.getGenomicContext());
-		}
 		if(!this.contains(coord)){
-			throw new RuntimeException("Error: this sequence does not contain "+coord);
+			throw new RuntimeException("This sequence does not contain "+coord);
 		}
 		return m_Sequence.charAt(this.getIndexOf(coord));
 	}
