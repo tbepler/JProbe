@@ -8,33 +8,52 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private static final String CHR_PREFIX = "[Cc][Hh][Rr]";
+	public static final Comparator<GenomicRegion> START_ASCENDING_COMPARATOR = new Comparator<GenomicRegion>(){
+
+		@Override
+		public int compare(GenomicRegion o1, GenomicRegion o2) {
+			return o1.compareByStart(o2);
+		}
+		
+	};
+	
+	public static final Comparator<GenomicRegion> START_DESCENDING_COMPARATOR = new Comparator<GenomicRegion>(){
+
+		@Override
+		public int compare(GenomicRegion o1, GenomicRegion o2) {
+			return -o1.compareByStart(o2);
+		}
+		
+	};
+	
+	public static final Comparator<GenomicRegion> END_ASCENDING_COMPARATOR = new Comparator<GenomicRegion>(){
+
+		@Override
+		public int compare(GenomicRegion o1, GenomicRegion o2) {
+			return o1.compareByEnd(o2);
+		}
+	
+	};
+	
+	public static final Comparator<GenomicRegion> END_DESCENDING_COMPARATOR = new Comparator<GenomicRegion>(){
+
+		@Override
+		public int compare(GenomicRegion o1, GenomicRegion o2) {
+			return -o1.compareByEnd(o2);
+		}
+		
+	};
+
 	private static final char CHR_SEP = ':';
 	private static final char LOC_SEP = '-';
-	
-	private static final String SAME_CHR_REGEX = "^"+CHR_PREFIX+".+"+CHR_SEP+"\\d+"+LOC_SEP+"\\d+$";
-	
+
 	public static GenomicRegion parseString(String s) throws ParsingException{
-		return parseString(null, s);
-	}
-	
-	public static GenomicRegion parseString(GenomicContext context, String s) throws ParsingException{
 		s = s.trim();
 		try{
-			if(s.matches(SAME_CHR_REGEX)){
-				Chromosome chr;
-				if(context != null){
-					chr = context.getChr(s.substring(0,s.indexOf(CHR_SEP)));
-				}else{
-					chr = new Chromosome(s.substring(0,s.indexOf(CHR_SEP)));
-				}
-				long start = Long.parseLong(s.substring(s.indexOf(CHR_SEP)+1, s.indexOf(LOC_SEP)));
-				long end = Long.parseLong(s.substring(s.indexOf(LOC_SEP)+1));
-				return new GenomicRegion(context, new GenomicCoordinate(context, chr, start), new GenomicCoordinate(context, chr, end));
-			}else{
-				String[] parts = s.split(String.valueOf(LOC_SEP));
-				return new GenomicRegion(context, GenomicCoordinate.parseString(context, parts[0].trim()), GenomicCoordinate.parseString(context, parts[1].trim()));
-			}
+			Chromosome chr = new Chromosome(s.substring(0,s.indexOf(CHR_SEP)));
+			long start = Long.parseLong(s.substring(s.indexOf(CHR_SEP)+1, s.indexOf(LOC_SEP)));
+			long end = Long.parseLong(s.substring(s.indexOf(LOC_SEP)+1));
+			return new GenomicRegion(new GenomicCoordinate(chr, start), new GenomicCoordinate(chr, end));
 		} catch (Exception e){
 			throw new ParsingException(e);
 		}
@@ -42,20 +61,12 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	
 	private final GenomicCoordinate m_Start;
 	private final GenomicCoordinate m_End;
-	private final GenomicContext m_Context;
 	private final long m_Size;
 	private final int m_Hash;
 	
-	public GenomicRegion(GenomicContext context, GenomicCoordinate start, GenomicCoordinate end){
-		if(context != start.getGenomicContext()){
-			throw new RuntimeException("Error: genomic coordinate "+start+" does not occur within the genome "+context);
-		}
-		if(context != end.getGenomicContext()){
-			throw new RuntimeException("Error: genomic coordinate "+end+" does not occur within the genome "+context);
-		}
-		m_Context = context;
-		if(m_Context == null && !start.getChromosome().equals(end.getChromosome())){
-			throw new RuntimeException("Error: cannot create multiple chromosome regions without a reference genome");
+	public GenomicRegion(GenomicCoordinate start, GenomicCoordinate end){
+		if(!start.getChromosome().equals(end.getChromosome())){
+			throw new RuntimeException("Cannot create multiple chromosome regions");
 		}
 		if(start.compareTo(end) > 0){
 			//start should be before end, so flip them
@@ -70,12 +81,12 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		m_Hash = this.computeHash();
 	}
 	
-	public GenomicRegion(GenomicCoordinate start, GenomicCoordinate end){
-		this(start.getGenomicContext(), start, end);
+	public GenomicRegion(Chromosome chrom, long start, long end){
+		this(new GenomicCoordinate(chrom, start), new GenomicCoordinate(chrom, end));
 	}
 	
 	private int computeHash(){
-		return new HashCodeBuilder(367, 821).append(m_Start).append(m_End).append(m_Context).toHashCode();
+		return new HashCodeBuilder(367, 821).append(m_Start).append(m_End).toHashCode();
 	}
 	
 	private long computeSize(){
@@ -94,14 +105,6 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		return m_Size;
 	}
 	
-	public GenomicContext getGenomicContext(){
-		return m_Context;
-	}
-	
-	public boolean hasReferenceGenome(){
-		return m_Context != null;
-	}
-	
 	public GenomicRegion increment(int numBases){
 		return new GenomicRegion(m_Start.increment(numBases), m_End.increment(numBases));
 	}
@@ -111,23 +114,14 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	}
 	
 	public boolean contains(GenomicCoordinate coordinate){
-		if(m_Context != coordinate.getGenomicContext()){
-			return false;
-		}
 		return m_Start.compareTo(coordinate) <= 0 && m_End.compareTo(coordinate) >= 0;
 	}
 	
 	public boolean contains(GenomicRegion other){
-		if(m_Context != other.getGenomicContext()){
-			return false;
-		}
 		return this.contains(other.m_Start) && this.contains(other.m_End);
 	}
 	
 	public boolean overlaps(GenomicRegion other){
-		if(m_Context != other.getGenomicContext()){
-			return false;
-		}
 		return other.contains(this) || this.contains(other.m_Start) || this.contains(other.m_End);
 	}
 	
@@ -148,15 +142,12 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 			return this;
 		}
 		if(this.contains(other.m_Start)){
-			return new GenomicRegion(m_Context, other.m_Start, m_End);
+			return new GenomicRegion(other.m_Start, m_End);
 		}
-		return new GenomicRegion(m_Context, m_Start, other.m_End);
+		return new GenomicRegion(m_Start, other.m_End);
 	}
 	
 	public boolean adjacentTo(GenomicRegion other){
-		if(m_Context != other.getGenomicContext()){
-			return false;
-		}
 		return !this.overlaps(other) && (m_End.increment(1).equals(other.m_Start) || m_Start.decrement(1).equals(other.m_End));
 	}
 	
@@ -170,12 +161,9 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	 * coordinate of the two regions
 	 */
 	public GenomicRegion union(GenomicRegion other){
-		if(m_Context != other.m_Context){
-			throw new RuntimeException("Error: cannot union regions with different GenomicContexts. "+m_Context+" != "+other.m_Context);
-		}
 		GenomicCoordinate newStart = m_Start.compareTo(other.m_Start) > 0 ? other.m_Start : m_Start;
 		GenomicCoordinate newEnd = m_End.compareTo(other.m_End) < 0 ? other.m_End : m_End;
-		return new GenomicRegion(m_Context, newStart, newEnd);
+		return new GenomicRegion(newStart, newEnd);
 	}
 	
 	/**
@@ -192,29 +180,20 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	 * @return an array of {left region, right region}
 	 */
 	public GenomicRegion[] split(GenomicCoordinate coordinate){
-		if(m_Context != coordinate.getGenomicContext()){
-			throw new RuntimeException("Error: this regions genome "+m_Context+" does not match the given coordinates genome "+coordinate.getGenomicContext());
-		}
 		if(!this.contains(coordinate)){
-			throw new RuntimeException("Error: the region "+this+" cannot be split around the coordinate "+coordinate);
+			throw new RuntimeException("The region "+this+" cannot be split around the coordinate "+coordinate);
 		}
 		if(m_Start.equals(coordinate)){
 			return new GenomicRegion[]{this, this};
 		}
-		GenomicRegion left = new GenomicRegion(m_Context, m_Start, coordinate.decrement(1));
-		GenomicRegion right = new GenomicRegion(m_Context, coordinate, m_End);
+		GenomicRegion left = new GenomicRegion(m_Start, coordinate.decrement(1));
+		GenomicRegion right = new GenomicRegion(coordinate, m_End);
 		return new GenomicRegion[]{left, right};
 	}
 	
 	@Override
 	public String toString(){
-		if(m_Start.getChromosome().equals(m_End.getChromosome())){
-			//chromosomes are the same, so write in condensed chromosome form
-			return m_Start.getChromosome().toString()+CHR_SEP+m_Start.getBaseIndex()+LOC_SEP+m_End.getBaseIndex();
-		}else{
-			//chromosomes are different, so write both chromosomes
-			return m_Start.toString() + LOC_SEP + m_End.toString();
-		}
+		return m_Start.getChromosome().toString()+CHR_SEP+m_Start.getBaseIndex()+LOC_SEP+m_End.getBaseIndex();
 	}
 	
 	@Override
@@ -223,7 +202,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		if(this == o) return true;
 		if(o instanceof GenomicRegion){
 			GenomicRegion other = (GenomicRegion) o;
-			return m_Start.equals(other.m_Start) && m_End.equals(other.m_End) && m_Context == other.m_Context;
+			return m_Start.equals(other.m_Start) && m_End.equals(other.m_End);
 		}
 		return false;
 	}
@@ -233,7 +212,15 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 		return m_Hash;
 	}
 	
-	protected int naturalCompareTo(GenomicRegion o){
+	protected int compareByEnd(GenomicRegion o){
+		if(o == null) return -1;
+		int endComp = m_End.compareTo(o.m_End);
+		if(endComp != 0) return endComp;
+		return m_Start.compareTo(o.m_End);
+	}
+	
+	protected int compareByStart(GenomicRegion o){
+		if(o == null) return -1;
 		int startComp = m_Start.compareTo(o.m_Start);
 		if(startComp != 0) return startComp;
 		return m_End.compareTo(o.m_End);
@@ -241,15 +228,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	
 	@Override
 	public int compareTo(GenomicRegion o) {
-		if(o == null) return -1;
-		if(m_Context != o.m_Context){
-			throw new RuntimeException("Error: cannot compare regions with different GenomicContexts. "+m_Context+" != "+o.m_Context);
-		}
-		if(m_Context == null){
-			return this.naturalCompareTo(o);
-		}
-		Comparator<GenomicRegion> comparator = m_Context.getStartAscendingComparator();
-		return comparator.compare(this, o);
+		return this.compareByStart(o);
 	}
 
 	

@@ -12,7 +12,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	
 	public GenomicSequence(String sequence, GenomicRegion region){
 		if(sequence.length() != region.getSize()){
-			throw new RuntimeException("Error: sequence and region are of different sizes");
+			throw new RuntimeException("Sequence and region are of different sizes");
 		}
 		m_Sequence = sequence;
 		m_Region = region;
@@ -23,16 +23,9 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return new HashCodeBuilder(439, 61).append(m_Region).append(m_Sequence).toHashCode();
 	}
 	
-	GenomicContext getGenomicContext(){
-		return m_Region.getGenomicContext();
-	}
-	
 	public GenomicSequence join(GenomicSequence other){
-		if(this.getGenomicContext() != other.getGenomicContext()){
-			throw new RuntimeException("Error: cannot join sequences from different genomes "+this.getGenomicContext()+" and "+other.getGenomicContext());
-		}
 		if(!m_Region.adjacentTo(other.getRegion()) && !m_Region.overlaps(other.getRegion())){
-			throw new RuntimeException("Error: cannot join two GenomicSequences that are not overlapping or adjacent");
+			throw new RuntimeException("Cannot join two GenomicSequences that are not overlapping or adjacent");
 		}
 		GenomicSequence first = m_Region.compareTo(other.getRegion()) < 1 ? this : other;
 		GenomicSequence second = first != this ? this : other;
@@ -46,11 +39,8 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	}
 	
 	public GenomicSequence subsequence(GenomicCoordinate start, GenomicCoordinate end){
-		if(this.getGenomicContext() != start.getGenomicContext() || this.getGenomicContext() != end.getGenomicContext()){
-			throw new RuntimeException("Error: GenomicSequence cannot be subsequenced using coordinates from different genomes");
-		}
 		if(!this.contains(start) || !this.contains(end)){
-			throw new RuntimeException("Error: cannot subsequence using coordinates not contained by this GenomicSequence");
+			throw new RuntimeException("Cannot subsequence using coordinates not contained by this GenomicSequence");
 		}
 		
 		if(start.compareTo(end) > 0){

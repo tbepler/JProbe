@@ -8,24 +8,31 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class Chromosome implements Comparable<Chromosome>, Serializable{
 	private static final long serialVersionUID = 1L;
 	
+	public static final Comparator<Chromosome> ASCENDING_COMPARATOR = new Comparator<Chromosome>(){
+
+		@Override
+		public int compare(Chromosome o1, Chromosome o2) {
+			return o1.naturalCompareTo(o2);
+		}
+		
+	};
+	
+	public static final Comparator<Chromosome> DESCENDING_COMPARATOR = new Comparator<Chromosome>(){
+
+		@Override
+		public int compare(Chromosome o1, Chromosome o2) {
+			return -o1.naturalCompareTo(o2);
+		}
+		
+	};
+	
 	public static final String CHR_TAG = "chr";
 	public static final String FASTA_CHR_TAG = ">"+CHR_TAG;
 	
 	private final String m_Id;
-	private final long m_Size;
-	private final GenomicContext m_Context;
 	private final int m_HashCode;
 	
 	public Chromosome(String id){
-		this(id, -1);
-	}
-	
-	public Chromosome(String id, long size){
-		this(null, id, size);
-	}
-	
-	public Chromosome(GenomicContext context, String id, long size){
-		m_Context = context;
 		if(id.startsWith(CHR_TAG)){
 			m_Id = id.substring(CHR_TAG.length()).trim();
 		}else if(id.startsWith(FASTA_CHR_TAG)){
@@ -33,38 +40,11 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 		}else{
 			m_Id = id.trim();
 		}
-		m_Size = size;
-		m_HashCode = new HashCodeBuilder(947, 569).append(m_Id).append(m_Size).append(m_Context).toHashCode();
-	}
-	
-	public GenomicContext getGenomicContext(){
-		return m_Context;
-	}
-	
-	public boolean hasReferenceGenome(){
-		return m_Context != null;
-	}
-	
-	public Chromosome nextChr(){
-		if(m_Context == null){
-			return null;
-		}
-		return m_Context.nextChr(this);
-	}
-	
-	public Chromosome prevChr(){
-		if(m_Context == null){
-			return null;
-		}
-		return m_Context.prevChr(this);
+		m_HashCode = new HashCodeBuilder(947, 569).append(m_Id).toHashCode();
 	}
 	
 	public String getId(){
 		return m_Id;
-	}
-	
-	public long getSize(){
-		return m_Size;
 	}
 	
 	@Override
@@ -83,7 +63,7 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 		if(this == o) return true;
 		if(o instanceof Chromosome){
 			Chromosome other = (Chromosome) o;
-			return m_Id.equals(other.m_Id) && m_Size == other.m_Size && m_Context == other.m_Context;
+			return m_Id.equals(other.m_Id);
 		}
 		return false;
 	}
@@ -110,11 +90,7 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 	@Override
 	public int compareTo(Chromosome o) {
 		if(o == null) return -1;
-		if(m_Context == null){
-			return this.naturalCompareTo(o);
-		}
-		Comparator<Chromosome> comparator = m_Context.getChrAscendingComparator();
-		return comparator.compare(this, o);
+		return this.naturalCompareTo(o);
 	}
 	
 }
