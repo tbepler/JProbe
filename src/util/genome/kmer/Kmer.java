@@ -4,6 +4,18 @@ import java.io.Serializable;
 
 public interface Kmer extends Serializable{
 	
+	public static class Score{
+		public final double ESCORE;
+		public final double INTENSITY;
+		public final double ZSCORE;
+		
+		public Score(double escore, double median, double zscore){
+			this.ESCORE = escore;
+			this.INTENSITY = median;
+			this.ZSCORE = zscore;
+		}
+	}
+	
 	/**
 	 * Tests whether the given word is scored by this kmer
 	 * @param word - the word to test

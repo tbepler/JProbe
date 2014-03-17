@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.util.*;
 
 public class UngappedKmer implements Kmer{
@@ -32,18 +31,6 @@ public class UngappedKmer implements Kmer{
 		}
 		
 		return new UngappedKmer(words);
-	}
-	
-	private static class Score{
-		public final double escore;
-		public final double median;
-		public final double zscore;
-		
-		public Score(double escore, double median, double zscore){
-			this.escore = escore;
-			this.median = median;
-			this.zscore = zscore;
-		}
 	}
 	
 	private final Map<String, Score> m_Words;
@@ -75,40 +62,32 @@ public class UngappedKmer implements Kmer{
 	 */
 	public double escore(String word){
 		if(m_Words.containsKey(word)){
-			Score s = m_Words.get(word);
-			return s.escore;
+			return m_Words.get(word).ESCORE;
 		}
 		throw new RuntimeException("Does not contain word "+word);
 	}
 	
-	/**
-	 * Returns an array containing the escore of each kmer (where k is the word length of this kmer object) of the given sequence
-	 * @param sequence - sequence to be scored
-	 * @return an array of escores
-	 */
 	public double[] escoreSequence(String sequence){
 		if(sequence.length() < m_WordLength){
-			throw new RuntimeException("Cannot score sequence shorter than word length");
+			throw new RuntimeException("Cannot escore sequence: "+sequence+". Sequence is shorter than kmer word length: "+m_WordLength+".");
 		}
-		double[] scores = new double[sequence.length() - m_WordLength + 1];
+		double[] scores = new double[sequence.length()];
+		//initialize scores to -infinity
 		for(int i=0; i<scores.length; i++){
-			String cur = sequence.substring(i, i+m_WordLength);
-			scores[i] = this.escore(cur);
+			scores[i] = Double.NEGATIVE_INFINITY;
+		}
+		//score each word and assign that score to each contained base if it is greater than
+		//the score currently assigned to that base
+		for(int i=0; i<this.numWords(sequence); i++){
+			String word = this.wordAt(sequence, i);
+			Double escore = this.escore(word);
+			for(int j=i; j<i+m_WordLength; j++){
+				if(scores[j] < escore){
+					scores[j] = escore;
+				}
+			}
 		}
 		return scores;
-	}
-	
-	/**
-	 * Returns the median value of the given word
-	 * @param word
-	 * @return
-	 */
-	public double median(String word){
-		if(m_Words.containsKey(word)){
-			Score s = m_Words.get(word);
-			return s.median;
-		}
-		throw new RuntimeException("Does not contain word "+word);
 	}
 	
 	/**
@@ -120,7 +99,7 @@ public class UngappedKmer implements Kmer{
 		Map<String, Score> words = new LinkedHashMap<String, Score>();
 		for(String word : m_Words.keySet()){
 			Score s = m_Words.get(word);
-			if(s.escore >= escore){
+			if(s.ESCORE >= escore){
 				words.put(word, s);
 			}
 		}
@@ -136,7 +115,7 @@ public class UngappedKmer implements Kmer{
 		Map<String, Score> words = new LinkedHashMap<String, Score>();
 		for(String word : m_Words.keySet()){
 			Score s = m_Words.get(word);
-			if(s.escore <= escore){
+			if(s.ESCORE <= escore){
 				words.put(word, s);
 			}
 		}
@@ -147,29 +126,77 @@ public class UngappedKmer implements Kmer{
 	public int[] getWordLengths() {
 		return new int[]{m_WordLength};
 	}
+	
+	protected int numWords(String seq){
+		return seq.length() - m_WordLength + 1;
+	}
+	
+	protected String wordAt(String seq, int index){
+		return seq.substring(index, index + m_WordLength);
+	}
 
 	@Override
 	public double intensity(String word) {
-		// TODO Auto-generated method stub
-		return 0;
+		if(m_Words.containsKey(word)){
+			return m_Words.get(word).INTENSITY;
+		}
+		throw new RuntimeException("Cannot find intensity for word: "+word+". Word is not contained by this kmer.");
 	}
 
 	@Override
 	public double[] intensitySequence(String sequence) {
-		// TODO Auto-generated method stub
-		return null;
+		if(sequence.length() < m_WordLength){
+			throw new RuntimeException("Cannot intensity score sequence: "+sequence+". Sequence is shorter than kmer word length: "+m_WordLength+".");
+		}
+		double[] scores = new double[sequence.length()];
+		//initialize scores to -infinity
+		for(int i=0; i<scores.length; i++){
+			scores[i] = Double.NEGATIVE_INFINITY;
+		}
+		//score each word and assign that score to each contained base if it is greater than 
+		//that base's currently assigned score
+		for(int i=0; i< this.numWords(sequence); i++){
+			String word = this.wordAt(sequence, i);
+			double intensity = this.intensity(word);
+			for(int j=i; j<i+m_WordLength; j++){
+				if(scores[j] < intensity){
+					scores[j] = intensity;
+				}
+			}
+		}
+		return scores;
 	}
 
 	@Override
 	public double zscore(String word) {
-		// TODO Auto-generated method stub
-		return 0;
+		if(m_Words.containsKey(word)){
+			return m_Words.get(word).ZSCORE;
+		}
+		throw new RuntimeException("Cannot find zscore for word: "+word+". Word is not contained by this kmer.");
 	}
 
 	@Override
 	public double[] zscoreSequence(String sequence) {
-		// TODO Auto-generated method stub
-		return null;
+		if(sequence.length() < m_WordLength){
+			throw new RuntimeException("Cannot zscore sequence: "+sequence+". Sequence is shorter than kmer word length: "+m_WordLength+".");
+		}
+		double[] scores = new double[sequence.length()];
+		//initialize scores to -infinity
+		for(int i=0; i<scores.length; i++){
+			scores[i] = Double.NEGATIVE_INFINITY;
+		}
+		//score each word and assign that score to each contained base if it is
+		//greater than the current score of that base
+		for(int i=0; i<this.numWords(sequence); i++){
+			String word = this.wordAt(sequence, i);
+			double zscore = this.zscore(word);
+			for(int j=i; j<i+m_WordLength; j++){
+				if(scores[j] < zscore){
+					scores[j] = zscore;
+				}
+			}
+		}
+		return scores;
 	}
 	
 	
