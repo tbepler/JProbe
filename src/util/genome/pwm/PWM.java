@@ -60,7 +60,12 @@ public class PWM implements Serializable{
 				if(line.startsWith(T_LINE)){
 					t = parse(line);
 				}
+				//check if all bases have been read
+				if(!a.isEmpty() && !c.isEmpty() && !g.isEmpty() && !t.isEmpty()){
+					break;
+				}
 			}
+			reader.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
