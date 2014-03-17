@@ -1,1 +1,2 @@
 PeakFinder---This command extracts peak sequences from the genome.
+ProbeGenerator---This command creates probes by locating potential binding sites within sequences.

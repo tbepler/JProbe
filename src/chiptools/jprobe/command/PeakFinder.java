@@ -104,13 +104,18 @@ public class PeakFinder implements Command{
 		}
 	}
 	
+	protected void printUsage(){
+		System.out.println(m_Name+" - "+m_Description);
+		System.out.println(USAGE);
+	}
+	
 	protected Config parseArgs(String[] args){
 		InputStream oin = System.in;
 		PrintStream oout = System.out;
 		File genome = null;
 		boolean suppress = false;
 		if(args.length == 0){
-			System.out.println(USAGE);
+			this.printUsage();;
 			return null;
 		}
 		for(int i=0; i<args.length; i++){
@@ -118,7 +123,7 @@ public class PeakFinder implements Command{
 				suppress = true;
 			}
 			if(args[i].equals(HELP_TAG)){
-				System.out.println(USAGE);
+				this.printUsage();;
 				return null;
 			}
 			if(args[i].equals(GENOME_TAG) && i+1<args.length){

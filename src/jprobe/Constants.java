@@ -1,8 +1,6 @@
 package jprobe;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +9,7 @@ import java.util.HashSet;
 public class Constants {
 	
 	public static final String NAME = "JProbe";
-	public static final String VERSION = "v0.5.0";
+	public static final String VERSION = "v0.5.1";
 	public static final String AUTHOR = "Tristan Bepler";
 	
 	public static final String HELP_FILE_PATH = "/jprobe/resources/help.txt";
