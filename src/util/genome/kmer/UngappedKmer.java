@@ -33,6 +33,17 @@ public class UngappedKmer implements Kmer{
 		return new UngappedKmer(words);
 	}
 	
+	private static String UNGAPPED_REGEX = "^[AaTtGgCc]$";
+	
+	public static boolean isUngapped(Map<String, Score> motifs){
+		for(String motif : motifs.keySet()){
+			if(!motif.matches(UNGAPPED_REGEX)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	private final Map<String, Score> m_Words;
 	private final int m_WordLength;
 
