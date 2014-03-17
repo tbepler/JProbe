@@ -28,7 +28,7 @@ public class Configuration {
 	private static final Debug DEFAULT_DEBUG_LEVEL = Debug.LOG;
 	private static final Mode DEFAULT_MODE = Mode.INTERACTIVE;
 	private static final String DEFAULT_STORAGE_CLEAN = "onFirstInit";
-	private static final String DEFAULT_AUTODEPLOY_DIRECTORY = "plugins";
+	private static final String DEFAULT_AUTODEPLOY_DIRECTORY = Launcher.JAR_DIR + File.separator + "plugins";
 	private static final String DEFAULT_LOG_FILE = "jprobe.log";
 	private static final String DEFAULT_ERROR_LOG_FILE = "jprobe_error.log";
 		

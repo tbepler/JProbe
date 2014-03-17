@@ -2,7 +2,7 @@
 debug: 1
 //the mode that jprobe will be started in when no arguments are passed
 //values: command or interactive
-default_mode: command
+default_mode: interactive
 autodeploy_plugin_directory: plugins
 felix_storage_clean: onFirstInit
 log_file: jprobe.log
