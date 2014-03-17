@@ -2,18 +2,44 @@ package util.genome.kmer;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public interface Kmer extends Serializable{
 	
 	public static class Score{
 		public final double ESCORE;
 		public final double INTENSITY;
 		public final double ZSCORE;
+		private final int m_Hash;
 		
 		public Score(double escore, double median, double zscore){
 			this.ESCORE = escore;
 			this.INTENSITY = median;
 			this.ZSCORE = zscore;
+			m_Hash = new HashCodeBuilder(61, 101).append(ESCORE).append(INTENSITY).append(ZSCORE).toHashCode();
 		}
+		
+		@Override
+		public String toString(){
+			return String.valueOf(ESCORE) + "\t" + String.valueOf(INTENSITY) + "\t" +String.valueOf(ZSCORE);
+		}
+		
+		@Override
+		public int hashCode(){
+			return m_Hash;
+		}
+		
+		@Override
+		public boolean equals(Object o){
+			if(o == null) return false;
+			if(o == this) return true;
+			if(o instanceof Score){
+				Score other = (Score) o;
+				return this.ESCORE == other.ESCORE && this.INTENSITY == other.INTENSITY && this.ZSCORE == other.ZSCORE;
+			}
+			return false;
+		}
+		
 	}
 	
 	/**

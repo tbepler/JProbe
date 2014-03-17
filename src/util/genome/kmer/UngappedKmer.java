@@ -36,7 +36,7 @@ public class UngappedKmer implements Kmer{
 	private final Map<String, Score> m_Words;
 	private final int m_WordLength;
 
-	protected UngappedKmer(Map<String, Score> words){
+	UngappedKmer(Map<String, Score> words){
 		m_Words = words;
 
 		int length = 0;
