@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import util.genome.GenomicRegion;
+import util.genome.GenomicSequence;
 import util.genome.kmer.Kmer;
 import util.genome.kmer.Kmers;
 import util.genome.peak.PeakSequence;
@@ -163,12 +165,15 @@ public class ProbeGenerator implements Command{
 		try {
 			while((line = reader.readLine()) != null){
 				try{
-					PeakSequence peakSeq = PeakSequence.parsePeakSequence(line);
+					//PeakSequence peakSeq = PeakSequence.parsePeakSequence(line);
+					String[] tokens = line.split("\\s");
+					GenomicSequence seq = new GenomicSequence(tokens[0], GenomicRegion.parseString(tokens[1]));
+					String name = tokens.length > 2 && !tokens[2].equals(".") ? tokens[2] + "_probe" : "probe";
 					//System.err.println("Parsing peak "+peakSeq.getName());
 					//long time = System.currentTimeMillis();
 					List<Probe> peakProbes = ProbeUtils.extractFrom(
-							peakSeq.getGenomicSequence(),
-							peakSeq.getName()+"_probe",
+							seq,
+							name,
 							config.KMER,
 							config.PWM,
 							config.PROBELEN,
