@@ -71,6 +71,9 @@ public class JProbe implements JProbeCore{
 				+ "util.genome.reader.query;version=1.0.0,"
 				+ "util.genome.reader.threaded;version=1.0.0,"
 				+ "util.genome.peak;version=1.0.0,"
+				+ "util.genome.kmer;version=1.0.0,"
+				+ "util.genome.probe;version=1.0.0,"
+				+ "util.genome.pwm;version=1.0.0,"
 				+ "util.xmlserializer;version=1.0.0");
 		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,"
 				+ "javax.swing.*");

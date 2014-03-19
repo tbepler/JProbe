@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.*;
 
+import util.DNAUtils;
+
 public class PWM implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -123,6 +125,32 @@ public class PWM implements Serializable{
 			return score;
 		}
 		throw new RuntimeException("Cannot score word: "+word+". Word length is not the same as PWM length: "+this.length()+".");
+	}
+	
+	public double score(String seq, int start, int stop){
+		int len = stop-start;
+		if(len == this.length()){
+			double score = 0;
+			for(int i=start; i<stop; i++){
+				char base = seq.charAt(i);
+				score += m_Scores[getBaseIndex(base)][i-start];
+			}
+			return score;
+		}
+		throw new RuntimeException("Cannot score seq: "+seq+" between "+start+" and "+stop+". "+len+" is not the same as PWM length: "+this.length()+".");
+	}
+	
+	public double scoreReverseCompliment(String seq, int start, int stop){
+		int len = stop-start;
+		if(len == this.length()){
+			double score = 0;
+			for(int i=start; i<stop; i++){
+				char base = DNAUtils.compliment(seq.charAt(i));
+				score += m_Scores[getBaseIndex(base)][this.length() - (i-start) - 1];
+			}
+			return score;
+		}
+		throw new RuntimeException("Cannot score reverse compliment of seq: "+seq+" between "+start+" and "+stop+". "+len+" is not the same as PWM length: "+this.length()+".");
 	}
 	
 	/**

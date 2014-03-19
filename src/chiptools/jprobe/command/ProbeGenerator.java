@@ -6,9 +6,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import util.genome.kmer.Kmer;
 import util.genome.kmer.Kmers;
+import util.genome.peak.PeakSequence;
+import util.genome.probe.Probe;
+import util.genome.probe.ProbeGroup;
+import util.genome.probe.ProbeUtils;
 import chiptools.Constants;
 import jprobe.services.JProbeCore;
 import jprobe.services.command.Command;
@@ -148,7 +156,54 @@ public class ProbeGenerator implements Command{
 			this.printUsage();
 			return;
 		}
-		
+		//System.err.println("Args parsed");
+		Queue<Probe> probes = new PriorityQueue<Probe>();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		String line;
+		try {
+			while((line = reader.readLine()) != null){
+				try{
+					PeakSequence peakSeq = PeakSequence.parsePeakSequence(line);
+					//System.err.println("Parsing peak "+peakSeq.getName());
+					//long time = System.currentTimeMillis();
+					List<Probe> peakProbes = ProbeUtils.extractFrom(
+							peakSeq.getGenomicSequence(),
+							peakSeq.getName()+"_probe",
+							config.KMER,
+							config.PWM,
+							config.PROBELEN,
+							config.BINDINGSITE,
+							config.WINDOW,
+							config.ESCORE
+							);
+					//System.err.println("Peak parsed. dt = "+(System.currentTimeMillis() - time));
+					probes.addAll(peakProbes);
+				} catch (Exception e){
+					//proceed
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ProbeGroup group = new ProbeGroup(probes);
+		System.out.println(group);
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

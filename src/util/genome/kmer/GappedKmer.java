@@ -96,6 +96,11 @@ public class GappedKmer implements Kmer{
 		return maxEScore(scores);
 	}
 	
+	@Override 
+	public double escore(String seq, int start, int end){
+		return this.escore(seq.substring(start, end)); 
+	}
+	
 	protected static double maxEScore(Collection<Score> scores){
 		double escore = Double.NEGATIVE_INFINITY;
 		for(Score s : scores){
@@ -154,6 +159,11 @@ public class GappedKmer implements Kmer{
 			}
 		}
 		return scores;
+	}
+	
+	@Override
+	public double[] escoreSequence(String sequence, int start, int end){
+		return this.escoreSequence(sequence.substring(start, end));
 	}
 
 	@Override

@@ -18,6 +18,9 @@ public class ProbeUtils {
 		return new Probe(revComp, p.getRegion(), p.getName(), revStrand, p.isMutant());
 	}
 	
+	private static long scorePWM;
+	private static long scoreKmer;
+	
 	public static List<Probe> extractFrom(
 			GenomicSequence seq,
 			String name,
@@ -29,7 +32,29 @@ public class ProbeUtils {
 			double escoreThreshhold
 			){
 		
-		Collection<Probe> probes = new HashSet<Probe>();
+		Collection<Probe> probes = new LinkedHashSet<Probe>();
+//		//iterate over each subsequence of size bindingSiteLength within seq
+//		String sequence = seq.getSequence();
+//		int count = 1;
+//		for(int i=0; i<sequence.length() - bindingSiteLength + 1; i++){
+//			//check if the binding site meets the threshhold criteria
+//			int end = i + bindingSiteLength;
+//			if(meetsThreshhold(score(sequence, i, end, kmer), escoreThreshhold)){
+//				//scan window around binding site with the PWM for best scoring region
+//				int centerStart = scanWindow(sequence, i, end, pwm, windowSize);
+//				if(centerStart > 0){
+//					int centerEnd = centerStart + pwm.length();
+//					//create a probe centered on the center region
+//					Probe p = createProbe(seq, centerStart, centerEnd, name + count, probeLength);
+//					if(p != null && !probes.contains(p)){
+//						probes.add(p);
+//						count++;
+//					}
+//				}
+//			}
+//		}
+		//scorePWM = 0;
+		//scoreKmer = 0;
 		//iterate over each subsequence of size bindingSiteLength within seq
 		GenomicCoordinate stop = seq.getEnd().decrement(bindingSiteLength - 2);
 		GenomicCoordinate start = seq.getStart();
@@ -42,7 +67,7 @@ public class ProbeUtils {
 				GenomicRegion center = scanWindow(seq, bindingSite.getRegion(), pwm, windowSize);
 				if(center != null){
 					//create a probe centered on the center region
-					Probe p = createProbe(seq, center, name + "_" + count, probeLength);
+					Probe p = createProbe(seq, center, name + count, probeLength);
 					if(p != null && !probes.contains(p)){
 						probes.add(p);
 						count++;
@@ -52,7 +77,8 @@ public class ProbeUtils {
 			start = start.increment(1);
 		}
 		List<Probe> probeList = new ArrayList<Probe>(probes);
-		Collections.sort(probeList);
+		//System.err.println("PWM Score time = "+scorePWM+", Kmer Score time = "+scoreKmer);
+		//System.err.println(kmer.getClass());
 		return probeList;
 	}
 	
@@ -76,6 +102,27 @@ public class ProbeUtils {
 		return new Probe(probeSeq, name);
 	}
 	
+	private static Probe createProbe(GenomicSequence seq, int centerStart, int centerEnd, String name, int probeLength){
+		int flankLength = probeLength - (centerEnd-centerStart);
+		int start;
+		int end;
+		//if flanklength is odd, then take 1 base less from the right
+		if(flankLength % 2 == 1){
+			start = centerStart - (flankLength/2 + 1);
+			end = centerEnd + (flankLength/2);
+		}else{
+			start = centerStart - (flankLength/2);
+			end = centerEnd + (flankLength/2);
+		}
+		//make sure start and end are in bounds
+		if(start < 0 || end > seq.length()){
+			return null;
+		}
+		String sequence = seq.getSequence().substring(start, end);
+		GenomicRegion region = new GenomicRegion(seq.getStart().increment(start), seq.getStart().increment(end-1));
+		return new Probe(sequence, region, name);
+	}
+	
 	private static GenomicRegion scanWindow(GenomicSequence seq, GenomicRegion bindingSite, PWM pwm, int windowSize){
 		GenomicCoordinate windowStart = bindingSite.getStart().decrement(windowSize);
 		if(windowStart.compareTo(seq.getStart()) < 0) windowStart = seq.getStart();
@@ -86,21 +133,50 @@ public class ProbeUtils {
 		//score each region of size pwm.length() within the window region and keep the highest scoring region
 		GenomicRegion best = null;
 		double bestScore = Double.NEGATIVE_INFINITY;
+		//System.err.println("PWM length: "+pwm.length());
 		GenomicRegion cur = new GenomicRegion(window.getStart(), window.getStart().increment(pwm.length() - 1));
 		while(cur.getEnd().compareTo(window.getEnd()) <= 0){
 			GenomicSequence curSeq = seq.subsequence(cur);
+			//System.err.println("Scoring: "+curSeq);
 			double score = score(curSeq, pwm);
+			//System.err.println("Score = "+score);
 			if(score > bestScore){
 				bestScore = score;
 				best = cur;
 			}
-			cur.increment(1);
+			cur = cur.increment(1);
 		}
 		return best;
 	}
 	
+	private static int scanWindow(String seq, int bStart, int bStop, PWM pwm, int windowSize){
+		int start = bStart - windowSize;
+		int stop = bStop + windowSize;
+		if(start < 0) start = 0;
+		if(stop > seq.length()) stop = seq.length();
+		if(stop - start < pwm.length()) return -1;
+		//score each region of size pwm.length() within the window region and keep the highest scoring region
+		int bestStart = -1;
+		double bestScore = Double.NEGATIVE_INFINITY;
+		for(int i=start; i<stop-pwm.length()+1; i++){
+			double score = score(seq, i, i+pwm.length(), pwm);
+			if(score > bestScore){
+				bestScore = score;
+				bestStart = i;
+			}
+		}
+		return bestStart;
+	}
+	
+	private static double score(String seq, int start, int stop, PWM pwm){
+		return Math.max(pwm.score(seq, start, stop), pwm.scoreReverseCompliment(seq, start, stop));
+	}
+	
 	private static double score(GenomicSequence seq, PWM pwm){
-		return Math.max(pwm.score(seq.getSequence()), pwm.score(DNAUtils.reverseCompliment(seq.getSequence())));
+		//long start = System.currentTimeMillis();
+		double s = Math.max(pwm.score(seq.getSequence()), pwm.score(DNAUtils.reverseCompliment(seq.getSequence())));
+		//scorePWM += System.currentTimeMillis() - start;
+		return s;
 	}
 	
 	private static boolean meetsThreshhold(double[] scores, double threshhold){
@@ -111,7 +187,14 @@ public class ProbeUtils {
 	}
 	
 	private static double[] score(GenomicSequence seq, Kmer kmer){
-		return kmer.escoreSequence(seq.getSequence());
+		//long start = System.currentTimeMillis();
+		double[] s = kmer.escoreSequence(seq.getSequence());
+		//scoreKmer += System.currentTimeMillis() - start;
+		return s;
+	}
+	
+	private static double[] score(String seq, int start, int end, Kmer kmer){
+		return kmer.escoreSequence(seq, start, end);
 	}
 	
 	

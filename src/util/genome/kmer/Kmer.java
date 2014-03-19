@@ -62,6 +62,8 @@ public interface Kmer extends Serializable{
 	 */
 	public double escore(String word);
 	
+	public double escore(String seq, int start, int end);
+	
 	/**
 	 * Returns an array containing the highest escore that is associated with each nucleotide. That is
 	 * the highest escore of any word scored by this kmer containing that nucleotide.
@@ -69,6 +71,8 @@ public interface Kmer extends Serializable{
 	 * @return an array containing an escore for each nucleotide in the sequence
 	 */
 	public double[] escoreSequence(String sequence);
+	
+	public double[] escoreSequence(String seq, int start, int end);
 	
 	/**
 	 * Returns the intensity of the given word

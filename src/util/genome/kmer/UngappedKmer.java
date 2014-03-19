@@ -39,6 +39,12 @@ public class UngappedKmer implements Kmer{
 		throw new RuntimeException("Does not contain word "+word);
 	}
 	
+	@Override
+	public double escore(String seq, int start, int end){
+		return this.escore(seq.substring(start, end));
+	}
+	
+	@Override
 	public double[] escoreSequence(String sequence){
 		if(sequence.length() < m_WordLength){
 			throw new RuntimeException("Cannot escore sequence: "+sequence+". Sequence is shorter than kmer word length: "+m_WordLength+".");
@@ -53,6 +59,30 @@ public class UngappedKmer implements Kmer{
 		for(int i=0; i<this.numWords(sequence); i++){
 			String word = this.wordAt(sequence, i);
 			Double escore = this.escore(word);
+			for(int j=i; j<i+m_WordLength; j++){
+				if(scores[j] < escore){
+					scores[j] = escore;
+				}
+			}
+		}
+		return scores;
+	}
+	
+	@Override
+	public double[] escoreSequence(String sequence, int start, int end){
+		int len = end - start;
+		if(len < m_WordLength){
+			throw new RuntimeException("Cannot escore sequence: "+sequence+" between "+start+" and "+end+". "+len+" is shorter than kmer word length: "+m_WordLength+".");
+		}
+		double[] scores = new double[len];
+		//initialize scores to -infinity
+		for(int i=0; i<scores.length; i++){
+			scores[i] = Double.NEGATIVE_INFINITY;
+		}
+		//score each word and assign that score to each contained base if it is greater than
+		//the score currently assigned to that base
+		for(int i=0; i<len-m_WordLength+1; i++){
+			Double escore = this.escore(sequence, start+i, start+i+m_WordLength);
 			for(int j=i; j<i+m_WordLength; j++){
 				if(scores[j] < escore){
 					scores[j] = escore;

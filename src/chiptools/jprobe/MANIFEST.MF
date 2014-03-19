@@ -6,6 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: chiptools.jprobe.ChiptoolsActivator
 Bundle-Vendor: Tristan Bepler
 Bundle-Localization: plugin
-Import-Package: org.osgi.framework,jprobe.services,jprobe.services.function,jprobe.services.data,jprobe.services.command,plugins.genome.services,util.genome.peak,util.genome,util.genome.reader,util.genome.reader.query,util.progress,util
+Import-Package: org.osgi.framework,jprobe.services,jprobe.services.function,jprobe.services.data,jprobe.services.command,plugins.genome.services,util.genome.peak,util.genome,util.genome.reader,util.genome.reader.query,util.genome.kmer,util.genome.probe,util.genome.pwm,util.progress,util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: chiptools.jprobe.data, chiptools.jprobe.field
