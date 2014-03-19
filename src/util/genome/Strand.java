@@ -21,6 +21,17 @@ public enum Strand {
 		}
 	}
 	
+	public static Strand reverse(Strand s){
+		switch(s){
+		case PLUS:
+			return MINUS;
+		case MINUS:
+			return PLUS;
+		default:
+			return s;
+		}
+	}
+	
 	public static Strand parseStrand(String s){
 		if(s.equals(PLUS.toString())) return PLUS;
 		if(s.equals(MINUS.toString())) return MINUS;

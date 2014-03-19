@@ -61,6 +61,10 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return this.subsequence(start, this.getEnd());
 	}
 	
+	public GenomicSequence subsequence(GenomicRegion region){
+		return this.subsequence(region.getStart(), region.getEnd());
+	}
+	
 	/**
 	 * Splits this GenomicSequence into 2 GenomicSequences around the given GenomicLocation. The second sequence
 	 * will start at the location, while the first sequence will end just before the given location.
