@@ -28,7 +28,7 @@ public class Configuration {
 	private static final Debug DEFAULT_DEBUG_LEVEL = Debug.LOG;
 	private static final Mode DEFAULT_MODE = Mode.INTERACTIVE;
 	private static final String DEFAULT_STORAGE_CLEAN = "onFirstInit";
-	private static final String DEFAULT_AUTODEPLOY_DIRECTORY = Launcher.JAR_DIR + File.separator + "plugins";
+	private static final String DEFAULT_AUTODEPLOY_DIRECTORY = "plugins";
 	private static final String DEFAULT_LOG_FILE = "jprobe.log";
 	private static final String DEFAULT_ERROR_LOG_FILE = "jprobe_error.log";
 		
@@ -42,7 +42,7 @@ public class Configuration {
 	private static final String DEFAULT_FILE = "//debug values: 0=off, 1=log, 2=full\n"+TAG_DEBUG_LEVEL+": "+
 	DEFAULT_DEBUG_LEVEL+"\n"+ "//the mode that jprobe will be started in when no arguments are passed\n//values: "+Mode.COMMAND+
 	" or "+Mode.INTERACTIVE +"\n"+ TAG_MODE+": "+ DEFAULT_MODE+"\n"+TAG_AUTODEPLOY_DIRECTORY+": "+DEFAULT_AUTODEPLOY_DIRECTORY+"\n"+TAG_STORAGE_CLEAN+
-	": "+DEFAULT_STORAGE_CLEAN+"\n"+TAG_LOG_FILE+": "+DEFAULT_LOG_FILE+"\n"+TAG_ERROR_LOG_FILE+": "+DEFAULT_ERROR_LOG_FILE;
+	": "+DEFAULT_STORAGE_CLEAN+"\n"+TAG_LOG_FILE+": "+DEFAULT_LOG_FILE+"\n"+TAG_ERROR_LOG_FILE+": "+DEFAULT_ERROR_LOG_FILE+"\n";
 	
 	private enum Tag{
 		DEBUG,
@@ -103,6 +103,8 @@ public class Configuration {
 				//do nothing
 			}
 		}
+		errorLogFile = errorLogFile.startsWith(File.separator) ? errorLogFile : Launcher.JAR_DIR + File.separator + errorLogFile;
+		logFile = logFile.startsWith(File.separator) ? logFile : Launcher.JAR_DIR + File.separator + logFile;
 		Debug.setLevel(debugLevel);
 		ErrorHandler.getInstance().init(new TimeStampJournal(new File(errorLogFile)));
 		Log.getInstance().init(new TimeStampJournal(new File(logFile)));
@@ -161,7 +163,7 @@ public class Configuration {
 	}
 	
 	public String getAutoDeployPluginDirectory(){
-		return autoDeployPluginDirectory;
+		return autoDeployPluginDirectory.startsWith(File.separator) ? autoDeployPluginDirectory : Launcher.JAR_DIR + File.separator + autoDeployPluginDirectory;
 	}
 	
 	public String getFelixStorageClean(){
