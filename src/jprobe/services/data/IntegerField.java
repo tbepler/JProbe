@@ -27,6 +27,11 @@ public abstract class IntegerField implements Field{
 	}
 	
 	@Override
+	public String toString(){
+		return this.asString();
+	}
+	
+	@Override
 	public String asString(){
 		return String.valueOf(this.getValue());
 	}

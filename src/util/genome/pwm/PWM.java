@@ -111,6 +111,16 @@ public class PWM implements Serializable{
 	}
 	
 	/**
+	 * Returns the score of the given base at the given index
+	 * @param base
+	 * @param index
+	 * @return
+	 */
+	public double score(char base, int index){
+		return m_Scores[getBaseIndex(base)][index];
+	}
+	
+	/**
 	 * Returns the score of the given word according to this PWM. The word score is the sum of the (char,position) scores.
 	 * @param word - sequence to be scored by this PWM
 	 * @return the summed position scores
