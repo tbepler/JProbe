@@ -1,31 +1,26 @@
 package util.genome.kmer;
 
 import java.util.*;
+import java.util.Map.Entry;
 
+import util.Dictionary;
 import util.ArrayUtils;
 
 public class GappedKmer implements Kmer{
 	private static final long serialVersionUID = 1L;
 	
-	private final Map<Integer, Map<String, Score>> m_Words = new HashMap<Integer, Map<String, Score>>();
+	private final Dictionary<String, Score> m_Words = new Dictionary<String, Score>('.');
 	private final int[] m_MotifLens;
 	
 	GappedKmer(Map<String, Score> words){
-		for(String word : words.keySet()){
-			int len = word.length();
-			Score score = words.get(word);
-			if(m_Words.containsKey(len)){
-				Map<String, Score> lenWords = m_Words.get(len);
-				lenWords.put(word, score);
-			}else{
-				Map<String, Score> lenWords = new HashMap<String, Score>();
-				lenWords.put(word, score);
-				m_Words.put(len, lenWords);
-			}
+		Set<Integer> sizes = new HashSet<Integer>();
+		for(Entry<String,Score> e : words.entrySet()){
+			sizes.add(e.getKey().length());
+			m_Words.put(e.getKey(), e.getValue());
 		}
-		m_MotifLens = new int[m_Words.size()];
+		m_MotifLens = new int[sizes.size()];
 		int i = 0;
-		for(int len : m_Words.keySet()){
+		for(int len : sizes){
 			m_MotifLens[i] = len;
 			i++;
 		}
@@ -53,15 +48,7 @@ public class GappedKmer implements Kmer{
 
 	@Override
 	public boolean contains(String word) {
-		int len = word.length();
-		if(m_Words.containsKey(len)){
-			for(String motif : m_Words.get(len).keySet()){
-				if(matches(word, motif)){
-					return true;
-				}
-			}
-		}
-		return false;
+		return m_Words.contains(word);
 	}
 
 	@Override
@@ -75,17 +62,10 @@ public class GappedKmer implements Kmer{
 	 * @return
 	 */
 	protected Collection<Score> getScores(String word){
-		int len = word.length();
-		if(!m_Words.containsKey(len)){
+		if(!m_Words.contains(word)){
 			throw new RuntimeException("Kmer does not contain word: "+word+".");
 		}
-		Map<String, Score> motifScores = m_Words.get(len);
-		Collection<Score> scores = new HashSet<Score>();
-		for(String motif : motifScores.keySet()){
-			if(matches(word, motif)){
-				scores.add(motifScores.get(motif));
-			}
-		}
+		List<Score> scores = m_Words.get(word);
 		return scores;
 		
 	}

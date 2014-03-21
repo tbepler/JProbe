@@ -159,6 +159,7 @@ public class ProbeGenerator implements Command{
 			return;
 		}
 		//System.err.println("Args parsed");
+		//System.err.println("Kmer type: "+config.KMER.getClass());
 		Queue<Probe> probes = new PriorityQueue<Probe>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line;

@@ -41,7 +41,7 @@ public class Kmers {
 	}
 	
 	
-	private static String UNGAPPED_REGEX = "^[AaTtGgCc]+$";
+	private static String UNGAPPED_REGEX = "^[AaTtGgCc]$";
 	
 	public static boolean isUngapped(Map<String, Score> motifs){
 		for(String motif : motifs.keySet()){
