@@ -114,7 +114,7 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	@Override
 	public void execute() {
 		//this.monitor = new ProgressMonitor(null, thread.function.getName(), null, 0, PROGRESS_BOUND);
-		this.m_Monitor = new ProgressWindow(m_Thread.m_Function.getName(), 0, PROGRESS_BOUND, new OnPress(){
+		this.m_Monitor = new ProgressWindow(m_Thread.m_Function.getName(), 0, PROGRESS_BOUND, !m_Thread.m_Function.isProgressTrackable(), new OnPress(){
 
 			@Override
 			public void act() {

@@ -11,12 +11,14 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import util.gui.OnPress;
 
 public class ProgressWindow implements ActionListener{
 	
-	public static final long MILLISEC_BEFORE_DISPLAY = 2000;
+	public static final int MILLISEC_BEFORE_DISPLAY = 500;
 	
 	private JFrame frame;
 	private JProgressBar progressBar;
@@ -24,7 +26,7 @@ public class ProgressWindow implements ActionListener{
 	private OnPress onCancel;
 	private boolean visible;
 	
-	public ProgressWindow(String title, int min, int max, final OnPress onCancel){
+	public ProgressWindow(String title, int min, int max, boolean indeterminant, final OnPress onCancel){
 		this.onCancel = onCancel;
 		frame = new JFrame(title);
 		frame.addWindowListener(new WindowAdapter(){
@@ -36,7 +38,8 @@ public class ProgressWindow implements ActionListener{
 		});
 		frame.getContentPane().setLayout(new GridBagLayout());
 		progressBar = new JProgressBar(min, max);
-		progressBar.setStringPainted(true);
+		progressBar.setStringPainted(!indeterminant);
+		progressBar.setIndeterminate(indeterminant);
 		cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(this);
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -67,18 +70,34 @@ public class ProgressWindow implements ActionListener{
 	
 	public void setValue(int value){
 		if(!visible){
-			if(prevTime < 0){
-				prevTime = System.currentTimeMillis();
+			if(progressBar.isIndeterminate()){
+				Timer t = new Timer(MILLISEC_BEFORE_DISPLAY, new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						SwingUtilities.invokeLater(new Runnable(){
+							@Override
+							public void run() {
+								setVisible(true);
+							}
+						});
+					}
+				});
+				t.setRepeats(false);
+				t.start();
 			}else{
-				long curTime = System.currentTimeMillis();
-				if(value - progressBar.getValue() == 0){
-					return;
-				}
-				long approxTimeRequired = (progressBar.getMaximum()-progressBar.getValue())/(value-progressBar.getValue())
-					*(curTime - prevTime);
-				prevTime = curTime;
-				if(approxTimeRequired > MILLISEC_BEFORE_DISPLAY){
-					this.setVisible(true);
+				if(prevTime < 0){
+					prevTime = System.currentTimeMillis();
+				}else{
+					long curTime = System.currentTimeMillis();
+					if(value - progressBar.getValue() == 0){
+						return;
+					}
+					long approxTimeRequired = (progressBar.getMaximum()-progressBar.getValue())/(value-progressBar.getValue())
+							*(curTime - prevTime);
+					prevTime = curTime;
+					if(approxTimeRequired > MILLISEC_BEFORE_DISPLAY){
+						this.setVisible(true);
+					}
 				}
 			}
 		}
