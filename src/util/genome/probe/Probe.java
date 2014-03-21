@@ -21,7 +21,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 			GenomicRegion region = GenomicRegion.parseString(tokens[1]);
 			
 			//parse full name to name, strand, and mutant
-			String[] nameTokens = fullName.split("_");
+			String[] nameTokens = fullName.split("-");
 			if(nameTokens.length == 1){
 				return new Probe(seq, region, nameTokens[0]);
 			} else if(nameTokens.length == 2){
@@ -49,17 +49,17 @@ public class Probe implements Serializable, Comparable<Probe>{
 	
 	private static String mutantToString(boolean mutant){
 		if(mutant){
-			return "_mutant";
+			return "-mutant";
 		}
-		return "_wildtype";
+		return "-wildtype";
 	}
 	
 	private static String strandToString(Strand s){
 		switch(s){
 		case PLUS:
-			return "_" + s.toString();
+			return "-" + s.toString();
 		case MINUS:
-			return "_" + s.toString();
+			return "-" + s.toString();
 		default:
 			return "";
 		}

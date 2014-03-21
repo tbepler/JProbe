@@ -8,10 +8,18 @@ public class DecimalField extends DoubleField{
 
 	private final double m_Val;
 	private final String m_Tooltip;
+	private final double m_Min;
+	private final double m_Max;
+	
+	public DecimalField(double val, double min, double max, String tooltip){
+		m_Val = val;
+		m_Min = min;
+		m_Max = max;
+		m_Tooltip = tooltip;
+	}
 	
 	public DecimalField(double val, String tooltip){
-		m_Val = val;
-		m_Tooltip = tooltip;
+		this(val, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, tooltip);
 	}
 	
 	@Override
@@ -31,12 +39,12 @@ public class DecimalField extends DoubleField{
 
 	@Override
 	public double getMin() {
-		return Double.NEGATIVE_INFINITY;
+		return m_Min;
 	}
 
 	@Override
 	public double getMax() {
-		return Double.POSITIVE_INFINITY;
+		return m_Max;
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public class ProbeGroup implements Serializable, Iterable<Probe>{
 		Collections.sort(m_Probes);
 	}
 	
-	public int getSize(){
+	public int size(){
 		return m_Probes.size();
 	}
 	
@@ -57,7 +57,7 @@ public class ProbeGroup implements Serializable, Iterable<Probe>{
 		String s = "";
 		for(int i=0; i<m_Probes.size(); i++){
 			Probe p = m_Probes.get(i);
-			s += p.getSequence() + "\t" + p.getRegion() + "\t" + p.getFullName()+"_"+(i+1) + "\n";
+			s += p.getSequence() + "\t" + p.getRegion() + "\t" + p.getFullName()+"-"+(i+1) + "\n";
 		}
 		return s;
 	}

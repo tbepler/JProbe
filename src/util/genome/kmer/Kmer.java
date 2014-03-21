@@ -6,7 +6,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public interface Kmer extends Serializable, Iterable<String>{
 	
-	public static class Score{
+	public static class Score implements Serializable{
+		private static final long serialVersionUID = 1L;
+		
 		public final double ESCORE;
 		public final double INTENSITY;
 		public final double ZSCORE;
