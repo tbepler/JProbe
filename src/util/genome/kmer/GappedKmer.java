@@ -27,6 +27,11 @@ public class GappedKmer implements Kmer{
 		Arrays.sort(m_MotifLens);
 	}
 	
+	@Override
+	public int size(){
+		return m_Words.size();
+	}
+	
 	/**
 	 * Converts the given word into a regex by appending "^" at the start and "$" at the end
 	 * @param word
@@ -214,6 +219,11 @@ public class GappedKmer implements Kmer{
 			}
 		}
 		return scores;
+	}
+
+	@Override
+	public Iterator<String> iterator() {
+		return m_Words.iterator();
 	}
 
 }

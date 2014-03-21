@@ -23,6 +23,12 @@ public class UngappedKmer implements Kmer{
 		return m_WordLength;
 	}
 	
+	@Override
+	public int size(){
+		return m_Words.size();
+	}
+	
+	@Override
 	public boolean contains(String word){
 		return m_Words.containsKey(word);
 	}
@@ -199,6 +205,11 @@ public class UngappedKmer implements Kmer{
 			}
 		}
 		return scores;
+	}
+
+	@Override
+	public Iterator<String> iterator() {
+		return m_Words.keySet().iterator();
 	}
 	
 	

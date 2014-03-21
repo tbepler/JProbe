@@ -9,6 +9,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 import plugins.genome.services.GenomeFunction;
+import chiptools.jprobe.data.Kmer;
+import chiptools.jprobe.data.KmerReaderWriter;
 import chiptools.jprobe.data.PeakReaderWriter;
 import chiptools.jprobe.data.PeakSequenceReaderWriter;
 import chiptools.jprobe.data.PeakSequences;
@@ -24,6 +26,7 @@ public class ChiptoolsActivator implements BundleActivator{
 	private static Bundle BUNDLE = null;
 	
 	private JProbeCore m_Core = null;
+	private KmerReaderWriter m_KmerRW = new KmerReaderWriter();
 	private PeakReaderWriter m_PeakRW = new PeakReaderWriter();
 	private PeakSequenceReaderWriter m_PeakSeqRW = new PeakSequenceReaderWriter();
 	private ServiceRegistration<GenomeFunction> m_PeakFinderReg = null;
@@ -38,6 +41,8 @@ public class ChiptoolsActivator implements BundleActivator{
 		m_Core.getDataManager().addDataWriter(Peaks.class, m_PeakRW, c.getBundle());
 		m_Core.getDataManager().addDataReader(PeakSequences.class, m_PeakSeqRW, c.getBundle());
 		m_Core.getDataManager().addDataWriter(PeakSequences.class, m_PeakSeqRW, c.getBundle());
+		m_Core.getDataManager().addDataReader(Kmer.class, m_KmerRW, c.getBundle());
+		m_Core.getDataManager().addDataWriter(Kmer.class, m_KmerRW, c.getBundle());
 		m_PeakFinderReg = c.registerService(GenomeFunction.class, new GenomePeakFinder(), null);
 		m_CmdProvider.start(c);
 	}
@@ -49,6 +54,8 @@ public class ChiptoolsActivator implements BundleActivator{
 			m_Core.getDataManager().removeDataWriter(m_PeakRW, c.getBundle());
 			m_Core.getDataManager().removeDataReader(m_PeakSeqRW, c.getBundle());
 			m_Core.getDataManager().removeDataWriter(m_PeakSeqRW, c.getBundle());
+			m_Core.getDataManager().removeDataReader(m_KmerRW, c.getBundle());
+			m_Core.getDataManager().removeDataWriter(m_KmerRW, c.getBundle());
 			m_Core = null;
 		}
 		if(m_PeakFinderReg != null){

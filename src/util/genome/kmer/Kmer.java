@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public interface Kmer extends Serializable{
+public interface Kmer extends Serializable, Iterable<String>{
 	
 	public static class Score{
 		public final double ESCORE;
@@ -41,6 +41,12 @@ public interface Kmer extends Serializable{
 		}
 		
 	}
+	
+	/**
+	 * Returns the number of entries in this kmer.
+	 * @return
+	 */
+	public int size();
 	
 	/**
 	 * Tests whether the given word is scored by this kmer

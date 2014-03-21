@@ -6,15 +6,22 @@ import jprobe.services.data.Field;
 public class StringField implements Field{
 	private static final long serialVersionUID = 1L;
 	
-	private final String value;
+	private final String m_Value;
+	private final String m_Tooltip;
 	
 	public StringField(String value){
-		this.value = value;
+		m_Value = value;
+		m_Tooltip = Constants.STRING_FIELD_TOOLTIP;
+	}
+	
+	public StringField(String value, String tooltip){
+		m_Value = value;
+		m_Tooltip = tooltip;
 	}
 	
 	@Override
 	public String asString() {
-		return value;
+		return m_Value;
 	}
 
 	@Override
@@ -34,7 +41,7 @@ public class StringField implements Field{
 
 	@Override
 	public String getTooltip() {
-		return Constants.STRING_FIELD_TOOLTIP;
+		return m_Tooltip;
 	}
 
 }

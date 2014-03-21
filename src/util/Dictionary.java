@@ -49,6 +49,14 @@ public class Dictionary<K,V> implements Serializable, Iterable<K>{
 	}
 	
 	/**
+	 * Returns the number of entries in this dictionary.
+	 * @return
+	 */
+	public int size(){
+		return m_KeySet.size();
+	}
+	
+	/**
 	 * Creates an empty dictionary that uses the given wildcard character.
 	 * @param wildcard
 	 */
