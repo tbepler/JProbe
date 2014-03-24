@@ -40,6 +40,7 @@ public class CommandProvider {
 		for(ServiceRegistration<Command> reg : m_Regs){
 			reg.unregister();
 		}
+		m_Regs.clear();
 	}
 	
 }

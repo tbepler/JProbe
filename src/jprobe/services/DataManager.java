@@ -18,13 +18,13 @@ public interface DataManager {
 	public void addListener(CoreListener listener);
 	public void removeListener(CoreListener listener);
 	
-	public void addDataReader(Class<? extends Data> read, DataReader reader, Bundle responsible);
+	public void addDataReader(DataReader reader, Bundle responsible);
 	public void removeDataReader(DataReader reader, Bundle responsible);
 	public void removeDataReader(Class<? extends Data> type, Bundle responsible);
 	public Collection<Class<? extends Data>> getReadableDataTypes();
 	public FileFilter[] getValidReadFormats(Class<? extends Data> type);
 	
-	public void addDataWriter(Class<? extends Data> write, DataWriter writer, Bundle responsible);
+	public void addDataWriter(DataWriter writer, Bundle responsible);
 	public void removeDataWriter(DataWriter writer, Bundle responsible);
 	public void removeDataWriter(Class<? extends Data> type, Bundle responsible);
 	public Collection<Class<? extends Data>> getWritableDataTypes();

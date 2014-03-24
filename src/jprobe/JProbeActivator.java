@@ -16,11 +16,13 @@ public class JProbeActivator implements BundleActivator{
 	
 	private BundleContext m_Context = null;
 	private ServiceListener[] m_Listeners;
-	private JProbeCore m_Core = null;
+	private JProbe m_Core = null;
 	private ServiceRegistration<JProbeCore> m_Registration = null;
 	private CommandManager m_CmdManager = null;
+	private CoreFunctionManager m_FncManager = null;
+	private CoreDataManager m_DataManager = null;
 	
-	JProbeActivator(JProbeCore core, ServiceListener ... listeners){
+	JProbeActivator(JProbe core, ServiceListener ... listeners){
 		this.m_Core = core;
 		m_Listeners = listeners;
 	}
@@ -28,17 +30,20 @@ public class JProbeActivator implements BundleActivator{
 	public static Bundle getBundle(){
 		return m_Bundle;
 	}
-	
-	public CommandManager getCommandManager(){
-		return m_CmdManager;
-	}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		m_Context = context;
 		m_Bundle = m_Context.getBundle();
-		m_CmdManager = new CommandManager(m_Context);
-		m_Context.addServiceListener(m_CmdManager);
+		m_CmdManager = new CommandManager(context);
+		m_Core.setCommandManager(m_CmdManager);
+		m_CmdManager.load();
+		m_FncManager = new CoreFunctionManager(m_Core, context);
+		m_Core.setFunctionManager(m_FncManager);
+		m_FncManager.load();
+		m_DataManager = new CoreDataManager(m_Core, context);
+		m_Core.setDataManager(m_DataManager);
+		m_DataManager.load();
 		m_Registration = context.registerService(JProbeCore.class, m_Core, null);
 		for(ServiceListener l : m_Listeners){
 			m_Context.addServiceListener(l);
@@ -54,8 +59,16 @@ public class JProbeActivator implements BundleActivator{
 			m_Registration.unregister();
 		}
 		if(m_CmdManager != null){
-			m_Context.removeServiceListener(m_CmdManager);
+			m_CmdManager.unload();
 			m_CmdManager = null;
+		}
+		if(m_FncManager != null){
+			m_FncManager.unload();
+			m_FncManager = null;
+		}
+		if(m_DataManager != null){
+			m_DataManager.unload();
+			m_DataManager = null;
 		}
 		for(ServiceListener l : m_Listeners){
 			m_Context.removeServiceListener(l);

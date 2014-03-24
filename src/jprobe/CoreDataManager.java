@@ -15,12 +15,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-
 import util.ClassLoaderObjectInputStream;
 import util.OSGIUtils;
 import jprobe.services.CoreEvent;
@@ -28,6 +28,7 @@ import jprobe.services.CoreEvent.Type;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
+import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
 import jprobe.services.ErrorHandler;
@@ -51,6 +52,8 @@ public class CoreDataManager implements DataManager, Saveable{
 	private Map<Class<? extends Data>, DataWriter> m_TypeToWriter;
 	private Map<DataWriter, Class<? extends Data>> m_WriterToType;
 	private boolean m_ChangesSinceLastSave;
+	private AbstractServiceListener<DataReader> m_ReaderListener;
+	private AbstractServiceListener<DataWriter> m_WriterListener;
 	
 	public CoreDataManager(JProbeCore core, BundleContext context){
 		m_Core = core;
@@ -66,6 +69,32 @@ public class CoreDataManager implements DataManager, Saveable{
 		m_TypeToWriter = new HashMap<Class<? extends Data>, DataWriter>();
 		m_WriterToType = new HashMap<DataWriter, Class<? extends Data>>();
 		m_ChangesSinceLastSave = false;
+		m_ReaderListener = new AbstractServiceListener<DataReader>(DataReader.class, context){
+
+			@Override
+			public void register(DataReader service, Bundle provider) {
+				addDataReader(service, provider);
+			}
+
+			@Override
+			public void unregister(DataReader service, Bundle provider) {
+				removeDataReader(service, provider);
+			}
+			
+		};
+		m_WriterListener = new AbstractServiceListener<DataWriter>(DataWriter.class, context){
+
+			@Override
+			public void register(DataWriter service, Bundle provider) {
+				addDataWriter(service, provider);
+			}
+
+			@Override
+			public void unregister(DataWriter service, Bundle provider) {
+				removeDataWriter(service, provider);
+			}
+			
+		};
 	}
 	
 	public void setBundleContext(BundleContext context){
@@ -201,17 +230,17 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 	
 	@Override
-	public void addDataReader(Class<? extends Data> type, DataReader reader, Bundle responsible){
-		m_TypeToReader.put(type, reader);
-		m_ReaderToType.put(reader, type);
-		notifyListeners(new CoreEvent(m_Core, Type.DATAREADER_ADDED, responsible, type));
+	public void addDataReader(DataReader reader, Bundle responsible){
+		m_TypeToReader.put(reader.getReadClass(), reader);
+		m_ReaderToType.put(reader, reader.getReadClass());
+		notifyListeners(new CoreEvent(m_Core, Type.DATAREADER_ADDED, responsible, reader.getReadClass()));
 	}
 	
 	@Override
-	public void addDataWriter(Class<? extends Data> type, DataWriter writer, Bundle responsible){
-		m_TypeToWriter.put(type, writer);
-		m_WriterToType.put(writer, type);
-		notifyListeners(new CoreEvent(m_Core, Type.DATAWRITER_ADDED, responsible, type));
+	public void addDataWriter(DataWriter writer, Bundle responsible){
+		m_TypeToWriter.put(writer.getWriteClass(), writer);
+		m_WriterToType.put(writer, writer.getWriteClass());
+		notifyListeners(new CoreEvent(m_Core, Type.DATAWRITER_ADDED, responsible, writer.getWriteClass()));
 	}
 	
 	private void removeDataReader(Class<? extends Data> type, DataReader reader, Bundle responsible){
@@ -395,8 +424,16 @@ public class CoreDataManager implements DataManager, Saveable{
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 		}
 	}
+
+	public void load(){
+		m_ReaderListener.load();
+		m_WriterListener.load();
+	}
 	
-	
+	public void unload(){
+		m_ReaderListener.unload();
+		m_WriterListener.unload();
+	}
 	
 	
 	

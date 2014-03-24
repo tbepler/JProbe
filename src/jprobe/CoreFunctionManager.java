@@ -10,15 +10,17 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.function.FunctionPrototype;
+import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreListener;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 
-public class CoreFunctionManager implements FunctionManager{
+public class CoreFunctionManager extends AbstractServiceListener<FunctionPrototype> implements FunctionManager{
 	
 	private JProbeCore core;
 	private Collection<CoreListener> listeners;
@@ -26,7 +28,8 @@ public class CoreFunctionManager implements FunctionManager{
 	private Collection<FunctionPrototype> functions;
 	private Map<String, List<FunctionPrototype>> functionsByName;
 	
-	public CoreFunctionManager(JProbeCore core){
+	public CoreFunctionManager(JProbeCore core, BundleContext context){
+		super(FunctionPrototype.class, context);
 		this.core = core;
 		listeners = new HashSet<CoreListener>();
 		functions = new PriorityQueue<FunctionPrototype>(10, new Comparator<FunctionPrototype>(){
@@ -94,6 +97,16 @@ public class CoreFunctionManager implements FunctionManager{
 	@Override
 	public void removeListener(CoreListener listener){
 		this.listeners.remove(listener);
+	}
+
+	@Override
+	public void register(FunctionPrototype service, Bundle provider) {
+		this.addFunctionPrototype(service, provider);
+	}
+
+	@Override
+	public void unregister(FunctionPrototype service, Bundle provider) {
+		this.removeFunctionPrototype(service, provider);
 	}
 	
 	

@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import plugins.genome.services.GenomeFunction;
 import jprobe.services.command.Command;
+import jprobe.services.function.FunctionPrototype;
 import util.genome.peak.PeakSequence;
 
 public class Constants {
@@ -18,6 +20,62 @@ public class Constants {
 	public static final String RESOURCES_PATH = "/chiptools/jprobe/resources";
 	public static final String CMD_NAMES_FILE = "/chiptools/jprobe/resources/command_names.txt";
 	public static final String CMD_DESCRIPTIONS_FILE = "/chiptools/jprobe/resources/command_descriptions.txt";
+	public static final String GENOME_FUNCTION_FILE = RESOURCES_PATH + "/genome_functions.txt";
+	public static final String FUNCTION_PROTOTYPES_FILE = RESOURCES_PATH + "/function_prototypes.txt";
+	
+	public static final String FUNCTION_PACKAGE = "chiptools.jprobe.function.";
+	
+	public static final List<Class<? extends GenomeFunction>> GENOME_FUNCTION_CLASSES = getGenomeFunctionClasses();
+	
+	@SuppressWarnings("unchecked")
+	private static List<Class<? extends GenomeFunction>> getGenomeFunctionClasses(){
+		List<Class<? extends GenomeFunction>> list = new ArrayList<Class<? extends GenomeFunction>>();
+		try{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(GENOME_FUNCTION_FILE)));
+			String line;
+			while((line = reader.readLine()) != null){
+				try{
+					String name = line.trim();
+					Class<?> clazz = Class.forName(FUNCTION_PACKAGE+name);
+					if(GenomeFunction.class.isAssignableFrom(clazz)){
+						list.add((Class<? extends GenomeFunction>) clazz);
+					}
+				} catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			reader.close();
+		} catch (Exception e){
+			//do nothing
+		}
+		return Collections.unmodifiableList(list);
+	}
+	
+	public static final List<Class<? extends FunctionPrototype>> FUNCTION_PROTOTYPE_CLASSES = getFunctionPrototypeClasses();
+	
+	@SuppressWarnings("unchecked")
+	private static List<Class<? extends FunctionPrototype>> getFunctionPrototypeClasses(){
+		List<Class<? extends FunctionPrototype>> list = new ArrayList<Class<? extends FunctionPrototype>>();
+		try{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(FUNCTION_PROTOTYPES_FILE)));
+			String line;
+			while((line = reader.readLine()) != null){
+				try{
+					String name = line.trim();
+					Class<?> clazz = Class.forName(FUNCTION_PACKAGE+name);
+					if(FunctionPrototype.class.isAssignableFrom(clazz)){
+						list.add((Class<? extends FunctionPrototype>) clazz);
+					}
+				} catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			reader.close();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return Collections.unmodifiableList(list);
+	}
 	
 	public static final String CMD_PACKAGE = "chiptools.jprobe.command.";
 	

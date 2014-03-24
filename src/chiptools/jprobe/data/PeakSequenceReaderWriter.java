@@ -3,6 +3,7 @@ package chiptools.jprobe.data;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.InputStream;
+
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -77,6 +78,16 @@ public class PeakSequenceReaderWriter implements DataReader, DataWriter{
 	public Data read(FileFilter format, InputStream s) throws Exception {
 		PeakSequenceGroup peakSeqs = PeakSequenceGroup.parsePeakSeqGroup(s);
 		return new PeakSequences(peakSeqs);
+	}
+
+	@Override
+	public Class<? extends Data> getWriteClass() {
+		return PeakSequences.class;
+	}
+
+	@Override
+	public Class<? extends Data> getReadClass() {
+		return PeakSequences.class;
 	}
 
 }

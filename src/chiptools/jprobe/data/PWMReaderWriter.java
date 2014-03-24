@@ -50,4 +50,14 @@ public class PWMReaderWriter implements DataReader, DataWriter{
 		return new PWM(pwm);
 	}
 
+	@Override
+	public Class<? extends Data> getWriteClass() {
+		return PWM.class;
+	}
+
+	@Override
+	public Class<? extends Data> getReadClass() {
+		return PWM.class;
+	}
+
 }

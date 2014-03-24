@@ -50,4 +50,14 @@ public class KmerReaderWriter implements DataReader, DataWriter{
 		return new Kmer(kmer);
 	}
 
+	@Override
+	public Class<? extends Data> getWriteClass() {
+		return Kmer.class;
+	}
+
+	@Override
+	public Class<? extends Data> getReadClass() {
+		return Kmer.class;
+	}
+
 }

@@ -52,8 +52,6 @@ public class JProbe implements JProbeCore{
 				m_Mode = Mode.COMMAND;
 			}
 		}
-		m_DataManager = new CoreDataManager(this, null);
-		m_FunctionManager = new CoreFunctionManager(this);
 		m_SaveManager = new SaveManager();
 		m_SaveManager.addSaveable(m_DataManager, "core");
 		//create felix config map
@@ -100,11 +98,22 @@ public class JProbe implements JProbeCore{
 			e.printStackTrace();
 		}
 		m_DataManager.setBundleContext(m_Activator.getBundleContext());
-		m_CmdManager = m_Activator.getCommandManager();
 		if(m_Mode == Mode.COMMAND){
 			m_CmdManager.execute(this, args);
 			this.shutdown();;
 		}
+	}
+	
+	void setDataManager(CoreDataManager dataManager){
+		m_DataManager = dataManager;
+	}
+	
+	void setFunctionManager(CoreFunctionManager fncManager){
+		m_FunctionManager = fncManager;
+	}
+	
+	void setCommandManager(CommandManager cmdManager){
+		m_CmdManager = cmdManager;
 	}
 	
 	@Override

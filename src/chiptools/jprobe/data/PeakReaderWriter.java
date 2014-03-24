@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.InputStream;
 
 import javax.swing.filechooser.FileFilter;
-
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import chiptools.Constants;
@@ -67,6 +66,16 @@ public class PeakReaderWriter implements DataReader, DataWriter{
 	public Data read(FileFilter format, InputStream s) throws Exception {
 		PeakGroup peaks = PeakGroup.parsePeakGroup(s);
 		return new Peaks(peaks);
+	}
+
+	@Override
+	public Class<? extends Data> getWriteClass() {
+		return Peaks.class;
+	}
+
+	@Override
+	public Class<? extends Data> getReadClass() {
+		return Peaks.class;
 	}
 
 }

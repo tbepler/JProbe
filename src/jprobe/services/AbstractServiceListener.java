@@ -2,6 +2,7 @@ package jprobe.services;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
@@ -14,6 +15,23 @@ public abstract class AbstractServiceListener<S> implements ServiceListener{
 	public AbstractServiceListener(Class<S> listenFor, BundleContext context){
 		m_Target = listenFor;
 		m_Context = context;
+	}
+	
+	public AbstractServiceListener<S> load(){
+		m_Context.addServiceListener(this);
+		try {
+			for(ServiceReference<S> ref : m_Context.getServiceReferences(m_Target, null)){
+				this.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, ref));
+			}
+		} catch (InvalidSyntaxException e) {
+			//do nothing
+		}
+		return this;
+	}
+	
+	public AbstractServiceListener<S> unload(){
+		m_Context.removeServiceListener(this);
+		return this;
 	}
 	
 	@SuppressWarnings("unchecked")

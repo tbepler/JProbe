@@ -51,4 +51,14 @@ public class ProbesReaderWriter implements DataReader, DataWriter{
 		return new Probes(probes);
 	}
 
+	@Override
+	public Class<? extends Data> getWriteClass() {
+		return Probes.class;
+	}
+
+	@Override
+	public Class<? extends Data> getReadClass() {
+		return Probes.class;
+	}
+
 }
