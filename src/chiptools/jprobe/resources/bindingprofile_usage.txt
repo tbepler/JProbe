@@ -1,6 +1,6 @@
 Usage: bindingprofile [-help] [-k kmer_files] [-p pwm_files] < sequences > score profiles
 
-stdin: sequences that should be profiled using the given Kmers and PWMs. each line must be formatted as (sequence \\s genomic_region \\s name [\\s other stuff ignored])
+stdin: sequences that should be profiled using the given Kmers and/or PWMs. each line must be formatted as (sequence \\s genomic_region \\s name [\\s other stuff ignored])
 [-k kmer_files]: the kmer files to use for scoring the sequences. multiple kmer files may be given separated by whitespace
 [-p pwm_files]: the pwm files to use for scoring the sequence. multiple pwm files may be given separated by whitespace
 
@@ -11,7 +11,6 @@ sequence1
 file1 \t wordLength \t score1 \t score2 \t ...
 file2 \t wordLength \t score1 \t score2 \t ...
 ...
-
 seq2Name>
 sequence2
 file1 \t wordLength \t score1 \t score2 \t ...
