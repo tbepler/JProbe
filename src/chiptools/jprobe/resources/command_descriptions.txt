@@ -1,2 +1,3 @@
 PeakFinder---This command extracts peak sequences from the genome.
 ProbeGenerator---This command creates probes by locating potential binding sites within sequences.
+BindingProfile---This command reports the binding profile of sequences from Kmers or PWMs.
