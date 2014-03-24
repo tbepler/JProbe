@@ -33,8 +33,8 @@ public class Activator implements BundleActivator{
 		core.getFunctionManager().addFunctionPrototype(dataParamFun, context.getBundle());
 		core.getFunctionManager().addFunctionPrototype(fieldParamFun, context.getBundle());
 		core.getFunctionManager().addFunctionPrototype(dataFieldParamFun, context.getBundle());
-		core.getDataManager().addDataReader(TestData.class, testReader, context.getBundle());
-		core.getDataManager().addDataWriter(TestData.class, testWriter, context.getBundle());
+		core.getDataManager().addDataReader(testReader, context.getBundle());
+		core.getDataManager().addDataWriter(testWriter, context.getBundle());
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
 			Log.getInstance().write(context.getBundle(), "TestPlugin started.");
 		}

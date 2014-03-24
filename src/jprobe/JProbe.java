@@ -53,7 +53,6 @@ public class JProbe implements JProbeCore{
 			}
 		}
 		m_SaveManager = new SaveManager();
-		m_SaveManager.addSaveable(m_DataManager, "core");
 		//create felix config map
 		Map felixConfig = new HashMap();
 		//export the core service package
@@ -105,7 +104,9 @@ public class JProbe implements JProbeCore{
 	}
 	
 	void setDataManager(CoreDataManager dataManager){
+		m_SaveManager.removeSaveable(m_DataManager, "core");
 		m_DataManager = dataManager;
+		m_SaveManager.addSaveable(m_DataManager, "core");
 	}
 	
 	void setFunctionManager(CoreFunctionManager fncManager){

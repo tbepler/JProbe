@@ -3,6 +3,7 @@ package plugins.testDataAndFunction;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -42,6 +43,11 @@ public class TestDataReader implements DataReader{
 			throw new Exception("Fields are missing from the read data");
 		}
 		return new TestData(string, integer, d);
+	}
+
+	@Override
+	public Class<? extends Data> getReadClass() {
+		return TestData.class;
 	}
 
 }

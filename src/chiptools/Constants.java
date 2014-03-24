@@ -10,6 +10,8 @@ import java.util.Map;
 
 import plugins.genome.services.GenomeFunction;
 import jprobe.services.command.Command;
+import jprobe.services.data.DataReader;
+import jprobe.services.data.DataWriter;
 import jprobe.services.function.FunctionPrototype;
 import util.genome.peak.PeakSequence;
 
@@ -22,23 +24,30 @@ public class Constants {
 	public static final String CMD_DESCRIPTIONS_FILE = "/chiptools/jprobe/resources/command_descriptions.txt";
 	public static final String GENOME_FUNCTION_FILE = RESOURCES_PATH + "/genome_functions.txt";
 	public static final String FUNCTION_PROTOTYPES_FILE = RESOURCES_PATH + "/function_prototypes.txt";
+	public static final String READER_WRITER_FILE = RESOURCES_PATH + "/data_reader_writer.txt";
 	
+	public static final String DATA_PACKAGE = "chiptools.jprobe.data.";
+	
+	public static List<Class<? extends DataReader>> READER_CLASSES = getClasses(DataReader.class, READER_WRITER_FILE, DATA_PACKAGE);
+	public static List<Class<? extends DataWriter>> WRITER_CLASSES = getClasses(DataWriter.class, READER_WRITER_FILE, DATA_PACKAGE);
+
 	public static final String FUNCTION_PACKAGE = "chiptools.jprobe.function.";
 	
-	public static final List<Class<? extends GenomeFunction>> GENOME_FUNCTION_CLASSES = getGenomeFunctionClasses();
+	public static final List<Class<? extends GenomeFunction>> GENOME_FUNCTION_CLASSES = getClasses(GenomeFunction.class, GENOME_FUNCTION_FILE, FUNCTION_PACKAGE);
+	public static final List<Class<? extends FunctionPrototype>> FUNCTION_PROTOTYPE_CLASSES = getClasses(FunctionPrototype.class, FUNCTION_PROTOTYPES_FILE, FUNCTION_PACKAGE);
 	
 	@SuppressWarnings("unchecked")
-	private static List<Class<? extends GenomeFunction>> getGenomeFunctionClasses(){
-		List<Class<? extends GenomeFunction>> list = new ArrayList<Class<? extends GenomeFunction>>();
+	private static <T> List<Class<? extends T>> getClasses(Class<T> clazz, String file, String pckg){
+		List<Class<? extends T>> list = new ArrayList<Class<? extends T>>();
 		try{
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(GENOME_FUNCTION_FILE)));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(file)));
 			String line;
 			while((line = reader.readLine()) != null){
 				try{
 					String name = line.trim();
-					Class<?> clazz = Class.forName(FUNCTION_PACKAGE+name);
-					if(GenomeFunction.class.isAssignableFrom(clazz)){
-						list.add((Class<? extends GenomeFunction>) clazz);
+					Class<?> c = Class.forName(pckg+name);
+					if(clazz.isAssignableFrom(c)){
+						list.add((Class<? extends T>) c);
 					}
 				} catch (Exception e){
 					e.printStackTrace();
@@ -47,32 +56,6 @@ public class Constants {
 			reader.close();
 		} catch (Exception e){
 			//do nothing
-		}
-		return Collections.unmodifiableList(list);
-	}
-	
-	public static final List<Class<? extends FunctionPrototype>> FUNCTION_PROTOTYPE_CLASSES = getFunctionPrototypeClasses();
-	
-	@SuppressWarnings("unchecked")
-	private static List<Class<? extends FunctionPrototype>> getFunctionPrototypeClasses(){
-		List<Class<? extends FunctionPrototype>> list = new ArrayList<Class<? extends FunctionPrototype>>();
-		try{
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(FUNCTION_PROTOTYPES_FILE)));
-			String line;
-			while((line = reader.readLine()) != null){
-				try{
-					String name = line.trim();
-					Class<?> clazz = Class.forName(FUNCTION_PACKAGE+name);
-					if(FunctionPrototype.class.isAssignableFrom(clazz)){
-						list.add((Class<? extends FunctionPrototype>) clazz);
-					}
-				} catch (Exception e){
-					e.printStackTrace();
-				}
-			}
-			reader.close();
-		} catch (Exception e){
-			e.printStackTrace();
 		}
 		return Collections.unmodifiableList(list);
 	}

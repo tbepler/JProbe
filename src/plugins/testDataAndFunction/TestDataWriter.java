@@ -36,4 +36,9 @@ public class TestDataWriter implements DataWriter{
 		throw new Exception("Could not write data "+data);
 	}
 
+	@Override
+	public Class<? extends Data> getWriteClass() {
+		return TestData.class;
+	}
+
 }
