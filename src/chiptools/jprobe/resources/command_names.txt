@@ -1,3 +1,4 @@
 PeakFinder	peakfinder
 ProbeGenerator probegen
 BindingProfile bindingprofile
+ProbeJoiner probejoiner

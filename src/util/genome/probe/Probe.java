@@ -133,6 +133,10 @@ public class Probe implements Serializable, Comparable<Probe>{
 		return m_Seq.length();
 	}
 	
+	public GenomicSequence asGenomicSequence(){
+		return new GenomicSequence(m_Seq, m_Region);
+	}
+	
 	public boolean isMutant(){
 		return m_Mutant;
 	}

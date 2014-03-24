@@ -18,6 +18,45 @@ public class ProbeUtils {
 		return new Probe(revComp, p.getRegion(), p.getName(), revStrand, p.isMutant());
 	}
 	
+	public static ProbeGroup joinProbes(Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist, int siteWidth, int probeLen){
+		List<Probe> probes = new ArrayList<Probe>();
+		for(Probe p : givenProbes){
+			probes.add(p);
+		}
+		Collections.sort(probes);
+		Queue<Probe> joinedProbes = new PriorityQueue<Probe>();
+		
+		//for sub list of size=bindingSites in the list of probes
+		for(int i=0; i<probes.size()-bindingSites+1; i++){
+			int last = i+bindingSites;
+			GenomicSequence combinedSeq = join(probes, i, last);
+			if(combinedSeq != null){
+				//TODO
+			}
+		}
+		return null;
+		
+	}
+	
+	private static GenomicSequence join(List<Probe> probes, int start, int end){
+		GenomicSequence combined = probes.get(start).asGenomicSequence();
+		for(int i=start+1; i<end; i++){
+			Probe nextProbe = probes.get(i);
+			GenomicSequence next;
+			if(nextProbe.getStrand() == Strand.MINUS){
+				next = reverseCompliment(nextProbe).asGenomicSequence();
+			}else{
+				next = nextProbe.asGenomicSequence();
+			}
+			if(combined.adjacentTo(next) || combined.overlaps(next)){
+				combined = combined.join(next);
+			}else{
+				return null;
+			}
+		}
+		return combined;
+	}
+	
 	private static long scorePWM;
 	private static long scoreKmer;
 	

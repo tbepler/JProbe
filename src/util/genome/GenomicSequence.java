@@ -34,6 +34,14 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return new GenomicSequence(seq, m_Region.union(other.getRegion()));
 	}
 	
+	public boolean adjacentTo(GenomicSequence other){
+		return m_Region.adjacentTo(other.getRegion());
+	}
+	
+	public boolean overlaps(GenomicSequence other){
+		return m_Region.overlaps(other.getRegion());
+	}
+	
 	private int getIndexOf(GenomicCoordinate coord){
 		return (int) this.getStart().distance(coord);
 	}
@@ -64,6 +72,7 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	public GenomicSequence subsequence(GenomicRegion region){
 		return this.subsequence(region.getStart(), region.getEnd());
 	}
+	
 	
 	/**
 	 * Splits this GenomicSequence into 2 GenomicSequences around the given GenomicLocation. The second sequence

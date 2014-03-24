@@ -19,6 +19,8 @@ public class Constants {
 	
 	public static final String AUTHOR = "Tristan Bepler";
 	
+	public static final String HELP_TAG = "-help";
+	
 	public static final String RESOURCES_PATH = "/chiptools/jprobe/resources";
 	public static final String CMD_NAMES_FILE = "/chiptools/jprobe/resources/command_names.txt";
 	public static final String CMD_DESCRIPTIONS_FILE = "/chiptools/jprobe/resources/command_descriptions.txt";
