@@ -1,7 +1,11 @@
 package util.genome;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -100,6 +104,39 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 				new GenomicSequence(m_Sequence.substring(0, index), splitRegion[0]),
 				new GenomicSequence(m_Sequence.substring(index), splitRegion[1])
 				};
+	}
+	
+	public GenomicSequence[] split(GenomicRegion region){
+		if(region.getEnd().equals(m_Region.getEnd())){
+			return new GenomicSequence[]{
+					this.split(region.getStart())[0],
+					null
+				};
+		}
+		return new GenomicSequence[]{
+			this.split(region.getStart())[0],
+			this.split(region.getEnd().increment(1))[1]
+		};
+	}
+	
+	public GenomicSequence[] split(GenomicRegion[] r){
+		Set<GenomicRegion> regions = new TreeSet<GenomicRegion>();
+		for(GenomicRegion reg : r){
+			regions.add(reg);
+		}
+		List<GenomicSequence> split = new ArrayList<GenomicSequence>();
+		GenomicSequence remainder = this;
+		for(GenomicRegion region : regions){
+			GenomicSequence[] partition = remainder.split(region);
+			if(partition[0] != null){
+				split.add(partition[0]);
+			}
+			remainder = partition[1];
+		}
+		if(remainder != null){
+			split.add(remainder);
+		}
+		return split.toArray(new GenomicSequence[split.size()]);
 	}
 	
 	/**

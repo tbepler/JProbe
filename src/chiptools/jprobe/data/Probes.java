@@ -1,6 +1,12 @@
 package chiptools.jprobe.data;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
 import chiptools.jprobe.field.*;
+import util.genome.GenomicRegion;
+import util.genome.GenomicSequence;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
 import jprobe.services.data.Data;
@@ -18,7 +24,7 @@ public class Probes implements Data{
 		m_Table = new Field[probes.size()][6];
 		for(int row=0; row<m_Table.length; row++){
 			Probe p = probes.getProbe(row);
-			m_Table[row][0] = new StringField(p.getSequence(), "Sequence");
+			m_Table[row][0] = new StringField(this.getSeqString(p), "Sequence");
 			m_Table[row][1] = new GenomicRegionField(p.getRegion());
 			m_Table[row][2] = new StringField(p.getName(row+1), "Name");
 			m_Table[row][3] = new StringField(p.getStrandAsString(), "Strand");
@@ -26,6 +32,31 @@ public class Probes implements Data{
 			m_Table[row][5] = new StringField(p.getBindingSitesAsString(), "Binding sites");
 			
 		}
+	}
+	
+	protected String getSeqString(Probe p){
+		String s = "<html>";
+		GenomicRegion[] bindingSites = p.getBindingSites();
+		Set<GenomicSequence> splitSeqs = new TreeSet<GenomicSequence>();
+		for(GenomicSequence seq : p.asGenomicSequence().split(bindingSites)){
+			splitSeqs.add(seq);
+		}
+		for(GenomicRegion site : bindingSites){
+			splitSeqs.add(p.asGenomicSequence().subsequence(site));
+		}
+		Set<GenomicSequence> bindingSeqs = new HashSet<GenomicSequence>();
+		for(GenomicRegion region : bindingSites){
+			bindingSeqs.add(p.asGenomicSequence().subsequence(region));
+		}
+		for(GenomicSequence seq : splitSeqs){
+			if(bindingSeqs.contains(seq)){
+				s += "<font color=red>"+seq.getSequence()+"</font>";
+			}else{
+				s += seq.getSequence();
+			}
+		}
+		s += "</html>";
+		return s;
 	}
 	
 	@Override
