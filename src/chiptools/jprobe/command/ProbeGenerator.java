@@ -164,7 +164,7 @@ public class ProbeGenerator implements Command{
 					//PeakSequence peakSeq = PeakSequence.parsePeakSequence(line);
 					String[] tokens = line.split("\\s");
 					GenomicSequence seq = new GenomicSequence(tokens[0], GenomicRegion.parseString(tokens[1]));
-					String name = tokens.length > 2 && !tokens[2].equals(".") ? tokens[2] + "_probe" : "probe";
+					String name = tokens.length > 2 && !tokens[2].equals(".") ? tokens[2] : "probe";
 					//System.err.println("Parsing peak "+peakSeq.getName());
 					//long time = System.currentTimeMillis();
 					List<Probe> peakProbes = ProbeUtils.extractFrom(

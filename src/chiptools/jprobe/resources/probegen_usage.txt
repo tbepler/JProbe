@@ -9,4 +9,4 @@ stdin: sequences that should be searched to create probes. each line must be for
 [--escore d]: the minimum escore of motifs spanning a sequence for the sequence to be considered a binding site, default = 0.3
 [-s]: suppresses progress output
 
-stdout: probes in the format (sequence \\s genomic_region \\s name)
+stdout: probes in the format (sequence \\s genomic_region \\s name \\s strand \\s mutant_status \\s binding_sites)

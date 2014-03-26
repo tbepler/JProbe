@@ -62,7 +62,7 @@ public class ProbeGeneratorPrototype implements FunctionPrototype{
 			List<String> names = new ArrayList<String>();
 			for(PeakSequence p : peakSeqs){
 				seqs.add(p.getGenomicSequence());
-				names.add(p.getName()+"_probe");
+				names.add(p.getName());
 			}
 			util.genome.kmer.Kmer kmer = ((Kmer) dataArgs[1]).getKmer();
 			util.genome.pwm.PWM pwm = ((PWM) dataArgs[2]).getPWM();

@@ -48,19 +48,22 @@ public class ProbeUtils {
 		if(combined != null){
 			GenomicRegion bindingRegion = GenomicRegion.union(combined.getBindingSites());
 			int flank = probeLen - (int) bindingRegion.getSize();
+			GenomicCoordinate regStart;
+			GenomicCoordinate regEnd;
 			//since decrement and increment work with negative numbers, this will correctly expand or reduce the
 			//region to the desired probe size
 			if(flank%2==0){
-				GenomicCoordinate regStart = bindingRegion.getStart().decrement(flank/2);
-				GenomicCoordinate regEnd = bindingRegion.getEnd().increment(flank/2);
-				assert(new GenomicRegion(regStart, regEnd).getSize() == probeLen);
-				return combined.subprobe(new GenomicRegion(regStart, regEnd), combined.getName());
+				regStart = bindingRegion.getStart().decrement(flank/2);
+				regEnd = bindingRegion.getEnd().increment(flank/2);
 			}else{
 				//if flank odd, add +1 to left
-				GenomicCoordinate regStart = bindingRegion.getStart().decrement(flank/2 + 1);
-				GenomicCoordinate regEnd = bindingRegion.getEnd().increment(flank/2);
-				assert(new GenomicRegion(regStart, regEnd).getSize() == probeLen);
-				return combined.subprobe(new GenomicRegion(regStart, regEnd), combined.getName());
+				regStart = bindingRegion.getStart().decrement(flank/2 + 1);
+				regEnd = bindingRegion.getEnd().increment(flank/2);
+			}
+			assert(new GenomicRegion(regStart, regEnd).getSize() == probeLen);
+			Probe subprobe = combined.subprobe(new GenomicRegion(regStart, regEnd), combined.getName());
+			if(subprobe.numBindingSites() == bindingSites){
+				return subprobe;
 			}
 		}
 		return null;
@@ -101,7 +104,9 @@ public class ProbeUtils {
 				return null;
 			}
 		}
-		
+		if(combined.numBindingSites() != bindingSites){
+			return null;
+		}
 		return combined;
 	}
 	
@@ -134,7 +139,6 @@ public class ProbeUtils {
 		//iterate over each subsequence of size bindingSiteLength within seq
 		GenomicCoordinate stop = seq.getEnd().decrement(bindingSiteLength - 2);
 		GenomicCoordinate start = seq.getStart();
-		int count = 1;
 		while(start.compareTo(stop) < 0){
 			GenomicSequence bindingSite = seq.subsequence(start, start.increment(bindingSiteLength - 1));
 			//check if the binding site meets the threshhold criteria
@@ -143,10 +147,9 @@ public class ProbeUtils {
 				GenomicRegion center = scanWindow(seq, bindingSite.getRegion(), pwm, windowSize);
 				if(center != null){
 					//create a probe centered on the center region
-					Probe p = createProbe(seq, center, name + count, probeLength);
+					Probe p = createProbe(seq, center, name, probeLength);
 					if(p != null && !probes.contains(p)){
 						probes.add(p);
-						count++;
 					}
 				}
 			}
