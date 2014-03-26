@@ -9,6 +9,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class GenomicRegion implements Comparable<GenomicRegion>, Serializable, Iterable<GenomicCoordinate> {
 	private static final long serialVersionUID = 1L;
 	
+	public static GenomicRegion union(GenomicRegion[] regions){
+		if(regions.length > 0){
+			GenomicRegion r = regions[0];
+			for(int i=1; i<regions.length; i++){
+				r = r.union(regions[i]);
+			}
+			return r;
+		}
+		return null;
+	}
+	
 	public static final Comparator<GenomicRegion> START_ASCENDING_COMPARATOR = new Comparator<GenomicRegion>(){
 
 		@Override
@@ -118,6 +129,16 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable, I
 	
 	public GenomicRegion decrement(int numBases){
 		return new GenomicRegion(m_Start.decrement(numBases), m_End.decrement(numBases));
+	}
+	
+	public long distance(GenomicRegion other){
+		if(this.overlaps(other)){
+			return -this.getOverlap(other);
+		}
+		if(m_Start.compareTo(other.getStart()) < 0){
+			return m_End.distance(other.getStart());
+		}
+		return other.getEnd().distance(m_Start);
 	}
 	
 	public boolean contains(GenomicCoordinate coordinate){

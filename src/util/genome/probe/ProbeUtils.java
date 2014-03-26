@@ -23,7 +23,7 @@ public class ProbeUtils {
 		return new Probe(revComp, p.getRegion(), mirrored, p.getName(), revStrand, p.isMutant());
 	}
 	
-	public static ProbeGroup joinProbes(Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist, int siteWidth, int probeLen){
+	public static ProbeGroup joinProbes(Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist, int probeLen){
 		List<Probe> probes = new ArrayList<Probe>();
 		for(Probe p : givenProbes){
 			probes.add(p);
@@ -32,36 +32,86 @@ public class ProbeUtils {
 		Queue<Probe> joinedProbes = new PriorityQueue<Probe>();
 		
 		//for sub list of size=bindingSites in the list of probes
-		for(int i=0; i<probes.size()-bindingSites+1; i++){
-			int last = i+bindingSites;
-			GenomicSequence combinedSeq = join(probes, i, last, minDist, maxDist, siteWidth, probeLen);
-			if(combinedSeq != null){
-				//TODO
+		for(int i=0; i<probes.size(); i++){
+			Probe combined = join(probes, i, bindingSites, minDist, maxDist, probeLen);
+			if(combined != null){
+				joinedProbes.add(combined);
 			}
 		}
-		return null;
+		
+		return new ProbeGroup(joinedProbes);
 		
 	}
 	
-	private static GenomicSequence join(List<Probe> probes, int start, int end, int minDist, int maxDist, int siteWidth, int probeLen){
-		GenomicSequence combined = probes.get(start).asGenomicSequence();
-		//TODO
-		//GenomicRegion combinedBindingRegion = new GenomicRegion()
-		for(int i=start+1; i<end; i++){
-			Probe nextProbe = probes.get(i);
-			GenomicSequence next;
-			if(nextProbe.getStrand() == Strand.MINUS){
-				next = reverseCompliment(nextProbe).asGenomicSequence();
+	public static Probe join(List<Probe> probes, int start, int bindingSites, int minDist, int maxDist, int probeLen){
+		Probe combined = join(probes, start, bindingSites, minDist, maxDist);
+		if(combined != null){
+			GenomicRegion bindingRegion = GenomicRegion.union(combined.getBindingSites());
+			int flank = probeLen - (int) bindingRegion.getSize();
+			//since decrement and increment work with negative numbers, this will correctly expand or reduce the
+			//region to the desired probe size
+			if(flank%2==0){
+				GenomicCoordinate regStart = bindingRegion.getStart().decrement(flank/2);
+				GenomicCoordinate regEnd = bindingRegion.getEnd().increment(flank/2);
+				assert(new GenomicRegion(regStart, regEnd).getSize() == probeLen);
+				return combined.subprobe(new GenomicRegion(regStart, regEnd), combined.getName());
 			}else{
-				next = nextProbe.asGenomicSequence();
+				//if flank odd, add +1 to left
+				GenomicCoordinate regStart = bindingRegion.getStart().decrement(flank/2 + 1);
+				GenomicCoordinate regEnd = bindingRegion.getEnd().increment(flank/2);
+				assert(new GenomicRegion(regStart, regEnd).getSize() == probeLen);
+				return combined.subprobe(new GenomicRegion(regStart, regEnd), combined.getName());
 			}
-			if(combined.adjacentTo(next) || combined.overlaps(next)){
-				combined = combined.join(next);
+		}
+		return null;
+	}
+	
+	public static Probe join(List<Probe> probes, int start, int bindingSites, int minDist, int maxDist){
+		Probe combined = join(probes, start, probes.size(), bindingSites);
+		if(combined != null && meetsBindingCriteria(combined, minDist, maxDist)){
+			return combined;
+		}
+		return null;
+	}
+	
+	private static boolean meetsBindingCriteria(Probe probe, int minDist, int maxDist){
+		GenomicRegion[] bindingSites = probe.getBindingSites();
+		for(int i=0; i<bindingSites.length-1; i++){
+			if(!meetsBindingCriteria(bindingSites[i], bindingSites[i+1], minDist, maxDist)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private static boolean meetsBindingCriteria(GenomicRegion siteA, GenomicRegion siteB, int minDist, int maxDist){
+		long dist = siteA.distance(siteB);
+		return dist >= minDist && dist <= maxDist;
+	}
+	
+	private static Probe join(List<Probe> probes, int start, int end, int bindingSites){
+		Probe combined = probes.get(start);
+		for(int i=start+1; i<end; i++){
+			if(combined.numBindingSites() > bindingSites) return null;
+			if(combined.numBindingSites() == bindingSites) return combined;
+			Probe nextProbe = probes.get(i);
+			if(combined.adjacentTo(nextProbe) || combined.overlaps(nextProbe)){
+				combined = combined.combine(nextProbe, combineNames(combined, nextProbe));
 			}else{
 				return null;
 			}
 		}
+		
 		return combined;
+	}
+	
+	private static String combineNames(Probe a, Probe b){
+		String x = a.getName();
+		String y = b.getName();
+		if(x.equals(y)){
+			return x;
+		}
+		return x+"/"+y;
 	}
 	
 	private static long scorePWM;

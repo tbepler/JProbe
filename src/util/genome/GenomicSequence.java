@@ -44,6 +44,10 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return m_Region.overlaps(other.getRegion());
 	}
 	
+	public boolean overlaps(GenomicRegion region){
+		return m_Region.overlaps(region);
+	}
+	
 	private int getIndexOf(GenomicCoordinate coord){
 		return (int) this.getStart().distance(coord);
 	}
@@ -105,6 +109,10 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	 */
 	public boolean contains(GenomicCoordinate coord){
 		return m_Region.contains(coord);
+	}
+	
+	public boolean contains(GenomicRegion region){
+		return m_Region.contains(region);
 	}
 	
 	/**

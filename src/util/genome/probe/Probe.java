@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import util.genome.Chromosome;
+import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.ParsingException;
@@ -223,6 +226,58 @@ public class Probe implements Serializable, Comparable<Probe>{
 	
 	public String getName(int number){
 		return m_Name + NUMBER_SEP + number;
+	}
+	
+	public boolean overlaps(Probe other){
+		return m_Seq.overlaps(other.asGenomicSequence());
+	}
+	
+	public boolean adjacentTo(Probe other){
+		return m_Seq.adjacentTo(other.asGenomicSequence());
+	}
+	
+	public Probe combine(Probe other, String combinedName){
+		if(!this.overlaps(other) && !this.adjacentTo(other)){
+			throw new RuntimeException("Cannot combine probe ("+this+") and probe ("+other+"). Probes are neither adjacent"
+					+ " nor overlapping.");
+		}
+		boolean mutant = this.isMutant() || other.isMutant();
+		Strand s = this.getStrand();
+		if(other.getStrand() != this.getStrand() && other.getStrand() != Strand.UNKNOWN){
+			if(this.getStrand() == Strand.UNKNOWN){
+				s = other.getStrand();
+			}else{
+				other = ProbeUtils.reverseCompliment(other);
+			}
+		}
+		GenomicSequence newSeq = this.asGenomicSequence().join(other.asGenomicSequence());
+		Set<GenomicRegion> bindingSites = new TreeSet<GenomicRegion>();
+		for(GenomicRegion site : m_BindingSites){
+			bindingSites.add(site);
+		}
+		for(GenomicRegion site : other.m_BindingSites){
+			bindingSites.add(site);
+		}
+		GenomicRegion[] combinedSites = bindingSites.toArray(new GenomicRegion[bindingSites.size()]);
+		return new Probe(newSeq, combinedSites, combinedName, s, mutant);
+	}
+	
+	public Probe subprobe(GenomicRegion subregion, String subname){
+		return this.subprobe(subregion.getStart(), subregion.getEnd(), subname);
+	}
+	
+	public Probe subprobe(GenomicCoordinate start, GenomicCoordinate end, String subName){
+		GenomicSequence subseq = m_Seq.subsequence(start, end);
+		GenomicRegion subregion = subseq.getRegion();
+		Set<GenomicRegion> bindingSites = new TreeSet<GenomicRegion>();
+		for(GenomicRegion site : m_BindingSites){
+			if(subregion.contains(site)){
+				bindingSites.add(site);
+			}else if(subregion.overlaps(site)){
+				bindingSites.add(subregion.union(site));
+			}
+		}
+		return new Probe(subseq, bindingSites.toArray(new GenomicRegion[bindingSites.size()]), subName, this.getStrand(), this.isMutant());
 	}
 	
 	@Override
