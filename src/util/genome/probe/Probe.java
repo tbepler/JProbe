@@ -1,6 +1,9 @@
 package util.genome.probe;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -12,33 +15,42 @@ import util.genome.Strand;
 
 public class Probe implements Serializable, Comparable<Probe>{
 	private static final long serialVersionUID = 1L;
+
+	private static final String BINDING_SITE_SEP = ";";
+	private static final String NUMBER_SEP = "-";
+	
+	private static final String REGION_REGEX = GenomicRegion.GENOMIC_REGION_REGEX;
+	private static final String BINDING_SITES_REGEX = BINDING_SITE_SEP + "(" + REGION_REGEX + BINDING_SITE_SEP + ")*";
+	private static final String NUMBERED_NAME_REGEX = ".*"+NUMBER_SEP+"\\d+";
+	private static final String STRAND_REGEX = Strand.STRAND_REGEX;
+	private static final String MUT_REGEX = "([Mm][Uu][Tt][Aa][Nn][Tt])|([Mm])";
+	private static final String MUT_TYPE_REGEX = MUT_REGEX+"|([Ww][Ii][Ll][Dd][Tt][Yy][Pp][Ee])|([Ww])";
 	
 	public static Probe parseProbe(String s) throws ParsingException{
 		try{
 			String[] tokens = s.split("\\s");
 			String seq = tokens[0];
-			String fullName = tokens[2];
-			GenomicRegion region = GenomicRegion.parseString(tokens[1]);
+			GenomicRegion region = null;
+			String name = null;
+			Strand strand = Strand.UNKNOWN;
+			boolean mutant = false;
+			GenomicRegion[] bindingSites = null;
 			
-			//parse full name to name, strand, and mutant
-			String[] nameTokens = fullName.split("-");
-			if(nameTokens.length == 1){
-				return new Probe(seq, region, nameTokens[0]);
-			} else if(nameTokens.length == 2){
-				String name = nameTokens[0];
-				if(nameTokens[1].equals("mutant")){
-					return new Probe(seq, region, name, true);
-				}else if(nameTokens[1].equals("wildtype")){
-					return new Probe(seq, region, name, false);
-				}else{
-					Strand strand = Strand.parseStrand(nameTokens[1]);
-					return new Probe(seq, region, name, strand);
+			for(int i=1; i<tokens.length; i++){
+				String cur = tokens[i];
+				if(cur.matches(REGION_REGEX) && region == null){
+					region = GenomicRegion.parseString(cur);
+				}else if(cur.matches(BINDING_SITES_REGEX) && bindingSites == null){
+					bindingSites = parseBindingSites(cur);
+				}else if(cur.matches(STRAND_REGEX) && strand == Strand.UNKNOWN){
+					strand = Strand.parseStrand(cur);
+				}else if(cur.matches(MUT_TYPE_REGEX)){
+					mutant = parseMutant(cur);
+				}else if(name == null){
+					name = parseName(cur);
 				}
-			} else{
-				boolean mutant = nameTokens[2].equals("mutant");
-				Strand strand = Strand.parseStrand(nameTokens[1]);
-				return new Probe(seq, region, nameTokens[0], strand, mutant);
 			}
+			return new Probe(seq, region, bindingSites, name, strand, mutant);
 			
 		} catch (ParsingException e){
 			throw e;
@@ -47,26 +59,53 @@ public class Probe implements Serializable, Comparable<Probe>{
 		}
 	}
 	
+	private static boolean parseMutant(String s){
+		return s.matches(MUT_REGEX);
+	}
+	
+	private static String parseName(String s){
+		if(s.matches(NUMBERED_NAME_REGEX)){
+			return s.substring(0, s.lastIndexOf(NUMBER_SEP));
+		}
+		return s;
+	}
+	
+	private static GenomicRegion[] parseBindingSites(String s){
+		String[] tokens = s.split(BINDING_SITE_SEP);
+		List<GenomicRegion> bindingSites = new ArrayList<GenomicRegion>();
+		for(int i=0; i<tokens.length; i++){
+			try {
+				if(tokens[i].matches(REGION_REGEX)){
+					bindingSites.add(GenomicRegion.parseString(tokens[i]));
+				}
+			} catch (ParsingException e) {
+				System.err.println("Error while parsing binding sites \"" + s + "\" on token \""+tokens[i]+"\"." +e.getMessage());
+			}
+		}
+		return bindingSites.toArray(new GenomicRegion[bindingSites.size()]);
+	}
+	
+	private static String bindingSitesToString(GenomicRegion[] bindingSites){
+		String s = BINDING_SITE_SEP;
+		for(GenomicRegion site : bindingSites){
+			s += site.toString() + BINDING_SITE_SEP;
+		}
+		return s;
+	}
+	
 	private static String mutantToString(boolean mutant){
 		if(mutant){
-			return "-mutant";
+			return "mutant";
 		}
-		return "-wildtype";
+		return "wildtype";
 	}
 	
 	private static String strandToString(Strand s){
-		switch(s){
-		case PLUS:
-			return "-" + s.toString();
-		case MINUS:
-			return "-" + s.toString();
-		default:
-			return "";
-		}
+		return s.toString();
 	}
 	
-	private final String m_Seq;
-	private final GenomicRegion m_Region;
+	private final GenomicSequence m_Seq;
+	private final GenomicRegion[] m_BindingSites;
 	private final String m_Name;
 	private final boolean m_Mutant;
 	private final Strand m_Strand;
@@ -76,57 +115,62 @@ public class Probe implements Serializable, Comparable<Probe>{
 		this(seq, null, null);
 	}
 	
-	public Probe(String seq, GenomicRegion region){
-		this(seq, region, null);
+	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites){
+		this(seq, region, bindingSites, null);
 	}
 	
 	public Probe(String seq, String name){
-		this(seq, null, name);
+		this(seq, null, new GenomicRegion[]{}, name);
 	}
 
-	public Probe(String seq, GenomicRegion region, boolean mutant){
-		this(seq, region, null, Strand.UNKNOWN, mutant);
+	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, boolean mutant){
+		this(seq, region, bindingSites, null, Strand.UNKNOWN, mutant);
 	}
 	
-	public Probe(String seq, GenomicRegion region, String name){
-		this(seq, region, name, Strand.UNKNOWN, false);
+	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, String name){
+		this(seq, region, bindingSites, name, Strand.UNKNOWN, false);
 	}
 	
-	public Probe(GenomicSequence seq){
-		this(seq, null);
+	public Probe(GenomicSequence seq, GenomicRegion ... bindingSites){
+		this(seq, bindingSites, null);
 	}
 	
-	public Probe(GenomicSequence seq, String name){
-		this(seq, name, false);
+	public Probe(GenomicSequence seq, GenomicRegion[] bindingSites, String name){
+		this(seq, bindingSites, name, false);
 	}
 	
-	public Probe(GenomicSequence seq, String name, Strand strand){
-		this(seq, name, strand, false);
+	public Probe(GenomicSequence seq, GenomicRegion[] bindingSites, String name, Strand strand){
+		this(seq, bindingSites, name, strand, false);
 	}
 	
-	public Probe(GenomicSequence seq, String name, boolean mutant){
-		this(seq.getSequence(), seq.getRegion(), name, Strand.UNKNOWN, mutant);
+	public Probe(GenomicSequence seq, GenomicRegion[] bindingSites, String name, boolean mutant){
+		this(seq.getSequence(), seq.getRegion(), bindingSites, name, Strand.UNKNOWN, mutant);
 	}
 	
-	public Probe(GenomicSequence seq, String name, Strand strand, boolean mutant){
-		this(seq.getSequence(), seq.getRegion(), name, strand, mutant);
+	public Probe(GenomicSequence seq, GenomicRegion[] bindingSites, String name, Strand strand, boolean mutant){
+		this(seq.getSequence(), seq.getRegion(), bindingSites, name, strand, mutant);
 	}
 	
-	public Probe(String seq, GenomicRegion region, String name, Strand strand){
-		this(seq, region, name, strand, false);
+	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, String name, Strand strand){
+		this(seq, region, bindingSites, name, strand, false);
 	}
 	
-	public Probe(String seq, GenomicRegion region, String name, boolean mutant){
-		this(seq, region, name, Strand.UNKNOWN, mutant);
+	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, String name, boolean mutant){
+		this(seq, region, bindingSites, name, Strand.UNKNOWN, mutant);
 	}
 	
-	public Probe(String seq, GenomicRegion region, String name, Strand strand, boolean mutant){
-		m_Seq = seq;
-		m_Region = region != null ? region : new GenomicRegion(new Chromosome("0"), 1, 1);
+	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, String name, Strand strand, boolean mutant){
+		GenomicRegion r = region != null ? region : new GenomicRegion(new Chromosome("0"), 1, seq.length());
+		m_Seq = new GenomicSequence(seq, r);
+		m_BindingSites = bindingSites == null ? new GenomicRegion[]{} : Arrays.copyOf(bindingSites, bindingSites.length);
 		m_Name = name!=null && !name.equals("") ? name : "Probe";
 		m_Mutant = mutant;
 		m_Strand = strand;
-		m_Hash = new HashCodeBuilder(859, 911).append(m_Seq).append(m_Region).toHashCode();
+		HashCodeBuilder hashBuilder = new HashCodeBuilder(859, 911).append(m_Seq);
+		for(GenomicRegion site : m_BindingSites){
+			hashBuilder.append(site);
+		}
+		m_Hash = hashBuilder.toHashCode();
 	}
 	
 	public int getLength(){
@@ -134,19 +178,39 @@ public class Probe implements Serializable, Comparable<Probe>{
 	}
 	
 	public GenomicSequence asGenomicSequence(){
-		return new GenomicSequence(m_Seq, m_Region);
+		return m_Seq;
+	}
+	
+	public GenomicRegion[] getBindingSites(){
+		return Arrays.copyOf(m_BindingSites, m_BindingSites.length);
+	}
+	
+	public int numBindingSites(){
+		return m_BindingSites.length;
 	}
 	
 	public boolean isMutant(){
 		return m_Mutant;
 	}
 	
+	public String getStrandAsString(){
+		return m_Strand.toString();
+	}
+	
+	public String getMutantAsString(){
+		return mutantToString(m_Mutant);
+	}
+	
+	public String getBindingSitesAsString(){
+		return bindingSitesToString(m_BindingSites);
+	}
+	
 	public String getSequence(){
-		return m_Seq;
+		return m_Seq.getSequence();
 	}
 	
 	public GenomicRegion getRegion(){
-		return m_Region;
+		return m_Seq.getRegion();
 	}
 	
 	public Strand getStrand(){
@@ -157,18 +221,44 @@ public class Probe implements Serializable, Comparable<Probe>{
 		return m_Name;
 	}
 	
-	public String getFullName(){
-		return m_Name + strandToString(m_Strand) + mutantToString(m_Mutant);
+	public String getName(int number){
+		return m_Name + NUMBER_SEP + number;
 	}
 	
 	@Override
 	public String toString(){
-		return m_Seq + "\t" + m_Region + "\t" + this.getFullName();
+		return m_Seq.getSequence() + "\t"
+				+ m_Seq.getRegion() + "\t"
+				+ this.getName() + "\t"
+				+ strandToString(m_Strand) + "\t"
+				+ mutantToString(m_Mutant) + "\t"
+				+ bindingSitesToString(m_BindingSites);
+	}
+	
+	public String toString(int number){
+		return m_Seq.getSequence() + "\t"
+				+ m_Seq.getRegion() + "\t"
+				+ this.getName(number) + "\t"
+				+ strandToString(m_Strand) + "\t"
+				+ mutantToString(m_Mutant) + "\t"
+				+ bindingSitesToString(m_BindingSites);
 	}
 	
 	@Override
 	public int hashCode(){
 		return m_Hash;
+	}
+	
+	private int compareBindingSites(Probe other){
+		for(int i=0; i<this.numBindingSites() && i<other.numBindingSites(); i++){
+			GenomicRegion cur = m_BindingSites[i];
+			GenomicRegion curOther = other.m_BindingSites[i];
+			int comp = cur.compareTo(curOther);
+			if(comp != 0){
+				return comp;
+			}
+		}
+		return this.numBindingSites() - other.numBindingSites();
 	}
 	
 	@Override
@@ -177,7 +267,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 		if(o == this) return true;
 		if(o instanceof Probe){
 			Probe other = (Probe) o;
-			return m_Seq.equals(other.m_Seq) && m_Region.equals(other.m_Region);
+			return m_Seq.equals(other.m_Seq) && this.compareBindingSites(other) == 0;
 		}
 		return false;
 	}
@@ -187,11 +277,11 @@ public class Probe implements Serializable, Comparable<Probe>{
 		if(other == null){
 			return -1;
 		}
-		int comp = m_Region.compareTo(other.m_Region);
+		int comp = m_Seq.compareTo(other.m_Seq);
 		if(comp != 0){
 			return comp;
 		}
-		comp = m_Seq.compareTo(other.m_Seq);
+		comp = this.compareBindingSites(other);
 		return comp;
 	}
 	

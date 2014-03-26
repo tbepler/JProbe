@@ -21,6 +21,8 @@ public enum Strand {
 		}
 	}
 	
+	public static final String STRAND_REGEX = "[+-]";
+	
 	public static Strand reverse(Strand s){
 		switch(s){
 		case PLUS:

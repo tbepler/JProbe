@@ -1,9 +1,11 @@
 package util.genome;
 
 import java.io.Serializable;
+import java.util.Iterator;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class GenomicSequence implements Serializable, Comparable<GenomicSequence>{
+public class GenomicSequence implements Serializable, Comparable<GenomicSequence>, Iterable<GenomicCoordinate>{
 	private static final long serialVersionUID = 1L;
 	
 	private final String m_Sequence;
@@ -214,6 +216,11 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 			return m_Region.compareTo(o.m_Region);
 		}
 		return m_Sequence.compareTo(o.m_Sequence);
+	}
+
+	@Override
+	public Iterator<GenomicCoordinate> iterator() {
+		return m_Region.iterator();
 	}
 
 }

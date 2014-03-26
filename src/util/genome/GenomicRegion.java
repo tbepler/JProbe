@@ -2,10 +2,11 @@ package util.genome;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Iterator;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
+public class GenomicRegion implements Comparable<GenomicRegion>, Serializable, Iterable<GenomicCoordinate> {
 	private static final long serialVersionUID = 1L;
 	
 	public static final Comparator<GenomicRegion> START_ASCENDING_COMPARATOR = new Comparator<GenomicRegion>(){
@@ -46,6 +47,8 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 
 	private static final char CHR_SEP = ':';
 	private static final char LOC_SEP = '-';
+	
+	public static final String GENOMIC_REGION_REGEX = ".+"+CHR_SEP+"\\d+"+LOC_SEP+"\\d+";
 
 	public static GenomicRegion parseString(String s) throws ParsingException{
 		s = s.trim();
@@ -119,6 +122,19 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	
 	public boolean contains(GenomicCoordinate coordinate){
 		return m_Start.compareTo(coordinate) <= 0 && m_End.compareTo(coordinate) >= 0;
+	}
+	
+	public GenomicRegion mirror(GenomicRegion within){
+		if(!within.contains(this)){
+			throw new RuntimeException("Cannot mirror the GenomicRegion "+this+" within the GenomicRegion "+within+". "+within+
+					" does not contain "+this+".");
+		}
+		int startDist = (int) within.getStart().distance(m_Start);
+		int endDist = (int) within.getEnd().distance(m_End);
+		GenomicCoordinate newStart = within.getStart().increment(endDist);
+		GenomicCoordinate newEnd = within.getEnd().decrement(startDist);
+		return new GenomicRegion(newStart, newEnd);
+		
 	}
 	
 	public boolean contains(GenomicRegion other){
@@ -233,6 +249,32 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable {
 	@Override
 	public int compareTo(GenomicRegion o) {
 		return this.compareByStart(o);
+	}
+
+	@Override
+	public Iterator<GenomicCoordinate> iterator() {
+		return new Iterator<GenomicCoordinate>(){
+			
+			private GenomicCoordinate cur = m_Start;
+			
+			@Override
+			public boolean hasNext() {
+				return cur.compareTo(m_End) <= 0;
+			}
+
+			@Override
+			public GenomicCoordinate next() {
+				GenomicCoordinate ret = cur;
+				cur = cur.increment(1);
+				return ret;
+			}
+
+			@Override
+			public void remove() {
+				//do nothing
+			}
+			
+		};
 	}
 
 	

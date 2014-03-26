@@ -15,7 +15,12 @@ public class ProbeUtils {
 	public static Probe reverseCompliment(Probe p){
 		String revComp = DNAUtils.reverseCompliment(p.getSequence());
 		Strand revStrand = Strand.reverse(p.getStrand());
-		return new Probe(revComp, p.getRegion(), p.getName(), revStrand, p.isMutant());
+		GenomicRegion[] bindingSites = p.getBindingSites();
+		GenomicRegion[] mirrored = new GenomicRegion[bindingSites.length];
+		for(int i=0; i<bindingSites.length; i++){
+			mirrored[mirrored.length -1 - i] = bindingSites[i].mirror(p.getRegion());
+		}
+		return new Probe(revComp, p.getRegion(), mirrored, p.getName(), revStrand, p.isMutant());
 	}
 	
 	public static ProbeGroup joinProbes(Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist, int siteWidth, int probeLen){
@@ -29,7 +34,7 @@ public class ProbeUtils {
 		//for sub list of size=bindingSites in the list of probes
 		for(int i=0; i<probes.size()-bindingSites+1; i++){
 			int last = i+bindingSites;
-			GenomicSequence combinedSeq = join(probes, i, last);
+			GenomicSequence combinedSeq = join(probes, i, last, minDist, maxDist, siteWidth, probeLen);
 			if(combinedSeq != null){
 				//TODO
 			}
@@ -38,8 +43,10 @@ public class ProbeUtils {
 		
 	}
 	
-	private static GenomicSequence join(List<Probe> probes, int start, int end){
+	private static GenomicSequence join(List<Probe> probes, int start, int end, int minDist, int maxDist, int siteWidth, int probeLen){
 		GenomicSequence combined = probes.get(start).asGenomicSequence();
+		//TODO
+		//GenomicRegion combinedBindingRegion = new GenomicRegion()
 		for(int i=start+1; i<end; i++){
 			Probe nextProbe = probes.get(i);
 			GenomicSequence next;
@@ -118,7 +125,7 @@ public class ProbeUtils {
 			return null;
 		}
 		GenomicSequence probeSeq = seq.subsequence(start, end);
-		return new Probe(probeSeq, name);
+		return new Probe(probeSeq, new GenomicRegion[]{center}, name);
 	}
 	
 	private static GenomicRegion scanWindow(GenomicSequence seq, GenomicRegion bindingSite, PWM pwm, int windowSize){

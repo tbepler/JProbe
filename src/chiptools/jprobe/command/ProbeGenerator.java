@@ -7,15 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.kmer.Kmer;
 import util.genome.kmer.Kmers;
 import util.genome.probe.Probe;
-import util.genome.probe.ProbeGroup;
 import util.genome.probe.ProbeUtils;
 import chiptools.Constants;
 import jprobe.services.JProbeCore;
@@ -158,9 +154,10 @@ public class ProbeGenerator implements Command{
 		}
 		//System.err.println("Args parsed");
 		//System.err.println("Kmer type: "+config.KMER.getClass());
-		Queue<Probe> probes = new PriorityQueue<Probe>();
+		//Queue<Probe> probes = new PriorityQueue<Probe>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line;
+		int count = 1;
 		try {
 			while((line = reader.readLine()) != null){
 				try{
@@ -181,7 +178,10 @@ public class ProbeGenerator implements Command{
 							config.ESCORE
 							);
 					//System.err.println("Peak parsed. dt = "+(System.currentTimeMillis() - time));
-					probes.addAll(peakProbes);
+					for(Probe p : peakProbes){
+						System.out.println(p.toString(count++));
+					}
+					//probes.addAll(peakProbes);
 				} catch (Exception e){
 					//proceed
 				}
@@ -191,8 +191,8 @@ public class ProbeGenerator implements Command{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ProbeGroup group = new ProbeGroup(probes);
-		System.out.println(group);
+		//ProbeGroup group = new ProbeGroup(probes);
+		//System.out.println(group);
 	}
 
 	

@@ -15,12 +15,16 @@ public class Probes implements Data{
 	
 	public Probes(ProbeGroup probes){
 		m_Probes = probes;
-		m_Table = new Field[probes.size()][3];
+		m_Table = new Field[probes.size()][6];
 		for(int row=0; row<m_Table.length; row++){
 			Probe p = probes.getProbe(row);
 			m_Table[row][0] = new StringField(p.getSequence(), "Sequence");
 			m_Table[row][1] = new GenomicRegionField(p.getRegion());
-			m_Table[row][2] = new StringField(p.getFullName(), "Name");
+			m_Table[row][2] = new StringField(p.getName(row+1), "Name");
+			m_Table[row][3] = new StringField(p.getStrandAsString(), "Strand");
+			m_Table[row][4] = new StringField(p.getMutantAsString(), "Mutation status");
+			m_Table[row][5] = new StringField(p.getBindingSitesAsString(), "Binding sites");
+			
 		}
 	}
 	
@@ -51,7 +55,7 @@ public class Probes implements Data{
 
 	@Override
 	public String[] getHeaders() {
-		return new String[]{"Sequence", "Region", "Name"};
+		return new String[]{"Sequence", "Region", "Name", "Strand", "Mutation status", "Binding Sites"};
 	}
 
 	@Override
@@ -77,7 +81,7 @@ public class Probes implements Data{
 
 	@Override
 	public int getNumCols() {
-		return 3;
+		return 6;
 	}
 
 	@Override
