@@ -19,8 +19,31 @@ public class PeakSequenceGroup implements Serializable, Iterable<PeakSequence>{
 		return Parser.parsePeakSeqGroup(s);
 	}
 	
-	public static PeakSequenceGroup readFromGenome(GenomeReader reader, PeakGroup peaks){
+	/**
+	 * This method uses the specified GenomeReader to extract the genomic DNA sequence of each peak in the 
+	 * peak group and returns a new PeakSequenceGroup containing those peak sequences.
+	 * @param reader - genome from which to extract sequences
+	 * @param peaks - peaks for which sequences should be extracted
+	 * @return a PeakSequenceGroup object containing all the PeakSequence objects generated
+	 */
+	public static PeakSequenceGroup readFromGenome(GenomeReader reader, Iterable<Peak> peaks){
 		return Parser.readFromGenome(reader, peaks);
+	}
+	
+	/**
+	 * This method uses the specified GenomeReader to extract the genomic DNA sequence of each peak in the
+	 * peak group in a region around the peak summit of size specified by the summitRegion parameter. The
+	 * summitRegion parameter specifies how far on either side of the peak summit to look when extracting sequences.
+	 * The resulting peak sequences will be of size summitRegion*2 + 1 as a result. The peak summit values will
+	 * be used if they are specified by the peak object, otherwise the summit will be considered the center
+	 * of the peak region.
+	 * @param reader - genome from which to extract sequences
+	 * @param peaks - peaks for which sequences should be extracted
+	 * @param summitRegion - int specifying how far on either side of the summit to look
+	 * @return a PeakSequenceGroup object containing the PeakSequence objects generated
+	 */
+	public static PeakSequenceGroup readFromGenome(GenomeReader reader, Iterable<Peak> peaks, int peakSummit){
+		return Parser.readFromGenome(reader, peaks, peakSummit);
 	}
 	
 	private final List<PeakSequence> m_PeakSeqs = new ArrayList<PeakSequence>();

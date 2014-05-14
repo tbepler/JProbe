@@ -28,7 +28,14 @@ public class Parser {
 		{"PeakSeq format (.peakSeq, .*)", "peakSeq", "*"}
 	};
 	
-	public static PeakSequenceGroup readFromGenome(GenomeReader reader, PeakGroup peaks){
+	/**
+	 * This method uses the specified GenomeReader to extract the genomic DNA sequence of each peak in the 
+	 * peak group and returns a new PeakSequenceGroup containing those peak sequences.
+	 * @param reader - genome from which to extract sequences
+	 * @param peaks - peaks for which sequences should be extracted
+	 * @return a PeakSequenceGroup object containing all the PeakSequence objects generated
+	 */
+	public static PeakSequenceGroup readFromGenome(GenomeReader reader, Iterable<Peak> peaks){
 		List<PeakSequence> peakSeqs = new ArrayList<PeakSequence>();
 		List<LocationQuery> queries = new ArrayList<LocationQuery>();
 		for(Peak p : peaks){
@@ -36,6 +43,51 @@ public class Parser {
 		}
 		reader.read(queries, new ArrayList<SequenceQuery>(), new ArrayList<LocationBoundedSequenceQuery>());
 		return new PeakSequenceGroup(peakSeqs);
+	}
+	
+	/**
+	 * This method uses the specified GenomeReader to extract the genomic DNA sequence of each peak in the
+	 * peak group in a region around the peak summit of size specified by the summitRegion parameter. The
+	 * summitRegion parameter specifies how far on either side of the peak summit to look when extracting sequences.
+	 * The resulting peak sequences will be of size summitRegion*2 + 1 as a result. The peak summit values will
+	 * be used if they are specified by the peak object, otherwise the summit will be considered the center
+	 * of the peak region.
+	 * @param reader - genome from which to extract sequences
+	 * @param peaks - peaks for which sequences should be extracted
+	 * @param summitRegion - int specifying how far on either side of the summit to look
+	 * @return a PeakSequenceGroup object containing the PeakSequence objects generated
+	 */
+	public static PeakSequenceGroup readFromGenome(GenomeReader reader, Iterable<Peak> peaks, int summitRegion){
+		List<Peak> peakSummits = new ArrayList<Peak>();
+		//for every peak make a new peak object for the summit
+		for(Peak p : peaks){
+			long summit;
+			//if the point source is less than one, then make the summit the center of the peak region
+			if(p.getPointSource() <= 0){
+				summit = p.getChromStart() + (p.getChromEnd() - p.getChromStart())/2;
+			}else{
+				summit = p.getPointSource();
+			}
+			long summitStart = summit - summitRegion;
+			summitStart = Math.max(1, summitStart);
+			long summitEnd = summit + summitRegion;
+			summitEnd = Math.max(1, summitEnd);
+			Peak summitPeak = new Peak(
+					p.getChrom(),
+					summitStart,
+					summitEnd,
+					p.getName(),
+					p.getScore(),
+					p.getStrand(),
+					p.getSignalVal(),
+					p.getPVal(),
+					p.getQVal(),
+					p.getPointSource()
+					);
+			peakSummits.add(summitPeak);
+		}
+		//read the summit peaks from the genome
+		return readFromGenome(reader, peakSummits);
 	}
 	
 	public static PeakSequence parsePeakSequence(String s) throws ParsingException{

@@ -20,6 +20,7 @@ import util.genome.peak.AbstractPeakQuery;
 import util.genome.peak.Peak;
 import util.genome.peak.PeakGroup;
 import util.genome.peak.PeakSequence;
+import util.genome.peak.PeakSequenceGroup;
 import util.genome.reader.GenomeReader;
 import util.genome.reader.GenomeReaderFactory;
 import util.genome.reader.query.LocationBoundedSequenceQuery;
@@ -172,20 +173,9 @@ public class PeakFinder implements Command{
 			});
 		}
 		GenomeReader reader = GenomeReaderFactory.createGenomeReader(genome, l);
-		List<LocationQuery> queries = new ArrayList<LocationQuery>();
-		for(Peak peak : peaks){
-			queries.add(new AbstractPeakQuery(peak){
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void process(GenomicSequence found) {
-					PeakSequence peakSeq = new PeakSequence(found, this.getPeak());
-					System.out.println(peakSeq.toString());
-				}
-				
-			});
+		for(PeakSequence peakSeq : PeakSequenceGroup.readFromGenome(reader, peaks)){
+			System.out.println(peakSeq.toString());
 		}
-		reader.read(queries, new ArrayList<SequenceQuery>(), new ArrayList<LocationBoundedSequenceQuery>());
 		System.setIn(config.ORIGINAL_INPUT);
 		System.out.flush();
 		System.setOut(config.ORIGINAL_OUTPUT);

@@ -94,18 +94,30 @@ public class Peak implements Serializable{
 				(Integer)optionalParams.get(POINT_SOURCE) : DEFAULT_POINT_SOURCE;
 	}
 	
+	public Peak(Chromosome chrom, long chromStart, long chromEnd, String name, int score, Strand strand,
+			double signalVal, double pVal, double qVal, int pointSource){
+		m_Region = new GenomicRegion(new GenomicCoordinate(chrom, chromStart), new GenomicCoordinate(chrom, chromEnd));
+		m_Name = name;
+		m_Score = score;
+		m_Strand = strand;
+		m_SignalVal = signalVal;
+		m_PVal = pVal;
+		m_QVal = qVal;
+		m_PointSource = pointSource;
+	}
+	
 	public Peak(String chrom, long chromStart, long chromEnd,
 			String name, int score, Strand strand, double signalVal,
 			double pVal, double qVal, int pointSource) {
 		Chromosome chr = new Chromosome(chrom);
 		m_Region = new GenomicRegion(new GenomicCoordinate(chr, chromStart), new GenomicCoordinate(chr, chromEnd));
-		this.m_Name = name;
-		this.m_Score = score;
-		this.m_Strand = strand;
-		this.m_SignalVal = signalVal;
-		this.m_PVal = pVal;
-		this.m_QVal = qVal;
-		this.m_PointSource = pointSource;
+		m_Name = name;
+		m_Score = score;
+		m_Strand = strand;
+		m_SignalVal = signalVal;
+		m_PVal = pVal;
+		m_QVal = qVal;
+		m_PointSource = pointSource;
 	}
 	
 	@Override
