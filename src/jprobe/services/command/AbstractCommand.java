@@ -9,7 +9,7 @@ import jprobe.services.JProbeCore;
 
 public abstract class AbstractCommand implements Command{
 	
-	public interface Flag<P>{
+	public static interface Flag<P>{
 		
 		public static final String LONG_FORM_PREFIX = "--";
 		public static final String SHORT_FORM_PREFIX = "-";
@@ -55,7 +55,7 @@ public abstract class AbstractCommand implements Command{
 		public P parse(P param, String[] args);
 	}
 	
-	protected abstract class CommandHelper<P>{
+	protected static abstract class CommandHelper<P>{
 		private final Map<Character, Flag<P>> m_ShortFlag = new HashMap<Character, Flag<P>>();
 		private final Map<String, Flag<P>> m_LongFlag = new HashMap<String, Flag<P>>();
 		private final List<Flag<P>> m_Flags = new ArrayList<Flag<P>>();
@@ -88,6 +88,7 @@ public abstract class AbstractCommand implements Command{
 			return s;
 		}
 		
+		protected abstract String generalUsage();
 		protected abstract P newEmptyParameter();
 		protected abstract void execute(JProbeCore core, P param);
 		
@@ -140,6 +141,11 @@ public abstract class AbstractCommand implements Command{
 	}
 	
 	protected abstract CommandHelper<?> generateCommandHelper();
+	
+	protected String getUsage(){
+		String s = m_Helper.generalUsage() + "\n" + m_Helper.generateUsage();
+		return s;
+	}
 	
 	@Override
 	public String getName() {
