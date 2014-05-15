@@ -14,45 +14,45 @@ import org.osgi.framework.BundleContext;
 
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
-import jprobe.services.function.FunctionPrototype;
+import jprobe.services.function.Function;
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreListener;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 
-public class CoreFunctionManager extends AbstractServiceListener<FunctionPrototype> implements FunctionManager{
+public class CoreFunctionManager extends AbstractServiceListener<Function> implements FunctionManager{
 	
 	private JProbeCore core;
 	private Collection<CoreListener> listeners;
 	
-	private Collection<FunctionPrototype> functions;
-	private Map<String, List<FunctionPrototype>> functionsByName;
+	private Collection<Function> functions;
+	private Map<String, List<Function>> functionsByName;
 	
 	public CoreFunctionManager(JProbeCore core, BundleContext context){
-		super(FunctionPrototype.class, context);
+		super(Function.class, context);
 		this.core = core;
 		listeners = new HashSet<CoreListener>();
-		functions = new PriorityQueue<FunctionPrototype>(10, new Comparator<FunctionPrototype>(){
+		functions = new PriorityQueue<Function>(10, new Comparator<Function>(){
 			@Override
-			public int compare(FunctionPrototype arg0, FunctionPrototype arg1) {
-				return arg0.getFunctionName().compareTo(arg1.getFunctionName());
+			public int compare(Function arg0, Function arg1) {
+				return arg0.getName().compareTo(arg1.getName());
 			}
 		});
-		functionsByName = new HashMap<String, List<FunctionPrototype>>();
+		functionsByName = new HashMap<String, List<Function>>();
 	}
 	
 	@Override
-	public FunctionPrototype[] getAllFunctionPrototypes(){
-		return functions.toArray(new FunctionPrototype[functions.size()]);
+	public Function[] getAllFunctions(){
+		return functions.toArray(new Function[functions.size()]);
 	}
 	
 	@Override
-	public FunctionPrototype[] getFunctionPrototypes(String name){
+	public Function[] getFunctions(String name){
 		if(functionsByName.containsKey(name)){
-			List<FunctionPrototype> list = functionsByName.get(name);
-			return list.toArray(new FunctionPrototype[list.size()]);
+			List<Function> list = functionsByName.get(name);
+			return list.toArray(new Function[list.size()]);
 		}
-		return new FunctionPrototype[]{};
+		return new Function[]{};
 	}
 	
 	@Override
@@ -61,24 +61,24 @@ public class CoreFunctionManager extends AbstractServiceListener<FunctionPrototy
 	}
 	
 	@Override
-	public void addFunctionPrototype(FunctionPrototype f, Bundle responsible){
+	public void addFunction(Function f, Bundle responsible){
 		if(!functions.contains(f)){
 			functions.add(f);
-			if(!functionsByName.containsKey(f.getFunctionName())){
-				List<FunctionPrototype> list = new ArrayList<FunctionPrototype>();
+			if(!functionsByName.containsKey(f.getName())){
+				List<Function> list = new ArrayList<Function>();
 				list.add(f);
-				functionsByName.put(f.getFunctionName(), list);
+				functionsByName.put(f.getName(), list);
 			}else{
-				functionsByName.get(f.getFunctionName()).add(f);
+				functionsByName.get(f.getName()).add(f);
 			}
 			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_ADDED, responsible, f));
 		}
 	}
 	
 	@Override
-	public void removeFunctionPrototype(FunctionPrototype f, Bundle responsible){
+	public void removeFunction(Function f, Bundle responsible){
 		if(functions.remove(f)){
-			functionsByName.get(f.getFunctionName()).remove(f);
+			functionsByName.get(f.getName()).remove(f);
 			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_REMOVED, responsible, f));
 		}
 	}
@@ -100,13 +100,13 @@ public class CoreFunctionManager extends AbstractServiceListener<FunctionPrototy
 	}
 
 	@Override
-	public void register(FunctionPrototype service, Bundle provider) {
-		this.addFunctionPrototype(service, provider);
+	public void register(Function service, Bundle provider) {
+		this.addFunction(service, provider);
 	}
 
 	@Override
-	public void unregister(FunctionPrototype service, Bundle provider) {
-		this.removeFunctionPrototype(service, provider);
+	public void unregister(Function service, Bundle provider) {
+		this.removeFunction(service, provider);
 	}
 	
 	

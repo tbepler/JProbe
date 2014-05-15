@@ -12,7 +12,7 @@ import plugins.genome.services.GenomeFunction;
 import jprobe.services.command.Command;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
-import jprobe.services.function.FunctionPrototype;
+import jprobe.services.function.Function;
 import util.genome.peak.PeakSequence;
 
 public class Constants {
@@ -25,7 +25,7 @@ public class Constants {
 	public static final String CMD_NAMES_FILE = "/chiptools/jprobe/resources/command_names.txt";
 	public static final String CMD_DESCRIPTIONS_FILE = "/chiptools/jprobe/resources/command_descriptions.txt";
 	public static final String GENOME_FUNCTION_FILE = RESOURCES_PATH + "/genome_functions.txt";
-	public static final String FUNCTION_PROTOTYPES_FILE = RESOURCES_PATH + "/function_prototypes.txt";
+	public static final String FUNCTIONS_FILE = RESOURCES_PATH + "/functions.txt";
 	public static final String READER_WRITER_FILE = RESOURCES_PATH + "/data_reader_writer.txt";
 	
 	public static final String DATA_PACKAGE = "chiptools.jprobe.data.";
@@ -36,7 +36,7 @@ public class Constants {
 	public static final String FUNCTION_PACKAGE = "chiptools.jprobe.function.";
 	
 	public static final List<Class<? extends GenomeFunction>> GENOME_FUNCTION_CLASSES = getClasses(GenomeFunction.class, GENOME_FUNCTION_FILE, FUNCTION_PACKAGE);
-	public static final List<Class<? extends FunctionPrototype>> FUNCTION_PROTOTYPE_CLASSES = getClasses(FunctionPrototype.class, FUNCTION_PROTOTYPES_FILE, FUNCTION_PACKAGE);
+	public static final List<Class<? extends Function>> FUNCTION_CLASSES = getClasses(Function.class, FUNCTIONS_FILE, FUNCTION_PACKAGE);
 	
 	@SuppressWarnings("unchecked")
 	private static <T> List<Class<? extends T>> getClasses(Class<T> clazz, String file, String pckg){
@@ -136,8 +136,14 @@ public class Constants {
 		return Collections.unmodifiableMap(map);
 	}
 	
-	public static final String GENOME_PEAK_FINDER_NAME = "Find peaks";
+	public static final String GENOME_PEAK_FINDER_NAME = "PeakFinder";
 	public static final String GENOME_PEAK_FINDER_TOOLTIP = "This function extracts the sequences for a group of peaks from the genome.";
+	
+	public static final String PROBE_GEN_FUNCTION_NAME = "ProbeGen";
+	public static final String PROBE_GEN_FUNCTION_TOOLTIP = CMD_DESCRIPTIONS.containsKey(chiptools.jprobe.command.ProbeGenerator.class) ? 
+			CMD_DESCRIPTIONS.get(chiptools.jprobe.command.ProbeGenerator.class) : 
+			"Error finding description";
+	
 	public static final String PEAK_PARAM_NAME = "Peaks";
 	public static final String PEAK_PARAM_TOOLTIP = "The peaks to extract sequences for";
 	

@@ -1,6 +1,3 @@
-<Wed May 14 17:10:59 EDT 2014><org.apache.felix.framework>JProbe started.
-<Wed May 14 17:10:59 EDT 2014><plugins.genome>GenomeFunctionPrototype "Find peaks" added by bundle "chiptools.jprobe"
-<Wed May 14 17:12:42 EDT 2014><org.apache.felix.framework>JProbe shutting down.
-<Wed May 14 17:12:42 EDT 2014><plugins.genome>GenomeFunctionPrototype "Find peaks" removed by bundle "chiptools.jprobe"
-<Wed May 14 17:12:42 EDT 2014><plugins.functions.gui>Function menu stopped.
-<Wed May 14 17:12:42 EDT 2014><plugins.dataviewer.gui>DataViewer stopped.
+<Thu May 15 15:23:00 EDT 2014><org.apache.felix.framework>JProbe started.
+<Thu May 15 15:23:00 EDT 2014><plugins.genome>GenomeFunctionPrototype "PeakFinder" added by bundle "chiptools.jprobe"
+<Thu May 15 15:23:00 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.

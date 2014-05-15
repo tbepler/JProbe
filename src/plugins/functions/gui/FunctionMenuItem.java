@@ -12,7 +12,7 @@ import plugins.functions.gui.dialog.FunctionPanel;
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
 import jprobe.services.Log;
-import jprobe.services.function.FunctionPrototype;
+import jprobe.services.function.Function;
 
 public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	private static final long serialVersionUID = 1L;
@@ -21,14 +21,14 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	private FunctionDialogHandler m_FunctionDialog;
 	private FunctionPanel m_FunctionPanel;
 	
-	public FunctionMenuItem(JProbeCore core, Bundle bundle, FunctionPrototype functionPrototype, FunctionDialogHandler dialogWindow){
-		super(functionPrototype.getFunctionName());
+	public FunctionMenuItem(JProbeCore core, Bundle bundle, Function function, FunctionDialogHandler dialogWindow){
+		super(function.getName());
 		m_Bundle = bundle;
 		m_FunctionDialog = dialogWindow;
-		m_FunctionPanel = new FunctionPanel(functionPrototype, core, bundle);
+		m_FunctionPanel = new FunctionPanel(function, core, bundle);
 		this.setEnabled(true);
 		this.setVisible(true);
-		this.setToolTipText(functionPrototype.getFunctionDescription());
+		this.setToolTipText(function.getDescription());
 		this.addActionListener(this);
 	}
 	

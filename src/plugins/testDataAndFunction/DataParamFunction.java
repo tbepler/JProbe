@@ -2,59 +2,51 @@ package plugins.testDataAndFunction;
 
 import util.progress.ProgressListener;
 import jprobe.services.data.Data;
+import jprobe.services.data.Field;
+import jprobe.services.function.BasicDataParameter;
+import jprobe.services.function.DataParameter;
+import jprobe.services.function.FieldParameter;
 import jprobe.services.function.Function;
 
 public class DataParamFunction implements Function{
-
+	
 	public static final String NAME = "Data Parameter Function";
 	public static final String DESCRIPTION = "A function that requires data parameters to run. It adds all the fields of the given parameters together.";
 	
-	private Data[] m_DataParams;
-	
-	public DataParamFunction(Data[] dataParams){
-		m_DataParams = dataParams;
-	}
+	private static final DataParameter[] DATA_PARAMS = new DataParameter[]{
+		new BasicDataParameter("TestData1", TestData.TOOLTIP, false, TestData.class),
+		new BasicDataParameter("TestData2", TestData.TOOLTIP, false, TestData.class),
+		new BasicDataParameter("TestData3", TestData.TOOLTIP, false, TestData.class),
+		new BasicDataParameter("TestData4", TestData.TOOLTIP, false, TestData.class)
+	};
 	
 	@Override
 	public String getName() {
-		return NAME;
+		return DataParamFunction.NAME;
 	}
 
 	@Override
 	public String getDescription() {
-		return DESCRIPTION;
+		return DataParamFunction.DESCRIPTION;
 	}
 
 	@Override
-	public boolean isProgressTrackable() {
+	public DataParameter[] getDataParameters() {
+		return DATA_PARAMS;
+	}
+
+	@Override
+	public FieldParameter[] getFieldParameters() {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
 	@Override
-	public int getProgressLength() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void addListener(ProgressListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeListener(ProgressListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Data run() throws Exception {
+	public Data run(ProgressListener listener, Data[] dataArgs, Field[] fieldArgs) throws Exception {
 		String s = "";
 		int i = 0;
 		double d = 0;
-		for(Data data : m_DataParams){
+		for(Data data : dataArgs){
 			if(data instanceof TestData){
 				TestData tData = (TestData) data;
 				s += tData.getString();

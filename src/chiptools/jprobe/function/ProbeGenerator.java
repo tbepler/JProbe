@@ -1,87 +1,87 @@
 package chiptools.jprobe.function;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import chiptools.Constants;
-import chiptools.jprobe.data.Probes;
 import util.genome.GenomicSequence;
-import util.genome.kmer.Kmer;
+import util.genome.peak.PeakSequence;
+import util.genome.peak.PeakSequenceGroup;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
 import util.genome.probe.ProbeUtils;
-import util.genome.pwm.PWM;
 import util.progress.ProgressListener;
+import chiptools.Constants;
+import chiptools.jprobe.data.Kmer;
+import chiptools.jprobe.data.PWM;
+import chiptools.jprobe.data.PeakSequences;
+import chiptools.jprobe.data.Probes;
+import chiptools.jprobe.field.DecimalField;
+import chiptools.jprobe.field.IntField;
+import chiptools.jprobe.params.FieldParam;
+import chiptools.jprobe.params.KmerParam;
+import chiptools.jprobe.params.PWMParam;
+import chiptools.jprobe.params.PeakSeqsParam;
 import jprobe.services.data.Data;
+import jprobe.services.data.Field;
+import jprobe.services.function.DataParameter;
+import jprobe.services.function.FieldParameter;
 import jprobe.services.function.Function;
 
 public class ProbeGenerator implements Function{
-	
-	public static final String NAME = "ProbeGen";
-	public static final String DESCRIPTION = Constants.CMD_DESCRIPTIONS.containsKey(chiptools.jprobe.command.ProbeGenerator.class) ? 
-			Constants.CMD_DESCRIPTIONS.get(chiptools.jprobe.command.ProbeGenerator.class) : 
-				"Error finding description";
-	
-	private final List<GenomicSequence> m_Seqs;
-	private final List<String> m_Names;
-	private final Kmer m_Kmer;
-	private final PWM m_Pwm;
-	private final int m_ProbeLen;
-	private final int m_BindingSite;
-	private final int m_Window;
-	private final double m_Escore;
-	
-	public ProbeGenerator(List<GenomicSequence> seqs, List<String> names, Kmer kmer, PWM pwm, int probelen, int bindingSite, int window, double eScore){
-		m_Seqs = seqs;
-		m_Names = names;
-		m_Kmer = kmer;
-		m_Pwm = pwm;
-		m_ProbeLen = probelen;
-		m_BindingSite = bindingSite;
-		m_Window = window;
-		m_Escore = eScore;
-	}
 
 	@Override
 	public String getName() {
-		return NAME;
+		return Constants.PROBE_GEN_FUNCTION_NAME;
 	}
 
 	@Override
 	public String getDescription() {
-		return DESCRIPTION;
+		return Constants.PROBE_GEN_FUNCTION_TOOLTIP;
 	}
 
 	@Override
-	public boolean isProgressTrackable() {
-		return false;
+	public DataParameter[] getDataParameters() {
+		return new DataParameter[]{
+			new PeakSeqsParam(),
+			new KmerParam(),
+			new PWMParam()
+		};
 	}
 
 	@Override
-	public int getProgressLength() {
-		// TODO Auto-generated method stub
-		return 0;
+	public FieldParameter[] getFieldParameters() {
+		return new FieldParameter[]{
+			new FieldParam(new IntField(36, 1, Integer.MAX_VALUE, "Probe length"), "Probe Length", "Length of probes that will be created", false),
+			new FieldParam(new IntField(9, 1, Integer.MAX_VALUE, "Binding site"), "Binding site", "Length of binding sites to be checked", false),
+			new FieldParam(new IntField(3, 1, Integer.MAX_VALUE, "Window size"), "Window size", "Size of the window to be scanned with the PWM", false),
+			new FieldParam(new DecimalField(0.3, -0.5, 0.5, "EScore"), "EScore", "Minimum escore that must span the binding site for a probe to be created", false)
+		};
 	}
 
 	@Override
-	public void addListener(ProgressListener listener) {
-		//do nothing
-	}
-
-	@Override
-	public void removeListener(ProgressListener listener) {
-		//do nothing
-	}
-
-	@Override
-	public Data run() throws Exception {
+	public Data run(ProgressListener listener, Data[] dataArgs, Field[] fieldArgs) throws Exception {
+		PeakSequenceGroup peakSeqs = ((PeakSequences) dataArgs[0]).getPeakSeqs();
+		List<GenomicSequence> seqs = new ArrayList<GenomicSequence>();
+		List<String> names = new ArrayList<String>();
+		for(PeakSequence p : peakSeqs){
+			seqs.add(p.getGenomicSequence());
+			names.add(p.getName());
+		}
+		util.genome.kmer.Kmer kmer = ((Kmer) dataArgs[1]).getKmer();
+		util.genome.pwm.PWM pwm = ((PWM) dataArgs[2]).getPWM();
+		int probeLen = ((IntField) fieldArgs[0]).getValue();
+		int bindingSite = ((IntField) fieldArgs[1]).getValue();
+		int window = ((IntField) fieldArgs[2]).getValue();
+		double escore = ((DecimalField) fieldArgs[3]).getValue();
+		
 		Queue<Probe> probes = new PriorityQueue<Probe>();
-		for(int i=0; i<m_Seqs.size(); i++){
+		for(int i=0; i<seqs.size(); i++){
 			try{
-				GenomicSequence seq = m_Seqs.get(i);
-				String name = m_Names.get(i);
-				probes.addAll(ProbeUtils.extractFrom(seq, name, m_Kmer, m_Pwm, m_ProbeLen, m_BindingSite, m_Window, m_Escore));
+				GenomicSequence seq = seqs.get(i);
+				String name = names.get(i);
+				probes.addAll(ProbeUtils.extractFrom(seq, name, kmer, pwm, probeLen, bindingSite, window, escore));
 			} catch (Exception e){
 				//proceed
 			}

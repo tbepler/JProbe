@@ -2,65 +2,50 @@ package plugins.testDataAndFunction;
 
 import util.progress.ProgressListener;
 import jprobe.services.data.Data;
-import jprobe.services.data.Field;
-import jprobe.services.data.IntegerField;
 import jprobe.services.data.DoubleField;
+import jprobe.services.data.Field;
+import jprobe.services.function.BasicFieldParameter;
+import jprobe.services.function.DataParameter;
+import jprobe.services.function.FieldParameter;
 import jprobe.services.function.Function;
 
 public class FieldParamFunction implements Function{
-
+	
 	public static final String NAME = "Field Parameter Function";
 	public static final String DESCRIPTION = "A function that takes field parameters and returns a test data object with those values";
-	
-	private String m_String;
-	private int m_Int;
-	private double m_Double;
-	
-	public FieldParamFunction(Field[] fieldArgs){
-		m_String = fieldArgs[0].asString();
-		m_Int = ((IntegerField) fieldArgs[1]).getValue();
-		m_Double = ((DoubleField) fieldArgs[2]).getValue();
-	}
+
+	private static final FieldParameter[] PARAMS = new FieldParameter[]{
+		new BasicFieldParameter("String", "The TestData string field", false, new StringField("default")),
+		new BasicFieldParameter("Integer", "The TestData integer field", false, new IntField(0)),
+		new BasicFieldParameter("Decimal", "The TestData decimal field", false, new DecimalField(0))	
+	};
 	
 	@Override
 	public String getName() {
-		return NAME;
+		return FieldParamFunction.NAME;
 	}
 
 	@Override
 	public String getDescription() {
-		return DESCRIPTION;
+		return FieldParamFunction.DESCRIPTION;
 	}
 
 	@Override
-	public boolean isProgressTrackable() {
-		// TODO Auto-generated method stub
-		return false;
+	public DataParameter[] getDataParameters() {
+		return new DataParameter[]{};
 	}
 
 	@Override
-	public int getProgressLength() {
-		// TODO Auto-generated method stub
-		return 0;
+	public FieldParameter[] getFieldParameters() {
+		return PARAMS;
 	}
 
 	@Override
-	public void addListener(ProgressListener listener) {
-		// TODO Auto-generated method stub
-		
+	public Data run(ProgressListener listener, Data[] dataArgs, Field[] fieldArgs) throws Exception {
+		String s = fieldArgs[0].asString();
+		int i = ((IntField)fieldArgs[1]).getValue();
+		double d = ((DoubleField)fieldArgs[2]).getValue();
+		return new TestData(s, i, d);
 	}
 
-	@Override
-	public void removeListener(ProgressListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Data run() throws Exception {
-		return new TestData(m_String, m_Int, m_Double);
-	}
-	
-	
-	
 }

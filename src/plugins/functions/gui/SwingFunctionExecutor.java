@@ -13,6 +13,7 @@ import util.progress.ProgressListener;
 import jprobe.services.DataManager;
 import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
+import jprobe.services.data.Field;
 import jprobe.services.function.Function;
 import jprobe.services.function.FunctionExecutor;
 
@@ -23,24 +24,32 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	class FunctionThread extends SwingWorker<Data, Data> implements ProgressListener{
 		
 		private Function m_Function;
+		private Data[] m_DataArgs;
+		private Field[] m_FieldArgs;
 		private int m_MaxProgress = PROGRESS_BOUND;
+		private boolean m_Indeterminate = false;
 		
-		FunctionThread(Function function){
-			this.m_Function = function;
-			this.m_Function.addListener(this);
-			m_MaxProgress = function.getProgressLength();
+		FunctionThread(Function function, Data[] dataArgs, Field[] fieldArgs){
+			m_Function = function;
+			m_DataArgs = dataArgs;
+			m_FieldArgs = fieldArgs;
 		}
 		
 		@Override
 		public void update(ProgressEvent event) {
 			switch(event.getType()){
 			case UPDATE:
+				if(event.getMaxProgress() > 0)
+					m_MaxProgress = event.getMaxProgress();
+				m_Indeterminate = event.isIndeterminant();
 				this.setProgress(event.getProgress()*m_MaxProgress/PROGRESS_BOUND);
 				break;
 			default:
 				break;
 			}
 		}
+		
+		public boolean isIndeterminate(){ return m_Indeterminate; }
 		
 		@Override
 		protected void done(){
@@ -58,7 +67,7 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 
 		@Override
 		protected Data doInBackground() throws Exception {
-			return m_Function.run();
+			return m_Function.run(this, m_DataArgs, m_FieldArgs);
 		}
 		
 	}
@@ -72,14 +81,14 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	private ProgressWindow m_Monitor;
 	//private ProgressMonitor monitor;
 
-	public SwingFunctionExecutor(Function function, DataManager dataManager, Bundle bundle) {
+	public SwingFunctionExecutor(Function function, Data[] dataArgs, Field[] fieldArgs, DataManager dataManager, Bundle bundle) {
 		super(function);
 		m_DataManager = dataManager;
 		m_Bundle = bundle;
 		m_Completed = false;
 		m_Cancelled = false;
 		m_Result = null;
-		m_Thread = new FunctionThread(this.getFunction());
+		m_Thread = new FunctionThread(this.getFunction(), dataArgs, fieldArgs);
 	}
 	
 	private void setResults(Data data){
@@ -107,6 +116,7 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	public void propertyChange(PropertyChangeEvent event) {
 		//monitor.setProgress(thread.getProgress());
 		if(m_Monitor != null){
+			m_Monitor.setIndeterminate(m_Thread.isIndeterminate());
 			m_Monitor.setValue(m_Thread.getProgress());
 		}
 	}
@@ -114,7 +124,7 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	@Override
 	public void execute() {
 		//this.monitor = new ProgressMonitor(null, thread.function.getName(), null, 0, PROGRESS_BOUND);
-		this.m_Monitor = new ProgressWindow(m_Thread.m_Function.getName(), 0, PROGRESS_BOUND, !m_Thread.m_Function.isProgressTrackable(), new OnPress(){
+		m_Monitor = new ProgressWindow(m_Thread.m_Function.getName(), 0, PROGRESS_BOUND, false, new OnPress(){
 
 			@Override
 			public void act() {

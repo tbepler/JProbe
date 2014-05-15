@@ -13,14 +13,14 @@ import plugins.functions.gui.dialog.FunctionDialogHandler;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
-import jprobe.services.function.FunctionPrototype;
+import jprobe.services.function.Function;
 
 public class FunctionMenu extends JMenu implements CoreListener{
 	private static final long serialVersionUID = 1L;
 	
 	private JProbeCore m_Core;
 	private Bundle m_Bundle;
-	private Map<FunctionPrototype, JMenuItem> m_Items;
+	private Map<Function, JMenuItem> m_Items;
 	private FunctionDialogHandler m_FunctionWindow;
 	
 	public FunctionMenu(Frame owner, JProbeCore core, Bundle bundle){
@@ -28,8 +28,8 @@ public class FunctionMenu extends JMenu implements CoreListener{
 		m_Core = core;
 		m_Bundle = bundle;
 		m_FunctionWindow = new FunctionDialogHandler(owner, false);
-		m_Items = new HashMap<FunctionPrototype, JMenuItem>();
-		for(FunctionPrototype f : core.getFunctionManager().getAllFunctionPrototypes()){
+		m_Items = new HashMap<Function, JMenuItem>();
+		for(Function f : core.getFunctionManager().getAllFunctions()){
 			m_Items.put(f, new FunctionMenuItem(core, bundle, f, m_FunctionWindow));
 			this.add(m_Items.get(f));
 		}
@@ -46,13 +46,13 @@ public class FunctionMenu extends JMenu implements CoreListener{
 	@Override
 	public void update(CoreEvent event) {
 		if(event.type() == CoreEvent.Type.FUNCTION_ADDED){
-			FunctionPrototype f = event.getFunctionPrototype();
+			Function f = event.getFunction();
 			m_Items.put(f, new FunctionMenuItem(m_Core, m_Bundle, f, m_FunctionWindow));
 			this.add(m_Items.get(f));
 			this.revalidate();
 		}
 		if(event.type() == CoreEvent.Type.FUNCTION_REMOVED){
-			FunctionPrototype f = event.getFunctionPrototype();
+			Function f = event.getFunction();
 			this.remove(m_Items.get(f));
 			m_Items.remove(f);
 			this.revalidate();

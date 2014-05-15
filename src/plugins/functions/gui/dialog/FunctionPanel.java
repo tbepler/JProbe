@@ -27,8 +27,6 @@ import jprobe.services.function.DataParameter;
 import jprobe.services.function.FieldParameter;
 import jprobe.services.function.Function;
 import jprobe.services.function.FunctionExecutor;
-import jprobe.services.function.FunctionPrototype;
-import jprobe.services.function.InvalidArgumentsException;
 
 public class FunctionPanel extends JPanel implements ActionListener, StateListener{
 	private static final long serialVersionUID = 1L;
@@ -36,7 +34,7 @@ public class FunctionPanel extends JPanel implements ActionListener, StateListen
 	private static final Dimension BUTTON_SPACING = new Dimension(5,0);
 	private static final Insets BUTTON_INSETS = new Insets(2,2,2,2);
 	
-	private FunctionPrototype m_FunctionPrototype;
+	private Function m_Function;
 	private JProbeCore m_Core;
 	private Bundle m_Bundle;
 	private ParameterPanel m_ParamPanel;
@@ -45,9 +43,9 @@ public class FunctionPanel extends JPanel implements ActionListener, StateListen
 	private OnPress m_CancelAction = new DoNothingOnPress();
 	private OnPress m_RunAction = new DoNothingOnPress();
 	
-	public FunctionPanel(FunctionPrototype functionPrototype, JProbeCore core, Bundle bundle){
+	public FunctionPanel(Function functionPrototype, JProbeCore core, Bundle bundle){
 		super(new GridBagLayout());
-		m_FunctionPrototype = functionPrototype;
+		m_Function = functionPrototype;
 		m_Core = core;
 		m_Bundle = bundle;
 		this.initParamPanel(functionPrototype.getDataParameters(), functionPrototype.getFieldParameters(), core);
@@ -99,18 +97,17 @@ public class FunctionPanel extends JPanel implements ActionListener, StateListen
 	}
 	
 	public String getTitle(){
-		return m_FunctionPrototype.getFunctionName();
+		return m_Function.getName();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == m_RunButton){
 			try{
-				Function run = m_FunctionPrototype.newInstance(this.getDataArgs(), this.getFieldArgs());
-				FunctionExecutor ex = new SwingFunctionExecutor(run, m_Core.getDataManager(), m_Bundle);
-				ex.execute();
+				FunctionExecutor funEx = new SwingFunctionExecutor(m_Function, this.getDataArgs(), this.getFieldArgs(), m_Core.getDataManager(), m_Bundle);
+				funEx.execute();
 				m_RunAction.act();
-			} catch (InvalidArgumentsException ex){
+			} catch (Exception ex){
 				ErrorHandler.getInstance().handleException(ex, m_Bundle);
 			}
 		}

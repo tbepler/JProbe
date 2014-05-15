@@ -1,15 +1,14 @@
 package plugins.testDataAndFunction;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-
 import org.osgi.framework.Bundle;
 
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 import jprobe.services.Log;
 import jprobe.services.data.Data;
+import jprobe.services.data.Field;
+import jprobe.services.function.DataParameter;
+import jprobe.services.function.FieldParameter;
 import jprobe.services.function.Function;
 
 public class LongFunction implements Function{
@@ -17,7 +16,9 @@ public class LongFunction implements Function{
 	public static final String DESCRIPTION = "This function takes 10 seconds to complete";
 	public static final String NAME = "Long Function";
 	
-	private Collection<ProgressListener> listeners = new HashSet<ProgressListener>();
+	private static final DataParameter[] DATA_PARAMETERS = new DataParameter[]{};
+	private static final FieldParameter[] FIELD_PARAMETERS	= new FieldParameter[]{};
+	
 	private Bundle m_Bundle;
 	
 	public LongFunction(Bundle bundle){
@@ -26,48 +27,32 @@ public class LongFunction implements Function{
 	
 	@Override
 	public String getName() {
-		return NAME;
+		return LongFunction.NAME;
 	}
 
 	@Override
 	public String getDescription() {
-		return DESCRIPTION;
+		return LongFunction.DESCRIPTION;
 	}
 
 	@Override
-	public boolean isProgressTrackable() {
-		return true;
+	public DataParameter[] getDataParameters() {
+		return DATA_PARAMETERS;
 	}
 
 	@Override
-	public int getProgressLength() {
-		return 100;
+	public FieldParameter[] getFieldParameters() {
+		return FIELD_PARAMETERS;
 	}
 
 	@Override
-	public void addListener(ProgressListener listener) {
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeListener(ProgressListener listener) {
-		listeners.remove(listener);
-	}
-	
-	private void setProgress(int progress){
-		for(ProgressListener l : listeners){
-			l.update(new ProgressEvent(this, ProgressEvent.Type.UPDATE, progress));
-		}
-	}
-
-	@Override
-	public Data run() throws Exception {
+	public Data run(ProgressListener listener, Data[] dataArgs, Field[] fieldArgs) throws Exception {
 		int progress = 0;
-		this.setProgress(progress);
 		Log.getInstance().write(m_Bundle, "Running long function");
+		listener.update(new ProgressEvent(this, ProgressEvent.Type.UPDATE, progress, 100));
 		while(progress<100){
 			Thread.sleep(100);
-			this.setProgress(++progress);
+			listener.update(new ProgressEvent(this, ProgressEvent.Type.UPDATE, ++progress));
 			Log.getInstance().write(m_Bundle, "Progress = "+progress);
 		}
 		return new TestData();

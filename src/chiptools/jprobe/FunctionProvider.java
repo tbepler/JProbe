@@ -7,13 +7,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 import chiptools.Constants;
-import jprobe.services.function.FunctionPrototype;
+import jprobe.services.function.Function;
 import plugins.genome.services.GenomeFunction;
 
 public class FunctionProvider {
 	
 	private final List<GenomeFunction> m_GenomeFunctions = this.generateGenomeFunctions();
-	private final List<FunctionPrototype> m_FunctionPrototypes = this.generateFunctionPrototypes();
+	private final List<Function> m_Functions = this.generateFunctions();
 	private final List<ServiceRegistration<?>> m_Regs = new ArrayList<ServiceRegistration<?>>();
 	
 	private List<GenomeFunction> generateGenomeFunctions(){
@@ -32,9 +32,9 @@ public class FunctionProvider {
 		return list;
 	}
 	
-	private List<FunctionPrototype> generateFunctionPrototypes(){
-		List<FunctionPrototype> list = new ArrayList<FunctionPrototype>();
-		for(Class<? extends FunctionPrototype> clazz : Constants.FUNCTION_PROTOTYPE_CLASSES){
+	private List<Function> generateFunctions(){
+		List<Function> list = new ArrayList<Function>();
+		for(Class<? extends Function> clazz : Constants.FUNCTION_CLASSES){
 			try {
 				list.add(clazz.newInstance());
 			} catch (InstantiationException e) {
@@ -53,8 +53,8 @@ public class FunctionProvider {
 			ServiceRegistration<?> reg = context.registerService(GenomeFunction.class, gf, null);
 			m_Regs.add(reg);
 		}
-		for(FunctionPrototype prot : m_FunctionPrototypes){
-			ServiceRegistration<?> reg = context.registerService(FunctionPrototype.class, prot, null);
+		for(Function prot : m_Functions){
+			ServiceRegistration<?> reg = context.registerService(Function.class, prot, null);
 			m_Regs.add(reg);
 		}
 	}

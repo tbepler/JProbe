@@ -108,6 +108,10 @@ public class ProgressWindow implements ActionListener{
 		}
 	}
 	
+	public void setIndeterminate(boolean indeterminate){
+		progressBar.setIndeterminate(indeterminate);
+	}
+	
 	public int getValue(){
 		return progressBar.getValue();
 	}
