@@ -1,4 +1,4 @@
-package plugins.jprobe.gui.services;
+ package plugins.jprobe.gui.services;
 
 import java.awt.Frame;
 import java.awt.GridBagConstraints;

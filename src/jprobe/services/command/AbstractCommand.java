@@ -55,12 +55,41 @@ public abstract class AbstractCommand implements Command{
 		public P parse(P param, String[] args);
 	}
 	
+	public static abstract class AbstractFlag<P> implements Flag<P>{
+		
+		private final Character m_Short;
+		private final String m_Long;
+		private final String m_Desc;
+		private final boolean m_ArgsReq;
+		private final String m_DefaultVal;
+		
+		public AbstractFlag(Character shortForm, String longForm, String description, boolean argsReq, String defaultValue){
+			m_Short = shortForm; m_Long = longForm; m_Desc = description; m_ArgsReq = argsReq; m_DefaultVal = defaultValue;
+		}
+		
+		@Override
+		public Character shortForm(){ return m_Short; }
+		
+		@Override
+		public String longForm(){ return m_Long; }
+		
+		@Override
+		public String description(){ return m_Desc; }
+		
+		@Override
+		public boolean argsRequired(){ return m_ArgsReq; }
+		
+		@Override
+		public String defaultValue(){ return m_DefaultVal; }
+		
+	}
+	
 	protected static abstract class CommandHelper<P>{
 		private final Map<Character, Flag<P>> m_ShortFlag = new HashMap<Character, Flag<P>>();
 		private final Map<String, Flag<P>> m_LongFlag = new HashMap<String, Flag<P>>();
 		private final List<Flag<P>> m_Flags = new ArrayList<Flag<P>>();
 		
-		protected CommandHelper(Iterable<Flag<P>> argFlags){
+		protected CommandHelper(Flag<P> ... argFlags){
 			for(Flag<P> flag : argFlags){
 				m_Flags.add(flag);
 				if(flag.shortForm() != null)
