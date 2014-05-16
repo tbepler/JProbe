@@ -45,7 +45,7 @@ public interface Function<P> {
 	
 	/**
 	 * The arguments used by this function to fill out the parameter object.
-	 * @see #Argument
+	 * @see Argument
 	 * @return collection of arguments
 	 */
 	public Collection<Argument<P>> getArguments();
@@ -57,9 +57,9 @@ public interface Function<P> {
 	 * @param l - ProgressListener to report execution progress to, if progress should be tracked
 	 * @param params - parameter object specified by the Arguments
 	 * @return data produced by this computation
-	 * @see #Argument
-	 * @see #ProgressListener
-	 * @see #ProgressEvent
+	 * @see Argument
+	 * @see ProgressListener
+	 * @see ProgressEvent
 	 */
 	public Data execute(ProgressListener l, P params);
 	
