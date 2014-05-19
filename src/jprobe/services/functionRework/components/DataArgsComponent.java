@@ -1,8 +1,6 @@
 package jprobe.services.functionRework.components;
 
 import java.awt.Window;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,6 +44,7 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, Observer
 		m_MaxArgs = maxArgs;
 		m_AllowDuplicates = allowDuplicates;
 		m_ValidFunction = validFunction;
+		this.allocateComponents();
 	}
 	
 	private void resizeWindow(){
@@ -56,63 +55,136 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, Observer
 	}
 	
 	private boolean shouldAddData(Data d){
-		return m_AllowDuplicates || !m_SelectedData.contains(d);
+		return this.isValid(d) && (m_AllowDuplicates || !m_SelectedData.contains(d));
 	}
 	
 	private int getNewComponentIndex(){
 		return m_DataComps.size();
 	}
 	
+	private boolean canAddComponent(int index){
+		return index < m_MaxArgs;
+	}
+	
 	private boolean componentIsOptional(int index){
 		return m_MinArgs <= index;
 	}
 	
+	private boolean isRequired(int index){
+		return index < m_MinArgs;
+	}
+	
+	private void allocateComponents(){
+		while(m_DataComps.size() <= m_MinArgs && m_DataComps.size() < m_MaxArgs){
+			this.addDataComponent();
+		}
+		this.resizeWindow();
+	}
+	
 	private void addDataComponent(){
 		int index = this.getNewComponentIndex();
-		final DataSelectionPanel comp = new DataSelectionPanel(
-				m_Core,
-				new DataSelectionPanel.OnClose() {
-					
-					@Override
-					public void close() {
-						DataArgsComponent.this.removeDataComponent(comp);
-					}
-				},
-				this.componentIsOptional(index)
-				);
+		if(!this.canAddComponent(index)){
+			return;
+		}
+		final DataSelectionPanel comp = new DataSelectionPanel( m_Core, this.componentIsOptional(index) );
+		comp.setCloseAction(new DataSelectionPanel.OnClose() {
+			@Override
+			public void close() {
+				DataArgsComponent.this.removeDataComponent(comp);
+			}
+		});
+		
+		m_DataComps.add(comp);
+		m_SelectedData.add(index, null);
 		
 		for(Data d : m_Core.getDataManager().getAllData()){
 			if(shouldAddData(d)){
 				comp.addData(d);
 			}
 		}
-		m_DataComps.add(comp);
 		this.add(comp);
-		this.resizeWindow();
 	}
 	
 	private void removeDataComponent(DataSelectionPanel comp){
-		//TODO
+		int index = m_DataComps.indexOf(comp);
+		if(index >= 0){
+			this.remove(comp);
+			m_DataComps.remove(index);
+			m_SelectedData.remove(index);
+			this.allocateComponents();
+		}
 	}
 	
 	public List<Data> getDataArgs(){
 		List<Data> data = new ArrayList<Data>();
 		for(Data d : m_SelectedData){
-			if(d != null) data.add(d);
+			if(d != null && this.isValid(d)) data.add(d);
 		}
 		return data;
 	}
 	
+	private void addData(Data d){
+		for(DataSelectionPanel sel : m_DataComps){
+			sel.addData(d);
+		}
+	}
+	
+	private void removeData(Data d){
+		for(DataSelectionPanel sel : m_DataComps){
+			sel.removeData(d);
+		}
+	}
+	
+	private void renameData(String oldName, String newName){
+		for(DataSelectionPanel sel : m_DataComps){
+			sel.renameData(oldName, newName);
+		}
+	}
+	
 	@Override
 	public void update(CoreEvent event) {
-		// TODO Auto-generated method stub
-		
+		switch(event.type()){
+		case DATA_ADDED:
+			this.addData(event.getData());
+			break;
+		case DATA_NAME_CHANGE:
+			this.renameData(event.getOldName(), event.getNewName());
+			break;
+		case DATA_REMOVED:
+			this.removeData(event.getData());
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
 	public void update(Subject<Data> observed, Data notification) {
-		// TODO Auto-generated method stub
-		
+		int index = m_DataComps.indexOf(observed);
+		if(index >= 0){
+			m_SelectedData.set(index, notification);
+			this.updateValidity();
+		}
+	}
+	
+	private void updateValidity(){
+		boolean valid = true;
+		for(int i=0 ; i<m_SelectedData.size(); i++){
+			Data d = m_SelectedData.get(i);
+			if(this.isRequired(i)){
+				valid = valid && d != null && this.isValid(d);
+			}else{
+				valid = valid && (d == null || this.isValid(d));
+			}
+		}
+		this.setValid(valid);
+	}
+	
+	protected void setValid(boolean valid){
+		if(m_Valid != valid){
+			m_Valid = valid;
+			this.notifyListeners();
+		}
 	}
 	
 	protected boolean isValid(Data d){

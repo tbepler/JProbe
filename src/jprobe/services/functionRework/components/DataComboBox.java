@@ -80,26 +80,16 @@ public class DataComboBox extends JComboBox<String>{
 			m_Data.put(changed, newName);
 			m_Displayed.remove(oldName);
 			if(this.getSelectedItem().equals(oldName)){
-				int index = this.getSelectedIndex();
 				this.removeItem(oldName);
 				m_Displayed.put(newName, changed);
-				this.insertItemAt(newName, index);
-				this.setSelectedIndex(index);
+				this.addItem(newName);
+				this.setSelectedItem(newName);
 			}else{
-				int index = this.getIndex(oldName);
-				if(index < 0) return;
 				this.removeItem(oldName);
 				m_Displayed.put(newName, changed);
-				this.insertItemAt(newName, index);
+				this.addItem(newName);
 			}
 		}
-	}
-	
-	private int getIndex(String item){
-		for(int i=0; i<this.getItemCount(); i++){
-			if(this.getItemAt(i).equals(item)) return i;
-		}
-		return -1;
 	}
 	
 	public Data getSelectedData(){
