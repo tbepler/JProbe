@@ -39,6 +39,9 @@ public class DataSelectionPanel extends JPanel implements ItemListener, ActionLi
 		m_CloseButton.addActionListener(this);
 		m_CloseButton.setEnabled(optional);
 		this.add(m_CloseButton);
+		if(optional){
+			m_DataBox.addData(null);
+		}
 	}
 	
 	public void addData(Data d){
@@ -54,7 +57,12 @@ public class DataSelectionPanel extends JPanel implements ItemListener, ActionLi
 	}
 	
 	public void setOptional(boolean optional){
+		
 		m_CloseButton.setEnabled(optional);
+	}
+	
+	public Data getSelectedData(){
+		return m_DataBox.getSelectedData();
 	}
 	
 	protected void close(){

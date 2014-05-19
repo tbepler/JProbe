@@ -11,12 +11,14 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import util.observer.Observer;
+import util.observer.Subject;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
-public class DataArgsComponent extends JPanel implements ValidNotifier, ItemListener, CoreListener{
+public class DataArgsComponent extends JPanel implements ValidNotifier, Observer<Data>, CoreListener{
 	private static final long serialVersionUID = 1L;
 	
 	public static interface DataValidFunction{
@@ -25,8 +27,8 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, ItemList
 	
 	private final Collection<ValidListener> m_Listeners = new HashSet<ValidListener>();
 	
-	private final List<DataComboBox> m_DataComps = new ArrayList<DataComboBox>();
-	private final Collection<Data> m_SelectedData = new HashSet<Data>();
+	private final List<DataSelectionPanel> m_DataComps = new ArrayList<DataSelectionPanel>();
+	private final List<Data> m_SelectedData = new ArrayList<Data>();
 	
 	private final JProbeCore m_Core;
 	private final int m_MinArgs;
@@ -62,13 +64,22 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, ItemList
 	}
 	
 	private boolean componentIsOptional(int index){
-		return m_MinArgs 
+		return m_MinArgs <= index;
 	}
 	
 	private void addDataComponent(){
-		DataComboBox comp = new DataComboBox(m_Core);
-		comp.addItemListener(this);
 		int index = this.getNewComponentIndex();
+		final DataSelectionPanel comp = new DataSelectionPanel(
+				m_Core,
+				new DataSelectionPanel.OnClose() {
+					
+					@Override
+					public void close() {
+						DataArgsComponent.this.removeDataComponent(comp);
+					}
+				},
+				this.componentIsOptional(index)
+				);
 		
 		for(Data d : m_Core.getDataManager().getAllData()){
 			if(shouldAddData(d)){
@@ -80,16 +91,26 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, ItemList
 		this.resizeWindow();
 	}
 	
+	private void removeDataComponent(DataSelectionPanel comp){
+		//TODO
+	}
+	
 	public List<Data> getDataArgs(){
 		List<Data> data = new ArrayList<Data>();
-		for(DataComboBox box : m_DataComps){
-			data.add(box.getSelectedData());
+		for(Data d : m_SelectedData){
+			if(d != null) data.add(d);
 		}
 		return data;
 	}
+	
+	@Override
+	public void update(CoreEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
-	public void itemStateChanged(ItemEvent e) {
+	public void update(Subject<Data> observed, Data notification) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -117,12 +138,6 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, ItemList
 	@Override
 	public void removeListener(ValidListener l) {
 		m_Listeners.remove(l);
-	}
-
-	@Override
-	public void update(CoreEvent event) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	
