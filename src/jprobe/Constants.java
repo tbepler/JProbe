@@ -6,13 +6,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
+import javax.swing.ImageIcon;
+
 public class Constants {
 	
 	public static final String NAME = "JProbe";
 	public static final String VERSION = "v0.5.1";
 	public static final String AUTHOR = "Tristan Bepler";
 	
-	public static final String HELP_FILE_PATH = "/jprobe/resources/help.txt";
+	public static final String RESOURCES_PATH = "/jprobe/resources";
+	
+	public static final String HELP_FILE_PATH = RESOURCES_PATH + "/help.txt";
 	public static final String HELP_MESSAGE = readHelpMessage();
 			
 	private static String readHelpMessage(){
@@ -49,5 +53,13 @@ public class Constants {
 		res.add(ARG_HELP);
 		return Collections.unmodifiableCollection(res);
 	}
+	
+	public static final String X_PATH = RESOURCES_PATH+"/x.gif";
+	public static final String X_HIGHLIGHTED_PATH = RESOURCES_PATH+"/xhighlight.gif";
+	public static final String X_CLICKED_PATH = RESOURCES_PATH+"/xclicked.gif";
+	
+	public static final ImageIcon X_ICON = new ImageIcon(Constants.class.getResource(X_PATH));
+	public static final ImageIcon X_HIGHLIGHTED_ICON = new ImageIcon(Constants.class.getResource(X_HIGHLIGHTED_PATH));
+	public static final ImageIcon X_CLICKED_ICON = new ImageIcon(Constants.class.getResource(X_CLICKED_PATH));
 	
 }

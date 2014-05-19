@@ -57,9 +57,19 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, ItemList
 		return m_AllowDuplicates || !m_SelectedData.contains(d);
 	}
 	
+	private int getNewComponentIndex(){
+		return m_DataComps.size();
+	}
+	
+	private boolean componentIsOptional(int index){
+		return m_MinArgs 
+	}
+	
 	private void addDataComponent(){
 		DataComboBox comp = new DataComboBox(m_Core);
 		comp.addItemListener(this);
+		int index = this.getNewComponentIndex();
+		
 		for(Data d : m_Core.getDataManager().getAllData()){
 			if(shouldAddData(d)){
 				comp.addData(d);
