@@ -8,10 +8,10 @@ public class ExecutionEvent {
 		CANCELLED;
 	}
 	
-	private FunctionExecutor cause;
+	private FunctionExecutor<?> cause;
 	private Type type;
 	
-	public ExecutionEvent(FunctionExecutor cause, Type type){
+	public ExecutionEvent(FunctionExecutor<?> cause, Type type){
 		this.cause = cause;
 		this.type = type;
 	}
@@ -20,7 +20,7 @@ public class ExecutionEvent {
 		return type;
 	}
 	
-	public FunctionExecutor getCause(){
+	public FunctionExecutor<?> getCause(){
 		return cause;
 	}
 	

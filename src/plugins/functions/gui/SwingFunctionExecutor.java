@@ -13,26 +13,23 @@ import util.progress.ProgressListener;
 import jprobe.services.DataManager;
 import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
-import jprobe.services.data.Field;
 import jprobe.services.function.Function;
 import jprobe.services.function.FunctionExecutor;
 
-public class SwingFunctionExecutor extends FunctionExecutor implements PropertyChangeListener{
+public class SwingFunctionExecutor<T> extends FunctionExecutor<T> implements PropertyChangeListener{
 	
 	public static final int PROGRESS_BOUND = 100;
 	
 	class FunctionThread extends SwingWorker<Data, Data> implements ProgressListener{
 		
-		private Function m_Function;
-		private Data[] m_DataArgs;
-		private Field[] m_FieldArgs;
+		private Function<T> m_Function;
+		private T m_Params;
 		private int m_MaxProgress = PROGRESS_BOUND;
 		private boolean m_Indeterminate = false;
 		
-		FunctionThread(Function function, Data[] dataArgs, Field[] fieldArgs){
+		FunctionThread(Function<T> function, T params){
 			m_Function = function;
-			m_DataArgs = dataArgs;
-			m_FieldArgs = fieldArgs;
+			m_Params = params;
 		}
 		
 		@Override
@@ -67,7 +64,7 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 
 		@Override
 		protected Data doInBackground() throws Exception {
-			return m_Function.run(this, m_DataArgs, m_FieldArgs);
+			return m_Function.execute(this, m_Params);
 		}
 		
 	}
@@ -81,14 +78,14 @@ public class SwingFunctionExecutor extends FunctionExecutor implements PropertyC
 	private ProgressWindow m_Monitor;
 	//private ProgressMonitor monitor;
 
-	public SwingFunctionExecutor(Function function, Data[] dataArgs, Field[] fieldArgs, DataManager dataManager, Bundle bundle) {
+	public SwingFunctionExecutor(Function<T> function, T params, DataManager dataManager, Bundle bundle) {
 		super(function);
 		m_DataManager = dataManager;
 		m_Bundle = bundle;
 		m_Completed = false;
 		m_Cancelled = false;
 		m_Result = null;
-		m_Thread = new FunctionThread(this.getFunction(), dataArgs, fieldArgs);
+		m_Thread = new FunctionThread(this.getFunction(), params);
 	}
 	
 	private void setResults(Data data){

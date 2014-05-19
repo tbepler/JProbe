@@ -21,7 +21,7 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	private FunctionDialogHandler m_FunctionDialog;
 	private FunctionPanel m_FunctionPanel;
 	
-	public FunctionMenuItem(JProbeCore core, Bundle bundle, Function function, FunctionDialogHandler dialogWindow){
+	public FunctionMenuItem(JProbeCore core, Bundle bundle, Function<?> function, FunctionDialogHandler dialogWindow){
 		super(function.getName());
 		m_Bundle = bundle;
 		m_FunctionDialog = dialogWindow;

@@ -6,12 +6,12 @@ import java.util.HashSet;
 import jprobe.services.data.Data;
 
 
-public abstract class FunctionExecutor {
+public abstract class FunctionExecutor<T> {
 
-	private Function m_Function;
+	private Function<T> m_Function;
 	private Collection<ExecutionListener> m_Listeners;
 	
-	public FunctionExecutor(Function function){
+	public FunctionExecutor(Function<T> function){
 		this.m_Function = function;
 		m_Listeners = new HashSet<ExecutionListener>();
 	}
@@ -36,7 +36,7 @@ public abstract class FunctionExecutor {
 		}
 	}
 	
-	protected Function getFunction(){
+	protected Function<T> getFunction(){
 		return m_Function;
 	}
 

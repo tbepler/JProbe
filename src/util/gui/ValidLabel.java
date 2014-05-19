@@ -3,34 +3,37 @@ package util.gui;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
-public class ValidLabel extends JLabel implements StateListener{
+import util.observer.Observer;
+import util.observer.Subject;
+
+public class ValidLabel extends JLabel implements Observer<Boolean>{
 	private static final long serialVersionUID = 1L;
 	
-	private ValidStateNotifier m_Observed;
+	private Subject<Boolean> m_Observed;
 	private Icon m_ValidIcon;
 	private Icon m_InvalidIcon;
 	private boolean m_PrevState;
 	
-	public ValidLabel(ValidStateNotifier observe, Icon validIcon, Icon invalidIcon){
+	public ValidLabel(Subject<Boolean> subject, boolean initialState, Icon validIcon, Icon invalidIcon){
 		super();
-		m_Observed = observe;
-		m_Observed.addStateListener(this);
+		m_Observed = subject;
+		m_Observed.register(this);
 		m_ValidIcon = validIcon;
 		m_InvalidIcon = invalidIcon;
-		if(m_Observed.isStateValid()){
+		if(initialState){
 			this.setIcon(m_ValidIcon);
 		}else{
 			this.setIcon(m_InvalidIcon);
 		}
-		m_PrevState = m_Observed.isStateValid();
+		m_PrevState = initialState;
 	}
 	
-	private void updateIcon(){
-		if(m_PrevState == m_Observed.isStateValid()){
+	private void updateIcon(boolean state){
+		if(m_PrevState == state){
 			return;
 		}
-		m_PrevState = m_Observed.isStateValid();
-		if(m_Observed.isStateValid()){
+		m_PrevState = state;
+		if(state){
 			this.setIcon(m_ValidIcon);
 		}else{
 			this.setIcon(m_InvalidIcon);
@@ -39,8 +42,10 @@ public class ValidLabel extends JLabel implements StateListener{
 	}
 
 	@Override
-	public void update(StateNotifier source) {
-		this.updateIcon();
+	public void update(Subject<Boolean> observed, Boolean notification) {
+		if(observed == m_Observed){
+			this.updateIcon(notification);
+		}
 	}
 
 }

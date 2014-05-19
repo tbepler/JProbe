@@ -23,7 +23,7 @@ public class CoreEvent {
 	private JProbeCore m_Source;
 	private Data m_DataEffected = null;
 	private Class<? extends Data> m_DataClass = null;
-	private Function m_FunctionEffected = null;
+	private Function<?> m_FunctionEffected = null;
 	private Bundle m_Cause = null;
 	private String m_OldName = null;
 	private String m_NewName = null;
@@ -50,7 +50,7 @@ public class CoreEvent {
 		m_DataClass = effected;
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Function effected){
+	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Function<?> effected){
 		this(source, type, responsible);
 		m_FunctionEffected = effected;
 	}
@@ -75,7 +75,7 @@ public class CoreEvent {
 		return m_DataClass;
 	}
 	
-	public Function getFunction(){
+	public Function<?> getFunction(){
 		return m_FunctionEffected;
 	}
 	

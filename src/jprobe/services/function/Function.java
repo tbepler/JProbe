@@ -1,34 +1,66 @@
 package jprobe.services.function;
 
+import java.util.Collection;
+
 import util.progress.ProgressListener;
 import jprobe.services.data.Data;
-import jprobe.services.data.Field;
 
-public interface Function {
+/**
+ * This interface represents JProbe functions. These functions are run by the user in order to produce new Data
+ * objects. Functions define a name, description, and category, which are used to identify and describe the function
+ * to the user. The generic type, P, is the parameter class that this function uses to define parameters for
+ * function execution. The parameters are set by the Argument objects provided by the getArguments() method. 
+ * 
+ * @author Tristan Bepler
+ *
+ * @param <P> - The parameter object used by this function. The parameter object is edited by the Arguments and then
+ * passed to the execute method when the function is run.
+ */
+public interface Function<P> {
 	
 	/**
-	 * Returns the name of this function.
-	 * @return name of this function
+	 * The name for this function that will be shown to the user.
+	 * @return name
 	 */
 	public String getName();
 	
 	/**
-	 * Returns a description of what this function does.
-	 * @return description of this function
+	 * A description of this function for the user.
+	 * @return description
 	 */
 	public String getDescription();
 	
-	public DataParameter[] getDataParameters();
-	public FieldParameter[] getFieldParameters();
+	/**
+	 * A category for this functions. Functions with the same category are grouped together in the GUI.
+	 * A value of null or empty string represents no category.
+	 * @return category
+	 */
+	public String getCategory();
 	
 	/**
-	 * This method defines the core behavior of this function. This should never return null. It should throw an exception
-	 * instead.
-	 * @param listener - a ProgressListener that will receive updates as this function executes
-	 * @param dataArgs - the data arguments in the same order as the DataParameter that argument corresponds to
-	 * @param fieldArgs - the field arguments in the same order as the FieldParameter that argument corresponds to
-	 * @return a Data object that is the result of this function's processing
+	 * Generates an empty parameter object to be filled out by the arguments.
+	 * @return parameter object
 	 */
-	public Data run(ProgressListener listener, Data[] dataArgs, Field[] fieldArgs) throws Exception;
+	public P newParameters();
+	
+	/**
+	 * The arguments used by this function to fill out the parameter object.
+	 * @see Argument
+	 * @return collection of arguments
+	 */
+	public Collection<Argument<P>> getArguments();
+	
+	/**
+	 * The core functionality of Functions. This method takes a ProgressListener and a parameter object
+	 * that has been filled by the Arguments and returns a Data object which is the result of whatever
+	 * computations this Function performs.
+	 * @param l - ProgressListener to report execution progress to, if progress should be tracked
+	 * @param params - parameter object specified by the Arguments
+	 * @return data produced by this computation
+	 * @see Argument
+	 * @see ProgressListener
+	 * @see ProgressEvent
+	 */
+	public Data execute(ProgressListener l, P params);
 	
 }

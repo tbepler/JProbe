@@ -20,37 +20,38 @@ import jprobe.services.CoreListener;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 
+@SuppressWarnings("rawtypes")
 public class CoreFunctionManager extends AbstractServiceListener<Function> implements FunctionManager{
 	
 	private JProbeCore core;
 	private Collection<CoreListener> listeners;
 	
-	private Collection<Function> functions;
-	private Map<String, List<Function>> functionsByName;
+	private Collection<Function<?>> functions;
+	private Map<String, List<Function<?>>> functionsByName;
 	
 	public CoreFunctionManager(JProbeCore core, BundleContext context){
 		super(Function.class, context);
 		this.core = core;
 		listeners = new HashSet<CoreListener>();
-		functions = new PriorityQueue<Function>(10, new Comparator<Function>(){
+		functions = new PriorityQueue<Function<?>>(10, new Comparator<Function<?>>(){
 			@Override
-			public int compare(Function arg0, Function arg1) {
+			public int compare(Function<?> arg0, Function<?> arg1) {
 				return arg0.getName().compareTo(arg1.getName());
 			}
 		});
-		functionsByName = new HashMap<String, List<Function>>();
+		functionsByName = new HashMap<String, List<Function<?>>>();
 	}
 	
 	@Override
-	public Function[] getAllFunctions(){
-		return functions.toArray(new Function[functions.size()]);
+	public Function<?>[] getAllFunctions(){
+		return functions.toArray(new Function<?>[functions.size()]);
 	}
 	
 	@Override
-	public Function[] getFunctions(String name){
+	public Function<?>[] getFunctions(String name){
 		if(functionsByName.containsKey(name)){
-			List<Function> list = functionsByName.get(name);
-			return list.toArray(new Function[list.size()]);
+			List<Function<?>> list = functionsByName.get(name);
+			return list.toArray(new Function<?>[list.size()]);
 		}
 		return new Function[]{};
 	}
@@ -61,11 +62,11 @@ public class CoreFunctionManager extends AbstractServiceListener<Function> imple
 	}
 	
 	@Override
-	public void addFunction(Function f, Bundle responsible){
+	public void addFunction(Function<?> f, Bundle responsible){
 		if(!functions.contains(f)){
 			functions.add(f);
 			if(!functionsByName.containsKey(f.getName())){
-				List<Function> list = new ArrayList<Function>();
+				List<Function<?>> list = new ArrayList<Function<?>>();
 				list.add(f);
 				functionsByName.put(f.getName(), list);
 			}else{
@@ -76,7 +77,7 @@ public class CoreFunctionManager extends AbstractServiceListener<Function> imple
 	}
 	
 	@Override
-	public void removeFunction(Function f, Bundle responsible){
+	public void removeFunction(Function<?> f, Bundle responsible){
 		if(functions.remove(f)){
 			functionsByName.get(f.getName()).remove(f);
 			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_REMOVED, responsible, f));
