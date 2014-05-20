@@ -48,7 +48,7 @@ public interface Function<P> {
 	 * @see Argument
 	 * @return collection of arguments
 	 */
-	public Collection<Argument<P>> getArguments();
+	public Collection<Argument<? super P>> getArguments();
 	
 	/**
 	 * The core functionality of Functions. This method takes a ProgressListener and a parameter object
@@ -61,6 +61,6 @@ public interface Function<P> {
 	 * @see ProgressListener
 	 * @see ProgressEvent
 	 */
-	public Data execute(ProgressListener l, P params);
+	public Data execute(ProgressListener l, P params) throws Exception;
 	
 }

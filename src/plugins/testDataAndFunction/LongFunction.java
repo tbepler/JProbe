@@ -1,52 +1,35 @@
 package plugins.testDataAndFunction;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.osgi.framework.Bundle;
 
+import plugins.testDataAndFunction.params.NullParameter;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 import jprobe.services.Log;
 import jprobe.services.data.Data;
-import jprobe.services.data.Field;
-import jprobe.services.function.DataParameter;
-import jprobe.services.function.FieldParameter;
-import jprobe.services.function.Function;
+import jprobe.services.function.Argument;
 
-public class LongFunction implements Function{
+public class LongFunction extends AbstractTestFunction<NullParameter>{
 	
 	public static final String DESCRIPTION = "This function takes 10 seconds to complete";
 	public static final String NAME = "Long Function";
 	
-	private static final DataParameter[] DATA_PARAMETERS = new DataParameter[]{};
-	private static final FieldParameter[] FIELD_PARAMETERS	= new FieldParameter[]{};
-	
-	private Bundle m_Bundle;
+	private final Bundle m_Bundle = Activator.getBundle();
 	
 	public LongFunction(Bundle bundle){
-		m_Bundle = bundle;
-	}
-	
-	@Override
-	public String getName() {
-		return LongFunction.NAME;
+		super(NAME, DESCRIPTION, NullParameter.class);
 	}
 
 	@Override
-	public String getDescription() {
-		return LongFunction.DESCRIPTION;
+	public Collection<Argument<NullParameter>> getArguments() {
+		return new ArrayList<Argument<NullParameter>>();
 	}
 
 	@Override
-	public DataParameter[] getDataParameters() {
-		return DATA_PARAMETERS;
-	}
-
-	@Override
-	public FieldParameter[] getFieldParameters() {
-		return FIELD_PARAMETERS;
-	}
-
-	@Override
-	public Data run(ProgressListener listener, Data[] dataArgs, Field[] fieldArgs) throws Exception {
+	public Data execute(ProgressListener listener, NullParameter params) throws Exception {
 		int progress = 0;
 		Log.getInstance().write(m_Bundle, "Running long function");
 		listener.update(new ProgressEvent(this, ProgressEvent.Type.UPDATE, progress, 100));

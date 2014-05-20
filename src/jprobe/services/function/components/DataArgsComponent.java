@@ -16,7 +16,7 @@ import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
-public class DataArgsComponent extends JPanel implements ValidNotifier, Observer<Data>, CoreListener{
+public class DataArgsComponent<D extends Data> extends JPanel implements ValidNotifier, Observer<D>, CoreListener{
 	private static final long serialVersionUID = 1L;
 	
 	public static interface DataValidFunction{
@@ -25,24 +25,26 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, Observer
 	
 	private final Collection<ValidListener> m_Listeners = new HashSet<ValidListener>();
 	
-	private final List<DataSelectionPanel> m_DataComps = new ArrayList<DataSelectionPanel>();
-	private final List<Data> m_SelectedData = new ArrayList<Data>();
+	private final List<DataSelectionPanel<D>> m_DataComps = new ArrayList<DataSelectionPanel<D>>();
+	private final List<D> m_SelectedData = new ArrayList<D>();
 	
 	private final JProbeCore m_Core;
 	private final int m_MinArgs;
 	private final int m_MaxArgs;
 	private final boolean m_AllowDuplicates;
+	private final Class<D> m_DataClass;
 	private final DataValidFunction m_ValidFunction;
 	
 	private boolean m_Valid;
 	
-	public DataArgsComponent(JProbeCore core, int minArgs, int maxArgs, boolean allowDuplicates, DataValidFunction validFunction){
+	public DataArgsComponent(JProbeCore core, int minArgs, int maxArgs, boolean allowDuplicates, Class<D> dataClass, DataValidFunction validFunction){
 		super();
 		m_Core = core;
 		m_Core.addCoreListener(this);
 		m_MinArgs = minArgs;
 		m_MaxArgs = maxArgs;
 		m_AllowDuplicates = allowDuplicates;
+		m_DataClass = dataClass;
 		m_ValidFunction = validFunction;
 		this.allocateComponents();
 	}
@@ -86,7 +88,7 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, Observer
 		if(!this.canAddComponent(index)){
 			return;
 		}
-		final DataSelectionPanel comp = new DataSelectionPanel( m_Core, this.componentIsOptional(index) );
+		final DataSelectionPanel<D> comp = new DataSelectionPanel<D>( m_Core, this.componentIsOptional(index) );
 		comp.setCloseAction(new DataSelectionPanel.OnClose() {
 			@Override
 			public void close() {
@@ -96,16 +98,17 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, Observer
 		
 		m_DataComps.add(comp);
 		m_SelectedData.add(index, null);
+		comp.register(this);
 		
 		for(Data d : m_Core.getDataManager().getAllData()){
 			if(shouldAddData(d)){
-				comp.addData(d);
+				comp.addData((D)d);
 			}
 		}
 		this.add(comp);
 	}
 	
-	private void removeDataComponent(DataSelectionPanel comp){
+	private void removeDataComponent(DataSelectionPanel<D> comp){
 		int index = m_DataComps.indexOf(comp);
 		if(index >= 0){
 			this.remove(comp);
@@ -115,43 +118,50 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, Observer
 		}
 	}
 	
-	public List<Data> getDataArgs(){
-		List<Data> data = new ArrayList<Data>();
-		for(Data d : m_SelectedData){
+	public List<D> getDataArgs(){
+		List<D> data = new ArrayList<D>();
+		for(D d : m_SelectedData){
 			if(d != null && this.isValid(d)) data.add(d);
 		}
 		return data;
 	}
 	
-	private void addData(Data d){
-		for(DataSelectionPanel sel : m_DataComps){
+	private void addData(D d){
+		for(DataSelectionPanel<D> sel : m_DataComps){
 			sel.addData(d);
 		}
 	}
 	
-	private void removeData(Data d){
-		for(DataSelectionPanel sel : m_DataComps){
+	private void removeData(D d){
+		for(DataSelectionPanel<D> sel : m_DataComps){
 			sel.removeData(d);
 		}
 	}
 	
 	private void renameData(String oldName, String newName){
-		for(DataSelectionPanel sel : m_DataComps){
+		for(DataSelectionPanel<D> sel : m_DataComps){
 			sel.renameData(oldName, newName);
 		}
 	}
 	
 	@Override
 	public void update(CoreEvent event) {
+		Data d;
 		switch(event.type()){
 		case DATA_ADDED:
-			this.addData(event.getData());
+			d = event.getData();
+			if(this.shouldAddData(d)){
+				this.addData((D) d);
+			}
 			break;
 		case DATA_NAME_CHANGE:
 			this.renameData(event.getOldName(), event.getNewName());
 			break;
 		case DATA_REMOVED:
-			this.removeData(event.getData());
+			d = event.getData();
+			if(this.isValid(d)){
+				this.removeData((D)d);
+			}
 			break;
 		default:
 			break;
@@ -159,7 +169,7 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, Observer
 	}
 
 	@Override
-	public void update(Subject<Data> observed, Data notification) {
+	public void update(Subject<D> observed, D notification) {
 		int index = m_DataComps.indexOf(observed);
 		if(index >= 0){
 			m_SelectedData.set(index, notification);
@@ -188,7 +198,7 @@ public class DataArgsComponent extends JPanel implements ValidNotifier, Observer
 	}
 	
 	protected boolean isValid(Data d){
-		return m_ValidFunction.isValid(d);
+		return m_DataClass.isAssignableFrom(d.getClass()) && m_ValidFunction.isValid(d);
 	}
 	
 	@Override

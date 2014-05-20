@@ -45,8 +45,8 @@ public class Test extends junit.framework.TestCase{
 		public TestParameter newParameters() { return new TestParameter(); }
 
 		@Override
-		public Collection<Argument<TestParameter>> getArguments() {
-			Collection<Argument<TestParameter>> args = new ArrayList<Argument<TestParameter>>();
+		public Collection<Argument<? super TestParameter>> getArguments() {
+			Collection<Argument<? super TestParameter>> args = new ArrayList<Argument<? super TestParameter>>();
 			args.add(new StringArg());
 			args.add(new IntArg());
 			args.add(new DoubleArg());
@@ -88,9 +88,8 @@ public class Test extends junit.framework.TestCase{
 		public JComponent getComponent() { return null; }
 
 		@Override
-		public TestParameter process(TestParameter params) {
+		public void process(TestParameter params) {
 			params.VALUE_A = "String";
-			return params;
 		}
 		
 	}
@@ -122,9 +121,8 @@ public class Test extends junit.framework.TestCase{
 		public JComponent getComponent() { return null; }
 
 		@Override
-		public TestParameter process(TestParameter params) {
+		public void process(TestParameter params) {
 			params.VALUE_B = 5;
-			return params;
 		}
 		
 	}
@@ -156,9 +154,8 @@ public class Test extends junit.framework.TestCase{
 		public JComponent getComponent() { return null; }
 
 		@Override
-		public TestParameter process(TestParameter params) {
+		public void process(TestParameter params) {
 			params.VALUE_C = 15.3;
-			return params;
 		}
 		
 	}
@@ -180,8 +177,8 @@ public class Test extends junit.framework.TestCase{
 	
 	private static <T> boolean process(Function<T> fun, Object compare){
 		T params = fun.newParameters();
-		for(Argument<T> arg : fun.getArguments()){
-			params = arg.process(params);
+		for(Argument<? super T> arg : fun.getArguments()){
+			arg.process(params);
 		}
 		return params.equals(compare);
 	}

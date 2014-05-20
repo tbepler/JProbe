@@ -72,7 +72,7 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 	}
 	
 	protected abstract boolean isValid(T value);
-	protected abstract P process(P params, T value);
+	protected abstract void process(P params, T value);
 
 	@Override
 	public boolean isValid() {
@@ -85,8 +85,8 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 	}
 
 	@Override
-	public P process(P params) {
-		return this.process(params, m_Model.getValue());
+	public void process(P params) {
+		this.process(params, m_Model.getValue());
 	}
 
 	@Override

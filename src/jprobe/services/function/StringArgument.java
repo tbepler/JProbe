@@ -17,7 +17,7 @@ public abstract class StringArgument<P> extends AbstractArgument<P> implements A
 	}
 	
 	protected abstract boolean isValid(String s);
-	protected abstract P process(P params, String s);
+	protected abstract void process(P params, String s);
 
 	@Override
 	public boolean isValid() {
@@ -30,8 +30,8 @@ public abstract class StringArgument<P> extends AbstractArgument<P> implements A
 	}
 
 	@Override
-	public P process(P params) {
-		return process(params, m_TextField.getText());
+	public void process(P params) {
+		process(params, m_TextField.getText());
 	}
 
 	@Override

@@ -94,12 +94,11 @@ public interface Argument<P> {
 	 * have been processed. This Argument is responsible for monitoring its {@link JComponent} and extracting
 	 * the user entered value from the JComponent if applicable.
 	 * @param params - parameter object to have this Argument's value added to
-	 * @return parameter object with this Argument's value added
 	 * @see #isValid()
 	 * @see #getComponent()
 	 * @see Function
 	 * @see Function#execute(ProgressListener, P)
 	 */
-	public P process(P params);
+	public void process(P params);
 	
 }

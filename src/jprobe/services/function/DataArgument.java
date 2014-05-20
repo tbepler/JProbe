@@ -10,26 +10,27 @@ import jprobe.services.function.components.DataArgsComponent;
 import jprobe.services.function.components.ValidListener;
 import jprobe.services.function.components.ValidNotifier;
 
-public abstract class DataArgument<P> extends AbstractArgument<P> implements ValidListener {
+public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P> implements ValidListener {
 	
-	private final DataArgsComponent m_Component;
+	private final DataArgsComponent<D> m_Component;
 	private final Class<? extends Data> m_DataClass;
 	
 	protected DataArgument(JProbeCore core, String name, String tooltip, String category, boolean optional,
-			Class<? extends Data> dataClass, int minArgs, int maxArgs, boolean allowDuplicates){
+			Class<D> dataClass, int minArgs, int maxArgs, boolean allowDuplicates){
 		super(name, tooltip, category, optional);
 		m_DataClass = dataClass;
-		m_Component = new DataArgsComponent(
+		m_Component = new DataArgsComponent<D>(
 				core,
 				minArgs,
 				maxArgs,
 				allowDuplicates,
+				dataClass,
 				new DataArgsComponent.DataValidFunction() { @Override public boolean isValid(Data d) { return DataArgument.this.isValid(d); } }
 				);
 		m_Component.addListener(this);
 	}
 		
-	protected abstract P process(P params, List<Data> data);
+	protected abstract void process(P params, List<D> data);
 
 	@Override
 	public boolean isValid() { return m_Component.isStateValid(); }
@@ -44,8 +45,8 @@ public abstract class DataArgument<P> extends AbstractArgument<P> implements Val
 	}
 
 	@Override
-	public P process(P params) {
-		return process(params, m_Component.getDataArgs());
+	public void process(P params) {
+		process(params, m_Component.getDataArgs());
 	}
 
 	@Override

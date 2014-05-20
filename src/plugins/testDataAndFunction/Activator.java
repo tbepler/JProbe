@@ -7,11 +7,23 @@ import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
 import jprobe.services.function.Function;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 public class Activator implements BundleActivator{
+	
+	private static Bundle BUNDLE = null;
+	private static JProbeCore CORE = null;
+	
+	public static Bundle getBundle(){
+		return BUNDLE;
+	}
+	
+	public static JProbeCore getCore(){
+		return CORE;
+	}
 	
 	private JProbeCore core;
 	private Function fun = new TestFunction();
@@ -24,9 +36,11 @@ public class Activator implements BundleActivator{
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
+		BUNDLE = context.getBundle();
 		longFun = new LongFunction(context.getBundle());
 		ServiceReference ref = context.getServiceReference(JProbeCore.class);
-		core = (JProbeCore) context.getService(ref);
+		CORE = (JProbeCore) context.getService(ref);
+		core = CORE;
 		core.getFunctionManager().addFunction(fun, context.getBundle());
 		core.getFunctionManager().addFunction(longFun, context.getBundle());
 		core.getFunctionManager().addFunction(dataParamFun, context.getBundle());

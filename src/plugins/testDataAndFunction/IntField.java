@@ -3,7 +3,8 @@ package plugins.testDataAndFunction;
 import jprobe.services.data.IntegerField;
 
 public class IntField extends IntegerField{
-	
+	private static final long serialVersionUID = 1L;
+
 	public static final String TOOLTIP = "An integer field with no bounds";
 	
 	private int value;

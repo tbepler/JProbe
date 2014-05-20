@@ -1,43 +1,30 @@
 package plugins.testDataAndFunction;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import plugins.testDataAndFunction.params.NullParameter;
 import util.progress.ProgressListener;
 import jprobe.services.data.Data;
-import jprobe.services.data.Field;
-import jprobe.services.function.DataParameter;
-import jprobe.services.function.FieldParameter;
-import jprobe.services.function.Function;
+import jprobe.services.function.Argument;
 
-public class TestFunction implements Function{
-	
+public class TestFunction extends AbstractTestFunction<NullParameter>{
+
 	public static final String NAME = "Test Function";
 	public static final String DESCRIPTION = "This is a test function. It takes no arguments and produces a TestData object.";
-
-	private static final DataParameter[] DATA_PARAMETERS = new DataParameter[]{};
-	private static final FieldParameter[] FIELD_PARAMETERS	= new FieldParameter[]{};
+	
+	public TestFunction() {
+		super(NAME, DESCRIPTION, NullParameter.class);
+	}
 	
 	@Override
-	public String getName() {
-		return TestFunction.NAME;
+	public Collection<Argument<NullParameter>> getArguments() {
+		return new ArrayList<Argument<NullParameter>>();
 	}
-
 	@Override
-	public String getDescription() {
-		return TestFunction.DESCRIPTION;
-	}
-
-	@Override
-	public DataParameter[] getDataParameters() {
-		return DATA_PARAMETERS;
-	}
-
-	@Override
-	public FieldParameter[] getFieldParameters() {
-		return FIELD_PARAMETERS;
-	}
-
-	@Override
-	public Data run(ProgressListener listener, Data[] dataArgs, Field[] fieldArgs) throws Exception {
+	public Data execute(ProgressListener l, NullParameter params) {
 		return new TestData();
 	}
+
 
 }

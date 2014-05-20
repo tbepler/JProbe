@@ -16,16 +16,16 @@ import jprobe.Constants;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
-public class DataSelectionPanel extends JPanel implements ItemListener, ActionListener, Subject<Data>{
+public class DataSelectionPanel<D extends Data> extends JPanel implements ItemListener, ActionListener, Subject<D>{
 	private static final long serialVersionUID = 1L;
 	
 	public static interface OnClose{
 		public void close();
 	}
 	
-	private final Collection<Observer<Data>> m_Obs = new HashSet<Observer<Data>>();
+	private final Collection<Observer<D>> m_Obs = new HashSet<Observer<D>>();
 	
-	private final DataComboBox m_DataBox;
+	private final DataComboBox<D> m_DataBox;
 	private final JButton m_CloseButton;
 	private OnClose m_CloseAction = new OnClose(){
 
@@ -38,7 +38,7 @@ public class DataSelectionPanel extends JPanel implements ItemListener, ActionLi
 	
 	public DataSelectionPanel(JProbeCore core, boolean optional){
 		super();
-		m_DataBox = new DataComboBox(core);
+		m_DataBox = new DataComboBox<D>(core);
 		m_DataBox.addItemListener(this);
 		this.add(m_DataBox);
 		m_CloseButton = new IconButton(Constants.X_ICON, Constants.X_HIGHLIGHTED_ICON, Constants.X_CLICKED_ICON);
@@ -54,11 +54,11 @@ public class DataSelectionPanel extends JPanel implements ItemListener, ActionLi
 		m_CloseAction = closeAction;
 	}
 	
-	public void addData(Data d){
+	public void addData(D d){
 		m_DataBox.addData(d);
 	}
 	
-	public void removeData(Data d){
+	public void removeData(D d){
 		m_DataBox.removeData(d);
 	}
 	
@@ -92,7 +92,7 @@ public class DataSelectionPanel extends JPanel implements ItemListener, ActionLi
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getSource() == m_DataBox){
-			Data selected = m_DataBox.getSelectedData();
+			D selected = m_DataBox.getSelectedData();
 			this.notifyObservers(selected);
 		}
 	}
@@ -104,19 +104,19 @@ public class DataSelectionPanel extends JPanel implements ItemListener, ActionLi
 		}
 	}
 	
-	protected void notifyObservers(Data d){
-		for(Observer<Data> obs : m_Obs){
+	protected void notifyObservers(D d){
+		for(Observer<D> obs : m_Obs){
 			obs.update(this, d);
 		}
 	}
 
 	@Override
-	public void register(Observer<Data> obs) {
+	public void register(Observer<D> obs) {
 		m_Obs.add(obs);
 	}
 
 	@Override
-	public void unregister(Observer<Data> obs) {
+	public void unregister(Observer<D> obs) {
 		m_Obs.remove(obs);
 	}
 	

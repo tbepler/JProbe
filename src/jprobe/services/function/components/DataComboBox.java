@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
-public class DataComboBox extends JComboBox<String>{
+public class DataComboBox<D extends Data> extends JComboBox<String>{
 	private static final long serialVersionUID = 1L;
 	
 	private static class SortedModel extends DefaultComboBoxModel<String>{
@@ -33,8 +33,8 @@ public class DataComboBox extends JComboBox<String>{
 	public static final String DATACOMBOBOX_PROTOTYPE_DISPLAY = "SomeDataHere";
 	
 	private final JProbeCore m_Core;
-	private final Map<String, Data> m_Displayed = new HashMap<String, Data>();
-	private final Map<Data, String> m_Data = new HashMap<Data, String>();
+	private final Map<String, D> m_Displayed = new HashMap<String, D>();
+	private final Map<D, String> m_Data = new HashMap<D, String>();
 	
 	public DataComboBox(JProbeCore core){
 		super(new SortedModel());
@@ -42,7 +42,7 @@ public class DataComboBox extends JComboBox<String>{
 		m_Core = core;
 	}
 	
-	public void addData(Data d){
+	public void addData(D d){
 		String name;
 		if(d == null){
 			name = "";
@@ -56,7 +56,7 @@ public class DataComboBox extends JComboBox<String>{
 		//this.revalidate();
 	}
 	
-	public void removeData(Data d){
+	public void removeData(D d){
 		String name = m_Data.get(d);
 		if(m_Displayed.containsKey(name)){
 			m_Displayed.remove(name);
@@ -76,7 +76,7 @@ public class DataComboBox extends JComboBox<String>{
 	
 	public void rename(String oldName, String newName){
 		if(m_Displayed.containsKey(oldName)){
-			Data changed = m_Displayed.get(oldName);
+			D changed = m_Displayed.get(oldName);
 			m_Data.put(changed, newName);
 			m_Displayed.remove(oldName);
 			if(this.getSelectedItem().equals(oldName)){
@@ -92,7 +92,7 @@ public class DataComboBox extends JComboBox<String>{
 		}
 	}
 	
-	public Data getSelectedData(){
+	public D getSelectedData(){
 		return m_Displayed.get(this.getSelectedItem());
 	}
 	

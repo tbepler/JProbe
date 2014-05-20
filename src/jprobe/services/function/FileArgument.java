@@ -38,7 +38,7 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 	}
 	
 	protected abstract boolean isValid(File f);
-	protected abstract P process(P params, File f);
+	protected abstract void process(P params, File f);
 	
 	protected String getButtonText(){
 		return DEFAULT_BUTTON_TEXT;
@@ -69,8 +69,8 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 	}
 
 	@Override
-	public P process(P params) {
-		return process(params, m_Selected);
+	public void process(P params) {
+		process(params, m_Selected);
 	}
 
 	@Override
