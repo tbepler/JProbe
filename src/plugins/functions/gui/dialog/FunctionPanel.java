@@ -14,10 +14,10 @@ import javax.swing.JPanel;
 
 import org.osgi.framework.Bundle;
 
+import util.Observer;
+import util.Subject;
 import util.gui.DoNothingOnPress;
 import util.gui.OnPress;
-import util.observer.Observer;
-import util.observer.Subject;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.function.Function;

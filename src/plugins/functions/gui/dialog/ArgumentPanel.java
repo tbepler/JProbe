@@ -15,9 +15,9 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 import plugins.functions.gui.Constants;
+import util.Observer;
+import util.Subject;
 import util.gui.ValidLabel;
-import util.observer.Observer;
-import util.observer.Subject;
 import jprobe.services.function.Argument;
 import jprobe.services.function.ArgumentListener;
 
@@ -26,10 +26,10 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 	
 	private final Collection<Observer<Boolean>> m_Obs = new HashSet<Observer<Boolean>>();
 	
-	private final Argument<T> m_Arg;
+	private final Argument<? super T> m_Arg;
 	private final AbstractButton m_Optional;
 	
-	public ArgumentPanel(Argument<T> arg){
+	public ArgumentPanel(Argument<? super T> arg){
 		super();
 		m_Arg = arg;
 		this.add(this.nameComponent(arg));
@@ -45,23 +45,22 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 		return m_Arg.isValid() || !m_Optional.isSelected();
 	}
 	
-	public T process(T params){
+	public void process(T params){
 		if(m_Optional.isSelected()){
-			return m_Arg.process(params);
+			m_Arg.process(params);
 		}
-		return params;
 	}
 	
 	protected Border makeBorder(){
 		return BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 	}
 	
-	protected JComponent nameComponent(Argument<T> arg){
+	protected JComponent nameComponent(Argument<? super T> arg){
 		JLabel name = new JLabel(arg.getName());
 		return name;
 	}
 	
-	protected AbstractButton optionalButton(Argument<T> arg){
+	protected AbstractButton optionalButton(Argument<? super T> arg){
 		AbstractButton button = new JCheckBox();
 		if(!arg.isOptional()){
 			button.setSelected(true);
@@ -70,12 +69,12 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 		return button;
 	}
 	
-	protected JComponent validComponent(Argument<T> arg){
+	protected JComponent validComponent(Argument<? super T> arg){
 		ValidLabel label = new ValidLabel(this, this.isArgValid(), Constants.CHECK_ICON, Constants.X_ICON);
 		return label;
 	}
 	
-	protected JComponent argComponent(Argument<T> arg){
+	protected JComponent argComponent(Argument<? super T> arg){
 		return arg.getComponent();
 	}
 

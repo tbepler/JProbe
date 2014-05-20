@@ -18,8 +18,8 @@ public class TestFunction extends AbstractTestFunction<NullParameter>{
 	}
 	
 	@Override
-	public Collection<Argument<NullParameter>> getArguments() {
-		return new ArrayList<Argument<NullParameter>>();
+	public Collection<Argument<? super NullParameter>> getArguments() {
+		return new ArrayList<Argument<? super NullParameter>>();
 	}
 	@Override
 	public Data execute(ProgressListener l, NullParameter params) {

@@ -45,6 +45,7 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 				@SuppressWarnings("unchecked")
 				V val = (V) value;
 				m_Val = val;
+				this.fireStateChanged();
 			}catch(Exception e){
 				throw new IllegalArgumentException(e);
 			}
@@ -67,6 +68,7 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 		super(name, tooltip, category, optional);
 		m_Model = new Model<T>(model, startValue);
 		m_Model.addChangeListener(this);
+		m_Model.setValue(startValue);
 		m_Editor = new JSpinner(m_Model);
 		getTextField(m_Editor).setHorizontalAlignment(textAlignment);
 	}

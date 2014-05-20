@@ -3,8 +3,8 @@ package util.gui;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
-import util.observer.Observer;
-import util.observer.Subject;
+import util.Observer;
+import util.Subject;
 
 public class ValidLabel extends JLabel implements Observer<Boolean>{
 	private static final long serialVersionUID = 1L;

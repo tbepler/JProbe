@@ -42,10 +42,16 @@ public class DataFieldFunction extends AbstractTestFunction<FieldDataParams>{
 			i += data.getInt();
 			d += data.getDouble();
 		}
-		
-		s += params.STRING;
-		i += params.INT;
-		d += params.DOUBLE;
+
+		if(params.STRING != null){
+			s += params.STRING;
+		}
+		if(params.INT != null){
+			i += params.INT;
+		}
+		if(params.DOUBLE != null){
+			d += params.DOUBLE;
+		}
 		
 		return new TestData(s, i, d);
 	}

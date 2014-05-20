@@ -9,8 +9,8 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import util.observer.Observer;
-import util.observer.Subject;
+import util.Observer;
+import util.Subject;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;

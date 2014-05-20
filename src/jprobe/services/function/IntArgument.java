@@ -2,6 +2,8 @@ package jprobe.services.function;
 
 import javax.swing.JTextField;
 
+import util.MathUtils;
+
 public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 	
 	protected static class IntModel implements SpinnerArgument.Spinner<Integer>{
@@ -26,7 +28,7 @@ public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 			if(this.legal(next)){
 				return next;
 			}else{
-				return cur;
+				return MathUtils.clamp(next, m_Min, m_Max);
 			}
 		}
 
@@ -36,7 +38,7 @@ public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 			if(this.legal(prev)){
 				return prev;
 			}else{
-				return cur;
+				return MathUtils.clamp(prev, m_Min, m_Max);
 			}
 		}
 		
@@ -71,6 +73,7 @@ public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 
 	@Override
 	protected boolean isValid(Integer value) {
+		if(value == null) return false;
 		return value >= m_Min && value <= m_Max;
 	}
 

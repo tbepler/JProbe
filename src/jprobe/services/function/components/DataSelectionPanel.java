@@ -10,8 +10,8 @@ import java.util.HashSet;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import util.observer.Observer;
-import util.observer.Subject;
+import util.Observer;
+import util.Subject;
 import jprobe.Constants;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
