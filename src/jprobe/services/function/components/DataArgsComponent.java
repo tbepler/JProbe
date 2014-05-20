@@ -80,6 +80,7 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		while(m_DataComps.size() <= m_MinArgs && m_DataComps.size() < m_MaxArgs){
 			this.addDataComponent();
 		}
+		this.revalidate();
 		this.resizeWindow();
 	}
 	
@@ -96,8 +97,8 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 			}
 		});
 		
-		m_DataComps.add(comp);
-		m_SelectedData.add(index, null);
+		m_DataComps.add(index, comp);
+		m_SelectedData.add(index, comp.getSelectedData());
 		comp.register(this);
 		
 		for(Data d : m_Core.getDataManager().getAllData()){

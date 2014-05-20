@@ -52,6 +52,9 @@ public class DataComboBox<D extends Data> extends JComboBox<String>{
 		m_Displayed.put(name, d);
 		m_Data.put(d, name);
 		this.addItem(name);
+		if(this.getSelectedIndex() == -1){
+			this.setSelectedItem(name);
+		}
 		this.resizeWindow();
 		//this.revalidate();
 	}

@@ -81,7 +81,7 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 		}
 	}
 	
-	public Data getSelectedData(){
+	public D getSelectedData(){
 		return m_DataBox.getSelectedData();
 	}
 	
