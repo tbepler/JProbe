@@ -1,5 +1,6 @@
 package plugins.functions.gui;
 
+import java.awt.Color;
 import java.awt.Frame;
 import java.util.Collection;
 import java.util.Comparator;
@@ -13,6 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import org.osgi.framework.Bundle;
 
@@ -89,7 +91,11 @@ public class FunctionMenu extends JMenu implements CoreListener{
 	
 	protected JComponent newSeparator(String title){
 		JPanel panel = new JPanel();
-		panel.setBorder(BorderFactory.createTitledBorder(title));
+		TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.BLUE));
+		border.setTitle(title);
+		border.setTitleJustification(TitledBorder.CENTER);
+		border.setTitlePosition(TitledBorder.BOTTOM);
+		panel.setBorder(border);
 		return panel;
 	}
 	
