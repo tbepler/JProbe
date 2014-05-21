@@ -71,6 +71,7 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 		m_Model.setValue(startValue);
 		m_Editor = new JSpinner(m_Model);
 		getTextField(m_Editor).setHorizontalAlignment(textAlignment);
+		getTextField(m_Editor).setEditable(true);
 	}
 	
 	protected abstract boolean isValid(T value);

@@ -31,6 +31,7 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 	
 	private final DataComboBox<D> m_DataBox;
 	private final JButton m_CloseButton;
+	private final boolean m_Optional;
 	private OnClose m_CloseAction = new OnClose(){
 
 		@Override
@@ -42,6 +43,7 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 	
 	public DataSelectionPanel(JProbeCore core, boolean optional){
 		super(new GridBagLayout());
+		m_Optional = optional;
 		m_DataBox = new DataComboBox<D>(core);
 		m_DataBox.addItemListener(this);
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -60,6 +62,12 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 		if(optional){
 			m_DataBox.addData(null);
 		}
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled){
+		m_DataBox.setEnabled(enabled);
+		m_CloseButton.setEnabled(enabled && m_Optional);
 	}
 	
 	public void setCloseAction(OnClose closeAction){

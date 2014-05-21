@@ -53,6 +53,13 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		this.allocateComponents();
 	}
 	
+	@Override
+	public void setEnabled(boolean enabled){
+		for(DataSelectionPanel<D> sel : m_DataComps){
+			sel.setEnabled(enabled);
+		}
+	}
+	
 	private void resizeWindow(){
 		Window ancestor = SwingUtilities.getWindowAncestor(this);
 		if(ancestor != null){

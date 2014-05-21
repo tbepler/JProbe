@@ -31,6 +31,7 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 	
 	private final Argument<? super T> m_Arg;
 	private final AbstractButton m_Optional;
+	private final JComponent m_ArgComp;
 	
 	public ArgumentPanel(Argument<? super T> arg){
 		super(new GridBagLayout());
@@ -41,8 +42,11 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 		m_Optional.addActionListener(this);
 		this.add(m_Optional, this.optionalButtonConstraints());
 		this.add(this.validComponent(arg), this.validLabelConstraints());
-		this.add(this.argComponent(arg), this.argComponentConstraints());
+		m_ArgComp = this.argComponent(arg);
+		this.add(m_ArgComp, this.argComponentConstraints());
+		m_ArgComp.setEnabled(m_Optional.isSelected());
 		this.setBorder(this.makeBorder());
+		this.setToolTipText(arg.getTooltip());
 	}
 	
 	public boolean isArgValid(){
@@ -142,6 +146,7 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == m_Optional){
+			m_ArgComp.setEnabled(m_Optional.isSelected());
 			this.notifyObservers();
 		}
 	}
