@@ -3,6 +3,7 @@ package plugins.functions.gui.dialog;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
@@ -93,6 +94,7 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 		gbc.weightx = 1.0;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.insets = new Insets(0,4,0,4);
 		return gbc;
 	}
 	

@@ -1,5 +1,7 @@
 package jprobe.services.function;
 
+import java.awt.Dimension;
+
 import javax.swing.AbstractSpinnerModel;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -61,6 +63,8 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
         }
    }
 	
+	public static final String PROTOTYPE_TEXT = "entry";
+	
 	private final JSpinner m_Editor;
 	private final Model<T> m_Model;
 	
@@ -68,10 +72,14 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 		super(name, tooltip, category, optional);
 		m_Model = new Model<T>(model, startValue);
 		m_Model.addChangeListener(this);
-		m_Model.setValue(startValue);
 		m_Editor = new JSpinner(m_Model);
 		getTextField(m_Editor).setHorizontalAlignment(textAlignment);
 		getTextField(m_Editor).setEditable(true);
+		getTextField(m_Editor).setText(PROTOTYPE_TEXT);
+		Dimension size = getTextField(m_Editor).getPreferredSize();
+		m_Model.setValue(startValue);
+		getTextField(m_Editor).setPreferredSize(size);
+		getTextField(m_Editor).setMinimumSize(size);
 	}
 	
 	protected abstract boolean isValid(T value);

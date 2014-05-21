@@ -50,14 +50,14 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
-		gbc.insets = new Insets(0,4,2,2);
+		gbc.insets = new Insets(0,0,2,2);
 		this.add(m_DataBox, gbc);
 		m_CloseButton = new IconButton(Constants.X_ICON, Constants.X_HIGHLIGHTED_ICON, Constants.X_CLICKED_ICON);
 		m_CloseButton.addActionListener(this);
 		m_CloseButton.setEnabled(optional);
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
-		gbc.insets = new Insets(0,2,2,4);
+		gbc.insets = new Insets(0,2,2,0);
 		this.add(m_CloseButton, gbc);
 		if(optional){
 			m_DataBox.addData(null);

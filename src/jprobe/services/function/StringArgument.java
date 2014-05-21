@@ -1,5 +1,6 @@
 package jprobe.services.function;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -8,11 +9,17 @@ import javax.swing.JTextField;
 
 public abstract class StringArgument<P> extends AbstractArgument<P> implements ActionListener{
 	
+	public static final String PROTOTYPE_TEXT = "some string here";
+	
 	private final JTextField m_TextField;
 
 	protected StringArgument(String name, String tooltip, String category, boolean optional, String startValue) {
 		super(name, tooltip, category, optional);
-		m_TextField = new JTextField(startValue);
+		m_TextField = new JTextField(PROTOTYPE_TEXT);
+		Dimension size = m_TextField.getPreferredSize();
+		m_TextField.setText(startValue);
+		m_TextField.setPreferredSize(size);
+		m_TextField.setMinimumSize(size);
 		m_TextField.addActionListener(this);
 	}
 	
