@@ -8,9 +8,9 @@ public abstract class AbstractTestFunction<T> implements Function<T>{
 	
 	private final String m_Name;
 	private final String m_Description;
-	private final Class<T> m_ParamsClass;
+	private final Class<? extends T> m_ParamsClass;
 	
-	protected AbstractTestFunction(String name, String description, Class<T> paramsClass){
+	protected AbstractTestFunction(String name, String description, Class<? extends T> paramsClass){
 		m_Name = name;
 		m_Description = description;
 		m_ParamsClass = paramsClass;

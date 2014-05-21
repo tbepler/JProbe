@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import plugins.testDataAndFunction.params.DataArg;
 import plugins.testDataAndFunction.params.DataParam;
+import plugins.testDataAndFunction.params.FieldDataParams;
 import util.progress.ProgressListener;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
@@ -16,7 +17,7 @@ public class DataParamFunction extends AbstractTestFunction<DataParam>{
 	public static final String DESCRIPTION = "A function that requires data parameters to run. It adds all the fields of the given parameters together.";
 	
 	public DataParamFunction() {
-		super(NAME, DESCRIPTION, DataParam.class);
+		super(NAME, DESCRIPTION, FieldDataParams.class);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package plugins.functions.gui.dialog;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,7 +48,7 @@ public class ArgumentsPanel<T> extends JPanel implements Subject<Boolean>, Obser
 	private boolean m_Valid;
 	
 	public ArgumentsPanel(Function<T> function){
-		super();
+		super(new GridBagLayout());
 		m_Function = function;
 		m_Valid = false;
 		Map<String, Collection<Argument<? super T>>> categoryGrouping = groupByCategory(function.getArguments());
@@ -57,11 +59,29 @@ public class ArgumentsPanel<T> extends JPanel implements Subject<Boolean>, Obser
 				ArgumentPanel<T> argPanel = this.generateArgPanel(arg);
 				m_ArgPanels.add(argPanel);
 				argPanel.register(this);
-				panel.add(argPanel);
+				panel.add(argPanel,this.argPanelConstraints());
 			}
-			this.add(panel);
+			this.add(panel, this.categoryPanelConstraints());
 		}
 		this.updateValidity();
+	}
+	
+	protected GridBagConstraints categoryPanelConstraints(){
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		return gbc;
+	}
+	
+	protected GridBagConstraints argPanelConstraints(){
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.weightx = 1.0;
+		return gbc;
 	}
 	
 	public void run(JProbeCore core, Bundle bundle){
@@ -74,8 +94,7 @@ public class ArgumentsPanel<T> extends JPanel implements Subject<Boolean>, Obser
 	}
 	
 	protected JPanel generatePanel(String category, Collection<Argument<? super T>> args){
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		JPanel panel = new JPanel(new GridBagLayout());
 		Border border = BorderFactory.createTitledBorder(category);
 		panel.setBorder(border);
 		return panel;

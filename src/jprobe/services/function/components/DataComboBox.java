@@ -43,12 +43,16 @@ public class DataComboBox<D extends Data> extends JComboBox<String>{
 	}
 	
 	public void addData(D d){
+		if(m_Data.containsKey(d)){
+			return;
+		}
 		String name;
 		if(d == null){
 			name = "";
 		}else{
 			name = m_Core.getDataManager().getDataName(d);
 		}
+		if(name == null) return;
 		m_Displayed.put(name, d);
 		m_Data.put(d, name);
 		this.addItem(name);

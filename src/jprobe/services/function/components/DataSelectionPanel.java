@@ -1,5 +1,8 @@
 package jprobe.services.function.components;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -7,6 +10,7 @@ import java.awt.event.ItemListener;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -37,14 +41,22 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 	};
 	
 	public DataSelectionPanel(JProbeCore core, boolean optional){
-		super();
+		super(new GridBagLayout());
 		m_DataBox = new DataComboBox<D>(core);
 		m_DataBox.addItemListener(this);
-		this.add(m_DataBox);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
+		gbc.insets = new Insets(0,4,2,2);
+		this.add(m_DataBox, gbc);
 		m_CloseButton = new IconButton(Constants.X_ICON, Constants.X_HIGHLIGHTED_ICON, Constants.X_CLICKED_ICON);
 		m_CloseButton.addActionListener(this);
 		m_CloseButton.setEnabled(optional);
-		this.add(m_CloseButton);
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.weightx = 0;
+		gbc.insets = new Insets(0,2,2,4);
+		this.add(m_CloseButton, gbc);
 		if(optional){
 			m_DataBox.addData(null);
 		}
@@ -92,6 +104,7 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getSource() == m_DataBox){
+			//System.out.println("Item changed");
 			D selected = m_DataBox.getSelectedData();
 			this.notifyObservers(selected);
 		}

@@ -48,7 +48,7 @@ public class FunctionPanel extends JPanel implements ActionListener, Observer<Bo
 	
 	private void initArgsPanel(){
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
+		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 0.7;
 		gbc.weighty = 0.7;

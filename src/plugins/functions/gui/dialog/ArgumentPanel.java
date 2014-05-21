@@ -1,5 +1,8 @@
 package plugins.functions.gui.dialog;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
@@ -30,14 +33,15 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 	private final AbstractButton m_Optional;
 	
 	public ArgumentPanel(Argument<? super T> arg){
-		super();
+		super(new GridBagLayout());
 		m_Arg = arg;
-		this.add(this.nameComponent(arg));
+		m_Arg.addListener(this);
+		this.add(this.nameComponent(arg), this.nameComponentConstraints());
 		m_Optional = this.optionalButton(arg);
 		m_Optional.addActionListener(this);
-		this.add(m_Optional);
-		this.add(this.validComponent(arg));
-		this.add(this.argComponent(arg));
+		this.add(m_Optional, this.optionalButtonConstraints());
+		this.add(this.validComponent(arg), this.validLabelConstraints());
+		this.add(this.argComponent(arg), this.argComponentConstraints());
 		this.setBorder(this.makeBorder());
 	}
 	
@@ -52,11 +56,47 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 	}
 	
 	protected Border makeBorder(){
-		return BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+		Border outer = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+		Border inner = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+		return BorderFactory.createCompoundBorder(outer, inner);
+	}
+	
+	protected GridBagConstraints nameComponentConstraints(){
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		return gbc;
+	}
+	
+	protected GridBagConstraints optionalButtonConstraints(){
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		return gbc;
+	}
+	
+	protected GridBagConstraints validLabelConstraints(){
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		return gbc;
+	}
+	
+	protected GridBagConstraints argComponentConstraints(){
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		return gbc;
 	}
 	
 	protected JComponent nameComponent(Argument<? super T> arg){
-		JLabel name = new JLabel(arg.getName());
+		JLabel name = new JLabel(Constants.ARGS_NAME_PROTOTYPE);
+		Dimension size = name.getPreferredSize();
+		name.setText(arg.getName());
+		name.setPreferredSize(size);
 		return name;
 	}
 	
