@@ -1,6 +1,8 @@
 package chiptools;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,19 +40,62 @@ public class Constants {
 	public static final List<Class<? extends GenomeFunction>> GENOME_FUNCTION_CLASSES = getClasses(GenomeFunction.class, GENOME_FUNCTION_FILE, FUNCTION_PACKAGE);
 	public static final List<Class<? extends Function>> FUNCTION_CLASSES = getClasses(Function.class, FUNCTIONS_FILE, FUNCTION_PACKAGE);
 	
-	public static String getName(Class<? extends Function> clazz){
-		//TODO
-		return null;
+	private static final int CLAZZ = 0;
+	private static final int NAME = 1;
+	private static final int CAT = 2;
+	private static final int DESC = 3;
+	
+	public static String getName(Class<?> clazz){
+		return CLASS_MAP.get(clazz)[NAME];
 	}
 	
-	public static String getDescription(Class<? extends Function> clazz){
-		//TODO
-		return null;
+	public static String getDescription(Class<?> clazz){
+		return CLASS_MAP.get(clazz)[DESC];
 	}
 	
-	public static String getCategory(Class<? extends Function> clazz){
-		//TODO
-		return null;
+	public static String getCategory(Class<?> clazz){
+		return CLASS_MAP.get(clazz)[CAT];
+	}
+	
+	private static final String ARGUMENTS_FILE = RESOURCES_PATH + "/arguments.txt";
+	
+	private static final Map<Class<?>, String[]> CLASS_MAP = readFunctionsAndArguments();
+	
+	private static Map<Class<?>, String[]> readFunctionsAndArguments(){
+		Map<Class<?>, String[]> map = new HashMap<Class<?>, String[]>();
+		readFunctions(map);
+		readArguments(map);
+		return map;
+	}
+	
+	private static void readFunctions(Map<Class<?>, String[]> map){
+		BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(FUNCTIONS_FILE)));
+		String line;
+		try {
+			while((line = reader.readLine()) != null){
+				String[] tokens = line.split("\t");
+				Class<?> clazz = Class.forName(tokens[CLAZZ]);
+				map.put(clazz, tokens);
+			}
+			reader.close();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private static void readArguments(Map<Class<?>, String[]> map){
+		BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(ARGUMENTS_FILE)));
+		String line;
+		try {
+			while((line = reader.readLine()) != null){
+				String[] tokens = line.split("\t");
+				Class<?> clazz = Class.forName(tokens[CLAZZ]);
+				map.put(clazz, tokens);
+			}
+			reader.close();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

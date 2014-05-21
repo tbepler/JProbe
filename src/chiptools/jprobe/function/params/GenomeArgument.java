@@ -4,13 +4,21 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 
+import chiptools.Constants;
 import jprobe.services.function.FileArgument;
 
 public class GenomeArgument extends FileArgument<GenomeParam>{
+	
+	private static final JFileChooser FILECHOOSER = new JFileChooser();
 
-	protected GenomeArgument(String name, String tooltip, String category, boolean optional, JFileChooser fileChooser) {
-		super(name, tooltip, category, optional, fileChooser);
-		//TODO
+	public GenomeArgument(boolean optional) {
+		super(
+				Constants.getName(GenomeArgument.class),
+				Constants.getDescription(GenomeArgument.class),
+				Constants.getCategory(GenomeArgument.class),
+				optional,
+				FILECHOOSER
+				);
 	}
 
 	@Override

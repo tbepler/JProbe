@@ -1,1 +1,1 @@
-ProbeGenerator
+chiptools.jprobe.function.GenomePeakFinder	peakfinder	Genome	This function extracts ChIP-seq peak sequences from the genome.

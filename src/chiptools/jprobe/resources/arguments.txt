@@ -1,0 +1,2 @@
+chiptools.jprobe.function.params.GenomeArgument	genome	Genome	Genome file in fasta format
+chiptools.jprobe.function.params.PeaksArgument	peaks	Data	ChIP-seq peaks
