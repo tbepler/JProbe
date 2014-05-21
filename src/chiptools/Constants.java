@@ -38,6 +38,21 @@ public class Constants {
 	public static final List<Class<? extends GenomeFunction>> GENOME_FUNCTION_CLASSES = getClasses(GenomeFunction.class, GENOME_FUNCTION_FILE, FUNCTION_PACKAGE);
 	public static final List<Class<? extends Function>> FUNCTION_CLASSES = getClasses(Function.class, FUNCTIONS_FILE, FUNCTION_PACKAGE);
 	
+	public static String getName(Class<? extends Function> clazz){
+		//TODO
+		return null;
+	}
+	
+	public static String getDescription(Class<? extends Function> clazz){
+		//TODO
+		return null;
+	}
+	
+	public static String getCategory(Class<? extends Function> clazz){
+		//TODO
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	private static <T> List<Class<? extends T>> getClasses(Class<T> clazz, String file, String pckg){
 		List<Class<? extends T>> list = new ArrayList<Class<? extends T>>();
