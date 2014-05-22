@@ -4,10 +4,11 @@ import java.io.File;
 
 import chiptools.jprobe.data.Peaks;
 
-public class GenomePeakFinderParams implements GenomeParam, PeaksParam{
+public class GenomePeakFinderParams implements GenomeParam, PeaksParam, SummitParam{
 	
 	private File m_Genome = null;
 	private Peaks m_Peaks = null;
+	private int m_Summit = -1;
 	
 	@Override
 	public void setGenomeFile(File f) {
@@ -27,6 +28,16 @@ public class GenomePeakFinderParams implements GenomeParam, PeaksParam{
 	@Override
 	public Peaks getPeaks() {
 		return m_Peaks;
+	}
+
+	@Override
+	public void setSummit(int summit) {
+		m_Summit = summit;
+	}
+
+	@Override
+	public int getSummit() {
+		return m_Summit;
 	}
 
 }

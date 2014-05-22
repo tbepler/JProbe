@@ -10,9 +10,10 @@ import util.genome.reader.GenomeReaderFactory;
 import util.progress.ProgressListener;
 import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.PeakSequences;
-import chiptools.jprobe.function.params.GenomeArgument;
+import chiptools.jprobe.function.args.GenomeArgument;
+import chiptools.jprobe.function.args.PeaksArgument;
+import chiptools.jprobe.function.args.SummitArgument;
 import chiptools.jprobe.function.params.GenomePeakFinderParams;
-import chiptools.jprobe.function.params.PeaksArgument;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 
@@ -20,7 +21,6 @@ public class GenomePeakFinder extends AbstractChiptoolsFunction<GenomePeakFinder
 
 	protected GenomePeakFinder() {
 		super(GenomePeakFinderParams.class);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -28,6 +28,7 @@ public class GenomePeakFinder extends AbstractChiptoolsFunction<GenomePeakFinder
 		Collection<Argument<? super GenomePeakFinderParams>> args = new ArrayList<Argument<? super GenomePeakFinderParams>>();
 		args.add(new PeaksArgument(ChiptoolsActivator.getCore(), false));
 		args.add(new GenomeArgument(false));
+		args.add(new SummitArgument(true));
 		return args;
 	}
 
@@ -37,7 +38,12 @@ public class GenomePeakFinder extends AbstractChiptoolsFunction<GenomePeakFinder
 		Collection<ProgressListener> listeners = new ArrayList<ProgressListener>();
 		listeners.add(l);
 		GenomeReader genomeReader = GenomeReaderFactory.createGenomeReader(params.getGenomeFile(), listeners);
-		return new PeakSequences(PeakSequenceGroup.readFromGenome(genomeReader, peaks));
+		int summit = params.getSummit();
+		if(summit >= 0){
+			return new PeakSequences(PeakSequenceGroup.readFromGenome(genomeReader, peaks, summit));
+		}else{
+			return new PeakSequences(PeakSequenceGroup.readFromGenome(genomeReader, peaks));
+		}
 	}
 
 }

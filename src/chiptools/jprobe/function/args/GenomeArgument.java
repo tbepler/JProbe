@@ -1,10 +1,11 @@
-package chiptools.jprobe.function.params;
+package chiptools.jprobe.function.args;
 
 import java.io.File;
 
 import javax.swing.JFileChooser;
 
 import chiptools.Constants;
+import chiptools.jprobe.function.params.GenomeParam;
 import jprobe.services.function.FileArgument;
 
 public class GenomeArgument extends FileArgument<GenomeParam>{

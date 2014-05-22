@@ -1,2 +1,3 @@
 chiptools.jprobe.function.params.GenomeArgument	genome	Genome	Genome file in fasta format
 chiptools.jprobe.function.params.PeaksArgument	peaks	Data	ChIP-seq peaks
+chiptools.jprobe.function.params.SummitArgument	summit	Fields	Bases on either side of peak summit

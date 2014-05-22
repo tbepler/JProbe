@@ -37,12 +37,8 @@ public class FunctionProvider {
 		for(Class<? extends Function> clazz : Constants.FUNCTION_CLASSES){
 			try {
 				list.add(clazz.newInstance());
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e){
+				throw new RuntimeException();
 			}
 		}
 		return list;

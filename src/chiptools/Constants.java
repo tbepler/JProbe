@@ -24,10 +24,12 @@ public class Constants {
 	public static final String HELP_TAG = "-help";
 	
 	public static final String RESOURCES_PATH = "/chiptools/jprobe/resources";
+	
 	public static final String CMD_NAMES_FILE = "/chiptools/jprobe/resources/command_names.txt";
 	public static final String CMD_DESCRIPTIONS_FILE = "/chiptools/jprobe/resources/command_descriptions.txt";
-	public static final String GENOME_FUNCTION_FILE = RESOURCES_PATH + "/genome_functions.txt";
+	
 	public static final String FUNCTIONS_FILE = RESOURCES_PATH + "/functions.txt";
+	public static final String ARGUMENTS_FILE = RESOURCES_PATH + "/arguments.txt";
 	public static final String READER_WRITER_FILE = RESOURCES_PATH + "/data_reader_writer.txt";
 	
 	public static final String DATA_PACKAGE = "chiptools.jprobe.data.";
@@ -37,7 +39,6 @@ public class Constants {
 
 	public static final String FUNCTION_PACKAGE = "chiptools.jprobe.function.";
 	
-	public static final List<Class<? extends GenomeFunction>> GENOME_FUNCTION_CLASSES = getClasses(GenomeFunction.class, GENOME_FUNCTION_FILE, FUNCTION_PACKAGE);
 	public static final List<Class<? extends Function>> FUNCTION_CLASSES = getClasses(Function.class, FUNCTIONS_FILE, FUNCTION_PACKAGE);
 	
 	private static final int CLAZZ = 0;
@@ -56,8 +57,6 @@ public class Constants {
 	public static String getCategory(Class<?> clazz){
 		return CLASS_MAP.get(clazz)[CAT];
 	}
-	
-	private static final String ARGUMENTS_FILE = RESOURCES_PATH + "/arguments.txt";
 	
 	private static final Map<Class<?>, String[]> CLASS_MAP = readFunctionsAndArguments();
 	
@@ -106,18 +105,18 @@ public class Constants {
 			String line;
 			while((line = reader.readLine()) != null){
 				try{
-					String name = line.trim();
+					String name = line.split("\t")[0].trim();
 					Class<?> c = Class.forName(pckg+name);
 					if(clazz.isAssignableFrom(c)){
 						list.add((Class<? extends T>) c);
 					}
 				} catch (Exception e){
-					e.printStackTrace();
+					throw e;
 				}
 			}
 			reader.close();
 		} catch (Exception e){
-			//do nothing
+			throw new RuntimeException(e);
 		}
 		return Collections.unmodifiableList(list);
 	}

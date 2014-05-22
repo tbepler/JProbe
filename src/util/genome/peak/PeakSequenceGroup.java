@@ -42,8 +42,8 @@ public class PeakSequenceGroup implements Serializable, Iterable<PeakSequence>{
 	 * @param summitRegion - int specifying how far on either side of the summit to look
 	 * @return a PeakSequenceGroup object containing the PeakSequence objects generated
 	 */
-	public static PeakSequenceGroup readFromGenome(GenomeReader reader, Iterable<Peak> peaks, int peakSummit){
-		return Parser.readFromGenome(reader, peaks, peakSummit);
+	public static PeakSequenceGroup readFromGenome(GenomeReader reader, Iterable<Peak> peaks, int summitRegion){
+		return Parser.readFromGenome(reader, peaks, summitRegion);
 	}
 	
 	private final List<PeakSequence> m_PeakSeqs = new ArrayList<PeakSequence>();

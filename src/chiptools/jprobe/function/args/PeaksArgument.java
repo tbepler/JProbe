@@ -1,9 +1,10 @@
-package chiptools.jprobe.function.params;
+package chiptools.jprobe.function.args;
 
 import java.util.List;
 
 import chiptools.Constants;
 import chiptools.jprobe.data.Peaks;
+import chiptools.jprobe.function.params.PeaksParam;
 import jprobe.services.JProbeCore;
 import jprobe.services.function.DataArgument;
 
