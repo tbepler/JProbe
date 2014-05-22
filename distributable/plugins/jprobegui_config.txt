@@ -1,2 +1,0 @@
-default_width = 1000
-default_height = 800

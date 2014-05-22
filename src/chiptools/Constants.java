@@ -1,8 +1,6 @@
 package chiptools;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import plugins.genome.services.GenomeFunction;
 import jprobe.services.command.Command;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;

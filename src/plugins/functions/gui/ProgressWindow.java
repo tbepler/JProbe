@@ -98,11 +98,14 @@ public class ProgressWindow implements ActionListener{
 	
 	public void dispose(){
 		m_Frame.dispose();
+		m_Frame = null;
 	}
 	
 	private void setVisible(boolean visible){
-		m_Frame.setVisible(visible);
-		this.m_Visible = visible;
+		if(m_Frame != null){
+			m_Frame.setVisible(visible);
+			this.m_Visible = visible;
+		}
 	}
 	
 	private long prevTime = -1;

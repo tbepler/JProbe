@@ -8,7 +8,6 @@ import org.osgi.framework.ServiceRegistration;
 
 import chiptools.Constants;
 import jprobe.services.function.Function;
-import plugins.genome.services.GenomeFunction;
 
 public class FunctionProvider {
 	

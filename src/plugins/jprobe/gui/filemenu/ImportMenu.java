@@ -1,7 +1,8 @@
 package plugins.jprobe.gui.filemenu;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -24,7 +25,14 @@ public class ImportMenu extends JMenu implements CoreListener{
 		m_Core = core;
 		m_Core.addCoreListener(this);
 		m_FileChooser = importChooser;
-		m_Items = new HashMap<Class<? extends Data>, JMenuItem>();
+		m_Items = new TreeMap<Class<? extends Data>, JMenuItem>(new Comparator<Class<? extends Data>>(){
+
+			@Override
+			public int compare(Class<? extends Data> arg0, Class<? extends Data> arg1) {
+				return arg0.getSimpleName().compareTo(arg1.getSimpleName());
+			}
+			
+		});
 		for(Class<? extends Data> readable : m_Core.getDataManager().getReadableDataTypes()){
 			this.addImportItem(readable);
 		}
@@ -37,13 +45,20 @@ public class ImportMenu extends JMenu implements CoreListener{
 		m_Core.removeCoreListener(this);
 	}
 	
+	private void allocateItems(){
+		this.removeAll();
+		for(Class<? extends Data> clazz : m_Items.keySet()){
+			this.add(m_Items.get(clazz));
+		}
+	}
+	
 	private void addImportItem(Class<? extends Data> importClass){
 		if(m_Items.containsKey(importClass)){
 			this.remove(m_Items.get(importClass));
 		}
 		JMenuItem item = new ImportMenuItem(importClass, m_Core, m_FileChooser);
 		m_Items.put(importClass, item);
-		this.add(item);
+		this.allocateItems();
 		this.revalidate();
 		if(!m_Items.isEmpty()){
 			this.setEnabled(true);

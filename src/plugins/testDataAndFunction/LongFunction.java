@@ -35,7 +35,7 @@ public class LongFunction extends AbstractTestFunction<NullParameter>{
 		listener.update(new ProgressEvent(this, ProgressEvent.Type.UPDATE, progress, 100));
 		while(progress<100){
 			Thread.sleep(100);
-			listener.update(new ProgressEvent(this, ProgressEvent.Type.UPDATE, ++progress));
+			listener.update(new ProgressEvent(this, ProgressEvent.Type.UPDATE, ++progress, 100));
 			Log.getInstance().write(m_Bundle, "Progress = "+progress);
 		}
 		return new TestData();

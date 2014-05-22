@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
-import jprobe.services.ErrorHandler;
-import plugins.genome.GenomeActivator;
 import util.genome.Chromosome;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
@@ -89,7 +87,7 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 				//do nothing
 			}
 		} catch (FileNotFoundException e) {
-			ErrorHandler.getInstance().handleException(e, GenomeActivator.getBundle());
+			throw new RuntimeException(e);
 		}
 		
 	}
