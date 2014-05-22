@@ -11,17 +11,17 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public abstract class FileArgument<P> extends AbstractArgument<P> implements ActionListener{
 	
-	public static final String DEFAULT_BUTTON_TEXT = "Choose File";
-	public static final String PROTOTYPE_TEXT = "File name";
+	public static final String DEFAULT_BUTTON_TEXT = "Browse";
+	public static final String PROTOTYPE_TEXT = "File name here";
 	
 	private final JFileChooser m_FileChooser;
 	private final JButton m_Button;
-	private final JLabel m_Text;
+	private final JTextField m_Text;
 	private File m_Selected;
 
 	protected FileArgument(String name, String tooltip, String category, boolean optional, JFileChooser fileChooser) {
@@ -29,7 +29,7 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 		m_FileChooser = fileChooser;
 		m_Button = new JButton(this.getButtonText());
 		m_Button.addActionListener(this);
-		m_Text = new JLabel();
+		m_Text = new JTextField();
 		//this part sets the size of the label using the prototype text
 		m_Text.setText(this.getLablePrototypeText());
 		Dimension d = m_Text.getPreferredSize();
@@ -37,6 +37,7 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 		m_Text.setMinimumSize(d);
 		m_Text.setPreferredSize(d);
 		//
+		m_Text.setHorizontalAlignment(JTextField.RIGHT);
 	}
 	
 	protected abstract boolean isValid(File f);
@@ -69,7 +70,6 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 		gbc.gridy = 0;
 		gbc.insets = new Insets(0, 0, 0, 2);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTH;
 		gbc.weightx = 1.0;
 		comp.add(m_Text, gbc);
 		gbc.weightx = 0;
