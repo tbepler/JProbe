@@ -1,1 +1,2 @@
 chiptools.jprobe.function.GenomePeakFinder	peakfinder	Genome	This function extracts ChIP-seq peak sequences from the genome.
+chiptools.jprobe.function.ProbeGenerator	probegen	Chiptools	This function generates probes from peak sequences using Kmer data and a PWM for the factor of interest.
