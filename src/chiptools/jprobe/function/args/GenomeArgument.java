@@ -24,7 +24,7 @@ public class GenomeArgument extends FileArgument<GenomeParam>{
 
 	@Override
 	protected boolean isValid(File f) {
-		return f.canRead();
+		return f != null && f.canRead();
 	}
 
 	@Override

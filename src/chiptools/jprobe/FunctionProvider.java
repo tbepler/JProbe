@@ -21,7 +21,7 @@ public class FunctionProvider {
 			try {
 				list.add(clazz.newInstance());
 			} catch (Exception e){
-				throw new RuntimeException();
+				throw new RuntimeException(e);
 			}
 		}
 		return list;

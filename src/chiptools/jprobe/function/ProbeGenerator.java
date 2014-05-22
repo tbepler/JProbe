@@ -20,7 +20,7 @@ import chiptools.jprobe.function.args.*;
 
 public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorParams>{
 
-	protected ProbeGenerator(Class<ProbeGeneratorParams> paramsClass) {
+	public ProbeGenerator() {
 		super(ProbeGeneratorParams.class);
 	}
 

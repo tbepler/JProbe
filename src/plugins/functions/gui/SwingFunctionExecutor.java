@@ -25,6 +25,7 @@ public class SwingFunctionExecutor<T> extends FunctionExecutor<T> implements Pro
 		private Function<T> m_Function;
 		private T m_Params;
 		private int m_MaxProgress = PROGRESS_BOUND;
+		private String m_Text = null;
 		private boolean m_Indeterminate = false;
 		
 		FunctionThread(Function<T> function, T params){
@@ -39,12 +40,17 @@ public class SwingFunctionExecutor<T> extends FunctionExecutor<T> implements Pro
 				if(event.getMaxProgress() > 0)
 					m_MaxProgress = event.getMaxProgress();
 				m_Indeterminate = event.isIndeterminant();
-				this.setProgress(event.getProgress()*m_MaxProgress/PROGRESS_BOUND);
+				m_Text = event.getMessage();
+				this.setProgress(event.getProgress());
 				break;
 			default:
 				break;
 			}
 		}
+		
+		public int getMax(){ return m_MaxProgress; }
+		
+		public String getText(){ return m_Text; }
 		
 		public boolean isIndeterminate(){ return m_Indeterminate; }
 		
@@ -115,13 +121,15 @@ public class SwingFunctionExecutor<T> extends FunctionExecutor<T> implements Pro
 		if(m_Monitor != null){
 			m_Monitor.setIndeterminate(m_Thread.isIndeterminate());
 			m_Monitor.setValue(m_Thread.getProgress());
+			m_Monitor.setMaxValue(m_Thread.getMax());
+			m_Monitor.setText(m_Thread.getText());
 		}
 	}
 
 	@Override
 	public void execute() {
 		//this.monitor = new ProgressMonitor(null, thread.function.getName(), null, 0, PROGRESS_BOUND);
-		m_Monitor = new ProgressWindow(m_Thread.m_Function.getName(), 0, PROGRESS_BOUND, false, new OnPress(){
+		m_Monitor = new ProgressWindow(m_Thread.m_Function.getName(), 0, m_Thread.getMax(), m_Thread.isIndeterminate(), new OnPress(){
 
 			@Override
 			public void act() {

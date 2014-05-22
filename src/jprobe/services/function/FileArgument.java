@@ -1,6 +1,9 @@
 package jprobe.services.function;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -34,7 +37,6 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 		m_Text.setMinimumSize(d);
 		m_Text.setPreferredSize(d);
 		//
-		m_Text.setHorizontalAlignment(JLabel.TRAILING);
 	}
 	
 	protected abstract boolean isValid(File f);
@@ -62,9 +64,18 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 
 	@Override
 	public JComponent getComponent() {
-		JPanel comp = new JPanel();
-		comp.add(m_Text);
-		comp.add(m_Button);
+		JPanel comp = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 0, 0, 2);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.weightx = 1.0;
+		comp.add(m_Text, gbc);
+		gbc.weightx = 0;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(0, 2, 0, 0);
+		comp.add(m_Button, gbc);
 		return comp;
 	}
 

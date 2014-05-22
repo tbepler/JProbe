@@ -36,10 +36,8 @@ public class Constants {
 	
 	public static List<Class<? extends DataReader>> READER_CLASSES = getClasses(DataReader.class, READER_WRITER_FILE, DATA_PACKAGE);
 	public static List<Class<? extends DataWriter>> WRITER_CLASSES = getClasses(DataWriter.class, READER_WRITER_FILE, DATA_PACKAGE);
-
-	public static final String FUNCTION_PACKAGE = "chiptools.jprobe.function.";
 	
-	public static final List<Class<? extends Function>> FUNCTION_CLASSES = getClasses(Function.class, FUNCTIONS_FILE, FUNCTION_PACKAGE);
+	public static final List<Class<? extends Function>> FUNCTION_CLASSES = getClasses(Function.class, FUNCTIONS_FILE, "");
 	
 	private static final int CLAZZ = 0;
 	private static final int NAME = 1;

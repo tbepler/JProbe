@@ -19,7 +19,7 @@ import jprobe.services.function.Argument;
 
 public class GenomePeakFinder extends AbstractChiptoolsFunction<GenomePeakFinderParams>{
 
-	protected GenomePeakFinder() {
+	public GenomePeakFinder() {
 		super(GenomePeakFinderParams.class);
 	}
 

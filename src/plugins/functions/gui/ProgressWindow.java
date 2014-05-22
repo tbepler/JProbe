@@ -38,7 +38,7 @@ public class ProgressWindow implements ActionListener{
 		});
 		frame.getContentPane().setLayout(new GridBagLayout());
 		progressBar = new JProgressBar(min, max);
-		progressBar.setStringPainted(!indeterminant);
+		progressBar.setStringPainted(true);
 		progressBar.setIndeterminate(indeterminant);
 		cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(this);
@@ -106,6 +106,14 @@ public class ProgressWindow implements ActionListener{
 			this.dispose();
 			return;
 		}
+	}
+	
+	public void setMaxValue(int value){
+		progressBar.setMaximum(value);
+	}
+	
+	public void setText(String text){
+		progressBar.setString(text);
 	}
 	
 	public void setIndeterminate(boolean indeterminate){
