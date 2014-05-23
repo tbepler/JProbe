@@ -57,7 +57,7 @@ public class CommandManager extends AbstractServiceListener<Command>{
 	}
 	
 	public void execute(JProbeCore core, String[] args){
-		if(args.length == 0 || args[0].equals(Constants.ARG_HELP)){
+		if(args.length == 0 || args[0].matches(Constants.HELP_REGEX)){
 			this.printHelpStatement();
 			System.exit(0);
 		}
