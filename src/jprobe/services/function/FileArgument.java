@@ -18,14 +18,15 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 	
 	public static final String DEFAULT_BUTTON_TEXT = "Browse";
 	public static final String PROTOTYPE_TEXT = "File name here";
+	public static final String PROTOTYPE_VAL = "FILE";
 	
 	private final JFileChooser m_FileChooser;
 	private final JButton m_Button;
 	private final JTextField m_Text;
 	private File m_Selected;
 
-	protected FileArgument(String name, String tooltip, String category, boolean optional, JFileChooser fileChooser) {
-		super(name, tooltip, category, optional);
+	protected FileArgument(String name, String tooltip, String category, Character shortFlag, boolean optional, JFileChooser fileChooser) {
+		super(name, tooltip, category, shortFlag, PROTOTYPE_VAL, optional);
 		m_FileChooser = fileChooser;
 		m_Button = new JButton(this.getButtonText());
 		m_Button.addActionListener(this);
@@ -51,6 +52,17 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 		return PROTOTYPE_TEXT;
 	}
 	
+	@Override
+	public void parse(P params, String[] args){
+		if(args.length < 1 || args.length > 1){
+			throw new RuntimeException(this.getName()+" requires 1 argument. Received "+args.length);
+		}
+		File f = new File(args[0]);
+		if(!this.isValid(f)){
+			throw new RuntimeException("File \""+args[0]+"\" is not valid");
+		}
+		this.process(params, f);
+	}
 
 	private void setFile(File f){
 		m_Selected = f;
