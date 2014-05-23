@@ -1,6 +1,7 @@
 package jprobe.services.function;
 
 import java.awt.Dimension;
+import java.text.ParseException;
 
 import javax.swing.AbstractSpinnerModel;
 import javax.swing.JComponent;
@@ -68,8 +69,8 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 	private final JSpinner m_Editor;
 	private final Model<T> m_Model;
 	
-	protected SpinnerArgument(String name, String tooltip, String category, boolean optional, T startValue, Spinner<T> model, int textAlignment) {
-		super(name, tooltip, category, optional);
+	protected SpinnerArgument(String name, String tooltip, String category, Character shortFlag, String prototypeVal, boolean optional, T startValue, Spinner<T> model, int textAlignment) {
+		super(name, tooltip, category, shortFlag, prototypeVal, optional);
 		m_Model = new Model<T>(model, startValue);
 		m_Model.addChangeListener(this);
 		m_Editor = new JSpinner(m_Model);
@@ -85,6 +86,24 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 	protected abstract boolean isValid(T value);
 	protected abstract void process(P params, T value);
 
+	@Override
+	public void parse(P params, String[] args){
+		if(args.length < 1 || args.length > 1){
+			throw new RuntimeException(this.getName() + " requires 1 argument. Received "+args.length);
+		}
+		getTextField(m_Editor).setText(args[0]);
+		try {
+			getTextField(m_Editor).commitEdit();
+		} catch (ParseException e) {
+			throw new RuntimeException(this.getName() + " unable to parse argument \""+args[0]+"\"");
+		}
+		T val = m_Model.getValue();
+		if(!isValid(val)){
+			throw new RuntimeException(this.getName() + " argument \""+args[0]+"\" is not valid");
+		}
+		process(params, val);
+	}
+	
 	@Override
 	public boolean isValid() {
 		return this.isValid(m_Model.getValue());
