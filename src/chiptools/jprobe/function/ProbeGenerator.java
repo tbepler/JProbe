@@ -32,10 +32,10 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 		args.add(new KmerArgument(false));
 		args.add(new PWMArgument(false));
 		
-		args.add(new ProbeLengthArgument(false));
-		args.add(new BindingSiteArgument(false));
-		args.add(new WindowSizeArgument(false));
-		args.add(new EscoreArgument(false));
+		args.add(new ProbeLengthArgument(true));
+		args.add(new BindingSiteArgument(true));
+		args.add(new WindowSizeArgument(true));
+		args.add(new EscoreArgument(true));
 		
 		return args;
 	}

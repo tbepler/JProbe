@@ -7,4 +7,4 @@ chiptools.jprobe.function.args.PWMArgument	pwm	w	FILE	Data	Position weight matri
 chiptools.jprobe.function.args.ProbeLengthArgument	probelength	l	INT{default=36}	Fields	Length of probes to be generated, default=36
 chiptools.jprobe.function.args.BindingSiteArgument	bindingsite	b	INT{default=9}	Fields	Size of the region that must be spanned by kmers meeting the minimum e-score, default=9
 chiptools.jprobe.function.args.WindowSizeArgument	window	w	INT{default=3}	Fields	Number of bases on either side of putative binding site to be scanned with the PWM, default=3
-chiptools.jprobe.function.args.EscoreArgument	escore	e	ESCORE	Fields	E-score value between -0.5 and 0.5
+chiptools.jprobe.function.args.EscoreArgument	escore	e	ESCORE{default=0.4}	Fields	E-score value between -0.5 and 0.5, default=0.4
