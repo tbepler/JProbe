@@ -11,6 +11,7 @@ public class WindowSizeArgument extends IntArgument<ProbeGeneratorParams>{
 				Constants.getName(WindowSizeArgument.class),
 				Constants.getDescription(WindowSizeArgument.class),
 				Constants.getCategory(WindowSizeArgument.class),
+				Constants.getFlag(WindowSizeArgument.class),
 				optional,
 				3,
 				0,

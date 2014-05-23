@@ -11,6 +11,8 @@ public class EscoreArgument extends DoubleArgument<EscoreParam>{
 				Constants.getName(EscoreArgument.class),
 				Constants.getDescription(EscoreArgument.class),
 				Constants.getCategory(EscoreArgument.class),
+				Constants.getFlag(EscoreArgument.class),
+				Constants.getPrototypeValue(EscoreArgument.class),
 				optional,
 				0.4,
 				-0.5,

@@ -1,10 +1,10 @@
-chiptools.jprobe.function.args.GenomeArgument	genome	Genome	Genome file in fasta format
-chiptools.jprobe.function.args.PeaksArgument	peaks	Data	ChIP-seq peaks
-chiptools.jprobe.function.args.SummitArgument	summit	Fields	Bases on either side of peak summit
-chiptools.jprobe.function.args.PeakSeqsArgument	peakseqs	Data	ChIP-seq peaks with genomic DNA sequences
-chiptools.jprobe.function.args.KmerArgument	kmers	Data	Gapped or ungapped Kmer data for factor of interest
-chiptools.jprobe.function.args.PWMArgument	pwm	Data	Position weight matrix for factor of interest
-chiptools.jprobe.function.args.ProbeLengthArgument	probelength	Fields	Length of probes to be generated
-chiptools.jprobe.function.args.BindingSiteArgument	bindingsite	Fields	Size of the region that must be spanned by kmers meeting the minimum e-score
-chiptools.jprobe.function.args.WindowSizeArgument	window	Fields	Number of bases on either side of putative binding site to be scanned with the PWM
-chiptools.jprobe.function.args.EscoreArgument	escore	Fields	E-score value between -0.5 and 0.5
+chiptools.jprobe.function.args.GenomeArgument	genome	g	FILE	Genome	Genome file in fasta format
+chiptools.jprobe.function.args.PeaksArgument	peaks	p	FILE	Data	ChIP-seq peaks
+chiptools.jprobe.function.args.SummitArgument	summit	s	INT	Fields	Bases on either side of peak summit
+chiptools.jprobe.function.args.PeakSeqsArgument	peakseqs	p	FILE	Data	ChIP-seq peaks with genomic DNA sequences
+chiptools.jprobe.function.args.KmerArgument	kmers	k	FILE	Data	Gapped or ungapped Kmer data for factor of interest
+chiptools.jprobe.function.args.PWMArgument	pwm	w	FILE	Data	Position weight matrix for factor of interest
+chiptools.jprobe.function.args.ProbeLengthArgument	probelength	l	INT{default=36}	Fields	Length of probes to be generated, default=36
+chiptools.jprobe.function.args.BindingSiteArgument	bindingsite	b	INT{default=9}	Fields	Size of the region that must be spanned by kmers meeting the minimum e-score, default=9
+chiptools.jprobe.function.args.WindowSizeArgument	window	w	INT{default=3}	Fields	Number of bases on either side of putative binding site to be scanned with the PWM, default=3
+chiptools.jprobe.function.args.EscoreArgument	escore	e	ESCORE	Fields	E-score value between -0.5 and 0.5

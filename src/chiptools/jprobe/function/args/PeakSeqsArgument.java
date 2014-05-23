@@ -16,6 +16,7 @@ public class PeakSeqsArgument extends DataArgument<PeakSeqsParam, PeakSequences>
 				Constants.getName(PeakSeqsArgument.class),
 				Constants.getDescription(PeakSeqsArgument.class),
 				Constants.getCategory(PeakSeqsArgument.class),
+				Constants.getFlag(PeakSeqsArgument.class),
 				optional,
 				PeakSequences.class,
 				1,

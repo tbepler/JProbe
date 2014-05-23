@@ -16,6 +16,7 @@ public class PeaksArgument extends DataArgument<PeaksParam, Peaks>{
 				Constants.getName(PeaksArgument.class),
 				Constants.getDescription(PeaksArgument.class),
 				Constants.getCategory(PeaksArgument.class),
+				Constants.getFlag(PeaksArgument.class),
 				optional,
 				Peaks.class,
 				1,

@@ -16,6 +16,7 @@ public class PWMArgument extends DataArgument<PWMParam, PWM>{
 				Constants.getName(PWMArgument.class),
 				Constants.getDescription(PWMArgument.class),
 				Constants.getCategory(PWMArgument.class),
+				Constants.getFlag(PWMArgument.class),
 				optional,
 				PWM.class,
 				1,

@@ -17,6 +17,7 @@ public class GenomeArgument extends FileArgument<GenomeParam>{
 				Constants.getName(GenomeArgument.class),
 				Constants.getDescription(GenomeArgument.class),
 				Constants.getCategory(GenomeArgument.class),
+				Constants.getFlag(GenomeArgument.class),
 				optional,
 				FILECHOOSER
 				);

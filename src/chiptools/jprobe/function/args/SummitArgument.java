@@ -11,6 +11,8 @@ public class SummitArgument extends IntArgument<SummitParam>{
 				Constants.getName(SummitArgument.class),
 				Constants.getDescription(SummitArgument.class),
 				Constants.getCategory(SummitArgument.class),
+				Constants.getFlag(SummitArgument.class),
+				Constants.getPrototypeValue(SummitArgument.class),
 				optional,
 				0,
 				0,

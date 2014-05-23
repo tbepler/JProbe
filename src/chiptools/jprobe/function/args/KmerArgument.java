@@ -16,6 +16,7 @@ public class KmerArgument extends DataArgument<KmerParam, Kmer>{
 				Constants.getName(KmerArgument.class),
 				Constants.getDescription(KmerArgument.class),
 				Constants.getCategory(KmerArgument.class),
+				Constants.getFlag(KmerArgument.class),
 				optional,
 				Kmer.class,
 				1,

@@ -19,7 +19,6 @@ public class ChiptoolsActivator implements BundleActivator{
 	private static Bundle BUNDLE = null;
 	private static JProbeCore CORE = null;
 	
-	private CommandProvider m_CmdProvider = new CommandProvider();
 	private FunctionProvider m_FncProvider = new FunctionProvider();
 	private ReaderWriterProvider m_RWProvider = new ReaderWriterProvider();
 	
@@ -28,14 +27,12 @@ public class ChiptoolsActivator implements BundleActivator{
 		CORE = c.getService(c.getServiceReference(JProbeCore.class));
 		BUNDLE = c.getBundle();
 		m_FncProvider.start(c);
-		m_CmdProvider.start(c);
 		m_RWProvider.start(c);
 	}
 
 	@Override
 	public void stop(BundleContext c) throws Exception {
 		m_FncProvider.stop(c);
-		m_CmdProvider.stop(c);
 		m_RWProvider.stop(c);
 		BUNDLE = null;
 	}

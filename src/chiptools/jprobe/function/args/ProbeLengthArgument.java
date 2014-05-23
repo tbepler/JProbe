@@ -11,6 +11,8 @@ public class ProbeLengthArgument extends IntArgument<ProbeGeneratorParams>{
 				Constants.getName(ProbeLengthArgument.class),
 				Constants.getDescription(ProbeLengthArgument.class),
 				Constants.getCategory(ProbeLengthArgument.class),
+				Constants.getFlag(ProbeLengthArgument.class),
+				Constants.getPrototypeValue(ProbeLengthArgument.class),
 				optional,
 				36,
 				1,

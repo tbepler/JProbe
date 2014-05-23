@@ -11,6 +11,8 @@ public class BindingSiteArgument extends IntArgument<ProbeGeneratorParams>{
 				Constants.getName(BindingSiteArgument.class),
 				Constants.getDescription(BindingSiteArgument.class),
 				Constants.getCategory(BindingSiteArgument.class), 
+				Constants.getFlag(BindingSiteArgument.class),
+				Constants.getPrototypeValue(BindingSiteArgument.class),
 				optional,
 				9,
 				1,
