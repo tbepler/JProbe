@@ -13,8 +13,8 @@ public abstract class StringArgument<P> extends AbstractArgument<P> implements A
 	
 	private final JTextField m_TextField;
 
-	protected StringArgument(String name, String tooltip, String category, boolean optional, String startValue) {
-		super(name, tooltip, category, optional);
+	protected StringArgument(String name, String tooltip, String category, Character shortFlag, String prototypeVal, boolean optional, String startValue) {
+		super(name, tooltip, category, shortFlag, prototypeVal, optional);
 		m_TextField = new JTextField(PROTOTYPE_TEXT);
 		Dimension size = m_TextField.getPreferredSize();
 		m_TextField.setText(startValue);
@@ -25,6 +25,17 @@ public abstract class StringArgument<P> extends AbstractArgument<P> implements A
 	
 	protected abstract boolean isValid(String s);
 	protected abstract void process(P params, String s);
+	
+	@Override
+	public void parse(P params, String[] args){
+		if(args.length < 1 || args.length > 1){
+			throw new RuntimeException(this.getName() + " requires 1 argument. Received "+args.length);
+		}
+		if(!this.isValid(args[0])){
+			throw new RuntimeException(this.getName() + " argument \""+args[0]+"\" is not valid");
+		}
+		this.process(params, args[0]);
+	}
 
 	@Override
 	public boolean isValid() {
