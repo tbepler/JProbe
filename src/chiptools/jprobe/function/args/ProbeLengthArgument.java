@@ -1,10 +1,10 @@
 package chiptools.jprobe.function.args;
 
 import chiptools.Constants;
-import chiptools.jprobe.function.params.ProbeGeneratorParams;
+import chiptools.jprobe.function.params.ProbeLenParam;
 import jprobe.services.function.IntArgument;
 
-public class ProbeLengthArgument extends IntArgument<ProbeGeneratorParams>{
+public class ProbeLengthArgument extends IntArgument<ProbeLenParam>{
 
 	public ProbeLengthArgument(boolean optional) {
 		super(
@@ -22,8 +22,8 @@ public class ProbeLengthArgument extends IntArgument<ProbeGeneratorParams>{
 	}
 
 	@Override
-	protected void process(ProbeGeneratorParams params, Integer value) {
-		params.PROBELEN = value;
+	protected void process(ProbeLenParam params, Integer value) {
+		params.setProbeLength(value);
 	}
 
 }

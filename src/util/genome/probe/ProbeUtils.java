@@ -23,6 +23,25 @@ public class ProbeUtils {
 		return new Probe(revComp, p.getRegion(), mirrored, p.getName(), revStrand, p.isMutant());
 	}
 	
+	public static ProbeGroup joinProbes(Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist){
+		List<Probe> probes = new ArrayList<Probe>();
+		for(Probe p : givenProbes){
+			probes.add(p);
+		}
+		Collections.sort(probes);
+		Queue<Probe> joinedProbes = new PriorityQueue<Probe>();
+		
+		//for sub list of size=bindingSites in the list of probes
+		for(int i=0; i<probes.size(); i++){
+			Probe combined = join(probes, i, bindingSites, minDist, maxDist);
+			if(combined != null){
+				joinedProbes.add(combined);
+			}
+		}
+		
+		return new ProbeGroup(joinedProbes);
+	}
+	
 	public static ProbeGroup joinProbes(Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist, int probeLen){
 		List<Probe> probes = new ArrayList<Probe>();
 		for(Probe p : givenProbes){

@@ -60,7 +60,7 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 						name,
 						params.getKmers().getKmer(),
 						params.getPWM().getPWM(),
-						params.PROBELEN,
+						params.getProbeLength(),
 						params.BINDINGSITE,
 						params.WINDOWSIZE,
 						params.getEscore()

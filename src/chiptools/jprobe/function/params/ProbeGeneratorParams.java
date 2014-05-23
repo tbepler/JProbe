@@ -4,9 +4,8 @@ import chiptools.jprobe.data.Kmer;
 import chiptools.jprobe.data.PWM;
 import chiptools.jprobe.data.PeakSequences;
 
-public class ProbeGeneratorParams implements PeakSeqsParam, KmerParam, PWMParam, EscoreParam{
+public class ProbeGeneratorParams implements PeakSeqsParam, KmerParam, PWMParam, EscoreParam, ProbeLenParam{
 	
-	public int PROBELEN = 36;
 	public int BINDINGSITE = 9;
 	public int WINDOWSIZE = 3;
 	
@@ -14,6 +13,7 @@ public class ProbeGeneratorParams implements PeakSeqsParam, KmerParam, PWMParam,
 	private Kmer m_Kmers = null;
 	private PWM m_PWM = null;
 	private double m_Escore = 0.4;
+	private int m_ProbeLen = 36;
 	
 	@Override
 	public void setKmers(Kmer k) {
@@ -53,6 +53,16 @@ public class ProbeGeneratorParams implements PeakSeqsParam, KmerParam, PWMParam,
 	@Override
 	public double getEscore() {
 		return m_Escore;
+	}
+
+	@Override
+	public void setProbeLength(int length) {
+		m_ProbeLen = length;
+	}
+
+	@Override
+	public int getProbeLength() {
+		return m_ProbeLen;
 	}
 
 }
