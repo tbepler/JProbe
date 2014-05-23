@@ -35,6 +35,11 @@ public class TestData implements Data{
 		this.fillTable();
 	}
 	
+	@Override
+	public String toString(){
+		return this.getString()+"\t"+this.getInt()+"\t"+this.getDouble();
+	}
+	
 	private void fillTable(){
 		m_Table = new Field[1][3];
 		m_Table[0][0] = m_String;

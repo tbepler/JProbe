@@ -10,7 +10,7 @@ import jprobe.services.function.Argument;
 
 public class FieldParamFunction extends AbstractTestFunction<FieldParams>{
 	
-	public static final String NAME = "Field Parameter Function";
+	public static final String NAME = "fields";
 	public static final String DESCRIPTION = "A function that takes field parameters and returns a test data object with those values";
 	
 	public FieldParamFunction(){

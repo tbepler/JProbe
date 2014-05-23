@@ -18,6 +18,7 @@ import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 import jprobe.services.Log;
 import jprobe.services.Saveable;
+import jprobe.services.data.Data;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
@@ -30,7 +31,6 @@ import org.osgi.framework.Constants;
 public class JProbe implements JProbeCore{
 	
 	private Mode m_Mode;
-	private CommandManager m_CmdManager;
 	private CoreDataManager m_DataManager;
 	private CoreFunctionManager m_FunctionManager;
 	private SaveManager m_SaveManager;
@@ -98,7 +98,10 @@ public class JProbe implements JProbeCore{
 		}
 		m_DataManager.setBundleContext(m_Activator.getBundleContext());
 		if(m_Mode == Mode.COMMAND){
-			m_CmdManager.execute(this, args);
+			Data d = ParsingEngine.parseAndExecute(System.err, m_FunctionManager, args);
+			if(d != null){
+				System.out.println(d);
+			}
 			this.shutdown();;
 		}
 	}
@@ -111,10 +114,6 @@ public class JProbe implements JProbeCore{
 	
 	void setFunctionManager(CoreFunctionManager fncManager){
 		m_FunctionManager = fncManager;
-	}
-	
-	void setCommandManager(CommandManager cmdManager){
-		m_CmdManager = cmdManager;
 	}
 	
 	@Override

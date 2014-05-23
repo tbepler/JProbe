@@ -15,7 +15,7 @@ import jprobe.services.function.Argument;
 public class LongFunction extends AbstractTestFunction<NullParameter>{
 	
 	public static final String DESCRIPTION = "This function takes 10 seconds to complete";
-	public static final String NAME = "Long Function";
+	public static final String NAME = "long";
 	
 	private final Bundle m_Bundle = Activator.getBundle();
 	

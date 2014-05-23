@@ -10,7 +10,7 @@ import jprobe.services.function.Argument;
 
 public class TestFunction extends AbstractTestFunction<NullParameter>{
 
-	public static final String NAME = "Test Function";
+	public static final String NAME = "test";
 	public static final String DESCRIPTION = "This is a test function. It takes no arguments and produces a TestData object.";
 	
 	public TestFunction() {

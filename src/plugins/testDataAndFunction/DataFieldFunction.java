@@ -14,7 +14,7 @@ import jprobe.services.function.Argument;
 
 public class DataFieldFunction extends AbstractTestFunction<FieldDataParams>{
 	
-	public static final String NAME = "Data and Fields Function";
+	public static final String NAME = "dataAndFields";
 	public static final String DESCRIPTION = "A function that requires both data and field parameters";
 	
 	public DataFieldFunction(){

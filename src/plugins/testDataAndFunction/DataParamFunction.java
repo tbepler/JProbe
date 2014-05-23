@@ -13,7 +13,7 @@ import jprobe.services.function.Argument;
 public class DataParamFunction extends AbstractTestFunction<DataParam>{
 	
 
-	public static final String NAME = "Data Parameter Function";
+	public static final String NAME = "data";
 	public static final String DESCRIPTION = "A function that requires data parameters to run. It adds all the fields of the given parameters together.";
 	
 	public DataParamFunction() {
