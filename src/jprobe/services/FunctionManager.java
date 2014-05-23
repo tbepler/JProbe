@@ -14,5 +14,6 @@ public interface FunctionManager {
 	public Function<?>[] getAllFunctions();
 	public Function<?>[] getFunctions(String name);
 	public String[] getFunctionNames();
+	public Bundle getProvider(Function<?> f);
 	
 }

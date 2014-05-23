@@ -23,34 +23,36 @@ import jprobe.services.JProbeCore;
 @SuppressWarnings("rawtypes")
 public class CoreFunctionManager extends AbstractServiceListener<Function> implements FunctionManager{
 	
-	private JProbeCore core;
-	private Collection<CoreListener> listeners;
+	private JProbeCore m_Core;
+	private Collection<CoreListener> m_Listeners;
 	
-	private Collection<Function<?>> functions;
-	private Map<String, List<Function<?>>> functionsByName;
+	private Map<Function<?>, Bundle> m_Providers;
+	private Collection<Function<?>> m_Functions;
+	private Map<String, List<Function<?>>> m_FunctionsByName;
 	
 	public CoreFunctionManager(JProbeCore core, BundleContext context){
 		super(Function.class, context);
-		this.core = core;
-		listeners = new HashSet<CoreListener>();
-		functions = new PriorityQueue<Function<?>>(10, new Comparator<Function<?>>(){
+		this.m_Core = core;
+		m_Listeners = new HashSet<CoreListener>();
+		m_Providers = new HashMap<Function<?>, Bundle>();
+		m_Functions = new PriorityQueue<Function<?>>(10, new Comparator<Function<?>>(){
 			@Override
 			public int compare(Function<?> arg0, Function<?> arg1) {
 				return arg0.getName().compareTo(arg1.getName());
 			}
 		});
-		functionsByName = new HashMap<String, List<Function<?>>>();
+		m_FunctionsByName = new HashMap<String, List<Function<?>>>();
 	}
 	
 	@Override
 	public Function<?>[] getAllFunctions(){
-		return functions.toArray(new Function<?>[functions.size()]);
+		return m_Functions.toArray(new Function<?>[m_Functions.size()]);
 	}
 	
 	@Override
 	public Function<?>[] getFunctions(String name){
-		if(functionsByName.containsKey(name)){
-			List<Function<?>> list = functionsByName.get(name);
+		if(m_FunctionsByName.containsKey(name)){
+			List<Function<?>> list = m_FunctionsByName.get(name);
 			return list.toArray(new Function<?>[list.size()]);
 		}
 		return new Function[]{};
@@ -58,46 +60,53 @@ public class CoreFunctionManager extends AbstractServiceListener<Function> imple
 	
 	@Override
 	public String[] getFunctionNames(){
-		return functionsByName.keySet().toArray(new String[functionsByName.size()]);
+		return m_FunctionsByName.keySet().toArray(new String[m_FunctionsByName.size()]);
 	}
 	
 	@Override
 	public void addFunction(Function<?> f, Bundle responsible){
-		if(!functions.contains(f)){
-			functions.add(f);
-			if(!functionsByName.containsKey(f.getName())){
+		if(!m_Functions.contains(f)){
+			m_Functions.add(f);
+			m_Providers.put(f, responsible);
+			if(!m_FunctionsByName.containsKey(f.getName())){
 				List<Function<?>> list = new ArrayList<Function<?>>();
 				list.add(f);
-				functionsByName.put(f.getName(), list);
+				m_FunctionsByName.put(f.getName(), list);
 			}else{
-				functionsByName.get(f.getName()).add(f);
+				m_FunctionsByName.get(f.getName()).add(f);
 			}
-			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_ADDED, responsible, f));
+			this.notifyListeners(new CoreEvent(m_Core, Type.FUNCTION_ADDED, responsible, f));
 		}
 	}
 	
 	@Override
 	public void removeFunction(Function<?> f, Bundle responsible){
-		if(functions.remove(f)){
-			functionsByName.get(f.getName()).remove(f);
-			this.notifyListeners(new CoreEvent(core, Type.FUNCTION_REMOVED, responsible, f));
+		if(m_Functions.remove(f)){
+			m_Providers.remove(f);
+			m_FunctionsByName.get(f.getName()).remove(f);
+			this.notifyListeners(new CoreEvent(m_Core, Type.FUNCTION_REMOVED, responsible, f));
 		}
 	}
 	
+	@Override
+	public Bundle getProvider(Function<?> f){
+		return m_Providers.get(f);
+	}
+	
 	private void notifyListeners(CoreEvent event){
-		for(CoreListener l : new HashSet<CoreListener>(listeners)){
+		for(CoreListener l : new HashSet<CoreListener>(m_Listeners)){
 			l.update(event);
 		}
 	}
 	
 	@Override
 	public void addListener(CoreListener listener){
-		this.listeners.add(listener);
+		this.m_Listeners.add(listener);
 	}
 	
 	@Override
 	public void removeListener(CoreListener listener){
-		this.listeners.remove(listener);
+		this.m_Listeners.remove(listener);
 	}
 
 	@Override

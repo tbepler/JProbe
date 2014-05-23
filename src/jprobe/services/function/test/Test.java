@@ -5,8 +5,15 @@ import java.util.Collection;
 
 import javax.swing.JComponent;
 
+import org.osgi.framework.Bundle;
+
 import util.progress.ProgressListener;
+import jprobe.ParsingEngine;
+import jprobe.services.CoreListener;
+import jprobe.services.FunctionManager;
 import jprobe.services.data.Data;
+import jprobe.services.data.DataListener;
+import jprobe.services.data.Field;
 import jprobe.services.function.Argument;
 import jprobe.services.function.ArgumentListener;
 import jprobe.services.function.Function;
@@ -33,7 +40,7 @@ public class Test extends junit.framework.TestCase{
 	public class TestFunction implements Function<TestParameter>{
 
 		@Override
-		public String getName() { return "TestFunction"; }
+		public String getName() { return "test"; }
 
 		@Override
 		public String getDescription() { return "A test function"; }
@@ -55,8 +62,84 @@ public class Test extends junit.framework.TestCase{
 
 		@Override
 		public Data execute(ProgressListener l, TestParameter params) {
-			// TODO Auto-generated method stub
+			return new TestData(params.VALUE_A, params.VALUE_B, params.VALUE_C);
+		}
+		
+	}
+	
+	public class TestData implements Data{
+		private static final long serialVersionUID = 1L;
+		
+		public final String S;
+		public final double D;
+		public final int I;
+		
+		public TestData(String s, int i, double d){
+			S = s; D = d; I = i;
+		}
+		
+		@Override
+		public boolean equals(Object o){
+			if(o == null) return false;
+			if(o == this) return true;
+			if(o instanceof TestData){
+				TestData d = (TestData) o;
+				return d.S.equals(this.S) && d.D == this.D && d.I == this.I;
+			}
+			return false;
+		}
+
+		@Override
+		public void addDataListener(DataListener listener) {
+			//no
+		}
+
+		@Override
+		public void removeDataListener(DataListener listener) {
+			//no
+		}
+
+		@Override
+		public boolean isModifiable(int row, int col) {
+			//no
+			return false;
+		}
+
+		@Override
+		public String[] getHeaders() {
+			return new String[]{"String", "Int", "Double"};
+		}
+
+		@Override
+		public Field[][] toTable() {
+			return new Field[1][3]; //TODO this might be bad
+		}
+
+		@Override
+		public boolean setValue(int row, int col, Field value) {
+			//no
+			return false;
+		}
+
+		@Override
+		public Field getValue(int row, int col) {
+			// TODO no
 			return null;
+		}
+
+		@Override
+		public int getNumRows() {
+			return 1;
+		}
+
+		@Override
+		public int getNumCols() {
+			return 3;
+		}
+
+		@Override
+		public String getTooltip() {
+			return "test data object";
 		}
 		
 	}
@@ -64,7 +147,7 @@ public class Test extends junit.framework.TestCase{
 	public class StringArg implements Argument<TestParameter>{
 
 		@Override
-		public String getName() { return "StringArg"; }
+		public String getName() { return "string"; }
 
 		@Override
 		public String getTooltip() { return "A string arg"; }
@@ -91,13 +174,27 @@ public class Test extends junit.framework.TestCase{
 		public void process(TestParameter params) {
 			params.VALUE_A = "String";
 		}
+
+		@Override
+		public Character shortFlag() { return 's'; }
+
+		@Override
+		public String getPrototypeValue() { return "STRING"; }
+
+		@Override
+		public void parse(TestParameter params, String[] args) {
+			if(args.length < 1){
+				throw new RuntimeException("string requires an argument");
+			}
+			params.VALUE_A = args[0];
+		}
 		
 	}
 	
 	public class IntArg implements Argument<TestParameter>{
 
 		@Override
-		public String getName() { return this.getClass().getSimpleName(); }
+		public String getName() { return "int"; }
 
 		@Override
 		public String getTooltip() { return "An int arg"; }
@@ -124,13 +221,24 @@ public class Test extends junit.framework.TestCase{
 		public void process(TestParameter params) {
 			params.VALUE_B = 5;
 		}
+
+		@Override
+		public Character shortFlag() { return 'i'; }
+
+		@Override
+		public String getPrototypeValue() { return "INT"; }
+
+		@Override
+		public void parse(TestParameter params, String[] args) {
+			params.VALUE_B = Integer.parseInt(args[0]);
+		}
 		
 	}
 	
 	public class DoubleArg implements Argument<TestParameter>{
 
 		@Override
-		public String getName() { return this.getClass().getSimpleName(); }
+		public String getName() { return "double"; }
 
 		@Override
 		public String getTooltip() { return "A double arg"; }
@@ -157,6 +265,61 @@ public class Test extends junit.framework.TestCase{
 		public void process(TestParameter params) {
 			params.VALUE_C = 15.3;
 		}
+
+		@Override
+		public Character shortFlag() { return 'd'; }
+
+		@Override
+		public String getPrototypeValue() { return "DOUBLE"; }
+
+		@Override
+		public void parse(TestParameter params, String[] args) {
+			params.VALUE_C = Double.parseDouble(args[0]);
+		}
+		
+	}
+	
+	private class ShellFunctionManager implements FunctionManager{
+
+		@Override
+		public void addListener(CoreListener listener) {
+			//do nothing
+		}
+
+		@Override
+		public void removeListener(CoreListener listener) {
+			//do nothing
+		}
+
+		@Override
+		public void addFunction(Function<?> f, Bundle responsible) {
+			//do nothing
+		}
+
+		@Override
+		public void removeFunction(Function<?> f, Bundle responsible) {
+			//do nothing
+		}
+
+		@Override
+		public Function<?>[] getAllFunctions() {
+			return new Function<?>[]{new TestFunction()};
+		}
+
+		@Override
+		public Function<?>[] getFunctions(String name) {
+			return new Function<?>[]{new TestFunction()};
+		}
+
+		@Override
+		public String[] getFunctionNames() {
+			return new String[]{new TestFunction().getName()};
+		}
+
+		@Override
+		public Bundle getProvider(Function<?> f) {
+			return null;
+		}
 		
 	}
 	
@@ -182,5 +345,39 @@ public class Test extends junit.framework.TestCase{
 		}
 		return params.equals(compare);
 	}
+	
+
+	
+	public void testParse(){
+		
+		FunctionManager shell = new ShellFunctionManager();
+		String[] args = new String[]{"test", "-s", "text", "-i", "5", "-d", "6.7"};
+		TestData correct = new TestData("text", 5, 6.7);
+		Data result = ParsingEngine.parseAndExecute(System.err, shell, args);
+		assertEquals(correct, result);
+
+		args = new String[]{"test", "--string", "text", "--int", "5", "--double", "6.7"};
+		correct = new TestData("text", 5, 6.7);
+		result = ParsingEngine.parseAndExecute(System.err, shell, args);
+		assertEquals(correct, result);
+		
+		args = new String[]{"test", "--string", "text", "--int", "--double", "6.7"};
+		correct = null;
+		result = ParsingEngine.parseAndExecute(System.err, shell, args);
+		assertEquals(correct, result);
+		
+		args = new String[]{"test", "--string", "text", "--int", "5"};
+		correct = null;
+		result = ParsingEngine.parseAndExecute(System.err, shell, args);
+		assertEquals(correct, result);
+		
+		args = new String[]{"test", "--string", "text", "-h", "--int", "5", "--double", "6.7"};
+		correct = null;
+		result = ParsingEngine.parseAndExecute(System.err, shell, args);
+		assertEquals(correct, result);
+	}
+	
+	
+	
 	
 }

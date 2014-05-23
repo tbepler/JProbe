@@ -17,7 +17,9 @@ import javax.swing.JComponent;
 public interface Argument<P> {
 	
 	/**
-	 * The name for this argument that will be displayed to the user
+	 * The name for this argument that will be displayed to the user. This also doubles
+	 * as the long form flag used to specify this argument on the command line. When used
+	 * as a flag on the command line, this value will be preceded by '--'.
 	 * @return name
 	 */
 	public String getName();
@@ -34,6 +36,21 @@ public interface Argument<P> {
 	 * @return category
 	 */
 	public String getCategory();
+	
+	/**
+	 * A character that denotes the short flag used to specify this argument on the command line.
+	 * A value of null indicates that there is no short flag for this argument. The character will
+	 * be preceded by '-' when displayed and used on the command line.
+	 * @return short flag character
+	 */
+	public Character shortFlag();
+	
+	/**
+	 * A prototype value to show for this argument when displaying command line usage to the user.
+	 * If no prototype value is desired, then this should return null.
+	 * @return prototype value
+	 */
+	public String getPrototypeValue();
 	
 	/**
 	 * Boolean indicating whether this argument is optional or not (True = optional, False = required).
@@ -100,5 +117,15 @@ public interface Argument<P> {
 	 * @see Function#execute(ProgressListener, P)
 	 */
 	public void process(P params);
+	
+	/**
+	 * Parses this argument from the given command line arguments and edits the given parameter object
+	 * accordingly. If the args are invalid, then this should throw an exception with an informative message
+	 * that will be displayed to the user. After all Arguments are parsed, the parameter will be used
+	 * to execute a function.
+	 * @param params - parameter object to be edited
+	 * @param args - command line values for this argument
+	 */
+	public void parse(P params, String[] args);
 	
 }

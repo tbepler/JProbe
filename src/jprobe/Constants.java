@@ -16,6 +16,14 @@ public class Constants {
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	
+	public static final String INDEXED_FUNC_REGEX = "^.+\\[\\d+\\]$";
+	public static final String SHORT_FLAG_PREFIX = "-";
+	public static final String LONG_FLAG_PREFIX = "--";
+	
+	public static final String HELP_LONG_FLAG = "help";
+	public static final String HELP_SHORT_FLAG = "h";
+	public static final String HELP_REGEX = "(" + SHORT_FLAG_PREFIX + HELP_SHORT_FLAG + ")|(" + LONG_FLAG_PREFIX + HELP_LONG_FLAG + ")";
+	
 	public static final String HELP_FILE_PATH = RESOURCES_PATH + "/help.txt";
 	public static final String HELP_MESSAGE = readHelpMessage();
 			
@@ -42,7 +50,6 @@ public class Constants {
 	
 	public static final String ARG_INTERACTIVE_MODE = "-interactive";
 	public static final String ARG_COMMAND_MODE = "-command";
-	public static final String ARG_HELP = "-help";
 	
 	public static final Collection<String> RESERVED_COMMANDS = generateReservedCommands();
 	
@@ -50,7 +57,7 @@ public class Constants {
 		Collection<String> res = new HashSet<String>();
 		res.add(ARG_INTERACTIVE_MODE);
 		res.add(ARG_COMMAND_MODE);
-		res.add(ARG_HELP);
+		res.add(LONG_FLAG_PREFIX+HELP_LONG_FLAG);
 		return Collections.unmodifiableCollection(res);
 	}
 	

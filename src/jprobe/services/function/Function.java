@@ -44,7 +44,9 @@ public interface Function<P> {
 	public P newParameters();
 	
 	/**
-	 * The arguments used by this function to fill out the parameter object.
+	 * The arguments used by this function to fill out the parameter object. Note that if the arguments
+	 * have any overlap in their names of short flags, the command line parsing behavior will be
+	 * undefined.
 	 * @see Argument
 	 * @return collection of arguments
 	 */
