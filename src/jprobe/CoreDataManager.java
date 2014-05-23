@@ -230,6 +230,16 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 	
 	@Override
+	public DataReader getDataReader(Class<? extends Data> type){
+		return m_TypeToReader.get(type);
+	}
+	
+	@Override
+	public DataWriter getDataWriter(Class<? extends Data> type){
+		return m_TypeToWriter.get(type);
+	}
+	
+	@Override
 	public void addDataReader(DataReader reader, Bundle responsible){
 		m_TypeToReader.put(reader.getReadClass(), reader);
 		m_ReaderToType.put(reader, reader.getReadClass());

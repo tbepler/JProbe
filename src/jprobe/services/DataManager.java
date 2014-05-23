@@ -21,12 +21,14 @@ public interface DataManager {
 	public void addDataReader(DataReader reader, Bundle responsible);
 	public void removeDataReader(DataReader reader, Bundle responsible);
 	public void removeDataReader(Class<? extends Data> type, Bundle responsible);
+	public DataReader getDataReader(Class<? extends Data> type);
 	public Collection<Class<? extends Data>> getReadableDataTypes();
 	public FileFilter[] getValidReadFormats(Class<? extends Data> type);
 	
 	public void addDataWriter(DataWriter writer, Bundle responsible);
 	public void removeDataWriter(DataWriter writer, Bundle responsible);
 	public void removeDataWriter(Class<? extends Data> type, Bundle responsible);
+	public DataWriter getDataWriter(Class<? extends Data> type);
 	public Collection<Class<? extends Data>> getWritableDataTypes();
 	public FileNameExtensionFilter[] getValidWriteFormats(Class<? extends Data> type);
 	
