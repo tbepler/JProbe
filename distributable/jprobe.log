@@ -1,7 +1,9 @@
-<Tue May 27 16:17:58 EDT 2014><org.apache.felix.framework>JProbe started.
-<Tue May 27 16:17:59 EDT 2014><plugins.dataviewer.gui>DataViewer started.
-<Tue May 27 16:17:59 EDT 2014><plugins.functions.gui>Function menu started.
-<Tue May 27 16:17:59 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
-<Tue May 27 16:18:33 EDT 2014><plugins.functions.gui>peakfinder clicked
-<Tue May 27 16:21:12 EDT 2014><plugins.functions.gui>probegen clicked
-<Tue May 27 16:22:52 EDT 2014><org.apache.felix.framework>JProbe shutting down.
+<Tue May 27 17:33:05 EDT 2014><org.apache.felix.framework>JProbe started.
+<Tue May 27 17:33:06 EDT 2014><plugins.dataviewer.gui>DataViewer started.
+<Tue May 27 17:33:06 EDT 2014><plugins.functions.gui>Function menu started.
+<Tue May 27 17:33:07 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
+<Tue May 27 17:33:21 EDT 2014><plugins.functions.gui>peakfinder clicked
+<Tue May 27 17:35:45 EDT 2014><plugins.functions.gui>probegen clicked
+<Tue May 27 17:36:39 EDT 2014><plugins.functions.gui>probejoiner clicked
+<Tue May 27 17:36:50 EDT 2014><plugins.functions.gui>probejoiner clicked
+<Tue May 27 17:37:49 EDT 2014><org.apache.felix.framework>JProbe shutting down.
