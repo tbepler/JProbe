@@ -16,6 +16,10 @@ public class Sequences {
 			return m_Names.size();
 		}
 		
+		public int numEntries(){
+			return m_Entries.size();
+		}
+		
 		public String getEntryName(int entry){
 			return m_Names.get(entry);
 		}
@@ -45,13 +49,14 @@ public class Sequences {
 	}
 	
 	
-	public static Profile profile(String seq, Kmer[] kmers, String[] kmerNames, PWM[] pwms, String[] pwmNames){
+	public static Profile profile(String seq, String seqName, Kmer[] kmers, String[] kmerNames, PWM[] pwms, String[] pwmNames){
 		Profile p = new Profile();
 		//for each kmer, score the sequence with each word size contained by the kmer
 		for(int i=0; i<kmers.length; i++){
 			Kmer kmer = kmers[i];
 			if(kmer == null) continue;
-			String name = i < kmerNames.length ? kmerNames[i] : "Kmer"+(i+1);
+			String name = seqName + "_";
+			name += i < kmerNames.length ? kmerNames[i] : "Kmer"+(i+1);
 			//score the sequence with words of each length contained by the kmer
 			for(int wordLen : kmer.getWordLengths()){
 				if(seq.length() < wordLen) continue;
@@ -68,7 +73,8 @@ public class Sequences {
 		for(int i=0; i<pwms.length; i++){
 			PWM pwm = pwms[i];
 			if(pwm == null) continue;
-			String name = i < pwmNames.length ? pwmNames[i] : "PWM"+(i+1);
+			String name = seqName + "_";
+			name += i < pwmNames.length ? pwmNames[i] : "PWM"+(i+1);
 			if(seq.length() < pwm.length()) continue;
 			double[] scores = new double[seq.length() - pwm.length() + 1];
 			for(int start = 0; start<scores.length; start++){
