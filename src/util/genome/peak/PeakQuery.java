@@ -16,7 +16,8 @@ public class PeakQuery extends AbstractPeakQuery{
 
 	@Override
 	public void process(GenomicSequence sequence) {
-		m_PeakSeqs.add(new PeakSequence(sequence, this.getPeak()));
+		GenomicSequence upperCased = new GenomicSequence(sequence.getSequence().toUpperCase(), sequence.getRegion());
+		m_PeakSeqs.add(new PeakSequence(upperCased, this.getPeak()));
 	}
 
 }
