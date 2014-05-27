@@ -4,34 +4,29 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import chiptools.jprobe.field.*;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
-import jprobe.services.data.Data;
-import jprobe.services.data.DataListener;
-import jprobe.services.data.Field;
+import jprobe.services.data.AbstractFinalData;
 
-public class Probes implements Data{
+public class Probes extends AbstractFinalData{
 	private static final long serialVersionUID = 1L;
 	
+	private static final int PROBE_COLS = 6;
+	
+	private static final int SEQ = 0;
+	private static final int REGION = 1;
+	private static final int NAME = 2;
+	private static final int STRAND = 3;
+	private static final int MUT = 4;
+	private static final int BINDING = 5;
+	
 	private final ProbeGroup m_Probes;
-	private final Field[][] m_Table;
 	
 	public Probes(ProbeGroup probes){
+		super(PROBE_COLS, probes.size());
 		m_Probes = probes;
-		m_Table = new Field[probes.size()][6];
-		for(int row=0; row<m_Table.length; row++){
-			Probe p = probes.getProbe(row);
-			m_Table[row][0] = new StringField(this.getSeqString(p), "Sequence");
-			m_Table[row][1] = new GenomicRegionField(p.getRegion());
-			m_Table[row][2] = new StringField(p.getName(row+1), "Name");
-			m_Table[row][3] = new StringField(p.getStrandAsString(), "Strand");
-			m_Table[row][4] = new StringField(p.getMutantAsString(), "Mutation status");
-			m_Table[row][5] = new StringField(p.getBindingSitesAsString(), "Binding sites");
-			
-		}
 	}
 	
 	protected String getSeqString(Probe p){
@@ -67,57 +62,47 @@ public class Probes implements Data{
 	public ProbeGroup getProbeGroup(){
 		return m_Probes;
 	}
+
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		switch(columnIndex){
+		case SEQ: return String.class;
+		case REGION: return String.class;
+		case NAME: return String.class;
+		case STRAND: return String.class;
+		case MUT: return String.class;
+		case BINDING: return String.class;
+		default: return null;
+		}
+	}
+
+	@Override
+	public String getColumnName(int columnIndex) {
+		switch(columnIndex){
+		case SEQ: return "Sequence";
+		case REGION: return "Region";
+		case NAME: return "Name";
+		case STRAND: return "Strand";
+		case MUT: return "Mutation";
+		case BINDING: return "Binding sites";
+		default: return null;
+		}
+	}
+
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		Probe p = m_Probes.getProbe(rowIndex);
+		switch(columnIndex){
+		case SEQ: return this.getSeqString(p);
+		case REGION: return p.getRegion().toString();
+		case NAME: return p.getName();
+		case STRAND: return p.getStrand().toString();
+		case MUT: return p.getMutantAsString();
+		case BINDING: return p.getBindingSitesAsString();
+		default: return null;
+		}
+	}
 	
-	@Override
-	public void addDataListener(DataListener listener) {
-		//final
-	}
-
-	@Override
-	public void removeDataListener(DataListener listener) {
-		//final
-	}
-
-	@Override
-	public boolean isModifiable(int row, int col) {
-		//final
-		return false;
-	}
-
-	@Override
-	public String[] getHeaders() {
-		return new String[]{"Sequence", "Region", "Name", "Strand", "Mutation status", "Binding Sites"};
-	}
-
-	@Override
-	public Field[][] toTable() {
-		return m_Table;
-	}
-
-	@Override
-	public boolean setValue(int row, int col, Field value) {
-		//final
-		return false;
-	}
-
-	@Override
-	public Field getValue(int row, int col) {
-		return m_Table[row][col];
-	}
-
-	@Override
-	public int getNumRows() {
-		return m_Table.length;
-	}
-
-	@Override
-	public int getNumCols() {
-		return 6;
-	}
-
-	@Override
-	public String getTooltip() {
-		return "This data structure represents a probe group.";
-	}
+	
 
 }

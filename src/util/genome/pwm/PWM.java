@@ -111,6 +111,25 @@ public class PWM implements Serializable{
 		}
 	}
 	
+	private String toString(int base){
+		String s = "";
+		for(int i=0; i<this.length(); i++){
+			s += m_Scores[base][i] + "\t";
+		}
+
+		return s;
+	}
+	
+	@Override
+	public String toString(){
+		String s = "";
+		s += A_LINE + "\t" + this.toString(A) + "\n";
+		s += C_LINE + "\t" + this.toString(C) + "\n";
+		s += G_LINE + "\t" + this.toString(G) + "\n";
+		s += T_LINE + "\t" + this.toString(T) + "\n";
+		return s;
+	}
+	
 	public boolean canScore(String seq){
 		if(seq.length() < this.length()){
 			return false;

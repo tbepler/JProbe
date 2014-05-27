@@ -1,25 +1,29 @@
 package chiptools.jprobe.data;
 
-import chiptools.Constants;
-import chiptools.jprobe.field.*;
 import util.genome.peak.PeakSequence;
 import util.genome.peak.PeakSequenceGroup;
-import jprobe.services.data.Data;
-import jprobe.services.data.DataListener;
-import jprobe.services.data.Field;
+import jprobe.services.data.AbstractFinalData;
 
-public class PeakSequences implements Data{
+public class PeakSequences extends AbstractFinalData{
 	private static final long serialVersionUID = 1L;
-
+	
+	private static final int PEAKSEQ_COLS = 9;
+	
+	private static final int SEQ = 0;
+	private static final int REGION = 1;
+	private static final int NAME = 2;
+	private static final int SCORE = 3;
+	private static final int STRAND = 4;
+	private static final int SIGNAL_VAL = 5;
+	private static final int PVAL = 6;
+	private static final int QVAL = 7;
+	private static final int POINT_SOURCE = 8;
+	
 	private final PeakSequenceGroup m_PeakSeqs;
-	private final Field[][] m_Table;
 	
 	public PeakSequences(PeakSequenceGroup peakSeqs){
+		super(PEAKSEQ_COLS, peakSeqs.size());
 		m_PeakSeqs = peakSeqs;
-		m_Table = new Field[m_PeakSeqs.size()][];
-		for(int i=0; i<m_Table.length; i++){
-			m_Table[i] = this.generatePeakSeqFields(m_PeakSeqs.getPeakSequence(i));
-		}
 	}
 	
 	public PeakSequenceGroup getPeakSeqs(){
@@ -30,71 +34,55 @@ public class PeakSequences implements Data{
 	public String toString(){
 		return m_PeakSeqs.toString();
 	}
-	
-	protected Field[] generatePeakSeqFields(PeakSequence peakSeq){
-		Field[] fields = new Field[PeakSequence.ELEMENTS];
-		fields[0] = new StringField(peakSeq.getSequence());
-		fields[1] = new GenomicRegionField(peakSeq.getRegion());
-		fields[2] = new StringField(peakSeq.getName());
-		fields[3] = new UCSCScoreField((short) peakSeq.getScore());
-		fields[4] = new StrandField(peakSeq.getStrand());
-		fields[5] = new SignalValueField(peakSeq.getSignalVal());
-		fields[6] = new PValueField(peakSeq.getPVal());
-		fields[7] = new QValueField(peakSeq.getQVal());
-		fields[8] = new PointSourceField(peakSeq.getPointSource(), peakSeq.getRegion());
-		return fields;
-	}
-	
+
 	@Override
-	public void addDataListener(DataListener listener) {
-		//do nothing this is final
+	public Class<?> getColumnClass(int columnIndex) {
+		switch(columnIndex){
+		case SEQ: return String.class;
+		case REGION: return String.class;
+		case NAME: return String.class;
+		case SCORE: return Integer.class;
+		case STRAND: return String.class;
+		case SIGNAL_VAL: return Double.class;
+		case PVAL: return Double.class;
+		case QVAL: return Double.class;
+		case POINT_SOURCE: return Integer.class;
+		default: return null;
+		}
 	}
 
 	@Override
-	public void removeDataListener(DataListener listener) {
-		//final
+	public String getColumnName(int columnIndex) {
+		switch(columnIndex){
+		case SEQ: return "Sequence";
+		case REGION: return "Region";
+		case NAME: return "Name";
+		case SCORE: return "Score";
+		case STRAND: return "Strand";
+		case SIGNAL_VAL: return "Signal value";
+		case PVAL: return "P-value";
+		case QVAL: return "Q-value";
+		case POINT_SOURCE: return "Point source";
+		default: return null;
+		}
 	}
 
 	@Override
-	public boolean isModifiable(int row, int col) {
-		//final
-		return false;
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		PeakSequence p = m_PeakSeqs.getPeakSequence(rowIndex);
+		switch(columnIndex){
+		case SEQ: return p.getSequence();
+		case REGION: return p.getRegion().toString();
+		case NAME: return p.getName();
+		case SCORE: return p.getScore();
+		case STRAND: return p.getStrand().toString();
+		case SIGNAL_VAL: return p.getSignalVal();
+		case PVAL: return p.getPVal();
+		case QVAL: return p.getQVal();
+		case POINT_SOURCE: return p.getPointSource();
+		default: return null;
+		}
 	}
 
-	@Override
-	public String[] getHeaders() {
-		return Constants.PEAK_SEQ_HEADER;
-	}
-
-	@Override
-	public Field[][] toTable() {
-		return m_Table;
-	}
-
-	@Override
-	public boolean setValue(int row, int col, Field value) {
-		//final
-		return false;
-	}
-
-	@Override
-	public Field getValue(int row, int col) {
-		return m_Table[row][col];
-	}
-
-	@Override
-	public int getNumRows() {
-		return m_Table.length;
-	}
-
-	@Override
-	public int getNumCols() {
-		return Constants.NUM_PEAK_SEQ_FIELDS;
-	}
-
-	@Override
-	public String getTooltip() {
-		return Constants.PEAK_SEQ_TOOLTIP;
-	}
 
 }

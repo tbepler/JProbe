@@ -1,20 +1,21 @@
 package chiptools.jprobe.data;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import chiptools.jprobe.field.*;
 import util.DNAUtils;
-import jprobe.services.data.Data;
-import jprobe.services.data.DataListener;
-import jprobe.services.data.Field;
+import jprobe.services.data.AbstractFinalData;
 
-public class Kmer implements Data{
+public class Kmer extends AbstractFinalData{
 	private static final long serialVersionUID = 1L;
 	
-	private class Row implements Comparable<Row>{
+	private static class Row implements Comparable<Row>, Serializable{
+		private static final long serialVersionUID = 1L;
 		
 		public final String fwd;
 		public final String rvs;
@@ -43,11 +44,7 @@ public class Kmer implements Data{
 		
 	}
 	
-	private final util.genome.kmer.Kmer m_Kmer;
-	private final Field[][] m_Table;
-	
-	public Kmer(util.genome.kmer.Kmer kmer){
-		m_Kmer = kmer;
+	private static List<Row> getRows(util.genome.kmer.Kmer kmer){
 		Collection<String> entered = new HashSet<String>();
 		Queue<Row> rows = new PriorityQueue<Row>();
 		for(String word : kmer){
@@ -60,86 +57,76 @@ public class Kmer implements Data{
 			double zscore = kmer.zscore(word);
 			rows.add(new Row(word, revcomp, escore, intensity, zscore));
 		}
-		m_Table = new Field[rows.size()][5];
-		int i = 0;
-		while(!rows.isEmpty()){
-			Row cur = rows.poll();
-			m_Table[i][0] = new StringField(cur.fwd, "Forward motif");
-			m_Table[i][1] = new StringField(cur.rvs, "Reverse motif");
-			m_Table[i][2] = new DecimalField(cur.escore, "EScore");
-			m_Table[i][3] = new DecimalField(cur.intensity, "Intensity");
-			m_Table[i][4] = new DecimalField(cur.zscore, "ZScore");
-			i++;
-		}
+		return new ArrayList<Row>(rows);
+	}
+	
+	private static final int FWD = 0;
+	private static final int RVS = 1;
+	private static final int ESCORE = 2;
+	private static final int INTENSITY = 3;
+	private static final int ZSCORE = 4;
+	
+	private final util.genome.kmer.Kmer m_Kmer;
+	private final List<Row> m_Rows;
+	
+	public Kmer(util.genome.kmer.Kmer kmer){
+		super(5, getRows(kmer).size());
+		m_Kmer = kmer;
+		m_Rows = getRows(kmer);
 
 	}
 	
 	public util.genome.kmer.Kmer getKmer(){
 		return m_Kmer;
 	}
-
-	@Override
-	public void addDataListener(DataListener listener) {
-		//do nothing
-	}
-
-	@Override
-	public void removeDataListener(DataListener listener) {
-		//do nothing
-	}
-
-	@Override
-	public boolean isModifiable(int row, int col) {
-		//structure is final
-		return false;
-	}
-
-	@Override
-	public String[] getHeaders() {
-		return new String[]{"Forward", "Reverse", "EScore", "Intensity", "ZScore"};
-	}
-
-	@Override
-	public Field[][] toTable() {
-		return m_Table;
-	}
 	
 	@Override
 	public String toString(){
 		String s = "";
-		for(int row=0; row<m_Table.length; row++){
-			for(int col=0; col<m_Table[row].length; col++){
-				s += m_Table[row][col] + "\t";
-			}
-			s+="\n";
+		for(int row=0; row<m_Rows.size(); row++){
+			Row r = m_Rows.get(row);
+			s += r.fwd + "\t" + r.rvs + "\t" + r.escore + "\t" + r.intensity + "\t" + r.zscore;
+			s += "\n";
 		}
 		return s;
 	}
 
 	@Override
-	public boolean setValue(int row, int col, Field value) {
-		//final
-		return false;
+	public Class<?> getColumnClass(int columnIndex) {
+		switch(columnIndex){
+		case FWD: return String.class;
+		case RVS: return String.class;
+		case ESCORE: return Double.class;
+		case INTENSITY: return Double.class;
+		case ZSCORE: return Double.class;
+		default: return null;
+		}
 	}
 
 	@Override
-	public Field getValue(int row, int col) {
-		return m_Table[row][col];
+	public String getColumnName(int columnIndex) {
+		switch(columnIndex){
+		case FWD: return "Forward";
+		case RVS: return "Reverse";
+		case ESCORE: return "E-score";
+		case INTENSITY: return "Intensity";
+		case ZSCORE: return "Z-score";
+		default: return null;
+		}
 	}
 
 	@Override
-	public int getNumRows() {
-		return m_Table.length;
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		Row r = m_Rows.get(rowIndex);
+		switch(columnIndex){
+		case FWD: return r.fwd;
+		case RVS: return r.rvs;
+		case ESCORE: return r.escore;
+		case INTENSITY: return r.intensity;
+		case ZSCORE: return r.zscore;
+		default: return null;
+		}
 	}
 
-	@Override
-	public int getNumCols() {
-		return 5;
-	}
-
-	@Override
-	public String getTooltip() {
-		return "This data structure contains kmer data.";
-	}
 
 }

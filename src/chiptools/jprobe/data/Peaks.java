@@ -1,25 +1,31 @@
 package chiptools.jprobe.data;
 
-import chiptools.Constants;
-import chiptools.jprobe.field.*;
 import util.genome.peak.Peak;
 import util.genome.peak.PeakGroup;
-import jprobe.services.data.Data;
-import jprobe.services.data.DataListener;
-import jprobe.services.data.Field;
+import jprobe.services.data.AbstractFinalData;
 
-public class Peaks implements Data{
+public class Peaks extends AbstractFinalData{
 	private static final long serialVersionUID = 1L;
 	
+	private static final int PEAK_COLS = 10;
+	
+	private static final int CHROM = 0;
+	private static final int CHROM_START = 1;
+	private static final int CHROM_END = 2;
+	private static final int NAME = 3;
+	private static final int UCSC_SCORE = 4;
+	private static final int STRAND = 5;
+	private static final int SIGNAL_VAL = 6;
+	private static final int PVAL = 7;
+	private static final int QVAL = 8;
+	private static final int POINT_SOURCE = 9;
+	
 	private final PeakGroup m_Peaks;
-	private final Field[][] m_Table;
 	
 	public Peaks(PeakGroup peaks){
+		super(PEAK_COLS , peaks.size());
 		m_Peaks = peaks;
-		m_Table = new Field[m_Peaks.size()][];
-		for(int i=0; i<m_Table.length; i++){
-			m_Table[i] = this.generatePeakFields(m_Peaks.getPeak(i));
-		}
+		
 	}
 	
 	public PeakGroup getPeaks(){
@@ -30,72 +36,57 @@ public class Peaks implements Data{
 	public String toString(){
 		return m_Peaks.toString();
 	}
-	
-	protected Field[] generatePeakFields(Peak p){
-		Field[] fields = new Field[Constants.NUM_PEAK_FIELDS];
-		fields[0] = new ChromosomeField(p.getChrom());
-		fields[1] = new ChromosomeBaseField(p.getChrom(), p.getChromStart());
-		fields[2] = new ChromosomeBaseField(p.getChrom(), p.getChromEnd());
-		fields[3] = new StringField(p.getName());
-		fields[4] = new UCSCScoreField((short) p.getScore());
-		fields[5] = new StrandField(p.getStrand());
-		fields[6] = new SignalValueField(p.getSignalVal());
-		fields[7] = new PValueField(p.getPVal());
-		fields[8] = new QValueField(p.getQVal());
-		fields[9] = new PointSourceField(p.getPointSource(), p.getRegion());
-		return fields;
+
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		switch(columnIndex){
+		case CHROM: return String.class;
+		case CHROM_START: return Long.class;
+		case CHROM_END: return Long.class;
+		case NAME: return String.class;
+		case UCSC_SCORE: return Integer.class;
+		case STRAND: return String.class;
+		case SIGNAL_VAL: return Double.class;
+		case PVAL: return Double.class;
+		case QVAL: return Double.class;
+		case POINT_SOURCE: return Integer.class;
+		default: return null;
+		}
 	}
 
 	@Override
-	public void addDataListener(DataListener listener) {
-		//do nothing, this data type is final
+	public String getColumnName(int columnIndex) {
+		switch(columnIndex){
+		case CHROM: return "Chromosome";
+		case CHROM_START: return "Start";
+		case CHROM_END: return "End";
+		case NAME: return "Name";
+		case UCSC_SCORE: return "Score";
+		case STRAND: return "Strand";
+		case SIGNAL_VAL: return "Signal value";
+		case PVAL: return "P-value";
+		case QVAL: return "Q-value";
+		case POINT_SOURCE: return "Point source";
+		default: return null;
+		}
 	}
 
 	@Override
-	public void removeDataListener(DataListener listener) {
-		//do nothing, this data type is final
-	}
-
-	@Override
-	public boolean isModifiable(int row, int col) {
-		//always false, data is final
-		return false;
-	}
-
-	@Override
-	public Field[][] toTable() {
-		return m_Table;
-	}
-
-	@Override
-	public boolean setValue(int row, int col, Field value) {
-		//this is final
-		return false;
-	}
-
-	@Override
-	public Field getValue(int row, int col) {
-		return m_Table[row][col];
-	}
-
-	@Override
-	public int getNumRows() {
-		return m_Table.length;
-	}
-
-	@Override
-	public int getNumCols() {
-		return Constants.NUM_PEAK_FIELDS;
-	}
-
-	@Override
-	public String getTooltip() {
-		return Constants.PEAKS_TOOLTIP;
-	}
-
-	@Override
-	public String[] getHeaders() {
-		return Constants.PEAK_HEADER;
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		Peak p = m_Peaks.getPeak(rowIndex);
+		switch(columnIndex){
+		case CHROM: return p.getChrom().toString();
+		case CHROM_START: return p.getChromStart();
+		case CHROM_END: return p.getChromEnd();
+		case NAME: return p.getName();
+		case UCSC_SCORE: return p.getScore();
+		case STRAND: return p.getStrand().toString();
+		case SIGNAL_VAL: return p.getSignalVal();
+		case PVAL: return p.getPVal();
+		case QVAL: return p.getQVal();
+		case POINT_SOURCE: return p.getPointSource();
+		default: return null;
+		}
 	}
 
 }
