@@ -11,7 +11,6 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
 
-import plugins.dataviewer.gui.table.DataTable;
 import jprobe.services.data.Data;
 
 public class DataTab extends JScrollPane{
@@ -48,7 +47,7 @@ public class DataTab extends JScrollPane{
 				int[] headers = this.generateHeader(data);
 				
 				private int[] generateHeader(Data data){
-					int[] h = new int[data.getNumRows()];
+					int[] h = new int[data.getRowCount()];
 					for(int i=1; i<=h.length; i++){
 						h[i-1] = i;
 					}
@@ -80,7 +79,7 @@ public class DataTab extends JScrollPane{
 	
 	public DataTab(Data data){
 		super();
-		JTable table = new DataTable(data);
+		JTable table = data.createTable();
 		this.setViewportView(table);
 		m_Data = data;
 		this.setRowHeaderView(new DataHeader(data, table));

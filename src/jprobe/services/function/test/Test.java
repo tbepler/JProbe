@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JComponent;
-
 import org.osgi.framework.Bundle;
 
 import util.progress.ProgressListener;
 import jprobe.ParsingEngine;
 import jprobe.services.CoreListener;
 import jprobe.services.FunctionManager;
+import jprobe.services.data.AbstractFinalData;
 import jprobe.services.data.Data;
-import jprobe.services.data.DataListener;
-import jprobe.services.data.Field;
 import jprobe.services.function.Argument;
 import jprobe.services.function.ArgumentListener;
 import jprobe.services.function.Function;
@@ -67,7 +65,7 @@ public class Test extends junit.framework.TestCase{
 		
 	}
 	
-	public class TestData implements Data{
+	public class TestData extends AbstractFinalData{
 		private static final long serialVersionUID = 1L;
 		
 		public final String S;
@@ -75,6 +73,7 @@ public class Test extends junit.framework.TestCase{
 		public final int I;
 		
 		public TestData(String s, int i, double d){
+			super(3, 1);
 			S = s; D = d; I = i;
 		}
 		
@@ -90,56 +89,33 @@ public class Test extends junit.framework.TestCase{
 		}
 
 		@Override
-		public void addDataListener(DataListener listener) {
-			//no
+		public Class<?> getColumnClass(int columnIndex) {
+			switch(columnIndex){
+			case 0: return String.class;
+			case 1: return Double.class;
+			case 2: return Integer.class;
+			default: return null;
+			}
 		}
 
 		@Override
-		public void removeDataListener(DataListener listener) {
-			//no
+		public String getColumnName(int columnIndex) {
+			switch(columnIndex){
+			case 0: return "String";
+			case 1: return "Double";
+			case 2: return "Integer";
+			default: return null;
+			}
 		}
 
 		@Override
-		public boolean isModifiable(int row, int col) {
-			//no
-			return false;
-		}
-
-		@Override
-		public String[] getHeaders() {
-			return new String[]{"String", "Int", "Double"};
-		}
-
-		@Override
-		public Field[][] toTable() {
-			return new Field[1][3]; //TODO this might be bad
-		}
-
-		@Override
-		public boolean setValue(int row, int col, Field value) {
-			//no
-			return false;
-		}
-
-		@Override
-		public Field getValue(int row, int col) {
-			// TODO no
-			return null;
-		}
-
-		@Override
-		public int getNumRows() {
-			return 1;
-		}
-
-		@Override
-		public int getNumCols() {
-			return 3;
-		}
-
-		@Override
-		public String getTooltip() {
-			return "test data object";
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			switch(columnIndex){
+			case 0: return S;
+			case 1: return D;
+			case 2: return I;
+			default: return null;
+			}
 		}
 		
 	}
