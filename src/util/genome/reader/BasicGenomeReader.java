@@ -63,7 +63,7 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 			GenomicCoordinate seqStart = null;
 			String line;
 			try {
-				while((line = reader.readLine().toUpperCase()) != null){
+				while((line = reader.readLine()) != null){
 					if(line.startsWith(">")){
 						//new chromosome reached
 						Chromosome chrom = new Chromosome(line);

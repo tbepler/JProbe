@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import util.DNAUtils;
+import util.genome.NoSuchBaseException;
 
 public class PWM implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -36,7 +37,7 @@ public class PWM implements Serializable{
 		if(base == 't' || base == 'T'){
 			return T;
 		}
-		throw new RuntimeException("No encoding for base: "+base);
+		throw new NoSuchBaseException("No encoding for base: "+base);
 	}
 	
 	
@@ -108,6 +109,20 @@ public class PWM implements Serializable{
 			m_Scores[G][i] = gScores[i];
 			m_Scores[T][i] = tScores[i];
 		}
+	}
+	
+	public boolean canScore(String seq){
+		if(seq.length() < this.length()){
+			return false;
+		}
+		for(char c : seq.toCharArray()){
+			try{
+				getBaseIndex(c);
+			} catch (NoSuchBaseException e){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**

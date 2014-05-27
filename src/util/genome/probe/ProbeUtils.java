@@ -4,8 +4,10 @@ import util.DNAUtils;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
+import util.genome.NoSuchBaseException;
 import util.genome.Strand;
 import util.genome.kmer.Kmer;
+import util.genome.kmer.NoSuchWordException;
 import util.genome.pwm.PWM;
 
 import java.util.*;
@@ -167,7 +169,9 @@ public class ProbeUtils {
 				if(center != null){
 					//create a probe centered on the center region
 					Probe p = createProbe(seq, center, name, probeLength);
-					if(p != null && !probes.contains(p)){
+					//pwm.canScore() ensures that the probe only contains bases recognized
+					//by the pwm
+					if(p != null && !probes.contains(p) && pwm.canScore(p.getSequence())){
 						probes.add(p);
 					}
 				}
@@ -214,12 +218,16 @@ public class ProbeUtils {
 		GenomicRegion cur = new GenomicRegion(window.getStart(), window.getStart().increment(pwm.length() - 1));
 		while(cur.getEnd().compareTo(window.getEnd()) <= 0){
 			GenomicSequence curSeq = seq.subsequence(cur);
-			//System.err.println("Scoring: "+curSeq);
-			double score = score(curSeq, pwm);
-			//System.err.println("Score = "+score);
-			if(score > bestScore){
-				bestScore = score;
-				best = cur;
+			try{
+				double score = score(curSeq, pwm);
+				//System.err.println("Score = "+score);
+				if(score > bestScore){
+					bestScore = score;
+					best = cur;
+				}
+			} catch (NoSuchBaseException e){
+				//catch the NoSuchBaseException in case the sequence contains characters not recognized by
+				//the pwm
 			}
 			cur = cur.increment(1);
 		}
@@ -234,6 +242,9 @@ public class ProbeUtils {
 	}
 	
 	private static boolean meetsThreshhold(double[] scores, double threshhold){
+		if(scores.length < 1){
+			return false;
+		}
 		for(double d : scores){
 			if(d < threshhold) return false;
 		}
@@ -242,9 +253,13 @@ public class ProbeUtils {
 	
 	private static double[] score(GenomicSequence seq, Kmer kmer){
 		//long start = System.currentTimeMillis();
-		double[] s = kmer.escoreSequence(seq.getSequence().toUpperCase());
-		//scoreKmer += System.currentTimeMillis() - start;
-		return s;
+		try{
+			double[] s = kmer.escoreSequence(seq.getSequence().toUpperCase());
+			//scoreKmer += System.currentTimeMillis() - start;
+			return s;
+		} catch (NoSuchWordException e){
+			return new double[]{};
+		}
 	}
 	
 	

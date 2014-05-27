@@ -68,7 +68,7 @@ public class GappedKmer implements Kmer{
 	 */
 	protected Collection<Score> getScores(String word){
 		if(!m_Words.contains(word)){
-			throw new RuntimeException("Kmer does not contain word: "+word+".");
+			throw new NoSuchWordException("Kmer does not contain word: "+word+".");
 		}
 		List<Score> scores = m_Words.get(word);
 		return scores;

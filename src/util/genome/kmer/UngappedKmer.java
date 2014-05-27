@@ -42,7 +42,7 @@ public class UngappedKmer implements Kmer{
 		if(m_Words.containsKey(word)){
 			return m_Words.get(word).ESCORE;
 		}
-		throw new RuntimeException("Does not contain word "+word);
+		throw new NoSuchWordException("Does not contain word "+word);
 	}
 	
 	@Override
@@ -148,7 +148,7 @@ public class UngappedKmer implements Kmer{
 		if(m_Words.containsKey(word)){
 			return m_Words.get(word).INTENSITY;
 		}
-		throw new RuntimeException("Cannot find intensity for word: "+word+". Word is not contained by this kmer.");
+		throw new NoSuchWordException("Cannot find intensity for word: "+word+". Word is not contained by this kmer.");
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class UngappedKmer implements Kmer{
 		if(m_Words.containsKey(word)){
 			return m_Words.get(word).ZSCORE;
 		}
-		throw new RuntimeException("Cannot find zscore for word: "+word+". Word is not contained by this kmer.");
+		throw new NoSuchWordException("Cannot find zscore for word: "+word+". Word is not contained by this kmer.");
 	}
 
 	@Override
