@@ -189,6 +189,10 @@ public class Probe implements Serializable, Comparable<Probe>{
 		this(seq.getSequence(), seq.getRegion(), bindingSites, name, strand, mutant);
 	}
 	
+	public Probe(GenomicSequence seq, GenomicRegion[] bindingSites, List<GenomicCoordinate> mutations, String name, Strand strand, boolean mutant){
+		this(seq.getSequence(), seq.getRegion(), bindingSites, mutations, name, strand, mutant);
+	}
+	
 	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, String name, Strand strand){
 		this(seq, region, bindingSites, name, strand, false);
 	}
@@ -290,6 +294,14 @@ public class Probe implements Serializable, Comparable<Probe>{
 					+ " nor overlapping.");
 		}
 		boolean mutant = this.isMutant() || other.isMutant();
+		Set<GenomicCoordinate> mutSet = new TreeSet<GenomicCoordinate>();
+		for(GenomicCoordinate mut : m_Mutations){
+			mutSet.add(mut);
+		}
+		for(GenomicCoordinate mut : other.m_Mutations){
+			mutSet.add(mut);
+		}
+		List<GenomicCoordinate> mutations = new ArrayList<GenomicCoordinate>(mutSet);
 		Strand s = this.getStrand();
 		if(other.getStrand() != this.getStrand() && other.getStrand() != Strand.UNKNOWN){
 			if(this.getStrand() == Strand.UNKNOWN){
@@ -307,7 +319,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 			bindingSites.add(site);
 		}
 		GenomicRegion[] combinedSites = bindingSites.toArray(new GenomicRegion[bindingSites.size()]);
-		return new Probe(newSeq, combinedSites, combinedName, s, mutant);
+		return new Probe(newSeq, combinedSites, mutations, combinedName, s, mutant);
 	}
 	
 	public Probe subprobe(GenomicRegion subregion, String subname){
