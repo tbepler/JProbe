@@ -28,10 +28,15 @@ public class BindingPWMArgument extends DataArgument<BindingProfileParams, PWM>{
 	@Override
 	protected void process(BindingProfileParams params, List<PWM> data) {
 		params.setPWMs(data);
+	}
+	
+	@Override
+	public void parse(BindingProfileParams params, String[] args){
 		params.PWM_NAMES.clear();
-		for(PWM p : data){
-			params.PWM_NAMES.add(ChiptoolsActivator.getCore().getDataManager().getDataName(p));
+		for(String s : args){
+			params.PWM_NAMES.add(s);
 		}
+		super.parse(params, args);
 	}
 
 }

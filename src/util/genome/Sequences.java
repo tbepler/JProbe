@@ -44,6 +44,7 @@ public class Sequences {
 			String s = "";
 			for(int i=0; i<this.size(); i++){
 				s += this.getEntryName(i);
+				s += "\t" + this.getWordLen(i);
 				for(double d : this.getEntry(i)){
 					s += "\t" + d;
 				}

@@ -1,9 +1,0 @@
-Usage: probejoiner [-help] --bindingSites n [--minDistance 2] [--maxDistance 16] [--probeLength 0]  < probes > combined probes
-
-stdin: probes that should be joined to create probes with multiple binding sites
---bindingSites n: the number of binding sites that the combined probes should have
-[--minDistance n]: the minimum distance between binding sites on the combined probes, defualt = 2
-[--maxDistance n]: the maximum distance between binding sites on the combined probes, default = 16
-[--probeLength n]: the length of probes that should be generated. the length is unbounded if the given value is <= 0, default = 0
-
-stdout: the combined probes

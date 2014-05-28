@@ -23,12 +23,13 @@ public class Constants {
 	
 	public static final String FUNCTIONS_FILE = RESOURCES_PATH + "/functions.txt";
 	public static final String ARGUMENTS_FILE = RESOURCES_PATH + "/arguments.txt";
-	public static final String READER_WRITER_FILE = RESOURCES_PATH + "/data_reader_writer.txt";
+	public static final String READER_FILE = RESOURCES_PATH + "/data_reader.txt";
+	public static final String WRITER_FILE = RESOURCES_PATH + "/data_writer.txt";
 	
 	public static final String DATA_PACKAGE = "chiptools.jprobe.data.";
 	
-	public static List<Class<? extends DataReader>> READER_CLASSES = getClasses(DataReader.class, READER_WRITER_FILE, DATA_PACKAGE);
-	public static List<Class<? extends DataWriter>> WRITER_CLASSES = getClasses(DataWriter.class, READER_WRITER_FILE, DATA_PACKAGE);
+	public static List<Class<? extends DataReader>> READER_CLASSES = getClasses(DataReader.class, READER_FILE, DATA_PACKAGE);
+	public static List<Class<? extends DataWriter>> WRITER_CLASSES = getClasses(DataWriter.class, WRITER_FILE, DATA_PACKAGE);
 	
 	@SuppressWarnings("rawtypes")
 	public static final List<Class<? extends Function>> FUNCTION_CLASSES = getClasses(Function.class, FUNCTIONS_FILE, "");

@@ -1,6 +1,8 @@
 package jprobe;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,7 @@ import jprobe.services.JProbeCore;
 import jprobe.services.Log;
 import jprobe.services.Saveable;
 import jprobe.services.data.Data;
+import jprobe.services.data.DataWriter;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
@@ -100,7 +103,12 @@ public class JProbe implements JProbeCore{
 		if(m_Mode == Mode.COMMAND){
 			Data d = ParsingEngine.parseAndExecute(System.err, m_FunctionManager, args);
 			if(d != null){
-				System.out.println(d);
+				DataWriter writer = m_DataManager.getDataWriter(d.getClass());
+				try {
+					writer.write(d, writer.getValidWriteFormats()[0], new BufferedWriter(new PrintWriter(System.out)));
+				} catch (Exception e) {
+					ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+				}
 			}
 			this.shutdown();;
 		}

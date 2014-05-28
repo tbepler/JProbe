@@ -1,13 +1,14 @@
 package chiptools.jprobe.data;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import util.genome.Sequences.Profile;
 import jprobe.services.data.AbstractFinalData;
 
-public class BindingProfile extends AbstractFinalData{
+public class BindingProfile extends AbstractFinalData implements Iterable<Profile>{
 	private static final long serialVersionUID = 1L;
 	
 	private static int getLongestProfileLength(List<Profile> profiles){
@@ -46,6 +47,15 @@ public class BindingProfile extends AbstractFinalData{
 			m_ProfileStarts.put(start, p);
 			start += p.numEntries();
 		}
+	}
+	
+	@Override
+	public String toString(){
+		String s = "";
+		for(Profile p : m_Profiles){
+			s += p.toString();
+		}
+		return s;
 	}
 
 	@Override
@@ -87,6 +97,11 @@ public class BindingProfile extends AbstractFinalData{
 				return entries[index];
 			}
 		}
+	}
+
+	@Override
+	public Iterator<Profile> iterator() {
+		return m_Profiles.iterator();
 	}
 
 }

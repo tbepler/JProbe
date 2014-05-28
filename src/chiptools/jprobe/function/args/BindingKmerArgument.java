@@ -28,10 +28,15 @@ public class BindingKmerArgument extends DataArgument<BindingProfileParams, Kmer
 	@Override
 	protected void process(BindingProfileParams params, List<Kmer> data) {
 		params.setKmers(data);
+	}
+	
+	@Override
+	public void parse(BindingProfileParams params, String[] args){
 		params.KMER_NAMES.clear();
-		for(Kmer k : data){
-			params.KMER_NAMES.add(ChiptoolsActivator.getCore().getDataManager().getDataName(k));
+		for(String s : args){
+			params.KMER_NAMES.add(s);
 		}
+		super.parse(params, args);
 	}
 
 
