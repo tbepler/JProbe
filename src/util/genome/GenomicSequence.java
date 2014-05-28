@@ -175,6 +175,18 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	}
 	
 	/**
+	 * Returns a new GenomicSequence that is a copy of this one with the specified mutation made.
+	 * @param coord - coordinate at which to mutate.
+	 * @param newBase - the new base that should be at the specified coordinate
+	 * @return
+	 */
+	public GenomicSequence mutate(GenomicCoordinate coord, char newBase){
+		int index = this.getIndexOf(coord);
+		String newSeq = m_Sequence.substring(0, index) + newBase + m_Sequence.substring(index + 1);
+		return new GenomicSequence(newSeq, m_Region);
+	}
+	
+	/**
 	 * Returns the length of this GenomicSequence
 	 * @return
 	 */

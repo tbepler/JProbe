@@ -11,10 +11,22 @@ import util.genome.kmer.NoSuchWordException;
 import util.genome.pwm.PWM;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
+import util.progress.ProgressEvent.Type;
 
 import java.util.*;
 
 public class ProbeUtils {
+	
+	public static final Collection<Character> DNA_BASES = getDNABases();
+			
+	private static Collection<Character> getDNABases(){
+		Collection<Character> bases = new HashSet<Character>();
+		bases.add('A');
+		bases.add('C');
+		bases.add('G');
+		bases.add('T');
+		return bases;
+	}
 	
 	public static Probe reverseCompliment(Probe p){
 		String revComp = DNAUtils.reverseCompliment(p.getSequence());
@@ -264,36 +276,94 @@ public class ProbeUtils {
 		}
 	}
 	
-	public static Probe mutate(ProgressListener l, Probe p, Kmer kmer, int bindingSiteBarrier, double escoreCutoff){
+	public static Probe mutate(ProgressListener l, Probe p, Kmer kmer, Collection<Character> alphabet, int bindingSiteBarrier, double escoreCutoff){
 		Collection<GenomicRegion> outOfBounds = getOutOfBoundsRegions(p, bindingSiteBarrier);
+		return mutateRecurse(l, p, kmer, alphabet, outOfBounds, escoreCutoff);
+	}
+	
+	private static Probe mutateRecurse(ProgressListener l, Probe p, Kmer kmer, Collection<Character> alphabet, Collection<GenomicRegion> outOfBounds, double escoreCutoff){
 		double[] scores = score(p.asGenomicSequence(), kmer, outOfBounds, escoreCutoff);
 		if(!shouldMutate(scores, escoreCutoff)){
 			return p;
 		}
-		List<GenomicCoordinate> candidates = highestScoreCoords(scores, p.getRegion());
+		Mutation optimal = findOptimalMutation(p, scores, alphabet, kmer, outOfBounds, escoreCutoff);
+		if(optimal == null){
+			if(l != null){
+				l.update(new ProgressEvent(null, Type.UPDATE, "Warning: cannot mutate probe "+p.getName()+" further.", true));
+			}
+			return p;
+		}
+		if(l != null){
+			char prevBase = p.asGenomicSequence().getBaseAt(optimal.COORD);
+			l.update(new ProgressEvent(null, Type.UPDATE, "Probe "+p.getName()+": mutating "+optimal.COORD+" "+prevBase+" --> "+optimal.NEWBASE, true));
+		}
+		GenomicSequence newSeq = p.asGenomicSequence().mutate(optimal.COORD, optimal.NEWBASE);
+		List<GenomicCoordinate> mutations = new ArrayList<GenomicCoordinate>(p.getMutations());
+		mutations.add(optimal.COORD);
+		Probe newProbe = new Probe(p, newSeq, mutations, true);
 		
-		
-		return null;
+		return mutateRecurse(l, newProbe, kmer, alphabet, outOfBounds, escoreCutoff);
 	}
 	
-	private static List<GenomicCoordinate> highestScoreCoords(double[] scores, GenomicRegion region){
-		Collection<Integer> topScores = new HashSet<Integer>();
-		double topScore = Double.NEGATIVE_INFINITY;
-		for(int i=0; i<scores.length; i++){
-			double score = scores[i];
-			if(score > topScore){
-				topScores.clear();
-				topScores.add(i);
-				topScore = score;
-			}else if(score == topScore){
-				topScores.add(i);
+	private static class Mutation{
+		public final GenomicCoordinate COORD;
+		public final char NEWBASE;
+		
+		private Mutation(GenomicCoordinate coord, char newBase){
+			COORD = coord; NEWBASE = newBase;
+		}
+	}
+	
+	private static Mutation findOptimalMutation(Probe p, double[] scores, Collection<Character> alphabet, Kmer kmer, Collection<GenomicRegion> outOfBounds, double cutoff){
+		List<GenomicCoordinate> candidates = highestScoreCoords(scores, p.getRegion(), p.getMutations());
+		GenomicSequence seq = p.asGenomicSequence();
+		Mutation best = null;
+		double bestScore = Double.POSITIVE_INFINITY;
+		for(GenomicCoordinate coord : candidates){
+			for(Mutation mut : possibleMutations(seq, coord, alphabet)){
+				GenomicSequence mutated = makeMutation(mut, seq);
+				double totalScore = sum(score(mutated, kmer, outOfBounds, cutoff));
+				if(totalScore < bestScore){
+					best = mut;
+					bestScore = totalScore;
+				}
 			}
 		}
-		List<GenomicCoordinate> coords = new ArrayList<GenomicCoordinate>();
-		for(Integer i : topScores){
-			coords.add(region.toCoordinate(i));
+		return best;
+	}
+	
+	private static GenomicSequence makeMutation(Mutation mut, GenomicSequence seq){
+		return seq.mutate(mut.COORD, mut.NEWBASE);
+	}
+	
+	private static Collection<Mutation> possibleMutations(GenomicSequence seq, GenomicCoordinate coord, Collection<Character> alphabet){
+		Collection<Mutation> muts = new ArrayList<Mutation>();
+		char cur = seq.getBaseAt(coord);
+		for(char c : alphabet){
+			if(c != cur){
+				muts.add(new Mutation(coord, c));
+			}
 		}
-		return coords;
+		return muts;
+	}
+	
+	private static List<GenomicCoordinate> highestScoreCoords(double[] scores, GenomicRegion region, Collection<GenomicCoordinate> priorMutations){
+		List<GenomicCoordinate> topScores = new ArrayList<GenomicCoordinate>();
+		double topScore = Double.NEGATIVE_INFINITY;
+		for(int i=0; i<scores.length; i++){
+			GenomicCoordinate coord = region.toCoordinate(i);
+			if(!priorMutations.contains(coord)){
+				double score = scores[i];
+				if(score > topScore){
+					topScores.clear();
+					topScores.add(coord);
+					topScore = score;
+				}else if(score == topScore){
+					topScores.add(coord);
+				}
+			}
+		}
+		return topScores;
 	}
 	
 	private static double[] score(GenomicSequence seq, Kmer kmer, Collection<GenomicRegion> outOfBounds, double cutoff){
