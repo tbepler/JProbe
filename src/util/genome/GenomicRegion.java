@@ -131,6 +131,20 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable, I
 		return new GenomicRegion(m_Start.decrement(numBases), m_End.decrement(numBases));
 	}
 	
+	public int toIndex(GenomicCoordinate c){
+		if(!this.contains(c)){
+			throw new RuntimeException("Region "+this+" does not contain coordinate "+c+".");
+		}
+		return (int) m_Start.distance(c);
+	}
+	
+	public GenomicCoordinate toCoordinate(int index){
+		if(index >= this.getSize()){
+			throw new RuntimeException("Index "+index+" out of bounds on region "+this);
+		}
+		return m_Start.increment(index);
+	}
+	
 	public long distance(GenomicRegion other){
 		if(this.overlaps(other)){
 			return -this.getOverlap(other);

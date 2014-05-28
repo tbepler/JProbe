@@ -9,6 +9,8 @@ import util.genome.Strand;
 import util.genome.kmer.Kmer;
 import util.genome.kmer.NoSuchWordException;
 import util.genome.pwm.PWM;
+import util.progress.ProgressEvent;
+import util.progress.ProgressListener;
 
 import java.util.*;
 
@@ -260,6 +262,76 @@ public class ProbeUtils {
 		} catch (NoSuchWordException e){
 			return new double[]{};
 		}
+	}
+	
+	public static Probe mutate(ProgressListener l, Probe p, Kmer kmer, int bindingSiteBarrier, double escoreCutoff){
+		Collection<GenomicRegion> outOfBounds = getOutOfBoundsRegions(p, bindingSiteBarrier);
+		double[] scores = score(p.asGenomicSequence(), kmer, outOfBounds, escoreCutoff);
+		if(!shouldMutate(scores, escoreCutoff)){
+			return p;
+		}
+		List<GenomicCoordinate> candidates = highestScoreCoords(scores, p.getRegion());
+		
+		
+		return null;
+	}
+	
+	private static List<GenomicCoordinate> highestScoreCoords(double[] scores, GenomicRegion region){
+		Collection<Integer> topScores = new HashSet<Integer>();
+		double topScore = Double.NEGATIVE_INFINITY;
+		for(int i=0; i<scores.length; i++){
+			double score = scores[i];
+			if(score > topScore){
+				topScores.clear();
+				topScores.add(i);
+				topScore = score;
+			}else if(score == topScore){
+				topScores.add(i);
+			}
+		}
+		List<GenomicCoordinate> coords = new ArrayList<GenomicCoordinate>();
+		for(Integer i : topScores){
+			coords.add(region.toCoordinate(i));
+		}
+		return coords;
+	}
+	
+	private static double[] score(GenomicSequence seq, Kmer kmer, Collection<GenomicRegion> outOfBounds, double cutoff){
+		double[] scores = kmer.escoreSequence(seq.getSequence());
+		for(GenomicRegion immutable : outOfBounds){
+			for(GenomicCoordinate c : immutable){
+				int i = seq.getRegion().toIndex(c);
+				scores[i] = cutoff;
+			}
+		}
+		return scores;
+	}
+	
+	private static Collection<GenomicRegion> getOutOfBoundsRegions(Probe p, int bindingSiteBarrier){
+		Collection<GenomicRegion> outOfBounds = new HashSet<GenomicRegion>();
+		for(GenomicRegion bindingSite : p.getBindingSites()){
+			GenomicRegion immutable = new GenomicRegion(
+					bindingSite.getStart().decrement(bindingSiteBarrier),
+					bindingSite.getEnd().increment(bindingSiteBarrier)
+					);
+			outOfBounds.add(immutable);
+		}
+		return outOfBounds;
+	}
+	
+	private static boolean shouldMutate(double[] scores, double cutoff){
+		for(double d : scores){
+			if(d > cutoff) return true;
+		}
+		return false;
+	}
+	
+	private static double sum(double[] array){
+		double sum = 0;
+		for(double d : array){
+			sum += d;
+		}
+		return sum;
 	}
 	
 	

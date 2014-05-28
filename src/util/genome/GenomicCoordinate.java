@@ -67,9 +67,7 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 		if(!m_Chr.equals(other.m_Chr)){
 			throw new RuntimeException("Cannot find the distance between coordinates on different chromosomes");
 		}
-		GenomicCoordinate start = this.compareTo(other) < 1 ? this : other;
-		GenomicCoordinate end = start != this ? this : other;
-		return end.getBaseIndex() - start.getBaseIndex();
+		return Math.abs(this.getBaseIndex() - other.getBaseIndex());
 	}
 	
 	public GenomicCoordinate increment(int numBases){
