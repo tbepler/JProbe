@@ -1,9 +1,8 @@
 package chiptools.jprobe.data;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
+import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.probe.Probe;
@@ -12,6 +11,11 @@ import jprobe.services.data.AbstractFinalData;
 
 public class Probes extends AbstractFinalData{
 	private static final long serialVersionUID = 1L;
+	
+	private static final String BINDING_SITE_HTML_START = "<font color=red>";
+	private static final String BINDING_SITE_HTML_END ="</font>";
+	private static final String MUT_SITE_HTML_START = "<font color=blue>";
+	private static final String MUT_SITE_HTML_END = "</font>";
 	
 	private static final int PROBE_COLS = 6;
 	
@@ -29,25 +33,48 @@ public class Probes extends AbstractFinalData{
 		m_Probes = probes;
 	}
 	
+	private String addMutCoord(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations){
+		String s = "";
+		if(coord.equals(seq.getStart()) || !mutations.contains(coord.decrement(1))){
+			s += MUT_SITE_HTML_START;
+		}
+		s += seq.getBaseAt(coord);
+		if(coord.equals(seq.getEnd()) || !mutations.contains(coord.increment(1))){
+			s += MUT_SITE_HTML_END;
+		}
+		return s;
+	}
+	
+	private String addBindingCoord(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations, Collection<GenomicCoordinate> binding){
+		String s = "";
+		if(coord.equals(seq.getStart()) || mutations.contains(coord.decrement(1)) || !binding.contains(coord.decrement(1))){
+			s += BINDING_SITE_HTML_START;
+		}
+		s += seq.getBaseAt(coord);
+		if(coord.equals(seq.getEnd()) || mutations.contains(coord.increment(1)) || !binding.contains(coord.increment(1))){
+			s += BINDING_SITE_HTML_END;
+		}
+		return s;
+	}
+	
 	protected String getSeqString(Probe p){
 		String s = "<html>";
-		GenomicRegion[] bindingSites = p.getBindingSites();
-		Set<GenomicSequence> splitSeqs = new TreeSet<GenomicSequence>();
-		for(GenomicSequence seq : p.asGenomicSequence().split(bindingSites)){
-			splitSeqs.add(seq);
+		GenomicSequence seq = p.asGenomicSequence();
+		Collection<GenomicCoordinate> bindingSites = new HashSet<GenomicCoordinate>();
+		for(GenomicRegion r : p.getBindingSites()){
+			for(GenomicCoordinate c : r){
+				bindingSites.add(c);
+			}
 		}
-		for(GenomicRegion site : bindingSites){
-			splitSeqs.add(p.asGenomicSequence().subsequence(site));
-		}
-		Set<GenomicSequence> bindingSeqs = new HashSet<GenomicSequence>();
-		for(GenomicRegion region : bindingSites){
-			bindingSeqs.add(p.asGenomicSequence().subsequence(region));
-		}
-		for(GenomicSequence seq : splitSeqs){
-			if(bindingSeqs.contains(seq)){
-				s += "<font color=red>"+seq.getSequence()+"</font>";
+		Collection<GenomicCoordinate> mutations = p.getMutations();
+		
+		for(GenomicCoordinate coord : seq){
+			if(mutations.contains(coord)){
+				s += this.addMutCoord(coord, seq, mutations);
+			}else if(bindingSites.contains(coord)){
+				s += this.addBindingCoord(coord, seq, mutations, bindingSites);
 			}else{
-				s += seq.getSequence();
+				s += seq.getBaseAt(coord);
 			}
 		}
 		s += "</html>";

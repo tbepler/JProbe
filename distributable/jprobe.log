@@ -1,5 +1,5 @@
-<Wed May 28 12:27:06 EDT 2014><org.apache.felix.framework>JProbe started.
-<Wed May 28 12:27:06 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
-<Wed May 28 12:27:22 EDT 2014><org.apache.felix.framework>JProbe shutting down.
-<Wed May 28 12:27:22 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin stopped.
-<Wed May 28 12:27:22 EDT 2014><plugins.functions.gui>Function menu stopped.
+<Wed May 28 16:21:45 EDT 2014><org.apache.felix.framework>JProbe started.
+<Wed May 28 16:21:46 EDT 2014><plugins.functions.gui>Function menu started.
+<Wed May 28 16:21:46 EDT 2014><plugins.dataviewer.gui>DataViewer started.
+<Wed May 28 16:21:46 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
+<Wed May 28 16:22:26 EDT 2014><org.apache.felix.framework>JProbe shutting down.
