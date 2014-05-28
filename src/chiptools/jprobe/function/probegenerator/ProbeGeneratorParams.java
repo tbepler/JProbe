@@ -1,8 +1,13 @@
-package chiptools.jprobe.function.params;
+package chiptools.jprobe.function.probegenerator;
 
 import chiptools.jprobe.data.Kmer;
 import chiptools.jprobe.data.PWM;
 import chiptools.jprobe.data.PeakSequences;
+import chiptools.jprobe.function.params.EscoreParam;
+import chiptools.jprobe.function.params.KmerParam;
+import chiptools.jprobe.function.params.PWMParam;
+import chiptools.jprobe.function.params.PeakSeqsParam;
+import chiptools.jprobe.function.params.ProbeLenParam;
 
 public class ProbeGeneratorParams implements PeakSeqsParam, KmerParam, PWMParam, EscoreParam, ProbeLenParam{
 	

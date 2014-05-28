@@ -1,6 +1,8 @@
-package chiptools.jprobe.function.params;
+package chiptools.jprobe.function.probejoiner;
 
 import chiptools.jprobe.data.Probes;
+import chiptools.jprobe.function.params.ProbeLenParam;
+import chiptools.jprobe.function.params.ProbesParam;
 
 public class ProbeJoinerParams implements ProbesParam, ProbeLenParam{
 	

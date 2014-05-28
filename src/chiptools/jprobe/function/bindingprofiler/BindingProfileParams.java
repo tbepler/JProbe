@@ -1,4 +1,4 @@
-package chiptools.jprobe.function.params;
+package chiptools.jprobe.function.bindingprofiler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,9 @@ import java.util.List;
 import chiptools.jprobe.data.Kmer;
 import chiptools.jprobe.data.PWM;
 import chiptools.jprobe.data.Probes;
+import chiptools.jprobe.function.params.KmerListParam;
+import chiptools.jprobe.function.params.PWMListParam;
+import chiptools.jprobe.function.params.ProbesParam;
 
 public class BindingProfileParams implements ProbesParam, KmerListParam, PWMListParam{
 	

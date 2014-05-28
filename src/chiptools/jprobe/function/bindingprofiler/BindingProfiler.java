@@ -1,4 +1,4 @@
-package chiptools.jprobe.function;
+package chiptools.jprobe.function.bindingprofiler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,10 +12,8 @@ import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
 import util.progress.ProgressListener;
 import chiptools.jprobe.data.BindingProfile;
-import chiptools.jprobe.function.args.BindingKmerArgument;
-import chiptools.jprobe.function.args.BindingPWMArgument;
+import chiptools.jprobe.function.AbstractChiptoolsFunction;
 import chiptools.jprobe.function.args.ProbesArgument;
-import chiptools.jprobe.function.params.BindingProfileParams;
 
 public class BindingProfiler extends AbstractChiptoolsFunction<BindingProfileParams>{
 

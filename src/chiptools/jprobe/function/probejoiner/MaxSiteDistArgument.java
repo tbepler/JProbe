@@ -1,7 +1,6 @@
-package chiptools.jprobe.function.args;
+package chiptools.jprobe.function.probejoiner;
 
 import chiptools.Constants;
-import chiptools.jprobe.function.params.ProbeJoinerParams;
 import jprobe.services.function.IntArgument;
 
 public class MaxSiteDistArgument extends IntArgument<ProbeJoinerParams>{

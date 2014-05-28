@@ -1,7 +1,6 @@
-package chiptools.jprobe.function.args;
+package chiptools.jprobe.function.probegenerator;
 
 import chiptools.Constants;
-import chiptools.jprobe.function.params.ProbeGeneratorParams;
 import jprobe.services.function.IntArgument;
 
 public class BindingSiteArgument extends IntArgument<ProbeGeneratorParams>{

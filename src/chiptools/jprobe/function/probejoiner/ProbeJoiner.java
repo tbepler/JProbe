@@ -1,4 +1,4 @@
-package chiptools.jprobe.function;
+package chiptools.jprobe.function.probejoiner;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,12 +8,9 @@ import jprobe.services.function.Argument;
 import util.genome.probe.ProbeUtils;
 import util.progress.ProgressListener;
 import chiptools.jprobe.data.Probes;
-import chiptools.jprobe.function.args.MaxSiteDistArgument;
-import chiptools.jprobe.function.args.MinSiteDistArgument;
-import chiptools.jprobe.function.args.NumBindingSitesArgument;
+import chiptools.jprobe.function.AbstractChiptoolsFunction;
 import chiptools.jprobe.function.args.ProbeLengthArgument;
 import chiptools.jprobe.function.args.ProbesArgument;
-import chiptools.jprobe.function.params.ProbeJoinerParams;
 
 public class ProbeJoiner extends AbstractChiptoolsFunction<ProbeJoinerParams>{
 

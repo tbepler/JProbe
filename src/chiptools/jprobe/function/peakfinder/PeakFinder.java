@@ -1,4 +1,4 @@
-package chiptools.jprobe.function;
+package chiptools.jprobe.function.peakfinder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,22 +10,22 @@ import util.genome.reader.GenomeReaderFactory;
 import util.progress.ProgressListener;
 import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.PeakSequences;
+import chiptools.jprobe.function.AbstractChiptoolsFunction;
 import chiptools.jprobe.function.args.GenomeArgument;
 import chiptools.jprobe.function.args.PeaksArgument;
 import chiptools.jprobe.function.args.SummitArgument;
-import chiptools.jprobe.function.params.GenomePeakFinderParams;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 
-public class GenomePeakFinder extends AbstractChiptoolsFunction<GenomePeakFinderParams>{
+public class PeakFinder extends AbstractChiptoolsFunction<PeakFinderParams>{
 
-	public GenomePeakFinder() {
-		super(GenomePeakFinderParams.class);
+	public PeakFinder() {
+		super(PeakFinderParams.class);
 	}
 
 	@Override
-	public Collection<Argument<? super GenomePeakFinderParams>> getArguments() {
-		Collection<Argument<? super GenomePeakFinderParams>> args = new ArrayList<Argument<? super GenomePeakFinderParams>>();
+	public Collection<Argument<? super PeakFinderParams>> getArguments() {
+		Collection<Argument<? super PeakFinderParams>> args = new ArrayList<Argument<? super PeakFinderParams>>();
 		args.add(new PeaksArgument(ChiptoolsActivator.getCore(), false));
 		args.add(new GenomeArgument(false));
 		args.add(new SummitArgument(true));
@@ -33,7 +33,7 @@ public class GenomePeakFinder extends AbstractChiptoolsFunction<GenomePeakFinder
 	}
 
 	@Override
-	public Data execute(ProgressListener l, GenomePeakFinderParams params) throws Exception {
+	public Data execute(ProgressListener l, PeakFinderParams params) throws Exception {
 		PeakGroup peaks = params.getPeaks().getPeaks();
 		Collection<ProgressListener> listeners = new ArrayList<ProgressListener>();
 		listeners.add(l);

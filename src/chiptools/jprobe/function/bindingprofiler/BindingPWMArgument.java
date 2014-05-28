@@ -1,11 +1,10 @@
-package chiptools.jprobe.function.args;
+package chiptools.jprobe.function.bindingprofiler;
 
 import java.util.List;
 
 import chiptools.Constants;
 import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.PWM;
-import chiptools.jprobe.function.params.BindingProfileParams;
 import jprobe.services.function.DataArgument;
 
 public class BindingPWMArgument extends DataArgument<BindingProfileParams, PWM>{

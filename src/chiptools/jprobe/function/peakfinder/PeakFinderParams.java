@@ -1,10 +1,13 @@
-package chiptools.jprobe.function.params;
+package chiptools.jprobe.function.peakfinder;
 
 import java.io.File;
 
 import chiptools.jprobe.data.Peaks;
+import chiptools.jprobe.function.params.GenomeParam;
+import chiptools.jprobe.function.params.PeaksParam;
+import chiptools.jprobe.function.params.SummitParam;
 
-public class GenomePeakFinderParams implements GenomeParam, PeaksParam, SummitParam{
+public class PeakFinderParams implements GenomeParam, PeaksParam, SummitParam{
 	
 	private File m_Genome = null;
 	private Peaks m_Peaks = null;

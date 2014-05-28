@@ -1,4 +1,4 @@
-package chiptools.jprobe.function;
+package chiptools.jprobe.function.probegenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import util.genome.probe.ProbeGroup;
 import util.genome.probe.ProbeUtils;
 import util.progress.ProgressListener;
 import chiptools.jprobe.data.Probes;
-import chiptools.jprobe.function.params.ProbeGeneratorParams;
+import chiptools.jprobe.function.AbstractChiptoolsFunction;
 import chiptools.jprobe.function.args.*;
 
 public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorParams>{
