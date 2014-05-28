@@ -33,7 +33,7 @@ public class Probes extends AbstractFinalData{
 		m_Probes = probes;
 	}
 	
-	private String addMutCoord(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations){
+	private String stringMutCoord(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations){
 		String s = "";
 		if(coord.equals(seq.getStart()) || !mutations.contains(coord.decrement(1))){
 			s += MUT_SITE_HTML_START;
@@ -45,7 +45,7 @@ public class Probes extends AbstractFinalData{
 		return s;
 	}
 	
-	private String addBindingCoord(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations, Collection<GenomicCoordinate> binding){
+	private String stringBindingCoord(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations, Collection<GenomicCoordinate> binding){
 		String s = "";
 		if(coord.equals(seq.getStart()) || mutations.contains(coord.decrement(1)) || !binding.contains(coord.decrement(1))){
 			s += BINDING_SITE_HTML_START;
@@ -70,9 +70,9 @@ public class Probes extends AbstractFinalData{
 		
 		for(GenomicCoordinate coord : seq){
 			if(mutations.contains(coord)){
-				s += this.addMutCoord(coord, seq, mutations);
+				s += this.stringMutCoord(coord, seq, mutations);
 			}else if(bindingSites.contains(coord)){
-				s += this.addBindingCoord(coord, seq, mutations, bindingSites);
+				s += this.stringBindingCoord(coord, seq, mutations, bindingSites);
 			}else{
 				s += seq.getBaseAt(coord);
 			}
