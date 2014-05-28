@@ -12,3 +12,5 @@ chiptools.jprobe.function.args.NumBindingSitesArgument	NumBindingSites	n	INT	Fie
 chiptools.jprobe.function.args.ProbesArgument	Probes	p	FILE	Data	Probes
 chiptools.jprobe.function.args.MinSiteDistArgument	MinSiteDistance		INT{default=2}	Fields	The minimum distance between binding sites on joined probes
 chiptools.jprobe.function.args.MaxSiteDistArgument	MaxSiteDistance		INT{default=16}	Fields	The maximum distance between binding sites on joined probes
+chiptools.jprobe.function.args.BindingKmerArgument	KMers	k	FILES	Data	Kmer data for profiling sequences
+chiptools.jprobe.function.args.BindingPWMArgument	PWMs	w	FILES	Data	PWM data for profiling sequences

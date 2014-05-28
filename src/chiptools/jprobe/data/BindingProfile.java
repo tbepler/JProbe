@@ -33,6 +33,7 @@ public class BindingProfile extends AbstractFinalData{
 	}
 	
 	private static final int NAME = 0;
+	private static final int WORD_LEN = 1;
 	
 	private final List<Profile> m_Profiles;
 	private final Map<Integer, Profile> m_ProfileStarts = new HashMap<Integer, Profile>();
@@ -51,6 +52,7 @@ public class BindingProfile extends AbstractFinalData{
 	public Class<?> getColumnClass(int col) {
 		switch(col){
 		case NAME: return String.class;
+		case WORD_LEN: return Integer.class;
 		default: return Double.class;
 		}
 	}
@@ -59,6 +61,7 @@ public class BindingProfile extends AbstractFinalData{
 	public String getColumnName(int col) {
 		switch(col){
 		case NAME: return "Name";
+		case WORD_LEN: return "Word length";
 		default: return String.valueOf(col);
 		}
 	}
@@ -74,6 +77,7 @@ public class BindingProfile extends AbstractFinalData{
 		int e = row - profile;
 		switch(col){
 		case NAME: return p.getEntryName(e);
+		case WORD_LEN: return p.getWordLen(e);
 		default:
 			double[] entries = p.getEntry(e);
 			int index = col - 1;

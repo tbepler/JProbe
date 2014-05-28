@@ -10,6 +10,7 @@ public class Sequences {
 	public static class Profile{
 		
 		private final List<String> m_Names = new ArrayList<String>();
+		private final List<Integer> m_WordLens = new ArrayList<Integer>();
 		private final List<double[]> m_Entries = new ArrayList<double[]>();
 		
 		public int size(){
@@ -28,8 +29,13 @@ public class Sequences {
 			return m_Entries.get(entry);
 		}
 		
-		private void put(String name, double[] entry){
+		public int getWordLen(int entry){
+			return m_WordLens.get(entry);
+		}
+		
+		private void put(String name, int wordLen, double[] entry){
 			m_Names.add(name);
+			m_WordLens.add(wordLen);
 			m_Entries.add(entry);
 		}
 		
@@ -66,7 +72,7 @@ public class Sequences {
 					String subseq = seq.substring(start, end);
 					scores[start] = kmer.escore(subseq);
 				}
-				p.put(name + "\t"+wordLen, scores);
+				p.put(name, wordLen, scores);
 			}
 		}
 		//for each pwm, score the sequence by each word of the size of the pwm
@@ -82,7 +88,7 @@ public class Sequences {
 				String subseq = seq.substring(start, end);
 				scores[start] = pwm.score(subseq);
 			}
-			p.put(name+"\t"+pwm.length(), scores);
+			p.put(name, pwm.length(), scores);
 		}
 		return p;
 	}
