@@ -28,6 +28,8 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 	
 	private static final char SEP = ':';
 	
+	public static final String COORD_REGEX = ".+"+SEP+"\\d+";
+	
 	public static GenomicCoordinate parseString(String s) throws ParsingException{
 		try{
 			String chr = s.substring(0, s.indexOf(SEP));

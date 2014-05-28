@@ -3,6 +3,7 @@ package util.genome.probe;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -20,10 +21,13 @@ public class Probe implements Serializable, Comparable<Probe>{
 	private static final long serialVersionUID = 1L;
 
 	private static final String BINDING_SITE_SEP = ";";
+	private static final String MUTATIONS_SEP = "&";
 	private static final String NUMBER_SEP = "-";
 	
 	private static final String REGION_REGEX = GenomicRegion.GENOMIC_REGION_REGEX;
+	private static final String COORD_REGEX = GenomicCoordinate.COORD_REGEX;
 	private static final String BINDING_SITES_REGEX = BINDING_SITE_SEP + "(" + REGION_REGEX + BINDING_SITE_SEP + ")*";
+	private static final String MUTATIONS_REGEX = MUTATIONS_SEP + "(" + COORD_REGEX + MUTATIONS_SEP + ")*";
 	private static final String NUMBERED_NAME_REGEX = ".*"+NUMBER_SEP+"\\d+";
 	private static final String STRAND_REGEX = Strand.STRAND_REGEX;
 	private static final String MUT_REGEX = "([Mm][Uu][Tt][Aa][Nn][Tt])|([Mm])";
@@ -38,6 +42,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 			Strand strand = Strand.UNKNOWN;
 			boolean mutant = false;
 			GenomicRegion[] bindingSites = null;
+			List<GenomicCoordinate> mutations = new ArrayList<GenomicCoordinate>();
 			
 			for(int i=1; i<tokens.length; i++){
 				String cur = tokens[i];
@@ -45,6 +50,8 @@ public class Probe implements Serializable, Comparable<Probe>{
 					region = GenomicRegion.parseString(cur);
 				}else if(cur.matches(BINDING_SITES_REGEX) && bindingSites == null){
 					bindingSites = parseBindingSites(cur);
+				}else if (cur.matches(MUTATIONS_REGEX) && mutations.isEmpty()){
+					mutations = parseMutations(cur);
 				}else if(cur.matches(STRAND_REGEX) && strand == Strand.UNKNOWN){
 					strand = Strand.parseStrand(cur);
 				}else if(cur.matches(MUT_TYPE_REGEX)){
@@ -82,16 +89,39 @@ public class Probe implements Serializable, Comparable<Probe>{
 					bindingSites.add(GenomicRegion.parseString(tokens[i]));
 				}
 			} catch (ParsingException e) {
-				System.err.println("Error while parsing binding sites \"" + s + "\" on token \""+tokens[i]+"\"." +e.getMessage());
+				throw new RuntimeException("Error while parsing binding sites \"" + s + "\" on token \""+tokens[i]+"\". " +e.getMessage());
 			}
 		}
 		return bindingSites.toArray(new GenomicRegion[bindingSites.size()]);
+	}
+	
+	private static List<GenomicCoordinate> parseMutations(String s){
+		String[] tokens = s.split(MUTATIONS_SEP);
+		List<GenomicCoordinate> mutations = new ArrayList<GenomicCoordinate>();
+		for(int i=0; i<tokens.length; i++){
+			try{
+				if(tokens[i].matches(COORD_REGEX)){
+					mutations.add(GenomicCoordinate.parseString(tokens[i]));
+				}
+			} catch (ParsingException e){
+				throw new RuntimeException("Error while parsing mutations \""+ s + "\" on token \""+tokens[i]+"\". "+e.getMessage());
+			}
+		}
+		return mutations;
 	}
 	
 	private static String bindingSitesToString(GenomicRegion[] bindingSites){
 		String s = BINDING_SITE_SEP;
 		for(GenomicRegion site : bindingSites){
 			s += site.toString() + BINDING_SITE_SEP;
+		}
+		return s;
+	}
+	
+	private static String mutationsToString(List<GenomicCoordinate> mutations){
+		String s = MUTATIONS_SEP;
+		for(GenomicCoordinate coord : mutations){
+			s += coord.toString() + MUTATIONS_SEP;
 		}
 		return s;
 	}
@@ -109,6 +139,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 	
 	private final GenomicSequence m_Seq;
 	private final GenomicRegion[] m_BindingSites;
+	private final List<GenomicCoordinate> m_Mutations;
 	private final String m_Name;
 	private final boolean m_Mutant;
 	private final Strand m_Strand;
@@ -116,6 +147,10 @@ public class Probe implements Serializable, Comparable<Probe>{
 	
 	public Probe(String seq){
 		this(seq, null, null);
+	}
+	
+	public Probe(Probe base, String seq, List<GenomicCoordinate> mutations, boolean mutant){
+		this(seq, base.getRegion(), base.getBindingSites(), mutations, base.getName(), base.getStrand(), mutant);
 	}
 	
 	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites){
@@ -163,9 +198,14 @@ public class Probe implements Serializable, Comparable<Probe>{
 	}
 	
 	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, String name, Strand strand, boolean mutant){
+		this(seq, region, bindingSites, new ArrayList<GenomicCoordinate>(), name, strand, mutant);
+	}
+	
+	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, List<GenomicCoordinate> mutations, String name, Strand strand, boolean mutant){
 		GenomicRegion r = region != null ? region : new GenomicRegion(new Chromosome("0"), 1, seq.length());
 		m_Seq = new GenomicSequence(seq, r);
 		m_BindingSites = bindingSites == null ? new GenomicRegion[]{} : Arrays.copyOf(bindingSites, bindingSites.length);
+		m_Mutations = new ArrayList<GenomicCoordinate>(mutations);
 		m_Name = name!=null && !name.equals("") ? name : "Probe";
 		m_Mutant = mutant;
 		m_Strand = strand;
@@ -194,6 +234,14 @@ public class Probe implements Serializable, Comparable<Probe>{
 	
 	public boolean isMutant(){
 		return m_Mutant;
+	}
+	
+	public List<GenomicCoordinate> getMutations(){
+		return Collections.unmodifiableList(m_Mutations);
+	}
+	
+	public int numMutations(){
+		return m_Mutations.size();
 	}
 	
 	public String getStrandAsString(){
@@ -287,7 +335,8 @@ public class Probe implements Serializable, Comparable<Probe>{
 				+ this.getName() + "\t"
 				+ strandToString(m_Strand) + "\t"
 				+ mutantToString(m_Mutant) + "\t"
-				+ bindingSitesToString(m_BindingSites);
+				+ bindingSitesToString(m_BindingSites) + "\t"
+				+ mutationsToString(m_Mutations);
 	}
 	
 	public String toString(int number){
@@ -296,7 +345,8 @@ public class Probe implements Serializable, Comparable<Probe>{
 				+ this.getName(number) + "\t"
 				+ strandToString(m_Strand) + "\t"
 				+ mutantToString(m_Mutant) + "\t"
-				+ bindingSitesToString(m_BindingSites);
+				+ bindingSitesToString(m_BindingSites) + "\t"
+				+ mutationsToString(m_Mutations);
 	}
 	
 	@Override
