@@ -23,7 +23,10 @@ public class ProbesReaderWriter implements DataReader, DataWriter{
 
 	@Override
 	public void write(Data data, FileNameExtensionFilter format, BufferedWriter out) throws Exception {
-		out.write(data.toString());
+		ProbeGroup group = ((Probes) data).getProbeGroup();
+		for(int i=0; i<group.size(); i++){
+			out.write(group.getProbe(i).toString(i+1) + "\n");
+		}
 	}
 
 	@Override

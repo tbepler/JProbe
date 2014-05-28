@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import chiptools.Constants;
+import util.genome.peak.PeakSequence;
 import util.genome.peak.PeakSequenceGroup;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
@@ -65,8 +66,10 @@ public class PeakSequenceReaderWriter implements DataReader, DataWriter{
 
 	@Override
 	public void write(Data data, FileNameExtensionFilter format, BufferedWriter out) throws Exception {
-		PeakSequences peakSeqs = (PeakSequences) data;
-		out.write(peakSeqs.toString());
+		PeakSequenceGroup group = ((PeakSequences) data).getPeakSeqs();
+		for(PeakSequence p : group){
+			out.write(p.toString() + "\n");
+		}
 	}
 
 	@Override

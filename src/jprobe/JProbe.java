@@ -105,7 +105,9 @@ public class JProbe implements JProbeCore{
 			if(d != null){
 				DataWriter writer = m_DataManager.getDataWriter(d.getClass());
 				try {
-					writer.write(d, writer.getValidWriteFormats()[0], new BufferedWriter(new PrintWriter(System.out)));
+					BufferedWriter out = new BufferedWriter(new PrintWriter(System.out));
+					writer.write(d, writer.getValidWriteFormats()[0], out);
+					out.close();
 				} catch (Exception e) {
 					ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 				}
