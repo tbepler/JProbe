@@ -6,15 +6,15 @@ import jprobe.services.function.DoubleArgument;
 
 public class EscoreArgument extends DoubleArgument<EscoreParam>{
 
-	public EscoreArgument(boolean optional) {
+	public EscoreArgument(boolean optional, Double defaultVal) {
 		super(
 				Constants.getName(EscoreArgument.class),
-				Constants.getDescription(EscoreArgument.class),
+				Constants.getDescription(EscoreArgument.class) + (defaultVal == null ? "" : ", default="+defaultVal),
 				Constants.getCategory(EscoreArgument.class),
 				Constants.getFlag(EscoreArgument.class),
-				Constants.getPrototypeValue(EscoreArgument.class),
+				Constants.getPrototypeValue(EscoreArgument.class) + (defaultVal == null ? "" : "{default="+defaultVal+"}"),
 				optional,
-				0.4,
+				defaultVal,
 				-0.5,
 				0.5,
 				0.1

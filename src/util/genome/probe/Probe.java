@@ -252,6 +252,10 @@ public class Probe implements Serializable, Comparable<Probe>{
 		return m_Mutations.size();
 	}
 	
+	public String getMutationsAsString(){
+		return mutationsToString(m_Mutations);
+	}
+	
 	public String getStrandAsString(){
 		return m_Strand.toString();
 	}
@@ -263,6 +267,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 	public String getBindingSitesAsString(){
 		return bindingSitesToString(m_BindingSites);
 	}
+	
 	
 	public String getSequence(){
 		return m_Seq.getSequence();

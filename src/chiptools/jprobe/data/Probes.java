@@ -17,7 +17,7 @@ public class Probes extends AbstractFinalData{
 	private static final String MUT_SITE_HTML_START = "<font color=blue>";
 	private static final String MUT_SITE_HTML_END = "</font>";
 	
-	private static final int PROBE_COLS = 6;
+	private static final int PROBE_COLS = 7;
 	
 	private static final int SEQ = 0;
 	private static final int REGION = 1;
@@ -25,6 +25,7 @@ public class Probes extends AbstractFinalData{
 	private static final int STRAND = 3;
 	private static final int MUT = 4;
 	private static final int BINDING = 5;
+	private static final int MUTATIONS = 6;
 	
 	private final ProbeGroup m_Probes;
 	
@@ -99,6 +100,7 @@ public class Probes extends AbstractFinalData{
 		case STRAND: return String.class;
 		case MUT: return String.class;
 		case BINDING: return String.class;
+		case MUTATIONS: return String.class;
 		default: return null;
 		}
 	}
@@ -110,8 +112,9 @@ public class Probes extends AbstractFinalData{
 		case REGION: return "Region";
 		case NAME: return "Name";
 		case STRAND: return "Strand";
-		case MUT: return "Mutation";
+		case MUT: return "Mutated";
 		case BINDING: return "Binding sites";
+		case MUTATIONS: return "Mutatons";
 		default: return null;
 		}
 	}
@@ -126,6 +129,7 @@ public class Probes extends AbstractFinalData{
 		case STRAND: return p.getStrand().toString();
 		case MUT: return p.getMutantAsString();
 		case BINDING: return p.getBindingSitesAsString();
+		case MUTATIONS: return p.getMutationsAsString();
 		default: return null;
 		}
 	}
