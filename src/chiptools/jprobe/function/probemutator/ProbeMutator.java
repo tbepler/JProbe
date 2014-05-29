@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
@@ -18,15 +19,15 @@ import chiptools.jprobe.function.args.*;
 
 public class ProbeMutator extends AbstractChiptoolsFunction<ProbeMutatorParams>{
 	
-	private static final Collection<Character> DNA_ALPHABET = generateAlphabet();
+	private static final Set<Character> DNA_ALPHABET = generateAlphabet();
 			
-	private static Collection<Character> generateAlphabet(){
-		Collection<Character> alph = new HashSet<Character>();
+	private static Set<Character> generateAlphabet(){
+		Set<Character> alph = new HashSet<Character>();
 		alph.add('A');
 		alph.add('C');
 		alph.add('G');
 		alph.add('T');
-		return Collections.unmodifiableCollection(alph);
+		return Collections.unmodifiableSet(alph);
 	}
 
 	public ProbeMutator() {
