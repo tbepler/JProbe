@@ -282,7 +282,9 @@ public class ProbeUtils {
 	}
 	
 	private static Probe mutateRecurse(ProgressListener l, Probe p, Kmer kmer, Collection<Character> alphabet, Collection<GenomicRegion> outOfBounds, double escoreCutoff){
-		double[] scores = score(p.asGenomicSequence(), kmer, outOfBounds, escoreCutoff);
+
+		Collection<GenomicRegion> bindingSites = getBindingSites(p);
+		double[] scores = score(p.asGenomicSequence(), kmer, bindingSites, escoreCutoff);
 		if(!shouldMutate(scores, escoreCutoff)){
 			return p;
 		}
@@ -315,14 +317,21 @@ public class ProbeUtils {
 	}
 	
 	private static Mutation findOptimalMutation(Probe p, double[] scores, Collection<Character> alphabet, Kmer kmer, Collection<GenomicRegion> outOfBounds, double cutoff){
-		List<GenomicCoordinate> candidates = highestScoreCoords(scores, p.getRegion(), p.getMutations());
+		Collection<GenomicCoordinate> immutable = new HashSet<GenomicCoordinate>(p.getMutations());
+		for(GenomicRegion r : outOfBounds){
+			for(GenomicCoordinate coord : r){
+				immutable.add(coord);
+			}
+		}
+		List<GenomicCoordinate> candidates = highestScoreCoords(scores, p.getRegion(), immutable);
 		GenomicSequence seq = p.asGenomicSequence();
+		Collection<GenomicRegion> bindingSites = getBindingSites(p);
 		Mutation best = null;
 		double bestScore = Double.POSITIVE_INFINITY;
 		for(GenomicCoordinate coord : candidates){
 			for(Mutation mut : possibleMutations(seq, coord, alphabet)){
 				GenomicSequence mutated = makeMutation(mut, seq);
-				double totalScore = sum(score(mutated, kmer, outOfBounds, cutoff));
+				double totalScore = sum(score(mutated, kmer, bindingSites, cutoff));
 				if(totalScore < bestScore){
 					best = mut;
 					bestScore = totalScore;
@@ -330,6 +339,14 @@ public class ProbeUtils {
 			}
 		}
 		return best;
+	}
+	
+	private static List<GenomicRegion> getBindingSites(Probe p){
+		List<GenomicRegion> sites = new ArrayList<GenomicRegion>();
+		for(GenomicRegion bindingSite : p.getBindingSites()){
+			sites.add(bindingSite);
+		}
+		return sites;
 	}
 	
 	private static GenomicSequence makeMutation(Mutation mut, GenomicSequence seq){
@@ -347,12 +364,12 @@ public class ProbeUtils {
 		return muts;
 	}
 	
-	private static List<GenomicCoordinate> highestScoreCoords(double[] scores, GenomicRegion region, Collection<GenomicCoordinate> priorMutations){
+	private static List<GenomicCoordinate> highestScoreCoords(double[] scores, GenomicRegion region, Collection<GenomicCoordinate> immutable){
 		List<GenomicCoordinate> topScores = new ArrayList<GenomicCoordinate>();
 		double topScore = Double.NEGATIVE_INFINITY;
 		for(int i=0; i<scores.length; i++){
 			GenomicCoordinate coord = region.toCoordinate(i);
-			if(!priorMutations.contains(coord)){
+			if(!immutable.contains(coord)){
 				double score = scores[i];
 				if(score > topScore){
 					topScores.clear();
@@ -366,12 +383,12 @@ public class ProbeUtils {
 		return topScores;
 	}
 	
-	private static double[] score(GenomicSequence seq, Kmer kmer, Collection<GenomicRegion> outOfBounds, double cutoff){
+	private static double[] score(GenomicSequence seq, Kmer kmer, Collection<GenomicRegion> bindingSites, double cutoff){
 		double[] scores = kmer.escoreSequence(seq.getSequence());
-		for(GenomicRegion immutable : outOfBounds){
-			for(GenomicCoordinate c : immutable){
+		for(GenomicRegion bindingSite : bindingSites){
+			for(GenomicCoordinate c : bindingSite){
 				int i = seq.getRegion().toIndex(c);
-				scores[i] = cutoff;
+				scores[i] = Double.NEGATIVE_INFINITY;
 			}
 		}
 		return scores;
@@ -399,7 +416,9 @@ public class ProbeUtils {
 	private static double sum(double[] array){
 		double sum = 0;
 		for(double d : array){
-			sum += d;
+			if(d != Double.NEGATIVE_INFINITY){
+				sum += d;
+			}
 		}
 		return sum;
 	}
