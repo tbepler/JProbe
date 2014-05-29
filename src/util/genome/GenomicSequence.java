@@ -52,6 +52,14 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return m_Region.overlaps(region);
 	}
 	
+	public long getOverlap(GenomicRegion other){
+		return m_Region.getOverlap(other);
+	}
+	
+	public long getOverlap(GenomicSequence other){
+		return m_Region.getOverlap(other.getRegion());
+	}
+	
 	private int getIndexOf(GenomicCoordinate coord){
 		return (int) this.getStart().distance(coord);
 	}
