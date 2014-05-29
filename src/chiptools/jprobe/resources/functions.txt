@@ -1,5 +1,5 @@
 chiptools.jprobe.function.peakfinder.PeakFinder	peakfinder	Genome	This function extracts ChIP-seq peak sequences from the genome.
 chiptools.jprobe.function.probegenerator.ProbeGenerator	probegen	Chiptools	This function generates probes from peak sequences using Kmer data and a PWM for the factor of interest.
 chiptools.jprobe.function.probejoiner.ProbeJoiner	probejoiner	Chiptools	This function takes existing probes and combines overlapping ones into multiple binding site probes.
-chiptools.jprobe.function.bindingprofiler.BindingProfiler	bindingprofiler	Chiptools	This function takes existing probes and profiles them using specified KMers and PWMs.
+chiptools.jprobe.function.bindingprofiler.BindingProfiler	bindingprofiler	Chiptools	This function takes existing probes and profiles them using specified KMers and/or PWMs.
 chiptools.jprobe.function.probemutator.ProbeMutator	probemutator	Chiptools	This function takes existing probes and mutates them such that no Kmers outside of the binding site regions exceed a provided E-score cutoff.

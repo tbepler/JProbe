@@ -174,9 +174,9 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	}
 
 	@Override
-	public void addHelpTab(JComponent component, Bundle responsible) {
-		m_HelpWindow.addTab(component, responsible.getSymbolicName());
-		checkDebugAndLog("Help tab "+component.toString()+" added by plugin: "+responsible.getSymbolicName());
+	public void addHelpTab(JComponent component, String tabName, Bundle responsible) {
+		m_HelpWindow.addTab(component, tabName);
+		checkDebugAndLog("Help tab "+tabName+" added by plugin: "+responsible.getSymbolicName());
 	}
 
 	@Override
@@ -186,9 +186,9 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	}
 
 	@Override
-	public void addPreferencesTab(JComponent component, Bundle responsible) {
-		m_PreferencesWindow.addTab(component, responsible.getSymbolicName());
-		checkDebugAndLog("Preferences tab "+component.toString()+" added by plugin: "+responsible.getSymbolicName());
+	public void addPreferencesTab(JComponent component, String tabName, Bundle responsible) {
+		m_PreferencesWindow.addTab(component, tabName);
+		checkDebugAndLog("Preferences tab "+tabName+" added by plugin: "+responsible.getSymbolicName());
 	}
 
 	@Override

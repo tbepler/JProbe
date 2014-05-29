@@ -18,10 +18,10 @@ public interface JProbeGUI {
 	public void addGUIListener(GUIListener listener);
 	public void removeGUIListener(GUIListener listener);
 	
-	public void addHelpTab(JComponent component, Bundle responsible);
+	public void addHelpTab(JComponent component, String tabName, Bundle responsible);
 	public void removeHelpTab(JComponent component, Bundle responsible);
 	
-	public void addPreferencesTab(JComponent component, Bundle responsible);
+	public void addPreferencesTab(JComponent component, String tabName, Bundle responsible);
 	public void removePreferencesTab(JComponent component, Bundle responsible);
 	
 	public void addComponent(JComponent component, GridBagConstraints constrains, Bundle responsible);
