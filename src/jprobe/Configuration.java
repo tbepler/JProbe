@@ -103,8 +103,8 @@ public class Configuration {
 				//do nothing
 			}
 		}
-		errorLogFile = errorLogFile.startsWith(File.separator) ? errorLogFile : Launcher.JAR_DIR + File.separator + errorLogFile;
-		logFile = logFile.startsWith(File.separator) ? logFile : Launcher.JAR_DIR + File.separator + logFile;
+		errorLogFile = errorLogFile.startsWith(File.separator) ? errorLogFile : Constants.JAR_DIR + File.separator + errorLogFile;
+		logFile = logFile.startsWith(File.separator) ? logFile : Constants.JAR_DIR + File.separator + logFile;
 		Debug.setLevel(debugLevel);
 		ErrorHandler.getInstance().init(new TimeStampJournal(new File(errorLogFile)));
 		Log.getInstance().init(new TimeStampJournal(new File(logFile)));
@@ -163,7 +163,7 @@ public class Configuration {
 	}
 	
 	public String getAutoDeployPluginDirectory(){
-		return autoDeployPluginDirectory.startsWith(File.separator) ? autoDeployPluginDirectory : Launcher.JAR_DIR + File.separator + autoDeployPluginDirectory;
+		return autoDeployPluginDirectory.startsWith(File.separator) ? autoDeployPluginDirectory : Constants.JAR_DIR + File.separator + autoDeployPluginDirectory;
 	}
 	
 	public String getFelixStorageClean(){

@@ -20,6 +20,7 @@ public class Constants {
 	public static final String HELP_TAG = "-help";
 	
 	public static final String PREF_TAB_NAME = "Chiptools";
+	public static final String PREF_FILE_NAME = "chiptools.pref";
 	
 	public static final String RESOURCES_PATH = "/chiptools/jprobe/resources";
 	

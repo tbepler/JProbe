@@ -1,6 +1,7 @@
 package jprobe;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +14,14 @@ public class Constants {
 	public static final String NAME = "JProbe";
 	public static final String VERSION = "v0.5.1";
 	public static final String AUTHOR = "Tristan Bepler";
+	
+	public static final String URL_PATH_SEPARATOR = "/";
+	
+	public static final String JAR_URL = Launcher.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+	public static final String JAR_DIR = JAR_URL.substring(0, JAR_URL.lastIndexOf(URL_PATH_SEPARATOR));
+	
+	public static final String CONFIG_FILE = JAR_DIR + File.separator + "config.txt";
+	public static final String PREFERENCES_DIR = JAR_DIR + File.separator + "preferences";
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	

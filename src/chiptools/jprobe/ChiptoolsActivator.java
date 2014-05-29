@@ -1,10 +1,15 @@
 package chiptools.jprobe;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JComponent;
 
+import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 
 import org.osgi.framework.Bundle;
@@ -50,6 +55,11 @@ public class ChiptoolsActivator implements BundleActivator{
 	public void start(BundleContext c) throws Exception {
 		CORE = c.getService(c.getServiceReference(JProbeCore.class));
 		BUNDLE = c.getBundle();
+		try{
+			Preferences.getInstance().load(new FileInputStream(new File(CORE.getPreferencesDir() + File.separator + Constants.PREF_FILE_NAME)));
+		}catch(FileNotFoundException e){
+			ErrorHandler.getInstance().handleException(e, BUNDLE);
+		}
 		m_FncProvider.start(c);
 		m_RWProvider.start(c);
 		m_ServiceRegs.add(c.registerService(PreferencesTabService.class, m_PrefService, null));
@@ -57,6 +67,7 @@ public class ChiptoolsActivator implements BundleActivator{
 
 	@Override
 	public void stop(BundleContext c) throws Exception {
+		Preferences.getInstance().save(new FileOutputStream(new File(CORE.getPreferencesDir() + File.separator + Constants.PREF_FILE_NAME)));
 		m_FncProvider.stop(c);
 		m_RWProvider.stop(c);
 		for(ServiceRegistration<?> reg : m_ServiceRegs){

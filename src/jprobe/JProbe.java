@@ -127,6 +127,11 @@ public class JProbe implements JProbeCore{
 	}
 	
 	@Override
+	public String getPreferencesDir(){
+		return jprobe.Constants.PREFERENCES_DIR;
+	}
+	
+	@Override
 	public void shutdown(){
 		try{
 			if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
