@@ -1,5 +1,8 @@
 package plugins.jprobe.gui;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.JProbeCore.Mode;
@@ -7,6 +10,7 @@ import jprobe.services.JProbeCore.Mode;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
@@ -21,6 +25,7 @@ public class GUIActivator implements BundleActivator{
 	private JProbeGUIFrame m_Gui;
 	private GUIErrorManager m_ErrorManager = null;
 	private ServiceRegistration<JProbeGUI> m_Registration = null;
+	private Collection<ServiceListener> m_ServiceListeners = null;
 	
 	public static Bundle getBundle(){
 		return m_Bundle;
@@ -39,6 +44,19 @@ public class GUIActivator implements BundleActivator{
 		m_ErrorManager = new GUIErrorManager(m_Gui);
 		ErrorHandler.getInstance().addErrorManager(m_ErrorManager);
 		m_Registration = context.registerService(JProbeGUI.class, m_Gui, null);
+		m_ServiceListeners = initServiceListeners(m_Gui, context);
+	}
+	
+	private static Collection<ServiceListener> initServiceListeners(JProbeGUI gui, BundleContext context){
+		Collection<ServiceListener> l = new ArrayList<ServiceListener>();
+		l.add(new HelpTabListener(gui, context));
+		l.add(new PreferencesTabListener(gui, context));
+		l.add(new ComponentListener(gui, context));
+		l.add(new MenuListener(gui, context));
+		for(ServiceListener list : l){
+			context.addServiceListener(list);
+		}
+		return l;
 	}
 
 	@Override
@@ -54,6 +72,12 @@ public class GUIActivator implements BundleActivator{
 		if(m_Gui != null){
 			m_Gui.dispose();
 			m_Gui = null;
+		}
+		if(m_ServiceListeners != null){
+			for(ServiceListener l : m_ServiceListeners){
+				context.removeServiceListener(l);
+			}
+			m_ServiceListeners = null;
 		}
 		m_Bundle = null;
 	}
