@@ -1,8 +1,7 @@
-<Thu May 29 12:59:58 EDT 2014><org.apache.felix.framework>JProbe started.
-<Thu May 29 12:59:59 EDT 2014><plugins.dataviewer.gui>DataViewer started.
-<Thu May 29 12:59:59 EDT 2014><plugins.functions.gui>Function menu started.
-<Thu May 29 12:59:59 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
-<Thu May 29 13:00:32 EDT 2014><plugins.functions.gui>probemutator clicked
-<Thu May 29 13:04:01 EDT 2014><plugins.functions.gui>probejoiner clicked
-<Thu May 29 13:04:34 EDT 2014><plugins.functions.gui>probemutator clicked
-<Thu May 29 13:08:54 EDT 2014><org.apache.felix.framework>JProbe shutting down.
+<Thu May 29 14:26:52 EDT 2014><org.apache.felix.framework>JProbe started.
+<Thu May 29 14:26:53 EDT 2014><plugins.functions.gui>Function menu started.
+<Thu May 29 14:26:53 EDT 2014><plugins.dataviewer.gui>DataViewer started.
+<Thu May 29 14:26:53 EDT 2014><plugins.jprobe.gui>Preferences tab Chiptools added by plugin: chiptools.jprobe
+<Thu May 29 14:26:53 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
+<Thu May 29 14:27:08 EDT 2014><org.apache.felix.framework>JProbe shutting down.
+<Thu May 29 14:27:08 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin stopped.

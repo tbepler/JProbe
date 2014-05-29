@@ -3,6 +3,7 @@ package plugins.jprobe.gui;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import jprobe.services.AbstractServiceListener;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.JProbeCore.Mode;
@@ -25,7 +26,7 @@ public class GUIActivator implements BundleActivator{
 	private JProbeGUIFrame m_Gui;
 	private GUIErrorManager m_ErrorManager = null;
 	private ServiceRegistration<JProbeGUI> m_Registration = null;
-	private Collection<ServiceListener> m_ServiceListeners = null;
+	private Collection<AbstractServiceListener<?>> m_ServiceListeners = null;
 	
 	public static Bundle getBundle(){
 		return m_Bundle;
@@ -47,14 +48,14 @@ public class GUIActivator implements BundleActivator{
 		m_ServiceListeners = initServiceListeners(m_Gui, context);
 	}
 	
-	private static Collection<ServiceListener> initServiceListeners(JProbeGUI gui, BundleContext context){
-		Collection<ServiceListener> l = new ArrayList<ServiceListener>();
+	private static Collection<AbstractServiceListener<?>> initServiceListeners(JProbeGUI gui, BundleContext context){
+		Collection<AbstractServiceListener<?>> l = new ArrayList<AbstractServiceListener<?>>();
 		l.add(new HelpTabListener(gui, context));
 		l.add(new PreferencesTabListener(gui, context));
 		l.add(new ComponentListener(gui, context));
 		l.add(new MenuListener(gui, context));
-		for(ServiceListener list : l){
-			context.addServiceListener(list);
+		for(AbstractServiceListener<?> list : l){
+			list.load();
 		}
 		return l;
 	}
@@ -74,8 +75,8 @@ public class GUIActivator implements BundleActivator{
 			m_Gui = null;
 		}
 		if(m_ServiceListeners != null){
-			for(ServiceListener l : m_ServiceListeners){
-				context.removeServiceListener(l);
+			for(AbstractServiceListener<?> l : m_ServiceListeners){
+				l.unload();
 			}
 			m_ServiceListeners = null;
 		}
