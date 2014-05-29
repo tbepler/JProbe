@@ -67,7 +67,13 @@ public class ChiptoolsActivator implements BundleActivator{
 
 	@Override
 	public void stop(BundleContext c) throws Exception {
-		Preferences.getInstance().save(new FileOutputStream(new File(CORE.getPreferencesDir() + File.separator + Constants.PREF_FILE_NAME)));
+		try{
+			Preferences.getInstance().save(new FileOutputStream(new File(CORE.getPreferencesDir() + File.separator + Constants.PREF_FILE_NAME)));
+		} catch (FileNotFoundException e){
+			File f = new File(CORE.getPreferencesDir() + File.separator + Constants.PREF_FILE_NAME);
+			f.getParentFile().mkdirs();
+			Preferences.getInstance().save(new FileOutputStream(f));
+		}
 		m_FncProvider.stop(c);
 		m_RWProvider.stop(c);
 		for(ServiceRegistration<?> reg : m_ServiceRegs){

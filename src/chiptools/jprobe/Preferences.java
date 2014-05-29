@@ -124,8 +124,8 @@ public class Preferences extends JPanel implements Subject<Preferences.Update>{
 				}catch(Exception e){
 					//do nothing
 				}
-				reader.close();
 			}
+			reader.close();
 		} catch (IOException e) {
 			ErrorHandler.getInstance().handleException(e, ChiptoolsActivator.getBundle());
 		}

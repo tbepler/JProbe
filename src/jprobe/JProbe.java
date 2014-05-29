@@ -114,6 +114,13 @@ public class JProbe implements JProbeCore{
 			}
 			this.shutdown();;
 		}
+		
+		try {
+			m_Felix.waitForStop(0);
+		} catch (InterruptedException e) {
+			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+		}
+		System.exit(0);
 	}
 	
 	void setDataManager(CoreDataManager dataManager){
@@ -140,7 +147,7 @@ public class JProbe implements JProbeCore{
 			m_Felix.stop();
 			//System.out.println("Waiting for stop");
 			//m_Felix.waitForStop(0);
-			System.exit(0);
+			//System.exit(0);
 		} catch (Exception e){
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			e.printStackTrace();
