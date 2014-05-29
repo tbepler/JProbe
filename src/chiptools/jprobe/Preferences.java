@@ -10,13 +10,12 @@ import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.swing.JPanel;
-
+import plugins.jprobe.gui.services.PreferencesPanel;
 import jprobe.services.ErrorHandler;
 import util.Observer;
 import util.Subject;
 
-public class Preferences extends JPanel implements Subject<Preferences.Update>{
+public class Preferences extends PreferencesPanel implements Subject<Preferences.Update>{
 	private static final long serialVersionUID = 1L;
 	
 	public enum Update{
@@ -58,6 +57,7 @@ public class Preferences extends JPanel implements Subject<Preferences.Update>{
 		m_MutationSite.setEndHTML(m_MutEnd);
 	}
 	
+	@Override
 	public void apply(){
 		m_BindingStart = m_BindingSite.getStartHTML();
 		m_BindingEnd = m_BindingSite.getEndHTML();
@@ -67,6 +67,7 @@ public class Preferences extends JPanel implements Subject<Preferences.Update>{
 		this.notifyObs(Update.MUTATION_SITE_HTML);
 	}
 	
+	@Override
 	public void close(){
 		m_BindingSite.setStartHTML(m_BindingStart);
 		m_BindingSite.setEndHTML(m_BindingEnd);

@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.JComponent;
-
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 
@@ -18,6 +16,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 import chiptools.Constants;
+import plugins.jprobe.gui.services.PreferencesPanel;
 import plugins.jprobe.gui.services.PreferencesTabService;
 
 public class ChiptoolsActivator implements BundleActivator{
@@ -45,7 +44,7 @@ public class ChiptoolsActivator implements BundleActivator{
 		}
 
 		@Override
-		public JComponent getPreferencesTab() {
+		public PreferencesPanel getPreferencesTab() {
 			return Preferences.getInstance();
 		}
 		

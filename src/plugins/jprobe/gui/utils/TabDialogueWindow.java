@@ -6,6 +6,8 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 
+import plugins.jprobe.gui.Constants;
+
 public class TabDialogueWindow extends JDialog{
 	private static final long serialVersionUID = 1L;
 	
@@ -15,6 +17,7 @@ public class TabDialogueWindow extends JDialog{
 		super(owner, title, modal);
 		tabPane = new JTabbedPane();
 		this.setContentPane(tabPane);
+		this.setPreferredSize(Constants.PREF_HELP_DEFAULT_DIM);
 		this.pack();
 		this.setLocation(owner.getX()+owner.getWidth()/2-this.getWidth()/2, owner.getY()+owner.getHeight()/2-this.getHeight()/2);
 	}

@@ -21,8 +21,8 @@ public interface JProbeGUI {
 	public void addHelpTab(JComponent component, String tabName, Bundle responsible);
 	public void removeHelpTab(JComponent component, Bundle responsible);
 	
-	public void addPreferencesTab(JComponent component, String tabName, Bundle responsible);
-	public void removePreferencesTab(JComponent component, Bundle responsible);
+	public void addPreferencesTab(PreferencesPanel component, String tabName, Bundle responsible);
+	public void removePreferencesTab(PreferencesPanel component, Bundle responsible);
 	
 	public void addComponent(JComponent component, GridBagConstraints constrains, Bundle responsible);
 	public void removeComponent(JComponent component, Bundle responsible);

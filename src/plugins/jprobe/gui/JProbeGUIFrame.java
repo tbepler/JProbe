@@ -31,6 +31,7 @@ import plugins.jprobe.gui.filemenu.FileMenu;
 import plugins.jprobe.gui.services.GUIEvent;
 import plugins.jprobe.gui.services.GUIListener;
 import plugins.jprobe.gui.services.JProbeGUI;
+import plugins.jprobe.gui.services.PreferencesPanel;
 import plugins.jprobe.gui.utils.DialogueMenu;
 import plugins.jprobe.gui.utils.TabDialogueWindow;
 import jprobe.services.Debug;
@@ -46,7 +47,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private JPanel m_ContentPane;
 	private JMenuBar m_MenuBar;
 	private Queue<JMenu> m_PluginMenuItems;
-	private TabDialogueWindow m_PreferencesWindow;
+	private PreferencesWindow m_PreferencesWindow;
 	private TabDialogueWindow m_HelpWindow;
 	private DialogueMenu m_PreferencesMenu;
 	private DialogueMenu m_HelpMenu;
@@ -89,7 +90,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		this.setLocation(center.x-this.getWidth()/2, center.y-this.getHeight()/2);
 		m_FileMenu = new FileMenu(this, m_Core);
 		m_MenuBar.add(m_FileMenu);
-		m_PreferencesWindow = new TabDialogueWindow(this, "Preferences", true);
+		m_PreferencesWindow = new PreferencesWindow(this, "Preferences", true);
 		m_HelpWindow = new TabDialogueWindow(this, "Help", true);
 		m_PreferencesMenu = new DialogueMenu("Preferences", m_PreferencesWindow);
 		m_PreferencesMenu.setMnemonic(KeyEvent.VK_P);
@@ -186,13 +187,13 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	}
 
 	@Override
-	public void addPreferencesTab(JComponent component, String tabName, Bundle responsible) {
+	public void addPreferencesTab(PreferencesPanel component, String tabName, Bundle responsible) {
 		m_PreferencesWindow.addTab(component, tabName);
 		checkDebugAndLog("Preferences tab "+tabName+" added by plugin: "+responsible.getSymbolicName());
 	}
 
 	@Override
-	public void removePreferencesTab(JComponent component, Bundle responsible) {
+	public void removePreferencesTab(PreferencesPanel component, Bundle responsible) {
 		m_PreferencesWindow.removeTab(component);
 		checkDebugAndLog("Preferences tab "+component.toString()+" removed by plugin: "+responsible.getSymbolicName());
 	}
