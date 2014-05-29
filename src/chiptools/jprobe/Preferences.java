@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.swing.SwingUtilities;
+
 import plugins.jprobe.gui.services.PreferencesPanel;
 import jprobe.services.ErrorHandler;
 import util.Observer;
@@ -20,7 +22,8 @@ public class Preferences extends PreferencesPanel implements Subject<Preferences
 	
 	public enum Update{
 		BINDING_SITE_HTML,
-		MUTATION_SITE_HTML;
+		MUTATION_SITE_HTML,
+		BOTH;
 	}
 	
 	private static final Preferences PREF = new Preferences();
@@ -63,16 +66,23 @@ public class Preferences extends PreferencesPanel implements Subject<Preferences
 		m_BindingEnd = m_BindingSite.getEndHTML();
 		m_MutStart = m_MutationSite.getStartHTML();
 		m_MutEnd = m_MutationSite.getEndHTML();
-		this.notifyObs(Update.BINDING_SITE_HTML);
-		this.notifyObs(Update.MUTATION_SITE_HTML);
+		this.notifyObs(Update.BOTH);
 	}
 	
 	@Override
 	public void close(){
-		m_BindingSite.setStartHTML(m_BindingStart);
-		m_BindingSite.setEndHTML(m_BindingEnd);
-		m_MutationSite.setStartHTML(m_MutStart);
-		m_MutationSite.setEndHTML(m_MutEnd);
+		//System.err.println("Closing");
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				m_BindingSite.setStartHTML(m_BindingStart);
+				m_BindingSite.setEndHTML(m_BindingEnd);
+				m_MutationSite.setStartHTML(m_MutStart);
+				m_MutationSite.setEndHTML(m_MutEnd);
+			}
+			
+		});
 	}
 	
 	public void setBindingStartHTML(String html){

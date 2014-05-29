@@ -2,6 +2,13 @@ package chiptools.jprobe.data;
 
 import java.util.Collection;
 import java.util.HashSet;
+
+import javax.swing.event.TableModelEvent;
+
+import chiptools.jprobe.Preferences;
+import chiptools.jprobe.Preferences.Update;
+import util.Observer;
+import util.Subject;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
@@ -9,13 +16,8 @@ import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
 import jprobe.services.data.AbstractFinalData;
 
-public class Probes extends AbstractFinalData{
+public class Probes extends AbstractFinalData implements Observer<Preferences.Update>{
 	private static final long serialVersionUID = 1L;
-	
-	private static final String BINDING_SITE_HTML_START = "<font color=red>";
-	private static final String BINDING_SITE_HTML_END ="</font>";
-	private static final String MUT_SITE_HTML_START = "<font color=blue>";
-	private static final String MUT_SITE_HTML_END = "</font>";
 	
 	private static final int PROBE_COLS = 7;
 	
@@ -32,16 +34,17 @@ public class Probes extends AbstractFinalData{
 	public Probes(ProbeGroup probes){
 		super(PROBE_COLS, probes.size());
 		m_Probes = probes;
+		Preferences.getInstance().register(this);
 	}
 	
 	private String stringMutCoord(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations){
 		String s = "";
 		if(coord.equals(seq.getStart()) || !mutations.contains(coord.decrement(1))){
-			s += MUT_SITE_HTML_START;
+			s += Preferences.getInstance().getMutStartHTML();
 		}
 		s += seq.getBaseAt(coord);
 		if(coord.equals(seq.getEnd()) || !mutations.contains(coord.increment(1))){
-			s += MUT_SITE_HTML_END;
+			s += Preferences.getInstance().getMutEndHTML();
 		}
 		return s;
 	}
@@ -49,11 +52,11 @@ public class Probes extends AbstractFinalData{
 	private String stringBindingCoord(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations, Collection<GenomicCoordinate> binding){
 		String s = "";
 		if(coord.equals(seq.getStart()) || mutations.contains(coord.decrement(1)) || !binding.contains(coord.decrement(1))){
-			s += BINDING_SITE_HTML_START;
+			s += Preferences.getInstance().getBindingStartHTML();
 		}
 		s += seq.getBaseAt(coord);
 		if(coord.equals(seq.getEnd()) || mutations.contains(coord.increment(1)) || !binding.contains(coord.increment(1))){
-			s += BINDING_SITE_HTML_END;
+			s += Preferences.getInstance().getBindingEndHTML();
 		}
 		return s;
 	}
@@ -131,6 +134,13 @@ public class Probes extends AbstractFinalData{
 		case BINDING: return p.getBindingSitesAsString();
 		case MUTATIONS: return p.getMutationsAsString();
 		default: return null;
+		}
+	}
+
+	@Override
+	public void update(Subject<Update> observed, Update notification) {
+		if(observed == Preferences.getInstance()){
+			this.notifyListeners(new TableModelEvent(this, 0, this.getRowCount()-1, 0));
 		}
 	}
 	
