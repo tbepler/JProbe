@@ -4,8 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-
+import plugins.jprobe.gui.GUIActivator;
 import plugins.jprobe.gui.SaveLoadUtil;
 import jprobe.services.JProbeCore;
 
@@ -22,7 +21,7 @@ public class SaveAsMenuItem extends JMenuItem implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		SaveLoadUtil.saveAs(m_Core, SwingUtilities.getWindowAncestor(this));
+		SaveLoadUtil.saveAs(m_Core, GUIActivator.getFrame());
 	}
 
 }

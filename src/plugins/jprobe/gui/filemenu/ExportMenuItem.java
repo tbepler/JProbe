@@ -5,9 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-
 import plugins.jprobe.gui.ExportImportUtil;
+import plugins.jprobe.gui.GUIActivator;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
@@ -28,7 +27,7 @@ public class ExportMenuItem extends JMenuItem implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		ExportImportUtil.exportData(m_Data, m_Core, m_FileChooser, SwingUtilities.getWindowAncestor(this));
+		ExportImportUtil.exportData(m_Data, m_Core, m_FileChooser, GUIActivator.getFrame());
 	}
 	
 	

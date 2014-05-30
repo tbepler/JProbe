@@ -1,6 +1,6 @@
 package plugins.jprobe.gui;
 
-import java.awt.Component;
+import java.awt.Frame;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -17,7 +17,7 @@ public class ExportImportUtil {
 	public static final String WILDCARD = "*";
 	public static final String FILE_NAME_WITH_EXTENSION_REGEX = "^.*\\..+$";
 
-	public static void importData(Class<? extends Data> type, JProbeCore core, JFileChooser importChooser, Component parent){
+	public static void importData(Class<? extends Data> type, JProbeCore core, JFileChooser importChooser, Frame parent){
 		//retrieve the registered file extension filters
 		FileFilter[] formats = core.getDataManager().getValidReadFormats(type);
 		//if there are none, then there is an error in the DataReader, so warn the user and return
@@ -43,7 +43,7 @@ public class ExportImportUtil {
 		}
 	}
 
-	public static void exportData(Data data, JProbeCore core, JFileChooser exportChooser, Component parent){
+	public static void exportData(Data data, JProbeCore core, JFileChooser exportChooser, Frame parent){
 		//retreive file formats for this data object
 		FileFilter[] formats = core.getDataManager().getValidWriteFormats(data.getClass());
 		//if there are none, then there is an error in the data writer. warn the user and return

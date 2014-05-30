@@ -18,20 +18,20 @@ import plugins.jprobe.gui.services.JProbeGUI;
 public class Activator implements BundleActivator{
 	
 	private static Bundle BUNDLE = null;
+	private static JProbeGUI GUI;
 	
 	private JProbeCore core;
-	private JProbeGUI gui;
 	private FunctionMenu menu;
 	private BundleContext bc;
 
 	private ServiceListener sl = new ServiceListener() {
 		@Override
 		public void serviceChanged(ServiceEvent ev) {
-			ServiceReference sr = ev.getServiceReference();
+			ServiceReference<?> sr = ev.getServiceReference();
 			switch(ev.getType()) {
 				case ServiceEvent.REGISTERED:
-					gui = (JProbeGUI) bc.getService(sr);
-					core = gui.getJProbeCore();
+					GUI = (JProbeGUI) bc.getService(sr);
+					core = GUI.getJProbeCore();
 					initMenu();
 					break;
 				default:
@@ -44,9 +44,13 @@ public class Activator implements BundleActivator{
 		return BUNDLE;
 	}
 	
+	public static JProbeGUI getGUI(){
+		return GUI;
+	}
+	
 	private void initMenu(){
-		menu = new FunctionMenu( gui.getGUIFrame(), core, bc.getBundle());
-		gui.addDropdownMenu(menu, bc.getBundle());
+		menu = new FunctionMenu( GUI.getGUIFrame(), core, bc.getBundle());
+		GUI.addDropdownMenu(menu, bc.getBundle());
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
 			Log.getInstance().write(BUNDLE, "Function menu started.");
 		}
@@ -59,7 +63,7 @@ public class Activator implements BundleActivator{
 		String filter = "(objectclass="+JProbeGUI.class.getName()+")";
 		context.addServiceListener(sl, filter);
 		Collection<ServiceReference<JProbeGUI>> refs = context.getServiceReferences(JProbeGUI.class, null);
-		for(ServiceReference r : refs){
+		for(ServiceReference<?> r : refs){
 			sl.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, r));
 		}
 	}
@@ -68,12 +72,12 @@ public class Activator implements BundleActivator{
 	public void stop(BundleContext context) throws Exception {
 		if(menu != null){
 			menu.cleanup();
-			if(gui != null){
-				gui.removeDropdownMenu(menu, context.getBundle());
+			if(GUI != null){
+				GUI.removeDropdownMenu(menu, context.getBundle());
 			}
 		}
-		if(gui != null){
-			gui = null;
+		if(GUI != null){
+			GUI = null;
 		}
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
 			Log.getInstance().write(BUNDLE, "Function menu stopped.");

@@ -1,6 +1,6 @@
 package plugins.jprobe.gui;
 
-import java.awt.Component;
+import java.awt.Frame;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -13,7 +13,7 @@ public class SaveLoadUtil {
 	
 	private static File LAST_SAVE_FILE = null;
 	
-	public static void saveAs(JProbeCore core, Component parent){
+	public static void saveAs(JProbeCore core, Frame parent){
 		SAVE_LOAD_CHOOSER.resetChoosableFileFilters();
 		SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);
 		int returnVal = SAVE_LOAD_CHOOSER.showDialog(parent, "Save");
@@ -27,7 +27,7 @@ public class SaveLoadUtil {
 		}
 	}
 	
-	public static void save(JProbeCore core, Component parent){
+	public static void save(JProbeCore core, Frame parent){
 		if(LAST_SAVE_FILE == null){
 			saveAs(core, parent);
 		}else{
@@ -44,7 +44,7 @@ public class SaveLoadUtil {
 		return false;
 	}
 	
-	public static void load(JProbeCore core, Component parent){
+	public static void load(JProbeCore core, Frame parent){
 		SAVE_LOAD_CHOOSER.resetChoosableFileFilters();
 		SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);
 		int returnVal = SAVE_LOAD_CHOOSER.showDialog(parent, "Load");

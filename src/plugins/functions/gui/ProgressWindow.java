@@ -10,13 +10,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import util.gui.OnPress;
+import util.gui.SwingUtils;
 
 public class ProgressWindow implements ActionListener{
 	
@@ -24,7 +26,8 @@ public class ProgressWindow implements ActionListener{
 	
 	public static final int MILLISEC_BEFORE_DISPLAY = 500;
 	
-	private JFrame m_Frame;
+	private JDialog m_Window;
+	private JPanel m_Content;
 	private JLabel m_TextLabel;
 	private JProgressBar m_ProgressBar;
 	private JButton m_CancelButton;
@@ -33,15 +36,16 @@ public class ProgressWindow implements ActionListener{
 	
 	public ProgressWindow(String title, int min, int max, boolean indeterminant, final OnPress onCancel){
 		this.m_OnCancel = onCancel;
-		m_Frame = new JFrame(title);
-		m_Frame.addWindowListener(new WindowAdapter(){
+		m_Window = new JDialog(Activator.getGUI().getGUIFrame(), title, false);
+		m_Window.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent event){
 				onCancel.act();
-				m_Frame.dispose();
+				m_Window.dispose();
 			}
 		});
-		m_Frame.getContentPane().setLayout(new GridBagLayout());
+		m_Content = new JPanel(new GridBagLayout());
+		m_Window.setContentPane(m_Content);
 		
 		m_TextLabel = new JLabel();
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -49,7 +53,7 @@ public class ProgressWindow implements ActionListener{
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.gridx = 0;
 		gbc.anchor = GridBagConstraints.SOUTH;
-		m_Frame.add(m_TextLabel, gbc);
+		m_Content.add(m_TextLabel, gbc);
 		
 		m_ProgressBar = new JProgressBar(min, max);
 		m_ProgressBar.setStringPainted(!indeterminant);
@@ -57,7 +61,7 @@ public class ProgressWindow implements ActionListener{
 		gbc.insets = new Insets(0, 50, 15, 50);
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.BOTH;
-		m_Frame.add(m_ProgressBar, gbc);
+		m_Content.add(m_ProgressBar, gbc);
 		
 		m_TextLabel.setText(PROTOTYPE_TEXT);
 		Dimension size = m_TextLabel.getPreferredSize();
@@ -74,10 +78,10 @@ public class ProgressWindow implements ActionListener{
 		gbc.anchor = GridBagConstraints.SOUTHEAST;
 		gbc.gridx = GridBagConstraints.RELATIVE;
 		gbc.gridy = 2;
-		m_Frame.add(m_CancelButton, gbc);
+		m_Content.add(m_CancelButton, gbc);
 		
-		m_Frame.pack();
-		m_Frame.setLocationRelativeTo(null);
+		m_Window.pack();
+		SwingUtils.centerWindow(m_Window, SwingUtilities.getWindowAncestor(m_Window));
 		
 		m_Visible = false;
 		
@@ -97,13 +101,14 @@ public class ProgressWindow implements ActionListener{
 	}
 	
 	public void dispose(){
-		m_Frame.dispose();
-		m_Frame = null;
+		m_Window.dispose();
+		m_Content = null;
+		m_Window = null;
 	}
 	
 	private void setVisible(boolean visible){
-		if(m_Frame != null){
-			m_Frame.setVisible(visible);
+		if(m_Window != null){
+			m_Window.setVisible(visible);
 			this.m_Visible = visible;
 		}
 	}

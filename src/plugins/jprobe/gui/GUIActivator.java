@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.swing.JFrame;
+
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
@@ -21,9 +23,9 @@ import plugins.jprobe.gui.services.JProbeGUI;
 public class GUIActivator implements BundleActivator{
 	
 	private static Bundle m_Bundle = null;
+	private static JProbeGUIFrame m_Gui;
 	
 	private JProbeCore m_Core;
-	private JProbeGUIFrame m_Gui;
 	private GUIConfig m_GuiConfig;
 	private GUIErrorManager m_ErrorManager = null;
 	private ServiceRegistration<JProbeGUI> m_Registration = null;
@@ -31,6 +33,10 @@ public class GUIActivator implements BundleActivator{
 	
 	public static Bundle getBundle(){
 		return m_Bundle;
+	}
+	
+	public static JFrame getFrame(){
+		return m_Gui;
 	}
 	
 	@Override

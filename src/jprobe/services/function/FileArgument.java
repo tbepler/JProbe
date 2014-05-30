@@ -1,6 +1,7 @@
 package jprobe.services.function;
 
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,6 +44,7 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 	
 	protected abstract boolean isValid(File f);
 	protected abstract void process(P params, File f);
+	protected abstract Frame getParentFrame();
 	
 	protected String getButtonText(){
 		return DEFAULT_BUTTON_TEXT;
@@ -99,7 +101,7 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == m_Button){
-			int result = m_FileChooser.showOpenDialog(null);
+			int result = m_FileChooser.showOpenDialog(this.getParentFrame());
 			if(result == JFileChooser.APPROVE_OPTION){
 				this.setFile(m_FileChooser.getSelectedFile());
 			}
