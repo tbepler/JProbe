@@ -1,6 +1,7 @@
 package plugins.functions.gui.dialog;
 
 import java.awt.Frame;
+import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -45,39 +46,54 @@ public class FunctionDialogHandler{
 		
 	}
 	
-	private Queue<IndexedDialog> availableDialogs;
-	private Map<FunctionPanel, IndexedDialog> visibleDialogs;
-	private List<IndexedDialog> allDialogs;
-	private Frame owner;
-	private boolean modal;
+	private Queue<IndexedDialog> m_AvailableDialogs;
+	private Map<FunctionPanel, IndexedDialog> m_VisibleDialogs;
+	private List<IndexedDialog> m_AllDialogs;
+	private Map<JPanel, Point> m_LastLocation;
+	private Frame m_Owner;
+	private boolean m_Modal;
 	
 	public FunctionDialogHandler(Frame owner, boolean modal){
-		this.owner = owner;
-		this.modal = modal;
-		availableDialogs = new PriorityQueue<IndexedDialog>(10, new IndexedDialogComparator());
-		visibleDialogs = new HashMap<FunctionPanel, IndexedDialog>();
-		allDialogs = new ArrayList<IndexedDialog>();
+		this.m_Owner = owner;
+		this.m_Modal = modal;
+		m_AvailableDialogs = new PriorityQueue<IndexedDialog>(10, new IndexedDialogComparator());
+		m_VisibleDialogs = new HashMap<FunctionPanel, IndexedDialog>();
+		m_AllDialogs = new ArrayList<IndexedDialog>();
+		m_LastLocation = new HashMap<JPanel, Point>();
+	}
+	
+	private void setLastLocation(JPanel panel, Point loc){
+		m_LastLocation.put(panel, loc);
+	}
+	
+	private Point getLastLocation(JPanel panel){
+		return m_LastLocation.get(panel);
 	}
 	
 	private IndexedDialog getDialog(String title, JPanel content){
 		IndexedDialog dialog;
-		if(!availableDialogs.isEmpty()){
-			dialog = availableDialogs.poll();
+		if(!m_AvailableDialogs.isEmpty()){
+			dialog = m_AvailableDialogs.poll();
 			dialog.setTitle(title);
 		}else{
-			dialog = new IndexedDialog(owner, title, modal, allDialogs.size());
-			allDialogs.add(dialog);
+			dialog = new IndexedDialog(m_Owner, title, m_Modal, m_AllDialogs.size());
+			m_AllDialogs.add(dialog);
 		}
 		dialog.setContentPane(content);
 		dialog.pack();
-		SwingUtils.centerWindow(dialog, owner);
+		Point lastLoc = this.getLastLocation(content);
+		if(lastLoc == null){
+			SwingUtils.centerWindow(dialog, m_Owner);
+		}else{
+			dialog.setLocation(lastLoc);
+		}
 		return dialog;
 	}
 	
 	public void display(final FunctionPanel panel){
-		if(visibleDialogs.containsKey(panel)){
-			visibleDialogs.get(panel).toFront();
-			visibleDialogs.get(panel).setVisible(true);
+		if(m_VisibleDialogs.containsKey(panel)){
+			m_VisibleDialogs.get(panel).toFront();
+			m_VisibleDialogs.get(panel).setVisible(true);
 			return;
 		}
 		final IndexedDialog dialog = getDialog(panel.getTitle(), panel);
@@ -97,13 +113,14 @@ public class FunctionDialogHandler{
 		panel.setRunAction(close);
 		dialog.getRootPane().setDefaultButton(panel.getRunButton());
 		dialog.setVisible(true);
-		visibleDialogs.put(panel, dialog);
+		m_VisibleDialogs.put(panel, dialog);
 	}
 	
 	private void hide(IndexedDialog dialog, FunctionPanel panel){
 		dialog.setVisible(false);
-		availableDialogs.add(dialog);
-		visibleDialogs.remove(panel);
+		m_AvailableDialogs.add(dialog);
+		m_VisibleDialogs.remove(panel);
+		this.setLastLocation(panel, dialog.getLocation());
 	}
 	
 }
