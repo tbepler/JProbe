@@ -139,6 +139,11 @@ public class JProbe implements JProbeCore{
 	}
 	
 	@Override
+	public String getLogsDir(){
+		return jprobe.Constants.LOG_DIR;
+	}
+	
+	@Override
 	public void shutdown(){
 		try{
 			if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){

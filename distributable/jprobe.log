@@ -1,9 +1,0 @@
-<Thu May 29 17:31:52 EDT 2014><org.apache.felix.framework>JProbe started.
-<Thu May 29 17:31:53 EDT 2014><plugins.functions.gui>Function menu started.
-<Thu May 29 17:31:53 EDT 2014><plugins.dataviewer.gui>DataViewer started.
-<Thu May 29 17:31:53 EDT 2014><plugins.jprobe.gui>Preferences tab Chiptools added by plugin: chiptools.jprobe
-<Thu May 29 17:31:53 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
-<Thu May 29 17:34:10 EDT 2014><org.apache.felix.framework>JProbe shutting down.
-<Thu May 29 17:34:10 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin stopped.
-<Thu May 29 17:34:11 EDT 2014><plugins.functions.gui>Function menu stopped.
-<Thu May 29 17:34:11 EDT 2014><plugins.dataviewer.gui>DataViewer stopped.

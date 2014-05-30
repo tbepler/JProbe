@@ -6,4 +6,4 @@ default_mode: interactive
 autodeploy_plugin_directory: plugins
 felix_storage_clean: onFirstInit
 log_file: jprobe.log
-error_log_file: jprobe_error.log
+error_log_file: jprobe-error.log

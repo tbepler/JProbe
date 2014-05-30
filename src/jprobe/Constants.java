@@ -20,8 +20,11 @@ public class Constants {
 	public static final String JAR_URL = Launcher.class.getProtectionDomain().getCodeSource().getLocation().getFile();
 	public static final String JAR_DIR = JAR_URL.substring(0, JAR_URL.lastIndexOf(URL_PATH_SEPARATOR));
 	
-	public static final String CONFIG_FILE = JAR_DIR + File.separator + "config.txt";
 	public static final String PREFERENCES_DIR = JAR_DIR + File.separator + "preferences";
+
+	public static final String CONFIG_FILE = PREFERENCES_DIR + File.separator + "jprobe.pref";
+	
+	public static final String LOG_DIR = JAR_DIR + File.separator + "logs";
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	

@@ -15,6 +15,9 @@ public class TimeStampJournal implements Journal{
 	private BufferedWriter writer;
 	
 	public TimeStampJournal(File log){
+		if(!log.exists()){
+			log.getParentFile().mkdirs();
+		}
 		try {
 			writer = new BufferedWriter(new FileWriter(log));
 		} catch (IOException e) {

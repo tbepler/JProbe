@@ -28,6 +28,7 @@ public interface JProbeCore {
 	public Mode getMode();
 	
 	public String getPreferencesDir();
+	public String getLogsDir();
 	
 	public void addCoreListener(CoreListener listener);
 	public void removeCoreListener(CoreListener listener);

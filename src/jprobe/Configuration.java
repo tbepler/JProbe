@@ -30,7 +30,7 @@ public class Configuration {
 	private static final String DEFAULT_STORAGE_CLEAN = "onFirstInit";
 	private static final String DEFAULT_AUTODEPLOY_DIRECTORY = "plugins";
 	private static final String DEFAULT_LOG_FILE = "jprobe.log";
-	private static final String DEFAULT_ERROR_LOG_FILE = "jprobe_error.log";
+	private static final String DEFAULT_ERROR_LOG_FILE = "jprobe-error.log";
 		
 	public static final String TAG_DEBUG_LEVEL = "debug";
 	public static final String TAG_MODE = "default_mode";
@@ -103,8 +103,8 @@ public class Configuration {
 				//do nothing
 			}
 		}
-		errorLogFile = errorLogFile.startsWith(File.separator) ? errorLogFile : Constants.JAR_DIR + File.separator + errorLogFile;
-		logFile = logFile.startsWith(File.separator) ? logFile : Constants.JAR_DIR + File.separator + logFile;
+		errorLogFile = errorLogFile.startsWith(File.separator) ? errorLogFile : Constants.LOG_DIR + File.separator + errorLogFile;
+		logFile = logFile.startsWith(File.separator) ? logFile : Constants.LOG_DIR + File.separator + logFile;
 		Debug.setLevel(debugLevel);
 		ErrorHandler.getInstance().init(new TimeStampJournal(new File(errorLogFile)));
 		Log.getInstance().init(new TimeStampJournal(new File(logFile)));

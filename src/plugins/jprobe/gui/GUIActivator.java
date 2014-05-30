@@ -1,5 +1,6 @@
 package plugins.jprobe.gui;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -11,7 +12,6 @@ import jprobe.services.JProbeCore.Mode;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
@@ -24,6 +24,7 @@ public class GUIActivator implements BundleActivator{
 	
 	private JProbeCore m_Core;
 	private JProbeGUIFrame m_Gui;
+	private GUIConfig m_GuiConfig;
 	private GUIErrorManager m_ErrorManager = null;
 	private ServiceRegistration<JProbeGUI> m_Registration = null;
 	private Collection<AbstractServiceListener<?>> m_ServiceListeners = null;
@@ -35,12 +36,14 @@ public class GUIActivator implements BundleActivator{
 	@Override
 	public void start(BundleContext context) throws Exception {
 		m_Bundle = context.getBundle();
-		ServiceReference ref = context.getServiceReference(JProbeCore.class);
-		m_Core = (JProbeCore) context.getService(ref);
+		ServiceReference<JProbeCore> ref = context.getServiceReference(JProbeCore.class);
+		m_Core = context.getService(ref);
 		if(m_Core.getMode() == Mode.COMMAND){
 			return;
 		}
-		m_Gui = new JProbeGUIFrame(m_Core, "JProbe", context.getBundle(), new GUIConfig(Constants.CONFIG_FILE));
+		File prefFile = new File(m_Core.getPreferencesDir() + File.separator + Constants.CONFIG_FILE_NAME);
+		m_GuiConfig = new GUIConfig(prefFile);
+		m_Gui = new JProbeGUIFrame(m_Core, "JProbe", context.getBundle(), m_GuiConfig);
 		m_Gui.setVisible(true);
 		m_ErrorManager = new GUIErrorManager(m_Gui);
 		ErrorHandler.getInstance().addErrorManager(m_ErrorManager);
@@ -71,6 +74,10 @@ public class GUIActivator implements BundleActivator{
 			m_ErrorManager = null;
 		}
 		if(m_Gui != null){
+			if(m_GuiConfig != null){
+				m_GuiConfig.save(m_Gui.getSize(), m_Gui.getExtendedState(), m_Gui.getX(), m_Gui.getY());
+				m_GuiConfig = null;
+			}
 			m_Gui.dispose();
 			m_Gui = null;
 		}

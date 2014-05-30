@@ -1,6 +1,5 @@
 package plugins.jprobe.gui;
 
-import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
@@ -84,10 +83,6 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 				JProbeGUIFrame.this.quit();
 			}
 		});
-		this.setPreferredSize(new Dimension(config.getWidth(), config.getHeight()));
-		this.pack();
-		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-		this.setLocation(center.x-this.getWidth()/2, center.y-this.getHeight()/2);
 		m_FileMenu = new FileMenu(this, m_Core);
 		m_MenuBar.add(m_FileMenu);
 		m_PreferencesWindow = new PreferencesWindow(this, "Preferences", true);
@@ -100,6 +95,25 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		m_HelpMenu.setMnemonic(KeyEvent.VK_H);
 		m_HelpMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.CTRL_MASK));
 		m_MenuBar.add(m_HelpMenu);
+		
+		
+		this.pack();
+		this.setSize(config.getDimension());
+		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+		int x;
+		if(config.getX() < 0){
+			x = center.x-this.getWidth()/2;
+		}else{
+			x = config.getX();
+		}
+		int y;
+		if(config.getY() < 0){
+			y = center.y-this.getHeight()/2;
+		}else{
+			y = config.getY();
+		}
+		this.setLocation(x,y);
+		this.setExtendedState(config.getExtendedState());
 	}
 	
 	public void quit(){
