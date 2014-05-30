@@ -13,8 +13,6 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import plugins.dataviewer.gui.datalist.DataListPanel;
-import plugins.functions.gui.FunctionMenu;
 import plugins.jprobe.gui.services.JProbeGUI;
 
 public class DataviewerActivator implements BundleActivator{
@@ -24,13 +22,12 @@ public class DataviewerActivator implements BundleActivator{
 	private JProbeCore m_Core;
 	private JProbeGUI m_Gui;
 	private BundleContext m_BC;
-	private DataTabPane m_TabPane;
-	private DataListPanel m_ListPanel;
+	private DataViewerSplitPane m_Panel;
 
 	private ServiceListener sl = new ServiceListener() {
 		@Override
 		public void serviceChanged(ServiceEvent ev) {
-			ServiceReference sr = ev.getServiceReference();
+			ServiceReference<?> sr = ev.getServiceReference();
 			switch(ev.getType()) {
 				case ServiceEvent.REGISTERED:
 					m_Gui = (JProbeGUI) m_BC.getService(sr);
@@ -48,10 +45,8 @@ public class DataviewerActivator implements BundleActivator{
 	}
 	
 	private void init(){
-		m_TabPane = new DataTabPane(m_Core.getDataManager());
-		m_Gui.addComponent(m_TabPane, m_TabPane.getGridBagConstraints(), m_BC.getBundle());
-		m_ListPanel = new DataListPanel(m_Core, m_Gui, m_TabPane);
-		m_Gui.addComponent(m_ListPanel, m_ListPanel.getGridBagConstraints(), m_BC.getBundle());
+		m_Panel = new DataViewerSplitPane(m_Core, m_Gui);
+		m_Gui.addComponent(m_Panel, m_Panel.getGridBagConstraints(), m_BC.getBundle());
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
 			Log.getInstance().write(m_BC.getBundle(), "DataViewer started.");
 		}
@@ -64,24 +59,17 @@ public class DataviewerActivator implements BundleActivator{
 		String filter = "(objectclass="+JProbeGUI.class.getName()+")";
 		context.addServiceListener(sl, filter);
 		Collection<ServiceReference<JProbeGUI>> refs = context.getServiceReferences(JProbeGUI.class, null);
-		for(ServiceReference r : refs){
+		for(ServiceReference<?> r : refs){
 			sl.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, r));
 		}
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		if(m_TabPane != null){
-			m_TabPane.cleanup();
-			if(m_Gui != null){
-				m_Gui.removeComponent(m_TabPane, context.getBundle());
-			}
-		}
-		if(m_ListPanel != null){
-			m_ListPanel.cleanup();
-			if(m_Gui != null){
-				m_Gui.removeComponent(m_ListPanel, context.getBundle());
-			}
+		if(m_Panel != null){
+			m_Panel.cleanup();
+			m_Gui.removeComponent(m_Panel, context.getBundle());
+			m_Panel = null;
 		}
 		if(m_Gui != null){
 			m_Gui = null;

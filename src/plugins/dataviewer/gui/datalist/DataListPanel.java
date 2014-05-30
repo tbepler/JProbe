@@ -25,7 +25,7 @@ public class DataListPanel extends JPanel{
 		border.setTitleJustification(TitledBorder.CENTER);
 		this.setBorder(border);
 		this.add(scroll, BorderLayout.CENTER);
-		this.setMinimumSize(this.getPreferredSize());
+		//this.setMinimumSize(this.getPreferredSize());
 	}
 	
 	public void cleanup(){
