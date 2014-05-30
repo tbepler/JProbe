@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import plugins.jprobe.gui.services.PreferencesPanel;
+import util.gui.SwingUtils;
 
 public class PreferencesWindow extends JDialog implements ActionListener{
 	private static final long serialVersionUID = 1L;
@@ -22,9 +24,11 @@ public class PreferencesWindow extends JDialog implements ActionListener{
 	private JTabbedPane m_TabPane;
 	private JButton m_Apply;
 	private JButton m_Cancel;
+	private final Frame m_Owner;
 	
 	public PreferencesWindow(Frame owner, String title, boolean modal){
 		super(owner, title, modal);
+		m_Owner = owner;
 		m_ContentPanel = new JPanel();
 		m_ContentPanel.setLayout(new BoxLayout(m_ContentPanel, BoxLayout.Y_AXIS));
 		this.setContentPane(m_ContentPanel);
@@ -54,7 +58,14 @@ public class PreferencesWindow extends JDialog implements ActionListener{
 		
 		this.setPreferredSize(Constants.PREF_HELP_DEFAULT_DIM);
 		this.pack();
-		this.setLocation(owner.getX()+owner.getWidth()/2-this.getWidth()/2, owner.getY()+owner.getHeight()/2-this.getHeight()/2);
+		SwingUtils.centerWindow(this, owner);
+	}
+	
+	@Override
+	public void setVisible(boolean vis){
+		if(vis)
+			SwingUtils.centerWindow(this, m_Owner);
+		super.setVisible(vis);
 	}
 	
 	public void addTab(PreferencesPanel tab, String title){

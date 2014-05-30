@@ -12,8 +12,10 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 
 import util.gui.OnPress;
+import util.gui.SwingUtils;
 
 public class FunctionDialogHandler{
 	
@@ -57,17 +59,19 @@ public class FunctionDialogHandler{
 		allDialogs = new ArrayList<IndexedDialog>();
 	}
 	
-	private IndexedDialog getDialog(String title){
+	private IndexedDialog getDialog(String title, JPanel content){
+		IndexedDialog dialog;
 		if(!availableDialogs.isEmpty()){
-			IndexedDialog dialog = availableDialogs.poll();
+			dialog = availableDialogs.poll();
 			dialog.setTitle(title);
-			return dialog;
 		}else{
-			IndexedDialog dialog = new IndexedDialog(owner, title, modal, allDialogs.size());
-			dialog.setLocationRelativeTo(null);
+			dialog = new IndexedDialog(owner, title, modal, allDialogs.size());
 			allDialogs.add(dialog);
-			return dialog;
 		}
+		dialog.setContentPane(content);
+		dialog.pack();
+		SwingUtils.centerWindow(dialog, owner);
+		return dialog;
 	}
 	
 	public void display(final FunctionPanel panel){
@@ -76,14 +80,13 @@ public class FunctionDialogHandler{
 			visibleDialogs.get(panel).setVisible(true);
 			return;
 		}
-		final IndexedDialog dialog = getDialog(panel.getTitle());
+		final IndexedDialog dialog = getDialog(panel.getTitle(), panel);
 		dialog.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent e){
 				hide(dialog, panel);
 			}
 		});
-		dialog.setContentPane(panel);
 		OnPress close = new OnPress(){
 			@Override
 			public void act() {
@@ -93,7 +96,6 @@ public class FunctionDialogHandler{
 		panel.setCancelAction(close);
 		panel.setRunAction(close);
 		dialog.getRootPane().setDefaultButton(panel.getRunButton());
-		dialog.pack();
 		dialog.setVisible(true);
 		visibleDialogs.put(panel, dialog);
 	}

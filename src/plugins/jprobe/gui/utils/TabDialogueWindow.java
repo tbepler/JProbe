@@ -7,28 +7,37 @@ import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 
 import plugins.jprobe.gui.Constants;
+import util.gui.SwingUtils;
 
 public class TabDialogueWindow extends JDialog{
 	private static final long serialVersionUID = 1L;
 	
-	private JTabbedPane tabPane;
+	private JTabbedPane m_TabPane;
+	private final Frame m_Owner;
 	
 	public TabDialogueWindow(Frame owner, String title, boolean modal){
 		super(owner, title, modal);
-		tabPane = new JTabbedPane();
-		this.setContentPane(tabPane);
+		m_Owner = owner;
+		m_TabPane = new JTabbedPane();
+		this.setContentPane(m_TabPane);
 		this.setPreferredSize(Constants.PREF_HELP_DEFAULT_DIM);
 		this.pack();
-		this.setLocation(owner.getX()+owner.getWidth()/2-this.getWidth()/2, owner.getY()+owner.getHeight()/2-this.getHeight()/2);
+	}
+	
+	@Override
+	public void setVisible(boolean vis){
+		if(vis)
+			SwingUtils.centerWindow(this, m_Owner);
+		super.setVisible(vis);
 	}
 	
 	public void addTab(JComponent tab, String title){
-		tabPane.addTab(title, tab);
+		m_TabPane.addTab(title, tab);
 		this.revalidate();
 	}
 	
 	public void removeTab(JComponent tab){
-		tabPane.remove(tab);
+		m_TabPane.remove(tab);
 		this.revalidate();
 	}
 	
