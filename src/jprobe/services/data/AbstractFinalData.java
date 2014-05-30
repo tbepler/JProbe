@@ -7,6 +7,8 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import util.gui.TableFormatter;
+
 public abstract class AbstractFinalData implements Data{
 	private static final long serialVersionUID = 1L;
 	
@@ -44,6 +46,7 @@ public abstract class AbstractFinalData implements Data{
 	public JTable createTable() {
 		JTable table = new JTable(this);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		TableFormatter.formatTable(table);
 		return table;
 	}
 	
