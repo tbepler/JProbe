@@ -66,7 +66,7 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 		this.process(params, f);
 	}
 
-	private void setFile(File f){
+	protected void setFile(File f){
 		m_Selected = f;
 		m_Text.setText(m_Selected.getPath());
 		this.notifyListeners();

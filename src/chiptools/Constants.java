@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JFileChooser;
+
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
 import jprobe.services.function.Function;
@@ -28,6 +30,8 @@ public class Constants {
 	public static final String ARGUMENTS_FILE = RESOURCES_PATH + "/arguments.txt";
 	public static final String READER_FILE = RESOURCES_PATH + "/data_reader.txt";
 	public static final String WRITER_FILE = RESOURCES_PATH + "/data_writer.txt";
+	
+	public static final JFileChooser CHIPTOOLS_FILE_CHOOSER = new JFileChooser();
 	
 	public static final String DATA_PACKAGE = "chiptools.jprobe.data.";
 	

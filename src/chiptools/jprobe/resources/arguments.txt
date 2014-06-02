@@ -15,3 +15,4 @@ chiptools.jprobe.function.probejoiner.MaxSiteDistArgument	MaxSiteDistance		INT{d
 chiptools.jprobe.function.bindingprofiler.BindingKmerArgument	KMers	k	FILES	Data	Kmer data for profiling sequences
 chiptools.jprobe.function.bindingprofiler.BindingPWMArgument	PWMs	m	FILES	Data	PWM data for profiling sequences
 chiptools.jprobe.function.probemutator.BindingBarrierArgument	BindingSiteBarrier	b	INT{default=2}	Fields	The number of bases on either side of binding sites that cannot be mutated, default=2
+chiptools.jprobe.function.args.PrimerArgument	Primer		FILE	Fields	A file from which the primer should be read. The file can be in fasta format or can simply contain the primer sequence.
