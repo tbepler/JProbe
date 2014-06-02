@@ -1,9 +1,9 @@
-<Mon Jun 02 14:42:42 EDT 2014><org.apache.felix.framework>JProbe started.
-<Mon Jun 02 14:42:43 EDT 2014><plugins.dataviewer.gui>DataViewer started.
-<Mon Jun 02 14:42:43 EDT 2014><plugins.functions.gui>Function menu started.
-<Mon Jun 02 14:42:43 EDT 2014><plugins.jprobe.gui>Preferences tab Chiptools added by plugin: chiptools.jprobe
-<Mon Jun 02 14:42:43 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
-<Mon Jun 02 14:43:36 EDT 2014><org.apache.felix.framework>JProbe shutting down.
-<Mon Jun 02 14:43:36 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin stopped.
-<Mon Jun 02 14:43:36 EDT 2014><plugins.functions.gui>Function menu stopped.
-<Mon Jun 02 14:43:36 EDT 2014><plugins.dataviewer.gui>DataViewer stopped.
+<Mon Jun 02 15:13:27 EDT 2014><org.apache.felix.framework>JProbe started.
+<Mon Jun 02 15:13:28 EDT 2014><plugins.dataviewer.gui>DataViewer started.
+<Mon Jun 02 15:13:28 EDT 2014><plugins.functions.gui>Function menu started.
+<Mon Jun 02 15:13:28 EDT 2014><plugins.jprobe.gui>Preferences tab Chiptools added by plugin: chiptools.jprobe
+<Mon Jun 02 15:13:28 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin started.
+<Mon Jun 02 15:13:32 EDT 2014><org.apache.felix.framework>JProbe shutting down.
+<Mon Jun 02 15:13:32 EDT 2014><plugins.testDataAndFunction.Activator>TestPlugin stopped.
+<Mon Jun 02 15:13:32 EDT 2014><plugins.functions.gui>Function menu stopped.
+<Mon Jun 02 15:13:32 EDT 2014><plugins.dataviewer.gui>DataViewer stopped.

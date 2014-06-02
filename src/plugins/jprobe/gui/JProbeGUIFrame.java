@@ -33,6 +33,7 @@ import plugins.jprobe.gui.services.JProbeGUI;
 import plugins.jprobe.gui.services.PreferencesPanel;
 import plugins.jprobe.gui.utils.DialogueMenu;
 import plugins.jprobe.gui.utils.TabDialogueWindow;
+import util.gui.SwingUtils;
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
 import jprobe.services.Log;
@@ -101,13 +102,13 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		this.setSize(config.getDimension());
 		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
 		int x;
-		if(config.getX() < 0){
+		if(config.getX() < 0 || !SwingUtils.isXOnScreen(config.getX())){
 			x = center.x-this.getWidth()/2;
 		}else{
 			x = config.getX();
 		}
 		int y;
-		if(config.getY() < 0){
+		if(config.getY() < 0 || !SwingUtils.isYOnScreen(config.getY())){
 			y = center.y-this.getHeight()/2;
 		}else{
 			y = config.getY();
