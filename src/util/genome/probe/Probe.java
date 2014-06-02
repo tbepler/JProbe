@@ -157,6 +157,18 @@ public class Probe implements Serializable, Comparable<Probe>{
 		this(base, seq.getSequence(), mutations, mutant);
 	}
 	
+	public Probe(Probe base, List<GenomicRegion> bindingSites, String name){
+		this(
+				base.getSequence(),
+				base.getRegion(),
+				bindingSites.toArray(new GenomicRegion[bindingSites.size()]),
+				base.getMutations(),
+				name,
+				base.getStrand(),
+				base.isMutant()
+				);
+	}
+	
 	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites){
 		this(seq, region, bindingSites, null);
 	}
@@ -403,7 +415,15 @@ public class Probe implements Serializable, Comparable<Probe>{
 		if(other == null){
 			return -1;
 		}
-		int comp = m_Seq.compareTo(other.m_Seq);
+		int comp = m_Seq.getRegion().compareTo(other.m_Seq.getRegion());
+		if(comp != 0){
+			return comp;
+		}
+		comp = m_Name.compareTo(other.m_Name);
+		if(comp != 0){
+			return comp;
+		}
+		comp = m_Seq.getSequence().compareTo(other.m_Seq.getSequence());
 		if(comp != 0){
 			return comp;
 		}

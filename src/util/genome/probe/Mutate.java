@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import util.DNAUtils;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
@@ -20,8 +23,24 @@ class Mutate {
 	private static class Mutation{
 		public final GenomicCoordinate coord;
 		public final char base;
+		private final int hash;
 		public Mutation(GenomicCoordinate coord, char base){
 			this.coord = coord; this.base = base;
+			this.hash = new HashCodeBuilder(17, 3).append(coord).append(base).toHashCode();
+		}
+		@Override
+		public boolean equals(Object o){
+			if(o == null) return false;
+			if(o == this) return true;
+			if(o instanceof Mutation){
+				Mutation m = (Mutation) o;
+				return this.coord.equals(m.coord) && this.base == m.base;
+			}
+			return false;
+		}
+		@Override
+		public int hashCode(){
+			return this.hash;
 		}
 	}
 	
@@ -56,6 +75,71 @@ class Mutate {
 		
 	}
 	
+	public static Probe mutate(
+			ProgressListener l,
+			Probe p,
+			Kmer kmer,
+			double escoreCutoff,
+			int bindingSiteBarrier,
+			Set<Character> alphabet,
+			String primer
+			){
+		
+		List<GenomicRegion> bindingSites = getBindingSites(p);
+		List<GenomicRegion> protectedRegions = getProtectedRegions(bindingSites, bindingSiteBarrier);
+		Set<GenomicCoordinate> immutableCoords = toCoordinateSet(protectedRegions);
+		
+		//mutate probe sequence + primer
+		String fwdSeq = p.getSequence() + primer;
+		GenomicRegion fwdRegion = new GenomicRegion(p.getRegion().getStart(), p.getRegion().getEnd().increment(primer.length()));
+		GenomicSequence fwdGenomicSeq = new GenomicSequence(fwdSeq, fwdRegion);
+		//add the primer region to the immutable coordinates
+		Set<GenomicCoordinate> fwdImmutable = new HashSet<GenomicCoordinate>(immutableCoords);
+		for(GenomicCoordinate coord = p.getRegion().getEnd().increment(1); coord.compareTo(fwdRegion.getEnd()) <= 0; coord = coord.increment(1)){
+			fwdImmutable.add(coord);
+		}
+		MutationRecord record = new MutationRecord();
+		record.seq = fwdGenomicSeq;
+		record = mutateRecursive(l, record, kmer, protectedRegions, fwdImmutable, escoreCutoff, alphabet);
+		
+		//add the fwd mutations to the mutation map - this guarantees only one mutation per coordinate
+		Map<GenomicCoordinate, Mutation> mutations = new HashMap<GenomicCoordinate, Mutation>();
+		for(Mutation m : record.muts){
+			mutations.put(m.coord, m);
+		}
+		
+		//mutate reverse comp primer + probe sequence - this is the reverse compliment probe + primerr
+		String rvsSeq = DNAUtils.reverseCompliment(primer) + p.getSequence();
+		GenomicRegion rvsRegion = new GenomicRegion(p.getRegion().getStart().decrement(primer.length()), p.getRegion().getEnd());
+		GenomicSequence rvsGenomicSeq = new GenomicSequence(rvsSeq, rvsRegion);
+		//add the primer region to the immutable coordinates
+		Set<GenomicCoordinate> rvsImmutable = new HashSet<GenomicCoordinate>(immutableCoords);
+		for(GenomicCoordinate coord = rvsRegion.getStart(); coord.compareTo(p.getRegion().getStart()) < 0; coord = coord.increment(1)){
+			rvsImmutable.add(coord);
+		}
+		record = new MutationRecord();
+		record.seq = rvsGenomicSeq;
+		record = mutateRecursive(l, record, kmer, protectedRegions, rvsImmutable, escoreCutoff, alphabet);
+		
+		//add the rvs mutations to the mutation map
+		for(Mutation m : record.muts){
+			mutations.put(m.coord, m);
+		}
+		
+		//make mutations and store them in a list
+		List<GenomicCoordinate> mutationList = new ArrayList<GenomicCoordinate>();
+		GenomicSequence mutated = p.asGenomicSequence();
+		for(Mutation m : mutations.values()){
+			if(mutated.contains(m.coord)){
+				mutated = makeMutation(m, mutated);
+				mutationList.add(m.coord);
+			}
+		}
+		
+		return new Probe(p, mutated, mutationList, !mutationList.isEmpty());
+		
+	}
+	
 	private static MutationRecord mutateRecursive(
 			ProgressListener l,
 			MutationRecord record,
@@ -83,6 +167,7 @@ class Mutate {
 			GenomicSequence mutatedSeq = makeMutation(mut, seq);
 			record.seq = mutatedSeq;
 			record.muts.add(mut);
+			immutable.add(mut.coord);
 			return mutateRecursive(l, record, kmer, protectedRegions, immutable, escoreCutoff, alphabet);
 		}
 	}

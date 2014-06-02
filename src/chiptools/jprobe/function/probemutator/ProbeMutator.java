@@ -39,9 +39,25 @@ public class ProbeMutator extends AbstractChiptoolsFunction<ProbeMutatorParams>{
 		Collection<Argument<? super ProbeMutatorParams>> args = new ArrayList<Argument<? super ProbeMutatorParams>>();
 		args.add(new ProbesArgument(false));
 		args.add(new KmerArgument(false));
+		args.add(new PrimerArgument(true));
 		args.add(new EscoreArgument(true, 0.3));
 		args.add(new BindingBarrierArgument(true));
+		args.add(new MutateBindingSitesArgument());
 		return args;
+	}
+	
+	protected Probe mutate(ProgressListener l, Probe p, util.genome.kmer.Kmer kmer, int bindingBarrier, double cutoff, String primer){
+		Probe mut;
+		if(primer != null){
+			mut = ProbeUtils.mutate(l, p, kmer, DNA_ALPHABET, bindingBarrier, cutoff, primer);
+		}else{
+			mut = ProbeUtils.mutate(l, p, kmer, DNA_ALPHABET, bindingBarrier, cutoff);
+		}
+		return mut;
+	}
+	
+	protected List<Probe> generateBindingSitePermutations(Probe p){
+		return ProbeUtils.generateBindingSitePermuations(p);
 	}
 
 	@Override
@@ -50,9 +66,15 @@ public class ProbeMutator extends AbstractChiptoolsFunction<ProbeMutatorParams>{
 		util.genome.kmer.Kmer kmer = params.getKmers().getKmer();
 		int bindingBarrier = params.BINDING_SITE_BARRIER;
 		double cutoff = params.getEscore();
+		String primer = params.getPrimer();
 		for(Probe p : params.getProbes().getProbeGroup()){
-			Probe mut = ProbeUtils.mutate(l, p, kmer, DNA_ALPHABET, bindingBarrier, cutoff);
-			mutated.add(mut);
+			if(params.MUTATE_BINDING_SITES){
+				for(Probe permutation : this.generateBindingSitePermutations(p)){
+					mutated.add(this.mutate(l, permutation, kmer, bindingBarrier, cutoff, primer));
+				}
+			}else{
+				mutated.add(this.mutate(l, p, kmer, bindingBarrier, cutoff, primer));
+			}
 		}
 		return new Probes(new ProbeGroup(mutated));
 	}

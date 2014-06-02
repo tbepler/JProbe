@@ -277,5 +277,41 @@ public class ProbeUtils {
 		return Mutate.mutate(l, p, kmer, escoreCutoff, bindingSiteBarrier, alphabet);
 	}
 	
+	public static Probe mutate(ProgressListener l, Probe p, Kmer kmer, Set<Character> alphabet, int bindingSiteBarrier, double escoreCutoff, String primer){
+		return Mutate.mutate(l, p, kmer, escoreCutoff, bindingSiteBarrier, alphabet, primer);
+	}
 
+	public static List<Probe> generateBindingSitePermuations(Probe p){
+		List<Probe> permutedProbes = new ArrayList<Probe>();
+		GenomicRegion[] bindingSites = p.getBindingSites();
+		List<List<GenomicRegion>> permutations = permutations(bindingSites);
+		for(int i=0; i<permutations.size(); i++){
+			permutedProbes.add(new Probe(p, permutations.get(i), p.getName() + "_t"+i));
+		}
+		return permutedProbes;
+	}
+	
+	private static List<List<GenomicRegion>> permutations(GenomicRegion[] bindingSites){
+		return permutations(new ArrayList<GenomicRegion>(), 0, bindingSites);
+	}
+	
+	private static List<List<GenomicRegion>> permutations(List<GenomicRegion> prefix, int index, GenomicRegion[] bindingSites){
+		List<List<GenomicRegion>> permutes = new ArrayList<List<GenomicRegion>>();
+		if(index == bindingSites.length){ //there are no binding sites left, so return a list containing the prefix permutation
+			permutes.add(prefix);
+			return permutes;
+		}
+		//first get all permutations with the index binding site added
+		List<GenomicRegion> newPrefix = new ArrayList<GenomicRegion>(prefix);
+		newPrefix.add(bindingSites[index]);
+		permutes.addAll(permutations(newPrefix, index+1, bindingSites));
+		//now all permutations without the index binding site
+		permutes.addAll(permutations(prefix, index+1, bindingSites));
+		
+		return permutes;
+	}
+	
+	
+	
+	
 }
