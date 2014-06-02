@@ -28,6 +28,9 @@ public class Constants {
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	
+	public static final int DATA_TABLE_ROW_SAMPLE = 50;
+	public static final int DATA_TABLE_MAX_COL_WIDTH = 400;
+	
 	public static final String INDEXED_FUNC_REGEX = "^.+\\[\\d+\\]$";
 	public static final String SHORT_FLAG_PREFIX = "-";
 	public static final String LONG_FLAG_PREFIX = "--";

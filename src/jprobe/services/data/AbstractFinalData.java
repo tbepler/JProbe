@@ -7,6 +7,7 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import jprobe.Constants;
 import util.gui.TableFormatter;
 
 public abstract class AbstractFinalData implements Data{
@@ -46,7 +47,7 @@ public abstract class AbstractFinalData implements Data{
 	public JTable createTable() {
 		JTable table = new JTable(this);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		TableFormatter.formatTable(table);
+		TableFormatter.formatTable(table, Constants.DATA_TABLE_MAX_COL_WIDTH, Constants.DATA_TABLE_ROW_SAMPLE);
 		return table;
 	}
 	
