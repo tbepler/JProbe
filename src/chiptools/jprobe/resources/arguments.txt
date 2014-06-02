@@ -17,3 +17,7 @@ chiptools.jprobe.function.bindingprofiler.BindingPWMArgument	PWMs	m	FILES	Data	P
 chiptools.jprobe.function.probemutator.BindingBarrierArgument	BindingSiteBarrier	b	INT{default=2}	Fields	The number of bases on either side of binding sites that cannot be mutated, default=2
 chiptools.jprobe.function.args.PrimerArgument	Primer		FILE	Fields	A file from which the primer should be read. The file can be in fasta format or can simply contain the primer sequence.
 chiptools.jprobe.function.probemutator.MutateBindingSitesArgument	MutateBindingSites			Fields	Setting this flag specifies that binding sites on these probes should be mutated. This will cause every permutation of binding sites on each probe to be mutated. Default=off
+chiptools.jprobe.function.probefilter.MinMutationsArgument	MinMutations		INT	Fields	Filters out all probes with less mutations than this number
+chiptools.jprobe.function.probefilter.MaxMutationsArgument	MaxMutations		INT	Fields	Filters out all probes with more mutations than this number
+chiptools.jprobe.function.probefilter.MinBindingDistArgument	MinBindingDistance		INT	Fields	Filters out all probes with binding sites spaced less than this number apart
+chiptools.jprobe.function.probefilter.MaxBindingDistArgument	MaxBindingDistance		INT	Fields	Filters out all probes with binding sites spaced more than this number apart

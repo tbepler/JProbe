@@ -25,6 +25,20 @@ public class ProbeUtils {
 		return bases;
 	}
 	
+	public static interface Filter{
+		public boolean keep(Probe p);
+	}
+	
+	public static ProbeGroup filter(ProbeGroup probes, Filter f){
+		List<Probe> filtered = new ArrayList<Probe>();
+		for(Probe p : probes){
+			if(f.keep(p)){
+				filtered.add(p);
+			}
+		}
+		return new ProbeGroup(filtered);
+	}
+	
 	public static Probe reverseCompliment(Probe p){
 		String revComp = DNAUtils.reverseCompliment(p.getSequence());
 		Strand revStrand = Strand.reverse(p.getStrand());
