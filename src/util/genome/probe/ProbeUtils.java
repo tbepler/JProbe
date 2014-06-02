@@ -79,6 +79,9 @@ public class ProbeUtils {
 		Probe combined = join(probes, start, bindingSites, minDist, maxDist);
 		if(combined != null){
 			GenomicRegion bindingRegion = GenomicRegion.union(combined.getBindingSites());
+			if(bindingRegion.getSize() > probeLen){ //do not create probe if the binding region will not fit
+				return null;
+			}
 			int flank = probeLen - (int) bindingRegion.getSize();
 			GenomicCoordinate regStart;
 			GenomicCoordinate regEnd;
