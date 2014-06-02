@@ -179,7 +179,7 @@ public class ProbeUtils {
 				GenomicRegion center = scanWindow(seq, bindingSite.getRegion(), pwm, windowSize);
 				if(center != null){
 					//create a probe centered on the center region
-					Probe p = createProbe(seq, center, name, probeLength);
+					Probe p = createProbe(seq, center, name + "_probe" + (probes.size() + 1), probeLength);
 					//pwm.canScore() ensures that the probe only contains bases recognized
 					//by the pwm
 					if(p != null && !probes.contains(p) && pwm.canScore(p.getSequence())){

@@ -117,7 +117,7 @@ public class Probes extends AbstractFinalData implements Observer<Preferences.Up
 		case STRAND: return "Strand";
 		case MUT: return "Mutated";
 		case BINDING: return "Binding sites";
-		case MUTATIONS: return "Mutatons";
+		case MUTATIONS: return "Mutations";
 		default: return null;
 		}
 	}
