@@ -8,6 +8,7 @@ import java.io.FileReader;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import chiptools.Constants;
 import chiptools.jprobe.ChiptoolsActivator;
@@ -54,6 +55,7 @@ public class PrimerArgument extends FileArgument<PrimerParam>{
 		String primer = this.parsePrimer(f);
 		if(primer != null && !primer.equals("")){
 			m_PrimerLabel.setText(primer);
+			SwingUtilities.getWindowAncestor(m_PrimerLabel).pack();
 			super.setFile(f);
 		}
 	}

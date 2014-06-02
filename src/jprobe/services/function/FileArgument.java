@@ -1,5 +1,6 @@
 package jprobe.services.function;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -79,7 +80,15 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 
 	@Override
 	public JComponent getComponent() {
-		JPanel comp = new JPanel(new GridBagLayout());
+		JPanel comp = new JPanel(new GridBagLayout()){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void setEnabled(boolean enabled){
+				for(Component c : this.getComponents()){
+					c.setEnabled(enabled);
+				}
+			}
+		};
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridy = 0;
 		gbc.insets = new Insets(0, 0, 0, 2);
