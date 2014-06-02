@@ -87,7 +87,7 @@ public class PWM implements Serializable{
 	}
 	
 	private static final List<Double> parse(String line){
-		String[] tokens = line.split("\\s");
+		String[] tokens = line.split("\\s+");
 		List<Double> scores = new ArrayList<Double>();
 		for(int i=1; i<tokens.length; i++){
 			scores.add(Double.parseDouble(tokens[i]));
