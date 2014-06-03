@@ -240,6 +240,16 @@ public class JProbe implements JProbeCore{
 		return m_Mode;
 	}
 
+	@Override
+	public String getName() {
+		return jprobe.Constants.NAME;
+	}
+
+	@Override
+	public String getVersion() {
+		return jprobe.Constants.VERSION;
+	}
+
 
 	
 }

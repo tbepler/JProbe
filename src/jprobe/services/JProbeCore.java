@@ -27,6 +27,9 @@ public interface JProbeCore {
 	
 	public Mode getMode();
 	
+	public String getName();
+	public String getVersion();
+	
 	public String getPreferencesDir();
 	public String getLogsDir();
 	

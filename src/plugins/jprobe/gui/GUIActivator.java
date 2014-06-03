@@ -49,7 +49,7 @@ public class GUIActivator implements BundleActivator{
 		}
 		File prefFile = new File(m_Core.getPreferencesDir() + File.separator + Constants.CONFIG_FILE_NAME);
 		m_GuiConfig = new GUIConfig(prefFile);
-		m_Gui = new JProbeGUIFrame(m_Core, "JProbe", context.getBundle(), m_GuiConfig);
+		m_Gui = new JProbeGUIFrame(m_Core, m_Core.getName()+"-"+m_Core.getVersion(), context.getBundle(), m_GuiConfig);
 		m_Gui.setVisible(true);
 		m_ErrorManager = new GUIErrorManager(m_Gui);
 		ErrorHandler.getInstance().addErrorManager(m_ErrorManager);

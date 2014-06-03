@@ -1,5 +1,6 @@
 package plugins.dataviewer.gui;
 
+import java.awt.Frame;
 import java.util.Collection;
 
 import jprobe.services.Debug;
@@ -18,9 +19,9 @@ import plugins.jprobe.gui.services.JProbeGUI;
 public class DataviewerActivator implements BundleActivator{
 	
 	private static Bundle BUNDLE = null;
+	private static JProbeGUI m_Gui;
 	
 	private JProbeCore m_Core;
-	private JProbeGUI m_Gui;
 	private BundleContext m_BC;
 	private DataViewerSplitPane m_Panel;
 
@@ -39,6 +40,10 @@ public class DataviewerActivator implements BundleActivator{
 			}
 		}
 	};
+	
+	public static Frame getGUIFrame(){
+		return m_Gui.getGUIFrame();
+	}
 	
 	public static Bundle getBundle(){
 		return BUNDLE;

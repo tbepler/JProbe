@@ -4,8 +4,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
-
 import plugins.dataviewer.gui.Constants;
 import plugins.dataviewer.gui.DataTabPane;
 import plugins.jprobe.gui.services.JProbeGUI;
@@ -21,7 +19,7 @@ public class DataListTable extends JTable implements MouseListener{
 	public DataListTable(JProbeCore core, JProbeGUI gui, DataTabPane tabPane){
 		super();
 		m_PopupMenu = new DataPopupMenu(core, gui, tabPane);
-		m_Model = new DataListModel(core, SwingUtilities.getWindowAncestor(this));
+		m_Model = new DataListModel(core);
 		this.setModel(m_Model);
 		this.setDragEnabled(false);
 		for(int i=0; i<this.getColumnCount(); i++){

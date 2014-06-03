@@ -1,6 +1,5 @@
 package plugins.dataviewer.gui.datalist;
 
-import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,20 +19,14 @@ public class DataListModel extends DefaultTableModel implements CoreListener{
 	
 	private JProbeCore m_Core;
 	private Map<Data, String> m_Data = new HashMap<Data, String>();
-	private Component m_Parent;
 	
-	public DataListModel(JProbeCore core, Component parent){
+	public DataListModel(JProbeCore core){
 		super(new String[][]{}, Constants.DATALIST_COL_HEADERS);
 		m_Core = core;
 		m_Core.addCoreListener(this);
-		m_Parent = parent;
 		for(Data d : m_Core.getDataManager().getAllData()){
 			this.add(d);
 		}
-	}
-	
-	public DataListModel(JProbeCore core){
-		this(core, null);
 	}
 	
 	public Data getData(int row){
@@ -61,7 +54,7 @@ public class DataListModel extends DefaultTableModel implements CoreListener{
 			if(m_Core.getDataManager().contains(oldName)){
 				//This means that the name change needs to be push to the core
 				Data change = m_Core.getDataManager().getData(oldName);
-				DataUtils.rename(change, newName, m_Core, m_Parent);
+				DataUtils.rename(change, newName, m_Core, DataviewerActivator.getGUIFrame());
 			}else{
 				//This means that the name change is received from the core and the field should be updated accordingly
 				Data changed = m_Core.getDataManager().getData(newName);

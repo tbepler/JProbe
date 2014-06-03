@@ -2,9 +2,8 @@ package plugins.dataviewer.gui.datalist;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.SwingUtilities;
-
 import plugins.dataviewer.gui.DataUtils;
+import plugins.dataviewer.gui.DataviewerActivator;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
@@ -25,7 +24,7 @@ public class DeleteDataMenuItem extends AbstractDataMenuItem{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(this.getData()!=null){
-			DataUtils.delete(this.getData(), m_Core, SwingUtilities.getWindowAncestor(this));
+			DataUtils.delete(this.getData(), m_Core, DataviewerActivator.getGUIFrame());
 		}
 	}
 
