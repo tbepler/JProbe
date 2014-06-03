@@ -3,10 +3,6 @@ package jprobe;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-
 import javax.swing.ImageIcon;
 
 public class Constants {
@@ -15,13 +11,24 @@ public class Constants {
 	public static final String VERSION = "v0.5.1";
 	public static final String AUTHOR = "Tristan Bepler";
 	
+	public static final String WORKSPACE_FILE_EXTENSION = "sav";
+
 	public static final String URL_PATH_SEPARATOR = "/";
 	
 	public static final String JAR_URL = Launcher.class.getProtectionDomain().getCodeSource().getLocation().getFile();
 	public static final String JAR_DIR = JAR_URL.substring(0, JAR_URL.lastIndexOf(URL_PATH_SEPARATOR));
 	
+	public static final String PLUGIN_AUTODEPLOY = JAR_DIR + File.separator + "plugins";
+	
 	public static final String USER_HOME_DIR = System.getProperty("user.home");
 	public static final String USER_JPROBE_DIR = USER_HOME_DIR + File.separator + "jprobe";
+	
+	public static final String USER_PLUGINS_DIR = USER_JPROBE_DIR + File.separator + "plugins";
+	
+	public static final String FELIX_FILE_INSTALL_DIR_PROP = "felix.fileinstall.dir";
+	public static final String FELIX_WATCH_DIRS = PLUGIN_AUTODEPLOY + "," + USER_PLUGINS_DIR;
+	public static final String FELIX_FILE_INSTALL_INITIALDELAY_PROP = "felix.fileinstall.noInitialDelay";
+	public static final String FELIX_INITIALDELAY = "true";
 	
 	public static final String PREFERENCES_DIR = USER_JPROBE_DIR + File.separator + "preferences";
 	public static final String CONFIG_FILE = PREFERENCES_DIR + File.separator + "jprobe.pref";
@@ -31,12 +38,12 @@ public class Constants {
 	public static final String JPROBE_ERROR_LOG = LOG_DIR + File.separator + "jprobe-error.log";
 	
 	public static final String AUTOSAVE_DIR = USER_JPROBE_DIR + File.separator + "session";
+	public static final String AUTOSAVE_NAME = "autosave";
 	
 	public static final boolean DEFAULT_AUTOSAVE = true;
 	public static final double DEFAULT_AUTOSAVE_FREQUENCE = 10;
 	public static final int DEFAULT_MAX_AUTOSAVE = 2;
 	public static final boolean DEFAULT_LOAD_WORKSPACE = true;
-	
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	
@@ -46,6 +53,10 @@ public class Constants {
 	public static final String INDEXED_FUNC_REGEX = "^.+\\[\\d+\\]$";
 	public static final String SHORT_FLAG_PREFIX = "-";
 	public static final String LONG_FLAG_PREFIX = "--";
+	
+	public static final String GUI_SFLAG = "-g";
+	public static final String GUI_LFLAG = "--gui";
+	public static final String GUI_REGEX = "("+GUI_SFLAG+")|("+GUI_LFLAG+")";
 	
 	public static final String HELP_LONG_FLAG = "help";
 	public static final String HELP_SHORT_FLAG = "h";
@@ -73,19 +84,6 @@ public class Constants {
 			e.printStackTrace();
 			return "";
 		}
-	}
-	
-	public static final String ARG_INTERACTIVE_MODE = "-interactive";
-	public static final String ARG_COMMAND_MODE = "-command";
-	
-	public static final Collection<String> RESERVED_COMMANDS = generateReservedCommands();
-	
-	private static Collection<String> generateReservedCommands(){
-		Collection<String> res = new HashSet<String>();
-		res.add(ARG_INTERACTIVE_MODE);
-		res.add(ARG_COMMAND_MODE);
-		res.add(LONG_FLAG_PREFIX+HELP_LONG_FLAG);
-		return Collections.unmodifiableCollection(res);
 	}
 	
 	public static final String X_PATH = RESOURCES_PATH+"/x.gif";

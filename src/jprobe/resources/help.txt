@@ -1,9 +1,8 @@
 
-Usage: jprobe [-help] [-interactive] [-command] <function> [<args>]
+Usage: jprobe [-g] [-h] <function> [<args>]
 
 Options:
-[-help]	Displays this help statement
-[-interactive]	Runs JProbe in interactive mode, ignoring the default mode
-[-command]	Runs JProbe in command mode, ignoring the default mode
+-g	--gui	Launches JProbe in GUI mode
+-h	--help	Displays this help statement
 
 Functions:

@@ -40,20 +40,12 @@ public class JProbe implements JProbeCore{
 	private JProbeActivator m_Activator;
 	private Felix m_Felix;
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JProbe(Configuration config){
-		m_Mode = config.getDefaultMode();
+		m_Mode = Mode.COMMAND;
 		String[] args = config.getArgs();
-		if(args.length > 0){
-			if(args[0].equals(jprobe.Constants.ARG_INTERACTIVE_MODE)){
-				m_Mode = Mode.INTERACTIVE;
-			}else if(args[0].equals(jprobe.Constants.ARG_COMMAND_MODE)){
-				m_Mode = Mode.COMMAND;
-				String[] newArgs = new String[args.length-1];
-				System.arraycopy(args, 1, newArgs, 0, newArgs.length);
-				args = newArgs;
-			}else{
-				m_Mode = Mode.COMMAND;
-			}
+		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
+			m_Mode = Mode.INTERACTIVE;
 		}
 		m_SaveManager = new SaveManager();
 		//create felix config map
@@ -89,12 +81,15 @@ public class JProbe implements JProbeCore{
 			m_Felix = new Felix(felixConfig);
 			Properties props = new Properties();
 			Main.copySystemProperties(props);
-			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, config.getAutoDeployPluginDirectory());
+			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, jprobe.Constants.PLUGIN_AUTODEPLOY);
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
+			props.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_DIR_PROP, jprobe.Constants.FELIX_WATCH_DIRS);
+			props.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_INITIALDELAY_PROP, jprobe.Constants.FELIX_INITIALDELAY);
 			m_Felix.init();
 			AutoProcessor.process(props, m_Felix.getBundleContext());
 			//start the felix instance
 			m_Felix.start();
+			
 		} catch (Exception e){
 			System.err.println("Error creating Felix framework: "+e);
 			e.printStackTrace();
@@ -113,6 +108,8 @@ public class JProbe implements JProbeCore{
 				}
 			}
 			this.shutdown();;
+		}else{ //
+			
 		}
 		
 		try {
