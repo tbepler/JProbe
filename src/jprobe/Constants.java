@@ -25,6 +25,8 @@ public class Constants {
 	
 	public static final String USER_PLUGINS_DIR = USER_JPROBE_DIR + File.separator + "plugins";
 	
+	public static final String FELIX_CACHE_DIR = USER_JPROBE_DIR + File.separator + "cache";
+	
 	public static final String FELIX_FILE_INSTALL_DIR_PROP = "felix.fileinstall.dir";
 	public static final String FELIX_WATCH_DIRS = PLUGIN_AUTODEPLOY + "," + USER_PLUGINS_DIR;
 	public static final String FELIX_FILE_INSTALL_INITIALDELAY_PROP = "felix.fileinstall.noInitialDelay";

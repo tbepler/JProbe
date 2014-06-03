@@ -74,6 +74,7 @@ public class JProbe implements JProbeCore{
 		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,"
 				+ "javax.swing.*");
 		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, config.getFelixStorageClean());
+		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE, jprobe.Constants.FELIX_CACHE_DIR);
 		//create activator and add to config map
 		m_Activator = new JProbeActivator(this);
 		List<BundleActivator> l = new ArrayList<BundleActivator>();
@@ -87,8 +88,9 @@ public class JProbe implements JProbeCore{
 			Main.copySystemProperties(props);
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, jprobe.Constants.PLUGIN_AUTODEPLOY);
 			props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
-			props.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_DIR_PROP, jprobe.Constants.FELIX_WATCH_DIRS);
-			props.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_INITIALDELAY_PROP, jprobe.Constants.FELIX_INITIALDELAY);
+			//set properties for the FileInstall bundle
+			System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_DIR_PROP, jprobe.Constants.FELIX_WATCH_DIRS);
+			System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_INITIALDELAY_PROP, jprobe.Constants.FELIX_INITIALDELAY);
 			m_Felix.init();
 			AutoProcessor.process(props, m_Felix.getBundleContext());
 			//start the felix instance

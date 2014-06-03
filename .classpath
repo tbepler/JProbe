@@ -7,7 +7,7 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="lib" path="/home/tbepler/workspace/JProbe/libraries/apache_felix/felix.jar"/>
+	<classpathentry kind="lib" path="/home/tbepler/workspace/JProbe/libraries/felix-framework-4.4.0/bin/felix.jar"/>
 	<classpathentry kind="lib" path="/home/tbepler/workspace/JProbe/libraries/apache_commons/commons-lang3-3.2.1.jar" sourcepath="libraries/commons-lang3-3.2.1-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/home/tbepler/workspace/JProbe/libraries/commons-lang3-3.2.1-javadoc.jar!/"/>

@@ -15,6 +15,7 @@ public class Launcher {
 		ErrorHandler.getInstance().init(new TimeStampJournal(errorLog));
 		
 		initDir(Constants.USER_PLUGINS_DIR);
+		initDir(Constants.FELIX_CACHE_DIR);
 		initDir(Constants.AUTOSAVE_DIR);
 		initDir(Constants.PREFERENCES_DIR);
 		
