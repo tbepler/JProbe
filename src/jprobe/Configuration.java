@@ -1,24 +1,18 @@
 package jprobe;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
-
+import java.io.Writer;
 import jprobe.services.Debug;
 import jprobe.services.ErrorHandler;
-import jprobe.services.JProbeCore.Mode;
-import jprobe.services.Log;
 
 /**
- * This class is responsible for parsing the configuration file. The file should be formatted as:
- * <p>
- * Tag: Value
- * <p>
- * The name of the tag is not case sensitive. Valid tags are:
- * <p>
+ * This class is responsible for reading and writing the preferences file.
  * 
  * @author Tristan Bepler
  *
@@ -26,152 +20,130 @@ import jprobe.services.Log;
 public class Configuration {
 	
 	private static final Debug DEFAULT_DEBUG_LEVEL = Debug.LOG;
-	private static final Mode DEFAULT_MODE = Mode.INTERACTIVE;
 	private static final String DEFAULT_STORAGE_CLEAN = "onFirstInit";
-	private static final String DEFAULT_AUTODEPLOY_DIRECTORY = "plugins";
-	private static final String DEFAULT_LOG_FILE = "jprobe.log";
-	private static final String DEFAULT_ERROR_LOG_FILE = "jprobe-error.log";
+	
+	private static final String DEBUG_HELP = "//debug values: 0=off, 1=log, 2=full";
 		
 	public static final String TAG_DEBUG_LEVEL = "debug";
-	public static final String TAG_MODE = "default_mode";
 	public static final String TAG_STORAGE_CLEAN = "felix_storage_clean";
-	public static final String TAG_AUTODEPLOY_DIRECTORY = "autodeploy_plugin_directory";
-	public static final String TAG_LOG_FILE = "log_file";
-	public static final String TAG_ERROR_LOG_FILE = "error_log_file";
+	public static final String TAG_AUTOSAVE = "autosave";
+	public static final String TAG_AUTOSAVE_MINS = "autosave_frequency";
+	public static final String TAG_MAX_AUTOSAVES = "num_autosaves";
+	public static final String TAG_LOAD_WORKSPACE = "autoload_last_workspace";
 	
-	private static final String DEFAULT_FILE = "//debug values: 0=off, 1=log, 2=full\n"+TAG_DEBUG_LEVEL+": "+
-	DEFAULT_DEBUG_LEVEL+"\n"+ "//the mode that jprobe will be started in when no arguments are passed\n//values: "+Mode.COMMAND+
-	" or "+Mode.INTERACTIVE +"\n"+ TAG_MODE+": "+ DEFAULT_MODE+"\n"+TAG_AUTODEPLOY_DIRECTORY+": "+DEFAULT_AUTODEPLOY_DIRECTORY+"\n"+TAG_STORAGE_CLEAN+
-	": "+DEFAULT_STORAGE_CLEAN+"\n"+TAG_LOG_FILE+": "+DEFAULT_LOG_FILE+"\n"+TAG_ERROR_LOG_FILE+": "+DEFAULT_ERROR_LOG_FILE+"\n";
+	private String[] m_CmdLineArgs;
 	
-	private enum Tag{
-		DEBUG,
-		MODE,
-		STORAGE_CLEAN,
-		AUTODEPLOY,
-		LOG_FILE,
-		ERROR_FILE,
-		OTHER;
-		
-		public static Tag fromString(String s){
-			if(s.equalsIgnoreCase(TAG_AUTODEPLOY_DIRECTORY)){
-				return AUTODEPLOY;
-			}
-			if(s.equalsIgnoreCase(TAG_MODE)){
-				return MODE;
-			}
-			if(s.equalsIgnoreCase(TAG_DEBUG_LEVEL)){
-				return DEBUG;
-			}
-			if(s.equalsIgnoreCase(TAG_ERROR_LOG_FILE)){
-				return ERROR_FILE;
-			}
-			if(s.equalsIgnoreCase(TAG_LOG_FILE)){
-				return LOG_FILE;
-			}
-			if(s.equalsIgnoreCase(TAG_STORAGE_CLEAN)){
-				return STORAGE_CLEAN;
-			}
-			return OTHER;
-		}
-	}
-	
-	private String[] cmdLineArgs;
-	
-	private Debug debugLevel = DEFAULT_DEBUG_LEVEL;
-	private String felixStorageClean = DEFAULT_STORAGE_CLEAN;
-	private String autoDeployPluginDirectory = DEFAULT_AUTODEPLOY_DIRECTORY;
-	private String logFile = DEFAULT_LOG_FILE;
-	private String errorLogFile = DEFAULT_ERROR_LOG_FILE;
-	private Mode mode = DEFAULT_MODE;
+	private Debug m_DebugLevel = DEFAULT_DEBUG_LEVEL;
+	private String m_FelixStorageClean = DEFAULT_STORAGE_CLEAN;
+	private boolean m_Autosave = Constants.DEFAULT_AUTOSAVE;
+	private double m_AutosaveFreq = Constants.DEFAULT_AUTOSAVE_FREQUENCE;
+	private int m_MaxAutosaves = Constants.DEFAULT_MAX_AUTOSAVE;
+	private boolean m_LoadWorkspace = Constants.DEFAULT_LOAD_WORKSPACE;
 	
 	public Configuration(File configFile, String[] args){
-		cmdLineArgs = args;
+		m_CmdLineArgs = args;
 		try {
-			Scanner s = new Scanner(configFile);
-			while(s.hasNextLine()){
-				readLine(s.nextLine());
+			BufferedReader reader = new BufferedReader(new FileReader(configFile));
+			String line;
+			while((line = reader.readLine()) != null){
+				try{
+					parse(line);
+				} catch (Exception e){
+					ErrorHandler.getInstance().handleWarning(configFile + ": unable to parse line \""+line+"\"", null);
+				}
 			}
-			s.close();
+			reader.close();
 		} catch (FileNotFoundException e) {
-			System.err.println("Error: unable to find configuration file "+configFile.getAbsolutePath()+" creating it.");
-			try {
-				BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
-				writer.write(DEFAULT_FILE);
-				writer.close();
-			} catch (IOException e1) {
-				//do nothing
-			}
+			ErrorHandler.getInstance().handleException(e, null);
+			configFile.getParentFile().mkdirs();
+			this.writeFile(configFile);
+		} catch (Exception e){
+			ErrorHandler.getInstance().handleException(e, null);
 		}
-		errorLogFile = errorLogFile.startsWith(File.separator) ? errorLogFile : Constants.LOG_DIR + File.separator + errorLogFile;
-		logFile = logFile.startsWith(File.separator) ? logFile : Constants.LOG_DIR + File.separator + logFile;
-		Debug.setLevel(debugLevel);
-		ErrorHandler.getInstance().init(new TimeStampJournal(new File(errorLogFile)));
-		Log.getInstance().init(new TimeStampJournal(new File(logFile)));
+		Debug.setLevel(m_DebugLevel);
 	}
 
-	private void readLine(String line){
+	private void parse(String line){
 		if(line.startsWith("//")){
 			return;
 		}
-		try{
-			String tag = line.substring(0, line.indexOf(':')).trim();
-			String value = line.substring(line.indexOf(':')+1).trim();
-			switch(Tag.fromString(tag)){
-			case DEBUG:
-				debugLevel = Debug.fromString(value);
-				break;
-			case STORAGE_CLEAN:
-				felixStorageClean = value;
-				break;
-			case AUTODEPLOY:
-				autoDeployPluginDirectory = value;
-				break;
-			case LOG_FILE:
-				logFile = value;
-				break;
-			case ERROR_FILE:
-				errorLogFile = value;
-				break;
-			case MODE:
-				mode = value.equals(Mode.COMMAND.toString()) ? Mode.COMMAND : Mode.INTERACTIVE;
-				break;
-			default:
-				break;
-			}
-		} catch (Exception e){
-			System.err.println("Error: unable to read line \""+line+"\" in configuration file");
-			e.printStackTrace();
-			//do nothing, line was unreadable
+		String[] tokens = line.split("=");
+		String tag = tokens[0].trim();
+		String val = tokens[1].trim();
+		if(tag.equals(TAG_DEBUG_LEVEL)){
+			m_DebugLevel = Debug.fromString(val);
+		}else if(tag.equals(TAG_STORAGE_CLEAN)){
+			m_FelixStorageClean = val;
+		}else if(tag.equals(TAG_AUTOSAVE)){
+			m_Autosave = Boolean.parseBoolean(val);
+		}else if(tag.equals(TAG_AUTOSAVE_MINS)){
+			m_AutosaveFreq = Double.parseDouble(val);
+		}else if(tag.equals(TAG_MAX_AUTOSAVES)){
+			m_MaxAutosaves = Integer.parseInt(val);
+		}else if(tag.equals(TAG_LOAD_WORKSPACE)){
+			m_LoadWorkspace = Boolean.parseBoolean(val);
+		}
+	}
+	
+	public void writeFile(File f){
+		BufferedWriter writer;
+		try {
+			writer = new BufferedWriter(new FileWriter(f));
+			writeln(writer, DEBUG_HELP);
+			writeln(writer, TAG_DEBUG_LEVEL, m_DebugLevel.toString());
+			writeln(writer, TAG_STORAGE_CLEAN, m_FelixStorageClean);
+			writeln(writer, TAG_AUTOSAVE, String.valueOf(m_Autosave));
+			writeln(writer, TAG_AUTOSAVE_MINS, String.valueOf(m_AutosaveFreq));
+			writeln(writer, TAG_MAX_AUTOSAVES, String.valueOf(m_MaxAutosaves));
+			writeln(writer, TAG_LOAD_WORKSPACE, String.valueOf(m_LoadWorkspace));
+			writer.close();
+		} catch (IOException e) {
+			ErrorHandler.getInstance().handleException(e, null);
+		}
+	}
+	
+	private static void writeln(Writer w, String line){
+		try {
+			w.write(line + "\n");
+		} catch (IOException e) {
+			ErrorHandler.getInstance().handleException(e, null);
+		}
+	}
+	
+	private static void writeln(Writer w, String tag, String value){
+		try {
+			w.write(tag + " = " + value + "\n");
+		} catch (IOException e) {
+			ErrorHandler.getInstance().handleException(e, null);
 		}
 	}
 	
 	public String[] getArgs(){
-		return cmdLineArgs;
+		return m_CmdLineArgs;
 	}
 	
-	public Mode getDefaultMode(){
-		return mode;
+	public boolean loadPrevWorkspace(){
+		return m_LoadWorkspace;
 	}
 	
-	public String getErrorLogFile(){
-		return errorLogFile;
+	public int getMaxAutosaves(){
+		return m_MaxAutosaves;
 	}
 	
-	public String getLogFile(){
-		return logFile;
+	public double getAutosaveFrequency(){
+		return m_AutosaveFreq;
 	}
 	
-	public String getAutoDeployPluginDirectory(){
-		return autoDeployPluginDirectory.startsWith(File.separator) ? autoDeployPluginDirectory : Constants.JAR_DIR + File.separator + autoDeployPluginDirectory;
+	public boolean autosave(){
+		return m_Autosave;
 	}
 	
 	public String getFelixStorageClean(){
-		return felixStorageClean;
+		return m_FelixStorageClean;
 	}
 	
 	public Debug getDebugLevel(){
-		return debugLevel;
+		return m_DebugLevel;
 	}
 	
 }

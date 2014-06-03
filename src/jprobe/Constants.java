@@ -20,11 +20,23 @@ public class Constants {
 	public static final String JAR_URL = Launcher.class.getProtectionDomain().getCodeSource().getLocation().getFile();
 	public static final String JAR_DIR = JAR_URL.substring(0, JAR_URL.lastIndexOf(URL_PATH_SEPARATOR));
 	
-	public static final String PREFERENCES_DIR = JAR_DIR + File.separator + "preferences";
-
+	public static final String USER_HOME_DIR = System.getProperty("user.home");
+	public static final String USER_JPROBE_DIR = USER_HOME_DIR + File.separator + "jprobe";
+	
+	public static final String PREFERENCES_DIR = USER_JPROBE_DIR + File.separator + "preferences";
 	public static final String CONFIG_FILE = PREFERENCES_DIR + File.separator + "jprobe.pref";
 	
-	public static final String LOG_DIR = JAR_DIR + File.separator + "logs";
+	public static final String LOG_DIR = USER_JPROBE_DIR + File.separator + "logs";
+	public static final String JPROBE_LOG = LOG_DIR + File.separator + "jprobe.log";
+	public static final String JPROBE_ERROR_LOG = LOG_DIR + File.separator + "jprobe-error.log";
+	
+	public static final String AUTOSAVE_DIR = USER_JPROBE_DIR + File.separator + "session";
+	
+	public static final boolean DEFAULT_AUTOSAVE = true;
+	public static final double DEFAULT_AUTOSAVE_FREQUENCE = 10;
+	public static final int DEFAULT_MAX_AUTOSAVE = 2;
+	public static final boolean DEFAULT_LOAD_WORKSPACE = true;
+	
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	

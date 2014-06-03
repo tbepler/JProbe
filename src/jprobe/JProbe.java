@@ -100,7 +100,7 @@ public class JProbe implements JProbeCore{
 			e.printStackTrace();
 		}
 		m_DataManager.setBundleContext(m_Activator.getBundleContext());
-		if(m_Mode == Mode.COMMAND){
+		if(m_Mode == Mode.COMMAND){ //parse args, execute, and quit
 			Data d = ParsingEngine.parseAndExecute(System.err, m_FunctionManager, args);
 			if(d != null){
 				DataWriter writer = m_DataManager.getDataWriter(d.getClass());
