@@ -104,4 +104,9 @@ public class BindingProfile extends AbstractFinalData implements Iterable<Profil
 		return m_Profiles.iterator();
 	}
 
+	@Override
+	public void dispose() {
+		//do nothing
+	}
+
 }

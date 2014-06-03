@@ -89,4 +89,9 @@ public class Peaks extends AbstractFinalData{
 		}
 	}
 
+	@Override
+	public void dispose() {
+		//do nothing
+	}
+
 }

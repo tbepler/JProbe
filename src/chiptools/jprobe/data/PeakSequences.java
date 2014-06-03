@@ -84,5 +84,10 @@ public class PeakSequences extends AbstractFinalData{
 		}
 	}
 
+	@Override
+	public void dispose() {
+		//do nothing
+	}
+
 
 }

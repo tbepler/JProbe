@@ -117,6 +117,11 @@ public class Test extends junit.framework.TestCase{
 			default: return null;
 			}
 		}
+
+		@Override
+		public void dispose() {
+			//do nothing
+		}
 		
 	}
 	

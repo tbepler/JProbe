@@ -165,6 +165,7 @@ public class CoreDataManager implements DataManager, Saveable{
 		m_Data.get(d.getClass()).remove(d);
 		m_NameToData.remove(name);
 		m_DataToName.remove(d);
+		d.dispose();
 		notifyListeners(new CoreEvent(m_Core, Type.DATA_REMOVED, responsible, d));
 	}
 	

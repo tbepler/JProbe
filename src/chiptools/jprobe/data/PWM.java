@@ -74,5 +74,10 @@ public class PWM extends AbstractFinalData{
 		}
 	}
 
+	@Override
+	public void dispose() {
+		//do nothing
+	}
+
 
 }

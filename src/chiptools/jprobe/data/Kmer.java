@@ -128,5 +128,10 @@ public class Kmer extends AbstractFinalData{
 		}
 	}
 
+	@Override
+	public void dispose() {
+		//do nothing;
+	}
+
 
 }

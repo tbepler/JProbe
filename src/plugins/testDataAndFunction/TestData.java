@@ -70,5 +70,10 @@ public class TestData extends AbstractFinalData{
 		default: return null;
 		}
 	}
+
+	@Override
+	public void dispose() {
+		//do nothing
+	}
 	
 }

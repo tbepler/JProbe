@@ -143,6 +143,11 @@ public class Probes extends AbstractFinalData implements Observer<Preferences.Up
 			this.notifyListeners(new TableModelEvent(this, 0, this.getRowCount()-1, 0));
 		}
 	}
+
+	@Override
+	public void dispose() {
+		Preferences.getInstance().unregister(this);
+	}
 	
 	
 
