@@ -6,10 +6,10 @@ import util.genome.probe.Probe;
 import util.genome.probe.ProbeUtils.Filter;
 import chiptools.jprobe.function.SequencesArg;
 
-public class IncludeSubseqArgument extends SequencesArg<ProbeFilterParam>{
+public class ExcludeSubseqArgument extends SequencesArg<ProbeFilterParam>{
 
-	public IncludeSubseqArgument(boolean optional) {
-		super(IncludeSubseqArgument.class, optional);
+	public ExcludeSubseqArgument(boolean optional) {
+		super(ExcludeSubseqArgument.class, optional);
 	}
 
 	@Override
@@ -19,13 +19,12 @@ public class IncludeSubseqArgument extends SequencesArg<ProbeFilterParam>{
 			@Override
 			public boolean keep(Probe p) {
 				for(String s : seqs){
-					if(p.getSequence().contains(s)) return true;
+					if(p.getSequence().contains(s)) return false;
 				}
-				return false;
+				return true;
 			}
 			
 		});
 	}
-
 
 }

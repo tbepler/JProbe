@@ -24,6 +24,8 @@ public class Constants {
 	public static final String PREF_TAB_NAME = "Chiptools";
 	public static final String PREF_FILE_NAME = "chiptools.pref";
 	
+	public static final int SEQS_ARG_MAX_DISPLAY = 5;
+	
 	public static final String RESOURCES_PATH = "/chiptools/jprobe/resources";
 	
 	public static final String FUNCTIONS_FILE = RESOURCES_PATH + "/functions.txt";

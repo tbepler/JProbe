@@ -28,6 +28,8 @@ public class ProbeFilter extends AbstractChiptoolsFunction<ProbeFilterParam>{
 		args.add(new MaxBindingDistArgument(true));
 		args.add(new MinBindingSitesArg(true));
 		args.add(new MaxBindingSitesArg(true));
+		args.add(new IncludeSubseqArgument(true));
+		args.add(new ExcludeSubseqArgument(true));
 		
 		return args;
 	}

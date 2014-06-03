@@ -23,3 +23,5 @@ chiptools.jprobe.function.probefilter.MinBindingDistArgument	MinBindingDistance	
 chiptools.jprobe.function.probefilter.MaxBindingDistArgument	MaxBindingDistance		INT	Fields	Filters out all probes with binding sites spaced more than this number apart
 chiptools.jprobe.function.probefilter.MinBindingSitesArg	MinBindingSites		INT	Fields	Filters out all probes with fewer binding sites than this number
 chiptools.jprobe.function.probefilter.MaxBindingSitesArg	MaxBindingSites		INT	Fields	Filters out all probes with more binding sites than this number
+chiptools.jprobe.function.probefilter.IncludeSubseqArgument	IncludeSeqs		FILE	Fields	Reads a file containing line separated sequences and keeps only probes containing an OR over the sequences
+chiptools.jprobe.function.probefilter.ExcludeSubseqArgument	ExcludeSeqs		FILE	Fields	Reads a file containing line separated sequences and removes all probes containing an OR over the sequences
