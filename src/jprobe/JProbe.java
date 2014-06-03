@@ -2,6 +2,7 @@ package jprobe;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 
+import util.FileUtil;
+
 public class JProbe implements JProbeCore{
 	
 	private Mode m_Mode;
@@ -39,6 +42,7 @@ public class JProbe implements JProbeCore{
 	private SaveManager m_SaveManager;
 	private JProbeActivator m_Activator;
 	private Felix m_Felix;
+	private AutosaveThread m_Autosave = null;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JProbe(Configuration config){
@@ -108,8 +112,22 @@ public class JProbe implements JProbeCore{
 				}
 			}
 			this.shutdown();;
-		}else{ //
-			
+		}else{ //in gui mode, so check the config for workspace and autosave settings
+			if(config.loadPrevWorkspace()){ //load the most recent saved workspace
+				File newest = FileUtil.getMostRecentFile(jprobe.Constants.AUTOSAVE_DIR, new FileFilter(){
+					@Override
+					public boolean accept(File pathname) {
+						return pathname.getName().endsWith(jprobe.Constants.WORKSPACE_FILE_EXTENSION);
+					}
+				});
+				if(newest != null){
+					this.load(newest);
+				}
+			}
+			if(config.autosave()){ //init and start the autosave thread
+				m_Autosave = new AutosaveThread(this, jprobe.Constants.AUTOSAVE_DIR, config.getAutosaveFrequency(), config.getMaxAutosaves());
+				m_Autosave.start();
+			}
 		}
 		
 		try {
@@ -146,10 +164,12 @@ public class JProbe implements JProbeCore{
 			if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
 				Log.getInstance().write(JProbeActivator.getBundle(), "JProbe shutting down.");
 			}
+			if(m_Autosave != null){
+				m_Autosave.terminate();
+			}
+			File session = new File(jprobe.Constants.AUTOSAVE_DIR + File.separator + "session." + jprobe.Constants.WORKSPACE_FILE_EXTENSION);
+			this.save(session);
 			m_Felix.stop();
-			//System.out.println("Waiting for stop");
-			//m_Felix.waitForStop(0);
-			//System.exit(0);
 		} catch (Exception e){
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			e.printStackTrace();

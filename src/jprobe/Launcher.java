@@ -14,10 +14,21 @@ public class Launcher {
 		File errorLog = initFile(Constants.JPROBE_ERROR_LOG);
 		ErrorHandler.getInstance().init(new TimeStampJournal(errorLog));
 		
+		initDir(Constants.USER_PLUGINS_DIR);
+		initDir(Constants.AUTOSAVE_DIR);
+		initDir(Constants.PREFERENCES_DIR);
+		
 		Configuration config = new Configuration(new File(Constants.CONFIG_FILE), args);
 		//System.out.println(JAR_URL);
 		//System.out.println(JAR_DIR);
 		new JProbe(config);
+	}
+	
+	private static void initDir(String path){
+		File f= new File(path);
+		if(!f.exists()){
+			f.mkdirs();
+		}
 	}
 	
 	private static File initFile(String path){
