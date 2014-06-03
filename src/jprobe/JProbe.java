@@ -49,7 +49,7 @@ public class JProbe implements JProbeCore{
 		m_Mode = Mode.COMMAND;
 		String[] args = config.getArgs();
 		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
-			m_Mode = Mode.INTERACTIVE;
+			m_Mode = Mode.GUI;
 		}
 		m_SaveManager = new SaveManager();
 		//create felix config map
@@ -113,7 +113,7 @@ public class JProbe implements JProbeCore{
 					ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 				}
 			}
-			this.shutdown();;
+			this.shutdown();
 		}else{ //in gui mode, so check the config for workspace and autosave settings
 			if(config.loadPrevWorkspace()){ //load the most recent saved workspace
 				File newest = FileUtil.getMostRecentFile(jprobe.Constants.AUTOSAVE_DIR, new FileFilter(){
@@ -169,8 +169,10 @@ public class JProbe implements JProbeCore{
 			if(m_Autosave != null){
 				m_Autosave.terminate();
 			}
-			File session = new File(jprobe.Constants.AUTOSAVE_DIR + File.separator + "session." + jprobe.Constants.WORKSPACE_FILE_EXTENSION);
-			this.save(session);
+			if(m_Mode != Mode.COMMAND){
+				File session = new File(jprobe.Constants.AUTOSAVE_DIR + File.separator + "session." + jprobe.Constants.WORKSPACE_FILE_EXTENSION);
+				this.save(session);
+			}
 			m_Felix.stop();
 		} catch (Exception e){
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());

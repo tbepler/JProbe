@@ -9,15 +9,15 @@ public interface JProbeCore {
 	
 	public enum Mode{
 		COMMAND,
-		INTERACTIVE;
+		GUI;
 		
 		@Override
 		public String toString(){
 			switch(this){
 			case COMMAND:
 				return "command";
-			case INTERACTIVE:
-				return "interactive";
+			case GUI:
+				return "gui";
 			default:
 				return null;
 			}

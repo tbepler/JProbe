@@ -44,7 +44,7 @@ public class GUIActivator implements BundleActivator{
 		m_Bundle = context.getBundle();
 		ServiceReference<JProbeCore> ref = context.getServiceReference(JProbeCore.class);
 		m_Core = context.getService(ref);
-		if(m_Core.getMode() == Mode.COMMAND){
+		if(m_Core.getMode() != Mode.GUI){
 			return;
 		}
 		File prefFile = new File(m_Core.getPreferencesDir() + File.separator + Constants.CONFIG_FILE_NAME);
