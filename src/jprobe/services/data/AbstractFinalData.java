@@ -13,7 +13,7 @@ import util.gui.TableFormatter;
 public abstract class AbstractFinalData implements Data{
 	private static final long serialVersionUID = 1L;
 	
-	private final Collection<TableModelListener> m_Listeners = new HashSet<TableModelListener>();
+	private transient Collection<TableModelListener> m_Listeners = new HashSet<TableModelListener>();
 	
 	private final int m_Cols;
 	private final int m_Rows;
@@ -21,6 +21,12 @@ public abstract class AbstractFinalData implements Data{
 	protected AbstractFinalData(int cols, int rows){
 		m_Cols = cols;
 		m_Rows = rows;
+	}
+	
+	//readObject method to init the transient listeners collection after deserialization
+	private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException{
+		in.defaultReadObject();
+		m_Listeners = new HashSet<TableModelListener>();
 	}
 
 	@Override
