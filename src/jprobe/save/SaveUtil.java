@@ -9,63 +9,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
-import jprobe.JProbeActivator;
-import jprobe.services.ErrorHandler;
 import jprobe.services.Saveable;
 
-public class SaveManager {
+public class SaveUtil {
 	
-	private final SaveThread m_SaveThread = new SaveThread();
-	
-	public SaveManager(){
-		m_SaveThread.start();
-	}
-	
-	private Map<String, Saveable> m_Saveables = new HashMap<String, Saveable>();
-	
-	public void addSaveable(Saveable s, String tag){
-		m_Saveables.put(tag, s);
-	}
-	
-	public void removeSaveable(Saveable s, String tag){
-		if(m_Saveables.containsKey(tag) && m_Saveables.get(tag) == s){
-			m_Saveables.remove(tag);
-		}
-	}
-	
-	public void flushAndSuspend(){
-		m_SaveThread.suspendAndFlush();
-	}
-	
-	public void resume(){
-		m_SaveThread.proceed();
-	}
-	
-	public void terminate(){
-		m_SaveThread.terminate();
-		try {
-			m_SaveThread.join();
-		} catch (InterruptedException e) {
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
-		}
-	}
-	
-	public boolean changesSinceSave(){
-		for(Saveable s : m_Saveables.values()){
-			if(s.changedSinceSave()) return true;
-		}
-		return false;
-	}
-	
-	public void save(File saveTo) throws SaveException{
+	public static void save(File saveTo, Map<String,Saveable> saveables) throws SaveException{
 		try {
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(saveTo));
-			for(String tag : m_Saveables.keySet()){
+			for(String tag : saveables.keySet()){
 				ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-				m_Saveables.get(tag).save(byteOut);
+				saveables.get(tag).save(byteOut);
 				Tag header = new Tag(tag, byteOut.size());
 				out.writeObject(header);
 				byteOut.writeTo(out);
@@ -79,7 +34,7 @@ public class SaveManager {
 		}
 	}
 	
-	public void load(File loadFrom) throws LoadException{
+	public static void load(File loadFrom, Map<String, Saveable> saveables) throws LoadException{
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(loadFrom));
 			boolean finished = false;
@@ -89,7 +44,7 @@ public class SaveManager {
 					Tag header = (Tag) in.readObject();
 					String id = header.getId();
 					int size = header.getNumBytes();
-					if(m_Saveables.containsKey(id)){
+					if(saveables.containsKey(id)){
 						//read the bytes into a new inputstream
 						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 						for(int i=0; i<size; i++){
@@ -99,7 +54,7 @@ public class SaveManager {
 						bytes.close();
 						//pass the new inputstream to the saveable for loading
 						try{
-							m_Saveables.get(id).load(byteIn);
+							saveables.get(id).load(byteIn);
 						} catch (Exception e){
 							//an error occurred in the saveable while loading, ignore it and move on
 						}
@@ -122,5 +77,4 @@ public class SaveManager {
 			throw new LoadException(e);
 		}
 	}
-	
 }
