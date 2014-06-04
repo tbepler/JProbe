@@ -381,6 +381,7 @@ public class CoreDataManager implements DataManager{
 		for(Data stored : this.getAllData()){
 			this.removeData(stored, JProbeActivator.getBundle());
 		}
+		this.m_ChangesSinceLastSave = false;
 	}
 	
 	@Override
@@ -430,6 +431,7 @@ public class CoreDataManager implements DataManager{
 					finished = true;
 				}
 			}
+			m_ChangesSinceLastSave = false;
 			oin.close();
 		} catch (IOException e) {
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());

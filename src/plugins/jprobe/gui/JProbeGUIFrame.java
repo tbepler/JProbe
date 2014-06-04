@@ -119,7 +119,9 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	
 	public void quit(){
 		if(JOptionPane.showConfirmDialog(JProbeGUIFrame.this, "Exit JProbe?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION){
-			JProbeGUIFrame.this.m_Core.shutdown();
+			if(SaveLoadUtil.unsavedWorkspaceCheck(m_Core, this) == SaveLoadUtil.PROCEED){
+				JProbeGUIFrame.this.m_Core.shutdown();
+			}
 		}
 	}
 	
