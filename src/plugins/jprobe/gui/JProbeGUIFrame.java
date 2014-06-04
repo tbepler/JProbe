@@ -27,6 +27,7 @@ import javax.swing.KeyStroke;
 import org.osgi.framework.Bundle;
 
 import plugins.jprobe.gui.filemenu.FileMenu;
+import plugins.jprobe.gui.notification.NotificationPanel;
 import plugins.jprobe.gui.services.GUIEvent;
 import plugins.jprobe.gui.services.GUIListener;
 import plugins.jprobe.gui.services.JProbeGUI;
@@ -54,6 +55,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private FileMenu m_FileMenu;
 	private JFileChooser m_ImportChooser;
 	private JFileChooser m_ExportChooser;
+	private NotificationPanel m_NotePanel;
 	private Collection<GUIListener> m_Listeners;
 	
 	JProbeGUIFrame(JProbeCore core, String name, Bundle bundle, GUIConfig config){
@@ -97,6 +99,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		m_HelpMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.CTRL_MASK));
 		m_MenuBar.add(m_HelpMenu);
 		
+		m_NotePanel = initNotificationPanel(m_Core);
 		
 		this.pack();
 		this.setSize(config.getDimension());
@@ -117,12 +120,30 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		this.setExtendedState(config.getExtendedState());
 	}
 	
+	protected NotificationPanel initNotificationPanel(JProbeCore core){
+		NotificationPanel panel = new NotificationPanel(core);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridx = 0;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.gridy = 100;
+		this.add(panel, gbc);
+		return panel;
+	}
+	
 	public void quit(){
 		if(JOptionPane.showConfirmDialog(JProbeGUIFrame.this, "Exit JProbe?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION){
 			if(SaveLoadUtil.unsavedWorkspaceCheck(m_Core, this) == SaveLoadUtil.PROCEED){
 				JProbeGUIFrame.this.m_Core.shutdown();
 			}
 		}
+	}
+	
+	@Override
+	public void dispose(){
+		m_NotePanel.dispose();
+		super.dispose();
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package jprobe.services;
 
+import java.io.File;
+
 import jprobe.services.data.Data;
 import jprobe.services.function.Function;
 
@@ -16,7 +18,11 @@ public class CoreEvent {
 		DATAWRITER_ADDED,
 		DATAWRITER_REMOVED,
 		FUNCTION_ADDED,
-		FUNCTION_REMOVED;
+		FUNCTION_REMOVED,
+		SAVING,
+		SAVED,
+		LOADING,
+		LOADED;
 	};
 	
 	private Type m_Type;
@@ -27,10 +33,17 @@ public class CoreEvent {
 	private Bundle m_Cause = null;
 	private String m_OldName = null;
 	private String m_NewName = null;
+	private File m_File = null;
 	
 	public CoreEvent(JProbeCore source, Type type, Bundle responsible){
 		this.m_Source = source;
 		this.m_Type = type;
+	}
+	
+	public CoreEvent(JProbeCore source, Type type, File f){
+		m_Source = source;
+		m_Type = type;
+		m_File = f;
 	}
 	
 	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Data effected){
@@ -57,6 +70,10 @@ public class CoreEvent {
 	
 	public Type type(){
 		return m_Type;
+	}
+	
+	public File getFile(){
+		return m_File;
 	}
 	
 	public Bundle getCause(){

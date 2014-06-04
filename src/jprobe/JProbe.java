@@ -4,7 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -16,7 +18,11 @@ import jprobe.services.Debug;
 import jprobe.services.ErrorHandler;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
+import jprobe.services.LoadEvent;
+import jprobe.services.LoadListener;
 import jprobe.services.Log;
+import jprobe.services.SaveEvent;
+import jprobe.services.SaveListener;
 import jprobe.services.Saveable;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataWriter;
@@ -29,7 +35,10 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 
-public class JProbe implements JProbeCore{
+public class JProbe implements JProbeCore, SaveListener, LoadListener{
+	
+	private final Collection<SaveListener> m_SaveLs = new HashSet<SaveListener>();
+	private final Collection<LoadListener> m_LoadLs	= new HashSet<LoadListener>();
 	
 	private Mode m_Mode;
 	private CoreDataManager m_DataManager;
@@ -47,6 +56,8 @@ public class JProbe implements JProbeCore{
 		}
 		//init save manager and start the save thread
 		m_SaveManager = new SaveManager();
+		m_SaveManager.registerSave(this);
+		m_SaveManager.registerLoad(this);
 		m_SaveManager.start();
 		//create felix config map
 		Map felixConfig = new HashMap();
@@ -234,6 +245,40 @@ public class JProbe implements JProbeCore{
 	@Override
 	public String getUserDir() {
 		return jprobe.Constants.USER_JPROBE_DIR;
+	}
+
+	@Override
+	public void update(SaveEvent e) {
+		for(SaveListener l : m_SaveLs){
+			l.update(e);
+		}
+	}
+
+	@Override
+	public void registerSave(SaveListener l) {
+		m_SaveLs.add(l);
+	}
+
+	@Override
+	public void unregisterSave(SaveListener l) {
+		m_SaveLs.remove(l);
+	}
+
+	@Override
+	public void registerLoad(LoadListener l) {
+		m_LoadLs.add(l);
+	}
+
+	@Override
+	public void unregisterLoad(LoadListener l) {
+		m_LoadLs.remove(l);
+	}
+
+	@Override
+	public void update(LoadEvent e) {
+		for(LoadListener l : m_LoadLs){
+			l.update(e);
+		}
 	}
 
 

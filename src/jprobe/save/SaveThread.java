@@ -11,23 +11,49 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import jprobe.JProbeActivator;
 import jprobe.services.ErrorHandler;
 import jprobe.services.Log;
+import jprobe.services.SaveEvent;
+import jprobe.services.SaveEvent.Type;
+import jprobe.services.SaveListener;
 import jprobe.services.Saveable;
 
 public class SaveThread extends Thread{
 	
 	private final Lock m_FilesLock = new ReentrantLock(false);
 	private final ReadWriteLock m_SaveablesLock = new ReentrantReadWriteLock(false);
+	private final Lock m_ListenLock = new ReentrantLock(false);
 	
 	private final Set<File> m_Files = new HashSet<File>();
 	private final Queue<File> m_Queue = new LinkedList<File>();
 	
 	private final Map<String, Saveable> m_Saveables = new HashMap<String, Saveable>();
 	
+	private final Collection<SaveListener> m_Listeners = new HashSet<SaveListener>(); 
+	
 	private volatile boolean m_Terminated = false;
 	private volatile boolean m_Suspended = false;
 	
 	public SaveThread(){
 		super("SaveThread");
+	}
+	
+	public void register(SaveListener l){
+		m_ListenLock.lock();
+		m_Listeners.add(l);
+		m_ListenLock.unlock();
+	}
+	
+	public void unregister(SaveListener l){
+		m_ListenLock.lock();
+		m_Listeners.add(l);
+		m_ListenLock.unlock();
+	}
+	
+	protected void notifyListeners(SaveEvent e){
+		m_ListenLock.lock();
+		for(SaveListener l : m_Listeners){
+			l.update(e);
+		}
+		m_ListenLock.unlock();
 	}
 	
 	public void addSaveable(Saveable s, String tag){
@@ -175,15 +201,20 @@ public class SaveThread extends Thread{
 			m_FilesLock.unlock();
 
 			if(saveTo != null){
+				this.notifyListeners(new SaveEvent(Type.SAVING, saveTo));
+				boolean failed = false;
 				m_SaveablesLock.readLock().lock();
 				try {
 					SaveUtil.save(saveTo, m_Saveables);
 					Log.getInstance().write(JProbeActivator.getBundle(), "Saved to file "+saveTo);
 				} catch (SaveException e) {
 					ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+					failed = true;
 				} finally{
 					m_SaveablesLock.readLock().unlock();
 				}
+				Type t = failed ? Type.FAILED : Type.SAVED;
+				this.notifyListeners(new SaveEvent(t, saveTo));
 			}
 			
 			m_FilesLock.lock();

@@ -34,6 +34,11 @@ public interface JProbeCore {
 	public String getLogsDir();
 	public String getUserDir();
 	
+	public void registerSave(SaveListener l);
+	public void unregisterSave(SaveListener l);
+	public void registerLoad(LoadListener l);
+	public void unregisterLoad(LoadListener l);
+	
 	public void addCoreListener(CoreListener listener);
 	public void removeCoreListener(CoreListener listener);
 	
