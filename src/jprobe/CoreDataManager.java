@@ -33,9 +33,8 @@ import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
-import jprobe.services.Saveable;
 
-public class CoreDataManager implements DataManager, Saveable{
+public class CoreDataManager implements DataManager{
 	
 	private JProbeCore m_Core;
 	
@@ -102,12 +101,12 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 	
 	@Override
-	public void addListener(CoreListener listener){
+	public synchronized void addListener(CoreListener listener){
 		m_Listeners.add(listener);
 	}
 	
 	@Override
-	public void removeListener(CoreListener listener){
+	public synchronized void removeListener(CoreListener listener){
 		m_Listeners.remove(listener);
 	}
 	
@@ -132,7 +131,7 @@ public class CoreDataManager implements DataManager, Saveable{
 		return name;
 	}
 	
-	public void addData(Data d, String name, Bundle responsible){
+	public synchronized void addData(Data d, String name, Bundle responsible){
 		Class<? extends Data> clazz = d.getClass();
 		if(!m_Data.containsKey(clazz)){
 			List<Data> list = new ArrayList<Data>();
@@ -157,7 +156,7 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 	
 	@Override
-	public void addData(Data d, Bundle responsible){
+	public synchronized void addData(Data d, Bundle responsible){
 		addData(d, assignName(d), responsible);
 	}
 	
@@ -170,17 +169,17 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 	
 	@Override
-	public void removeData(String name, Bundle responsible){
+	public synchronized void removeData(String name, Bundle responsible){
 		removeData(name, m_NameToData.get(name), responsible);
 	}
 	
 	@Override
-	public void removeData(Data d, Bundle responsible){
+	public synchronized void removeData(Data d, Bundle responsible){
 		removeData(m_DataToName.get(d), d, responsible);
 	}
 	
 	@Override
-	public List<Data> getAllData(){
+	public synchronized List<Data> getAllData(){
 		List<Data> full = new ArrayList<Data>();
 		for(List<Data> part : m_Data.values()){
 			full.addAll(part);
@@ -189,27 +188,27 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 	
 	@Override
-	public List<Data> getData(Class<? extends Data> type){
+	public synchronized List<Data> getData(Class<? extends Data> type){
 		return Collections.unmodifiableList(m_Data.get(type));
 	}
 	
 	@Override
-	public Data getData(String name){
+	public synchronized Data getData(String name){
 		return m_NameToData.get(name);
 	}
 	
 	@Override
-	public String getDataName(Data d){
+	public synchronized String getDataName(Data d){
 		return m_DataToName.get(d);
 	}
 	
 	@Override
-	public String[] getDataNames(){
+	public synchronized String[] getDataNames(){
 		return m_NameToData.keySet().toArray(new String[m_NameToData.size()]);
 	}
 	
 	@Override
-	public void rename(Data d, String name, Bundle responsible){
+	public synchronized void rename(Data d, String name, Bundle responsible){
 		String old = m_DataToName.get(d);
 		if(m_NameToData.containsKey(name)){
 			this.removeData(name, responsible);
@@ -221,34 +220,34 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 	
 	@Override
-	public boolean isReadable(Class<? extends Data> type){
+	public synchronized boolean isReadable(Class<? extends Data> type){
 		return m_TypeToReader.containsKey(type);
 	}
 	
 	@Override
-	public boolean isWritable(Class<? extends Data> type){
+	public synchronized boolean isWritable(Class<? extends Data> type){
 		return m_TypeToWriter.containsKey(type);
 	}
 	
 	@Override
-	public DataReader getDataReader(Class<? extends Data> type){
+	public synchronized DataReader getDataReader(Class<? extends Data> type){
 		return m_TypeToReader.get(type);
 	}
 	
 	@Override
-	public DataWriter getDataWriter(Class<? extends Data> type){
+	public synchronized DataWriter getDataWriter(Class<? extends Data> type){
 		return m_TypeToWriter.get(type);
 	}
 	
 	@Override
-	public void addDataReader(DataReader reader, Bundle responsible){
+	public synchronized void addDataReader(DataReader reader, Bundle responsible){
 		m_TypeToReader.put(reader.getReadClass(), reader);
 		m_ReaderToType.put(reader, reader.getReadClass());
 		notifyListeners(new CoreEvent(m_Core, Type.DATAREADER_ADDED, responsible, reader.getReadClass()));
 	}
 	
 	@Override
-	public void addDataWriter(DataWriter writer, Bundle responsible){
+	public synchronized void addDataWriter(DataWriter writer, Bundle responsible){
 		m_TypeToWriter.put(writer.getWriteClass(), writer);
 		m_WriterToType.put(writer, writer.getWriteClass());
 		notifyListeners(new CoreEvent(m_Core, Type.DATAWRITER_ADDED, responsible, writer.getWriteClass()));
@@ -267,53 +266,53 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 	
 	@Override
-	public void removeDataReader(Class<? extends Data> type, Bundle responsible){
+	public synchronized void removeDataReader(Class<? extends Data> type, Bundle responsible){
 		removeDataReader(type, m_TypeToReader.get(type), responsible);
 	}
 	
 	@Override
-	public void removeDataWriter(Class<? extends Data> type, Bundle responsible){
+	public synchronized void removeDataWriter(Class<? extends Data> type, Bundle responsible){
 		removeDataWriter(type, m_TypeToWriter.get(type), responsible);
 	}
 	
 	@Override
-	public void removeDataReader(DataReader reader, Bundle responsible){
+	public synchronized void removeDataReader(DataReader reader, Bundle responsible){
 		removeDataReader(m_ReaderToType.get(reader), reader, responsible);
 	}
 	
 	@Override
-	public void removeDataWriter(DataWriter writer, Bundle responsible){
+	public synchronized void removeDataWriter(DataWriter writer, Bundle responsible){
 		removeDataWriter(m_WriterToType.get(writer), writer, responsible);
 	}
 	
 	@Override
-	public Collection<Class<? extends Data>> getReadableDataTypes(){
+	public synchronized Collection<Class<? extends Data>> getReadableDataTypes(){
 		return m_TypeToReader.keySet();
 	}
 	
 	@Override
-	public Collection<Class<? extends Data>> getWritableDataTypes(){
+	public synchronized Collection<Class<? extends Data>> getWritableDataTypes(){
 		return m_TypeToWriter.keySet();
 	}
 	
-	public DataReader getReader(Class<? extends Data> type){
+	public synchronized DataReader getReader(Class<? extends Data> type){
 		return m_TypeToReader.get(type);
 	}
 	
-	public DataWriter getWriter(Class<? extends Data> type){
+	public synchronized DataWriter getWriter(Class<? extends Data> type){
 		return m_TypeToWriter.get(type);
 	}
 	
-	public Class<? extends Data> getReadType(DataReader reader){
+	public synchronized Class<? extends Data> getReadType(DataReader reader){
 		return m_ReaderToType.get(reader);
 	}
 	
-	public Class<? extends Data> getWriteType(DataWriter writer){
+	public synchronized Class<? extends Data> getWriteType(DataWriter writer){
 		return m_WriterToType.get(writer);
 	}
 
 	@Override
-	public FileFilter[] getValidReadFormats(Class<? extends Data> type) {
+	public synchronized FileFilter[] getValidReadFormats(Class<? extends Data> type) {
 		DataReader reader = m_TypeToReader.get(type);
 		if(reader == null){
 			return new FileFilter[]{};
@@ -322,7 +321,7 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 
 	@Override
-	public FileNameExtensionFilter[] getValidWriteFormats(Class<? extends Data> type) {
+	public synchronized FileNameExtensionFilter[] getValidWriteFormats(Class<? extends Data> type) {
 		DataWriter writer = m_TypeToWriter.get(type);
 		if(writer == null){
 			return new FileNameExtensionFilter[]{};
@@ -331,7 +330,7 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 
 	@Override
-	public Data readData(File file, Class<? extends Data> type, FileFilter format, Bundle responsible) throws Exception {
+	public synchronized Data readData(File file, Class<? extends Data> type, FileFilter format, Bundle responsible) throws Exception {
 		if(!this.isReadable(type)){
 			throw new Exception(type+" not readable");
 		}
@@ -351,7 +350,7 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 
 	@Override
-	public void writeData(File file, Data data, FileNameExtensionFilter format) throws Exception {
+	public synchronized void writeData(File file, Data data, FileNameExtensionFilter format) throws Exception {
 		if(!this.isWritable(data.getClass())){
 			throw new Exception(data.getClass()+" not writable");
 		}
@@ -369,28 +368,28 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 
 	@Override
-	public boolean contains(String name) {
+	public synchronized boolean contains(String name) {
 		return m_NameToData.containsKey(name);
 	}
 
 	@Override
-	public boolean contains(Data data) {
+	public synchronized boolean contains(Data data) {
 		return m_DataToName.containsKey(data);
 	}
 	
-	private void clearData(){
+	public synchronized void clearData(){
 		for(Data stored : this.getAllData()){
 			this.removeData(stored, JProbeActivator.getBundle());
 		}
 	}
 	
 	@Override
-	public boolean changesSinceLastSave(){
+	public synchronized boolean changedSinceSave(){
 		return m_ChangesSinceLastSave;
 	}
 
 	@Override
-	public void save(OutputStream out) {
+	public synchronized void save(OutputStream out) {
 		try {
 			ObjectOutputStream oout = new ObjectOutputStream(out);
 			for(Data stored : this.getAllData()){
@@ -400,6 +399,7 @@ public class CoreDataManager implements DataManager, Saveable{
 				oout.writeObject(bundle);
 				oout.writeObject(stored);
 			}
+			m_ChangesSinceLastSave = false;
 			oout.close();
 		} catch (IOException e) {
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
@@ -407,7 +407,7 @@ public class CoreDataManager implements DataManager, Saveable{
 	}
 
 	@Override
-	public void load(InputStream in) {
+	public synchronized void load(InputStream in) {
 		try {
 			this.clearData();
 			ClassLoaderObjectInputStream oin = new ClassLoaderObjectInputStream(in, this.getClass().getClassLoader());

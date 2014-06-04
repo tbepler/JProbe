@@ -41,8 +41,10 @@ public interface JProbeCore {
 	public DataManager getDataManager();
 	public FunctionManager getFunctionManager();
 	
+	public boolean changedSinceLastSave();
 	public void save(File toFile);
 	public void load(File fromFile);
+	public void newWorkspace();
 	
 	public void addSaveable(Saveable add, Bundle bundle);
 	public void removeSaveable(Saveable remove, Bundle bundle);

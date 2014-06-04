@@ -13,7 +13,7 @@ import jprobe.services.data.DataWriter;
 
 import org.osgi.framework.Bundle;
 
-public interface DataManager {
+public interface DataManager extends Saveable{
 	
 	public void addListener(CoreListener listener);
 	public void removeListener(CoreListener listener);
@@ -48,7 +48,5 @@ public interface DataManager {
 	public boolean contains(String name);
 	public boolean contains(Data data);
 	public List<Data> getData(Class<? extends Data> type);
-	
-	public boolean changesSinceLastSave();
 	
 }

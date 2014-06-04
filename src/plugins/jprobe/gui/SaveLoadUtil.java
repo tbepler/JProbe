@@ -13,6 +13,10 @@ public class SaveLoadUtil {
 	
 	private static File LAST_SAVE_FILE = null;
 	
+	public static void newWorkspace(JProbeCore core, Frame parent){
+		
+	}
+	
 	public static void saveAs(JProbeCore core, Frame parent){
 		SAVE_LOAD_CHOOSER.resetChoosableFileFilters();
 		SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);

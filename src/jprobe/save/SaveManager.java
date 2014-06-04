@@ -28,6 +28,25 @@ public class SaveManager {
 		}
 	}
 	
+	public void flushAndSuspend(){
+		
+	}
+	
+	public void resume(){
+		
+	}
+	
+	public void terminate(){
+		
+	}
+	
+	public boolean changesSinceSave(){
+		for(Saveable s : m_Saveables.values()){
+			if(s.changedSinceSave()) return true;
+		}
+		return false;
+	}
+	
 	public void save(File saveTo) throws SaveException{
 		try {
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(saveTo));

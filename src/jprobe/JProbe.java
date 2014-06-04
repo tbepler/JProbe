@@ -250,6 +250,18 @@ public class JProbe implements JProbeCore{
 		return jprobe.Constants.VERSION;
 	}
 
+	@Override
+	public void newWorkspace() {
+		m_SaveManager.flushAndSuspend();
+		m_DataManager.clearData();
+		m_SaveManager.resume();
+	}
+
+	@Override
+	public boolean changedSinceLastSave() {
+		return m_SaveManager.changesSinceSave();
+	}
+
 
 	
 }
