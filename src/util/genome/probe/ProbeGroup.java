@@ -39,6 +39,10 @@ public class ProbeGroup implements Serializable, Iterable<Probe>{
 		Collections.sort(m_Probes);
 	}
 	
+	public List<Probe> toList(){
+		return new ArrayList<Probe>(m_Probes);
+	}
+	
 	public int size(){
 		return m_Probes.size();
 	}
