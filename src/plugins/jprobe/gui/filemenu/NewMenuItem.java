@@ -22,7 +22,7 @@ public class NewMenuItem extends JMenuItem implements ActionListener{
 		m_Core = core;
 		this.addActionListener(this);
 		this.setMnemonic(KeyEvent.VK_N);
-		this.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, Event.SHIFT_MASK));
+		this.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, Event.CTRL_MASK));
 	}
 	
 	@Override

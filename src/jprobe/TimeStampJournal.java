@@ -30,9 +30,9 @@ public class TimeStampJournal implements Journal{
 	public void write(Bundle bundle, String message) {
 		try {
 			if(bundle == null){
-				writer.write("<"+Calendar.getInstance().getTime()+"><null>"+ message+"\n");
+				writer.write("<"+Calendar.getInstance().getTime()+"><"+Thread.currentThread().getName()+"><null>"+ message+"\n");
 			}else{
-				writer.write("<"+Calendar.getInstance().getTime()+"><"+bundle.getSymbolicName()+">"+ message+"\n");
+				writer.write("<"+Calendar.getInstance().getTime()+"><"+Thread.currentThread().getName()+"><"+bundle.getSymbolicName()+">"+ message+"\n");
 			}
 			writer.flush();
 		} catch (IOException e) {

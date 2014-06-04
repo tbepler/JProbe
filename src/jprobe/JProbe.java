@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import jprobe.save.LoadException;
-import jprobe.save.SaveException;
 import jprobe.save.SaveManager;
 import jprobe.services.CoreListener;
 import jprobe.services.DataManager;
@@ -115,6 +113,7 @@ public class JProbe implements JProbeCore{
 			}
 			this.shutdown();
 		}else{ //in gui mode, so check the config for workspace and autosave settings
+			m_SaveManager.start();
 			if(config.loadPrevWorkspace()){ //load the most recent saved workspace
 				File newest = FileUtil.getMostRecentFile(jprobe.Constants.AUTOSAVE_DIR, new FileFilter(){
 					@Override
@@ -173,6 +172,7 @@ public class JProbe implements JProbeCore{
 				File session = new File(jprobe.Constants.AUTOSAVE_DIR + File.separator + "session." + jprobe.Constants.WORKSPACE_FILE_EXTENSION);
 				this.save(session);
 			}
+			m_SaveManager.terminate();
 			m_Felix.stop();
 		} catch (Exception e){
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
@@ -209,20 +209,12 @@ public class JProbe implements JProbeCore{
 	
 	@Override
 	public void save(File toFile){
-		try {
-			m_SaveManager.save(toFile);
-		} catch (SaveException e) {
-			ErrorHandler.getInstance().handleException(e, m_Activator.getBundleContext().getBundle());
-		}
+		m_SaveManager.save(toFile);
 	}
 	
 	@Override
 	public void load(File fromFile){
-		try {
-			m_SaveManager.load(fromFile);
-		} catch (LoadException e) {
-			ErrorHandler.getInstance().handleException(e, m_Activator.getBundleContext().getBundle());
-		}
+		m_SaveManager.load(fromFile);
 	}
 
 	@Override

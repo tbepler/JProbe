@@ -26,7 +26,7 @@ public class AutosaveThread extends Thread{
 	private volatile boolean m_Terminate = false;
 	
 	public AutosaveThread(JProbeCore core, String dir, double freq, int maxSaves){
-		super();
+		super("AutosaveTimerThread");
 		m_Core = core;
 		m_Dir = dir;
 		//init dir if it doesn't exist
@@ -42,7 +42,7 @@ public class AutosaveThread extends Thread{
 			try {
 				Thread.sleep(m_Millis);
 			} catch (InterruptedException e) {
-				ErrorHandler.getInstance().handleException(e, null);
+				ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			}
 			if(isTerminated()){
 				break;
@@ -65,7 +65,7 @@ public class AutosaveThread extends Thread{
 		while(fileCount >= m_MaxSaves){
 			File oldest = FileUtil.getOldestFile(dir, FILTER);
 			if(!oldest.delete()){
-				ErrorHandler.getInstance().handleWarning("Autosave: unable to remove old file "+oldest +". Aborting autosave.", null);
+				ErrorHandler.getInstance().handleWarning("Autosave: unable to remove old file "+oldest +". Aborting autosave.", JProbeActivator.getBundle());
 				return;
 			}
 			fileCount = FileUtil.countFiles(dir, FILTER);
@@ -78,8 +78,8 @@ public class AutosaveThread extends Thread{
 			save = new File(name + index + ext);
 			++index;
 		}
+		Log.getInstance().write(JProbeActivator.getBundle(), "Autosaving...");
 		m_Core.save(save);
-		Log.getInstance().write(null, "Autosaved to "+save);
 	}
 	
 	

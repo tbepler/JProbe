@@ -20,6 +20,7 @@ public class SaveLoadUtil {
 	public static void newWorkspace(JProbeCore core, Frame parent){
 		if(unsavedWorkspaceCheck(core, parent) == PROCEED){
 			core.newWorkspace();
+			LAST_SAVE_FILE = null;
 		}
 	}
 	

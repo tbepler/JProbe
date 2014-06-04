@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import jprobe.JProbeActivator;
 import jprobe.services.ErrorHandler;
+import jprobe.services.Log;
 import jprobe.services.Saveable;
 
 public class SaveThread extends Thread{
@@ -63,6 +64,17 @@ public class SaveThread extends Thread{
 			m_SaveablesLock.readLock().unlock();
 		}
 		return result;
+	}
+	
+	public Map<String, Saveable> getSaveables(){
+		Map<String, Saveable> copy;
+		m_SaveablesLock.readLock().lock();
+		try{
+			copy = new HashMap<String, Saveable>(m_Saveables);
+		}finally{
+			m_SaveablesLock.readLock().unlock();
+		}
+		return copy;
 	}
 	
 	/**
@@ -166,6 +178,7 @@ public class SaveThread extends Thread{
 				m_SaveablesLock.readLock().lock();
 				try {
 					SaveUtil.save(saveTo, m_Saveables);
+					Log.getInstance().write(JProbeActivator.getBundle(), "Saved to file "+saveTo);
 				} catch (SaveException e) {
 					ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 				} finally{
