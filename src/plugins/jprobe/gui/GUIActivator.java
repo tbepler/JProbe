@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.ErrorHandler;
@@ -27,6 +28,7 @@ public class GUIActivator implements BundleActivator{
 	
 	private JProbeCore m_Core;
 	private GUIConfig m_GuiConfig;
+	private AutosaveThread m_AutosaveThread = null;
 	private GUIErrorManager m_ErrorManager = null;
 	private ServiceRegistration<JProbeGUI> m_Registration = null;
 	private Collection<AbstractServiceListener<?>> m_ServiceListeners = null;
@@ -55,6 +57,28 @@ public class GUIActivator implements BundleActivator{
 		ErrorHandler.getInstance().addErrorManager(m_ErrorManager);
 		m_Registration = context.registerService(JProbeGUI.class, m_Gui, null);
 		m_ServiceListeners = initServiceListeners(m_Gui, context);
+		
+		//check autosave config and start the autosave thread
+		if(m_GuiConfig.getAutosave()){
+			String autosaveDir = m_Core.getUserDir() + File.separator + Constants.AUTOSAVE_DIR_NAME;
+			m_AutosaveThread = new AutosaveThread(m_Core, autosaveDir, m_GuiConfig.getAutosaveFreq(), m_GuiConfig.getMaxAutosaves());
+			m_AutosaveThread.start();
+		}
+		
+		//check load workspace config and load the last workspace
+		if(m_GuiConfig.getLoadWorkspace()){
+			final File last = new File(m_GuiConfig.getLastWorkspace());
+			if(last != null && last.exists() && last.canRead()){
+				SwingUtilities.invokeLater(new Runnable(){
+
+					@Override
+					public void run() {
+						SaveLoadUtil.load(m_Core, last);
+					}
+					
+				});
+			}
+		}
 	}
 	
 	private static Collection<AbstractServiceListener<?>> initServiceListeners(JProbeGUI gui, BundleContext context){
@@ -79,8 +103,15 @@ public class GUIActivator implements BundleActivator{
 			ErrorHandler.getInstance().removeErrorManager(m_ErrorManager);
 			m_ErrorManager = null;
 		}
+		if(m_AutosaveThread != null){
+			m_AutosaveThread.terminate();
+			m_AutosaveThread = null;
+		}
 		if(m_Gui != null){
 			if(m_GuiConfig != null){
+				File lastSave = SaveLoadUtil.getLastSave();
+				String path = lastSave == null ? "" : lastSave.getCanonicalPath();
+				m_GuiConfig.setLastWorkspace(path);
 				m_GuiConfig.save(m_Gui.getSize(), m_Gui.getExtendedState(), m_Gui.getX(), m_Gui.getY());
 				m_GuiConfig = null;
 			}

@@ -15,12 +15,17 @@ public class SaveLoadUtil {
 	
 	private static final JFileChooser SAVE_LOAD_CHOOSER = new JFileChooser();
 	
-	private static File LAST_SAVE_FILE = null;
+	private static File LAST_WORKSPACE_FILE = null;
+	private static File LAST_USER_SAVE_FILE = null;
+	
+	public static File getLastSave(){
+		return LAST_WORKSPACE_FILE;
+	}
 	
 	public static void newWorkspace(JProbeCore core, Frame parent){
 		if(unsavedWorkspaceCheck(core, parent) == PROCEED){
 			core.newWorkspace();
-			LAST_SAVE_FILE = null;
+			LAST_USER_SAVE_FILE = null;
 		}
 	}
 	
@@ -49,6 +54,11 @@ public class SaveLoadUtil {
 		return PROCEED;
 	}
 	
+	public static void save(JProbeCore core, File f){
+		core.save(f);
+		LAST_WORKSPACE_FILE = f;
+	}
+	
 	public static int saveAs(JProbeCore core, Frame parent){
 		SAVE_LOAD_CHOOSER.resetChoosableFileFilters();
 		SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);
@@ -58,19 +68,19 @@ public class SaveLoadUtil {
 			if(!stringEndsWithValidExtension(fileName)){
 				fileName += "." + Constants.SAVE_FILE_EXTENSIONS[0];
 			}
-			LAST_SAVE_FILE = new File(fileName);
-			core.save(LAST_SAVE_FILE);
+			LAST_USER_SAVE_FILE = new File(fileName);
+			save(core, LAST_USER_SAVE_FILE);
 			return PROCEED;
 		}
 		return CANCEL;
 	}
 	
 	public static int save(JProbeCore core, Frame parent){
-		if(LAST_SAVE_FILE == null){
+		if(LAST_USER_SAVE_FILE == null){
 			return saveAs(core, parent);
 		}else{
 			if(core.changedSinceLastSave()){
-				core.save(LAST_SAVE_FILE);
+				save(core, LAST_USER_SAVE_FILE);
 			}
 			return PROCEED;
 		}
@@ -85,13 +95,20 @@ public class SaveLoadUtil {
 		return false;
 	}
 	
+	public static void load(JProbeCore core, File f){
+		core.load(f);
+		LAST_WORKSPACE_FILE = f;
+		LAST_USER_SAVE_FILE = f;
+	}
+	
 	public static void load(JProbeCore core, Frame parent){
 		if(unsavedWorkspaceCheck(core, parent) == PROCEED){
 			SAVE_LOAD_CHOOSER.resetChoosableFileFilters();
 			SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);
 			int returnVal = SAVE_LOAD_CHOOSER.showDialog(parent, "Load");
 			if(returnVal == JFileChooser.APPROVE_OPTION){
-				core.load(SAVE_LOAD_CHOOSER.getSelectedFile());
+				File f = SAVE_LOAD_CHOOSER.getSelectedFile();
+				load(core, f);
 			}
 		}
 	}

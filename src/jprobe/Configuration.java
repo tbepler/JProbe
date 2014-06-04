@@ -26,19 +26,11 @@ public class Configuration {
 		
 	public static final String TAG_DEBUG_LEVEL = "debug";
 	public static final String TAG_STORAGE_CLEAN = "felix_storage_clean";
-	public static final String TAG_AUTOSAVE = "autosave";
-	public static final String TAG_AUTOSAVE_MINS = "autosave_frequency";
-	public static final String TAG_MAX_AUTOSAVES = "num_autosaves";
-	public static final String TAG_LOAD_WORKSPACE = "autoload_last_workspace";
 	
 	private String[] m_CmdLineArgs;
 	
 	private Debug m_DebugLevel = DEFAULT_DEBUG_LEVEL;
 	private String m_FelixStorageClean = DEFAULT_STORAGE_CLEAN;
-	private boolean m_Autosave = Constants.DEFAULT_AUTOSAVE;
-	private double m_AutosaveFreq = Constants.DEFAULT_AUTOSAVE_FREQUENCE;
-	private int m_MaxAutosaves = Constants.DEFAULT_MAX_AUTOSAVE;
-	private boolean m_LoadWorkspace = Constants.DEFAULT_LOAD_WORKSPACE;
 	
 	public Configuration(File configFile, String[] args){
 		m_CmdLineArgs = args;
@@ -74,14 +66,6 @@ public class Configuration {
 			m_DebugLevel = Debug.fromString(val);
 		}else if(tag.equals(TAG_STORAGE_CLEAN)){
 			m_FelixStorageClean = val;
-		}else if(tag.equals(TAG_AUTOSAVE)){
-			m_Autosave = Boolean.parseBoolean(val);
-		}else if(tag.equals(TAG_AUTOSAVE_MINS)){
-			m_AutosaveFreq = Double.parseDouble(val);
-		}else if(tag.equals(TAG_MAX_AUTOSAVES)){
-			m_MaxAutosaves = Integer.parseInt(val);
-		}else if(tag.equals(TAG_LOAD_WORKSPACE)){
-			m_LoadWorkspace = Boolean.parseBoolean(val);
 		}
 	}
 	
@@ -92,10 +76,6 @@ public class Configuration {
 			writeln(writer, DEBUG_HELP);
 			writeln(writer, TAG_DEBUG_LEVEL, m_DebugLevel.toString());
 			writeln(writer, TAG_STORAGE_CLEAN, m_FelixStorageClean);
-			writeln(writer, TAG_AUTOSAVE, String.valueOf(m_Autosave));
-			writeln(writer, TAG_AUTOSAVE_MINS, String.valueOf(m_AutosaveFreq));
-			writeln(writer, TAG_MAX_AUTOSAVES, String.valueOf(m_MaxAutosaves));
-			writeln(writer, TAG_LOAD_WORKSPACE, String.valueOf(m_LoadWorkspace));
 			writer.close();
 		} catch (IOException e) {
 			ErrorHandler.getInstance().handleException(e, null);
@@ -120,22 +100,6 @@ public class Configuration {
 	
 	public String[] getArgs(){
 		return m_CmdLineArgs;
-	}
-	
-	public boolean loadPrevWorkspace(){
-		return m_LoadWorkspace;
-	}
-	
-	public int getMaxAutosaves(){
-		return m_MaxAutosaves;
-	}
-	
-	public double getAutosaveFrequency(){
-		return m_AutosaveFreq;
-	}
-	
-	public boolean autosave(){
-		return m_Autosave;
 	}
 	
 	public String getFelixStorageClean(){

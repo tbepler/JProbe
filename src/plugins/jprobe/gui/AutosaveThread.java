@@ -1,4 +1,4 @@
-package jprobe;
+package plugins.jprobe.gui;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -14,7 +14,10 @@ public class AutosaveThread extends Thread{
 
 		@Override
 		public boolean accept(File f) {
-			return f.getName().endsWith(Constants.WORKSPACE_FILE_EXTENSION);
+			for(String s : Constants.SAVE_FILE_EXTENSIONS){
+				if(f.getName().endsWith(s)) return true;
+			}
+			return false;
 		}
 		
 	};
@@ -25,14 +28,14 @@ public class AutosaveThread extends Thread{
 	private final int m_MaxSaves;
 	private volatile boolean m_Terminate = false;
 	
-	public AutosaveThread(JProbeCore core, String dir, double freq, int maxSaves){
+	public AutosaveThread(JProbeCore core, String dir, long freq, int maxSaves){
 		super("AutosaveTimerThread");
 		m_Core = core;
 		m_Dir = dir;
 		//init dir if it doesn't exist
 		File d = new File(m_Dir);
 		if(!d.exists()) d.mkdirs();
-		m_Millis = (long) freq * 60 * 1000;
+		m_Millis = freq;
 		m_MaxSaves = maxSaves;
 	}
 	
@@ -42,7 +45,7 @@ public class AutosaveThread extends Thread{
 			try {
 				Thread.sleep(m_Millis);
 			} catch (InterruptedException e) {
-				ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+				ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
 			}
 			if(isTerminated()){
 				break;
@@ -65,21 +68,21 @@ public class AutosaveThread extends Thread{
 		while(fileCount >= m_MaxSaves){
 			File oldest = FileUtil.getOldestFile(dir, FILTER);
 			if(!oldest.delete()){
-				ErrorHandler.getInstance().handleWarning("Autosave: unable to remove old file "+oldest +". Aborting autosave.", JProbeActivator.getBundle());
+				ErrorHandler.getInstance().handleWarning("Unable to remove old file "+oldest +". Aborting autosave.", GUIActivator.getBundle());
 				return;
 			}
 			fileCount = FileUtil.countFiles(dir, FILTER);
 		}
-		String name = m_Dir + File.separator + Constants.AUTOSAVE_NAME;
-		String ext = "." + Constants.WORKSPACE_FILE_EXTENSION;
+		String name = m_Dir + File.separator + Constants.AUTOSAVE_FILE_NAME;
+		String ext = "." + Constants.SAVE_FILE_EXTENSIONS[0];
 		File save = new File(name + ext);
 		int index = 1;
 		while(save.exists()){
 			save = new File(name + index + ext);
 			++index;
 		}
-		Log.getInstance().write(JProbeActivator.getBundle(), "Autosaving...");
-		m_Core.save(save);
+		Log.getInstance().write(GUIActivator.getBundle(), "Autosaving...");
+		SaveLoadUtil.save(m_Core, save);
 	}
 	
 	

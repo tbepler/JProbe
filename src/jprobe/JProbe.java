@@ -2,7 +2,6 @@ package jprobe;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +29,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 
-import util.FileUtil;
-
 public class JProbe implements JProbeCore{
 	
 	private Mode m_Mode;
@@ -40,7 +37,6 @@ public class JProbe implements JProbeCore{
 	private SaveManager m_SaveManager;
 	private JProbeActivator m_Activator;
 	private Felix m_Felix;
-	private AutosaveThread m_Autosave = null;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JProbe(Configuration config){
@@ -49,7 +45,9 @@ public class JProbe implements JProbeCore{
 		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
 			m_Mode = Mode.GUI;
 		}
+		//init save manager and start the save thread
 		m_SaveManager = new SaveManager();
+		m_SaveManager.start();
 		//create felix config map
 		Map felixConfig = new HashMap();
 		//export the core service package
@@ -112,30 +110,17 @@ public class JProbe implements JProbeCore{
 				}
 			}
 			this.shutdown();
-		}else{ //in gui mode, so check the config for workspace and autosave settings
-			m_SaveManager.start();
-			if(config.loadPrevWorkspace()){ //load the most recent saved workspace
-				File newest = FileUtil.getMostRecentFile(jprobe.Constants.AUTOSAVE_DIR, new FileFilter(){
-					@Override
-					public boolean accept(File pathname) {
-						return pathname.getName().endsWith(jprobe.Constants.WORKSPACE_FILE_EXTENSION);
-					}
-				});
-				if(newest != null){
-					this.load(newest);
-				}
-			}
-			if(config.autosave()){ //init and start the autosave thread
-				m_Autosave = new AutosaveThread(this, jprobe.Constants.AUTOSAVE_DIR, config.getAutosaveFrequency(), config.getMaxAutosaves());
-				m_Autosave.start();
-			}
 		}
 		
+		//wait for felix to stop
 		try {
 			m_Felix.waitForStop(0);
 		} catch (InterruptedException e) {
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 		}
+		//terminate the save manager
+		m_SaveManager.terminate();
+		//now exit the program
 		System.exit(0);
 	}
 	
@@ -165,14 +150,6 @@ public class JProbe implements JProbeCore{
 			if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
 				Log.getInstance().write(JProbeActivator.getBundle(), "JProbe shutting down.");
 			}
-			if(m_Autosave != null){
-				m_Autosave.terminate();
-			}
-			if(m_Mode != Mode.COMMAND){
-				File session = new File(jprobe.Constants.AUTOSAVE_DIR + File.separator + "session." + jprobe.Constants.WORKSPACE_FILE_EXTENSION);
-				this.save(session);
-			}
-			m_SaveManager.terminate();
 			m_Felix.stop();
 		} catch (Exception e){
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
@@ -252,6 +229,11 @@ public class JProbe implements JProbeCore{
 	@Override
 	public boolean changedSinceLastSave() {
 		return m_SaveManager.changesSinceSave();
+	}
+
+	@Override
+	public String getUserDir() {
+		return jprobe.Constants.USER_JPROBE_DIR;
 	}
 
 

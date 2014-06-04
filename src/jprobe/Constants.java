@@ -39,14 +39,6 @@ public class Constants {
 	public static final String JPROBE_LOG = LOG_DIR + File.separator + "jprobe.log";
 	public static final String JPROBE_ERROR_LOG = LOG_DIR + File.separator + "jprobe-error.log";
 	
-	public static final String AUTOSAVE_DIR = USER_JPROBE_DIR + File.separator + "session";
-	public static final String AUTOSAVE_NAME = "autosave";
-	
-	public static final boolean DEFAULT_AUTOSAVE = true;
-	public static final double DEFAULT_AUTOSAVE_FREQUENCE = 10;
-	public static final int DEFAULT_MAX_AUTOSAVE = 2;
-	public static final boolean DEFAULT_LOAD_WORKSPACE = true;
-	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	
 	public static final int DATA_TABLE_ROW_SAMPLE = 50;

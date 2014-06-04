@@ -112,7 +112,9 @@ public class CoreDataManager implements DataManager{
 	
 	private void notifyListeners(CoreEvent event){
 		for(CoreListener l : m_Listeners){
-			m_ChangesSinceLastSave = true;
+			m_ChangesSinceLastSave = event.type() == CoreEvent.Type.DATA_ADDED
+					|| event.type() == CoreEvent.Type.DATA_NAME_CHANGE 
+					|| event.type() == CoreEvent.Type.DATA_REMOVED;
 			l.update(event);
 		}
 	}

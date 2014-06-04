@@ -13,7 +13,10 @@ public class Constants {
 	public static final int CENTER = -1;
 	
 	public static final String[] SAVE_FILE_EXTENSIONS = new String[]{"sav"};
-	public static final FileNameExtensionFilter SAVE_FILE_FILTER = new FileNameExtensionFilter("JProbe save file", SAVE_FILE_EXTENSIONS);
+	public static final FileNameExtensionFilter SAVE_FILE_FILTER = new FileNameExtensionFilter("JProbe save file (.sav)", SAVE_FILE_EXTENSIONS);
+	
+	public static final String AUTOSAVE_FILE_NAME = "autosave";
+	public static final String AUTOSAVE_DIR_NAME = "autosaves";
 	
 	public static final String PREF_APPLY_BUTTON_TEXT = "Apply";
 	public static final String PREF_CANCEL_BUTTON_TEXT = "Cancel";
