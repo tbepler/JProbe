@@ -15,7 +15,7 @@ public class SaveLoadUtil {
 	
 	private static final JFileChooser SAVE_LOAD_CHOOSER = new JFileChooser();
 	
-	private static File LAST_WORKSPACE_FILE = null;
+	private static volatile File LAST_WORKSPACE_FILE = null;
 	private static File LAST_USER_SAVE_FILE = null;
 	
 	public static File getLastSave(){
