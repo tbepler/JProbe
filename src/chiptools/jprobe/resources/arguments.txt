@@ -27,3 +27,5 @@ chiptools.jprobe.function.probefilter.IncludeSubseqArgument	IncludeSeqs		FILE	Fi
 chiptools.jprobe.function.probefilter.ExcludeSubseqArgument	ExcludeSeqs		FILE	Fields	Reads a file containing line separated sequences and removes all probes containing an OR over the sequences
 chiptools.jprobe.function.probefilter.RandomRemovalArgument	Remove		INT	Fields	Removes the specified number of probes randomly from the given probes. The random seed can be set using the --Seed argument
 chiptools.jprobe.function.probefilter.RandomSeedArgument	Seed		INT	Fields	An integer that will be used to seed the random number generator used to remove probes at random. If no seed is specified, then one will be chosen arbitrarily
+chiptools.jprobe.function.probefilter.IncludeChromsArg	IncludeChroms		CHROMS	Fields	Takes a comma separated list of chromosomes and keeps only probes containing an OR of those chromosomes
+chiptools.jprobe.function.probefilter.ExcludeChromsArg	ExcludeChroms		CHROMS	Fields	Takes a comma separated list of chromosomes and removes all probes containing an OR of those chromosomes

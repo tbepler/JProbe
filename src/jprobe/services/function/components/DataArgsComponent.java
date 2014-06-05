@@ -111,6 +111,17 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		this.resizeWindow();
 	}
 	
+	private void clear(){
+		for(DataSelectionPanel<D> p : m_DataComps){
+			p.unregister(this);
+		}
+		this.removeAll();
+		m_DataComps.clear();
+		m_SelectedData.clear();
+		this.allocateComponents();
+		this.updateValidity();
+	}
+	
 	private void addDataComponent(){
 		int index = this.getNewComponentIndex();
 		if(!this.canAddComponent(index)){
@@ -211,6 +222,15 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 				this.removeData((D)d);
 			}
 			break;
+		case WORKSPACE_CLEARED:
+			this.clear();
+			break;
+		case WORKSPACE_LOADED:
+			for(Data data : m_Core.getDataManager().getAllData()){
+				if(this.isValid(data)){
+					this.addData((D) data);
+				}
+			}
 		default:
 			break;
 		}
