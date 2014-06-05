@@ -4,3 +4,4 @@ PeakSequenceReaderWriter
 ProbesReaderWriter
 PWMReaderWriter
 BindingProfileWriter
+GenericTableWriter
