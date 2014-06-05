@@ -10,6 +10,8 @@ public class Constants {
 	public static final int DEFAULT_WIDTH = 1000;
 	public static final int DEFAULT_HEIGHT = 800;
 	
+	public static final String BACKGROUND_THREAD_NAME = "BackgroundThread";
+	
 	public static final int CENTER = -1;
 	
 	public static final String[] SAVE_FILE_EXTENSIONS = new String[]{"sav"};

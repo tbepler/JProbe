@@ -22,9 +22,16 @@ public class SaveLoadUtil {
 		return LAST_WORKSPACE_FILE;
 	}
 	
-	public static void newWorkspace(JProbeCore core, Frame parent){
+	public static void newWorkspace(final JProbeCore core, Frame parent){
 		if(unsavedWorkspaceCheck(core, parent) == PROCEED){
-			core.newWorkspace();
+			BackgroundThread.getInstance().invokeLater(new Runnable(){
+
+				@Override
+				public void run() {
+					core.newWorkspace();
+				}
+				
+			});
 			LAST_USER_SAVE_FILE = null;
 		}
 	}
@@ -54,8 +61,15 @@ public class SaveLoadUtil {
 		return PROCEED;
 	}
 	
-	public static void save(JProbeCore core, File f){
-		core.save(f);
+	public static void save( final JProbeCore core, final File f){
+		BackgroundThread.getInstance().invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				core.save(f);
+			}
+			
+		});
 		LAST_WORKSPACE_FILE = f;
 	}
 	
@@ -95,8 +109,15 @@ public class SaveLoadUtil {
 		return false;
 	}
 	
-	public static void load(JProbeCore core, File f){
-		core.load(f);
+	public static void load( final JProbeCore core, final File f){
+		BackgroundThread.getInstance().invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				core.load(f);
+			}
+			
+		});
 		LAST_WORKSPACE_FILE = f;
 		LAST_USER_SAVE_FILE = f;
 	}
