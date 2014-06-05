@@ -211,6 +211,11 @@ public class UngappedKmer implements Kmer{
 	public Iterator<String> iterator() {
 		return m_Words.keySet().iterator();
 	}
+
+	@Override
+	public Score getScore(String word) {
+		return m_Words.get(word);
+	}
 	
 	
 	

@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.util.Collection;
+import java.util.HashSet;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -12,6 +14,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.osgi.framework.Bundle;
 
+import plugins.jprobe.gui.notification.ExportEvent;
+import plugins.jprobe.gui.notification.ImportEvent;
+import plugins.jprobe.gui.notification.ImportEvent.Type;
+import util.Observer;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
@@ -22,6 +28,49 @@ public class ExportImportUtil {
 	
 	public static final String WILDCARD = "*";
 	public static final String FILE_NAME_WITH_EXTENSION_REGEX = "^.*\\..+$";
+	
+	private static final Collection<Observer<ExportEvent>> m_ExportObs = new HashSet<Observer<ExportEvent>>();
+	private static final Collection<Observer<ImportEvent>> m_ImportObs = new HashSet<Observer<ImportEvent>>();
+	
+	public static void registerImportObs(Observer<ImportEvent> obs){
+		synchronized(m_ImportObs){
+			m_ImportObs.add(obs);
+		}
+	}
+	
+	public static void unregisterImportObs(Observer<ImportEvent> obs){
+		synchronized(m_ImportObs){
+			m_ImportObs.remove(obs);
+		}
+	}
+	
+	private static void notifyObservers(ImportEvent e){
+		synchronized(m_ImportObs){
+			for(Observer<ImportEvent> obs : m_ImportObs){
+				obs.update(null, e);
+			}
+		}
+	}
+	
+	public static void registerExportObs(Observer<ExportEvent> obs){
+		synchronized(m_ExportObs){
+			m_ExportObs.add(obs);
+		}
+	}
+	
+	public static void unregisterExportObs(Observer<ExportEvent> obs){
+		synchronized(m_ExportObs){
+			m_ExportObs.remove(obs);
+		}
+	}
+	
+	private static void notifyObservers(ExportEvent e){
+		synchronized(m_ExportObs){
+			for(Observer<ExportEvent> obs : m_ExportObs){
+				obs.update(null, e);
+			}
+		}
+	}
 
 	public static void importData(Class<? extends Data> type, JProbeCore core, JFileChooser importChooser, Frame parent){
 		//retrieve the registered file extension filters
@@ -56,10 +105,15 @@ public class ExportImportUtil {
 
 			@Override
 			public void run() {
+				notifyObservers(new ImportEvent(Type.IMPORTING, reader.getReadClass(), f));
 				try{
-					Data in = reader.read(format, new FileInputStream(f));
+					FileInputStream stream = new FileInputStream(f);
+					Data in = reader.read(format, stream);
 					core.getDataManager().addData(in, b);
+					notifyObservers(new ImportEvent(Type.IMPORTED, reader.getReadClass(), f));
+					stream.close();
 				}catch(Exception e){
+					notifyObservers(new ImportEvent(Type.FAILED, reader.getReadClass(), f));
 					ErrorHandler.getInstance().handleException(e, b);
 				}
 			}
@@ -94,20 +148,24 @@ public class ExportImportUtil {
 			if(!fileEndsInValidExtension(file, format)){
 				file = new File(file.toString()+"."+format.getExtensions()[0]);
 			}
-			exportData(writer, file, data, format);
+			exportData(core, writer, file, data, format);
 		}
 	}
 	
-	public static void exportData(final DataWriter writer, final File f, final Data d, final FileNameExtensionFilter format){
+	public static void exportData(final JProbeCore core, final DataWriter writer, final File f, final Data d, final FileNameExtensionFilter format){
 		BackgroundThread.getInstance().invokeLater(new Runnable(){
 
 			@Override
 			public void run() {
+				String dataName = core.getDataManager().getDataName(d);
+				notifyObservers(new ExportEvent(ExportEvent.Type.EXPORTING, dataName, f));
 				try{
 					BufferedWriter out = new BufferedWriter(new FileWriter(f));
 					writer.write(d, format, out);
 					out.close();
+					notifyObservers(new ExportEvent(ExportEvent.Type.EXPORTED, dataName, f));
 				}catch(Exception e){
+					notifyObservers(new ExportEvent(ExportEvent.Type.FAILED, dataName, f));
 					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
 				}
 			}

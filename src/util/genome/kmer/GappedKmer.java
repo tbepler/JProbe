@@ -226,4 +226,11 @@ public class GappedKmer implements Kmer{
 		return m_Words.iterator();
 	}
 
+	@Override
+	public Score getScore(String word) {
+		Collection<Score> scores = this.getScores(word);
+		return new Score(GappedKmer.maxEScore(scores), GappedKmer.maxIntensity(scores), GappedKmer.maxZScore(scores));
+		
+	}
+
 }

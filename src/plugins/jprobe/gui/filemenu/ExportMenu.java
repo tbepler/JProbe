@@ -50,6 +50,13 @@ public class ExportMenu extends JMenu implements CoreListener{
 		this.setEnabled(!m_Items.isEmpty());
 	}
 	
+	private void clearItems(){
+		m_Items.clear();
+		this.removeAll();
+		this.setEnabled(!m_Items.isEmpty());
+		this.revalidate();
+	}
+	
 	private void removeExportItem(Data data){
 		if(m_Items.containsKey(data)){
 			this.remove(m_Items.get(data));
@@ -80,6 +87,12 @@ public class ExportMenu extends JMenu implements CoreListener{
 			if(m_Items.containsKey(changed)){
 				m_Items.get(changed).setText(m_Core.getDataManager().getDataName(changed));
 			}
+			break;
+		case WORKSPACE_CLEARED:
+			this.clearItems();
+			break;
+		case WORKSPACE_LOADED:
+			this.checkAllCoreData();
 			break;
 		case DATAWRITER_ADDED:
 			this.checkAllCoreData();

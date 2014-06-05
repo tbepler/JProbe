@@ -14,9 +14,9 @@ public interface Kmer extends Serializable, Iterable<String>{
 		public final double ZSCORE;
 		private final int m_Hash;
 		
-		public Score(double escore, double median, double zscore){
+		public Score(double escore, double intensity, double zscore){
 			this.ESCORE = escore;
-			this.INTENSITY = median;
+			this.INTENSITY = intensity;
 			this.ZSCORE = zscore;
 			m_Hash = new HashCodeBuilder(61, 101).append(ESCORE).append(INTENSITY).append(ZSCORE).toHashCode();
 		}
@@ -62,6 +62,13 @@ public interface Kmer extends Serializable, Iterable<String>{
 	 * @return
 	 */
 	public int[] getWordLengths();
+	
+	/**
+	 * Returns the Score object associated with the given word
+	 * @param word
+	 * @return
+	 */
+	public Score getScore(String word);
 	
 	/**
 	 * Returns the escore of the given word
