@@ -221,6 +221,7 @@ public class JProbe implements JProbeCore{
 	@Override
 	public void newWorkspace() {
 		m_DataManager.clearData();
+		Log.getInstance().write(JProbeActivator.getBundle(), "Opened new workspace");
 	}
 
 	@Override
