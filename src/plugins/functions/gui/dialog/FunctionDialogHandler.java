@@ -35,6 +35,14 @@ public class FunctionDialogHandler{
 		public int getIndex(){
 			return index;
 		}
+		
+		@Override
+		public void setVisible(boolean visible){
+			super.setVisible(visible);
+			if(visible){
+				this.repaint();
+			}
+		}
 	}
 	
 	private class IndexedDialogComparator implements Comparator<IndexedDialog>{
