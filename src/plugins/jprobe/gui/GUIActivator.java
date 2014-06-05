@@ -124,6 +124,8 @@ public class GUIActivator implements BundleActivator{
 			}
 			m_ServiceListeners = null;
 		}
+		BackgroundThread.getInstance().terminate();
+		BackgroundThread.getInstance().join();
 		m_Bundle = null;
 	}
 

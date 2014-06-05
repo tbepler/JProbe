@@ -2,7 +2,11 @@ package jprobe.save;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import jprobe.JProbeActivator;
 import jprobe.services.ErrorHandler;
@@ -14,90 +18,117 @@ import jprobe.services.SaveEvent;
 import jprobe.services.SaveListener;
 import jprobe.services.Saveable;
 
-public class SaveManager implements SaveListener{
+public class SaveManager{
 	
-	private final SaveThread m_SaveThread = new SaveThread();
-	private final Collection<SaveListener> m_Listeners = new HashSet<SaveListener>();
+	private final ReadWriteLock m_SaveablesLock = new ReentrantReadWriteLock(false);
+
+	private final Map<String, Saveable> m_Saveables = new HashMap<String, Saveable>();
+	private final Collection<SaveListener> m_SaveLs = new HashSet<SaveListener>();
 	private final Collection<LoadListener> m_LoadLs = new HashSet<LoadListener>();
-	
-	public void start(){
-		m_SaveThread.register(this);
-		m_SaveThread.start();
-	}
-	
+
 	public void addSaveable(Saveable s, String tag){
-		m_SaveThread.addSaveable(s, tag);
+		m_SaveablesLock.writeLock().lock();
+		try{
+			m_Saveables.put(tag, s);
+		}finally{
+			m_SaveablesLock.writeLock().unlock();
+		}
 	}
 	
 	public void removeSaveable(Saveable s, String tag){
-		m_SaveThread.removeSaveable(s, tag);
-	}
-	
-	public void flushAndSuspend(){
-		m_SaveThread.suspendAndFlush();
-	}
-	
-	public void resume(){
-		m_SaveThread.proceed();
-	}
-	
-	public void terminate(){
-		m_SaveThread.terminate();
-		try {
-			m_SaveThread.join();
-		} catch (InterruptedException e) {
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+		m_SaveablesLock.writeLock().lock();
+		try{
+			if(m_Saveables.containsKey(tag) && m_Saveables.get(tag) == s){
+				m_Saveables.remove(tag);
+			}
+		}finally{
+			m_SaveablesLock.writeLock().unlock();
 		}
 	}
 	
 	public boolean changesSinceSave(){
-		return m_SaveThread.changesSinceSave();
+		boolean result = false;
+		m_SaveablesLock.readLock().lock();
+		try{
+			for(Saveable s : m_Saveables.values()){
+				if(s.changedSinceSave()){
+					result = true;
+					break;
+				}
+			}
+		}finally{
+			m_SaveablesLock.readLock().unlock();
+		}
+		return result;
 	}
 	
 	public void save(File saveTo){
-		m_SaveThread.save(saveTo);
+		this.notifySave(new SaveEvent(SaveEvent.Type.SAVING, saveTo));
+		m_SaveablesLock.readLock().lock();
+		try{
+			SaveUtil.save(saveTo, m_Saveables);
+			m_SaveablesLock.readLock().unlock();
+			Log.getInstance().write(JProbeActivator.getBundle(), "Saved workspace to file "+saveTo);
+			this.notifySave(new SaveEvent(SaveEvent.Type.SAVED, saveTo));
+		} catch (SaveException e){
+			m_SaveablesLock.readLock().unlock();
+			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+			this.notifySave(new SaveEvent(SaveEvent.Type.FAILED, saveTo));
+		}
 	}
 	
 	public void load(File loadFrom){
-		m_SaveThread.suspendAndFlush();
 		this.notifyLoad(new LoadEvent(Type.LOADING, loadFrom));
+		m_SaveablesLock.readLock().lock();
 		try {
-			SaveUtil.load(loadFrom, m_SaveThread.getSaveables());
+			SaveUtil.load(loadFrom, m_Saveables);
+			m_SaveablesLock.readLock().unlock();
 			Log.getInstance().write(JProbeActivator.getBundle(), "Opened workspace "+loadFrom);
 			this.notifyLoad(new LoadEvent(Type.LOADED, loadFrom));
 		} catch (LoadException e) {
+			m_SaveablesLock.readLock().unlock();
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			this.notifyLoad(new LoadEvent(Type.FAILED, loadFrom));
 		}
-		m_SaveThread.proceed();
 	}
-	
+
 	public void registerLoad(LoadListener l){
-		m_LoadLs.add(l);
-	}
-	
-	public void unregisterLoad(LoadListener l){
-		m_LoadLs.remove(l);
-	}
-	
-	protected void notifyLoad(LoadEvent e){
-		for(LoadListener l : m_LoadLs){
-			l.update(e);
+		synchronized(m_LoadLs){
+			m_LoadLs.add(l);
 		}
 	}
-	
+
+	public void unregisterLoad(LoadListener l){
+		synchronized(m_LoadLs){
+			m_LoadLs.remove(l);
+		}
+	}
+
+	protected void notifyLoad(LoadEvent e){
+		synchronized(m_LoadLs){
+			for(LoadListener l : m_LoadLs){
+				l.update(e);
+			}
+		}
+	}
+
 	public void registerSave(SaveListener l){
-		m_Listeners.add(l);
+		synchronized(m_SaveLs){
+			m_SaveLs.add(l);
+		}
 	}
-	
+
 	public void unregisterSave(SaveListener l){
-		m_Listeners.remove(l);
+		synchronized(m_SaveLs){
+			m_SaveLs.remove(l);
+		}
 	}
-	
-	@Override
-	public void update(SaveEvent e) {
-		for(SaveListener l : m_Listeners){
-			l.update(e);
+
+	protected void notifySave(SaveEvent e){
+		synchronized(m_SaveLs){
+			for(SaveListener l : m_SaveLs){
+				l.update(e);
+			}
 		}
 	}
 	

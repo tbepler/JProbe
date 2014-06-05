@@ -42,8 +42,9 @@ public class BackgroundThread extends Thread{
 		this.notifyAll();
 	}
 	
-	public void terminate(){
+	public synchronized void terminate(){
 		m_Terminated = true;
+		this.notifyAll();
 	}
 	
 	public boolean isTerminated(){
@@ -55,7 +56,7 @@ public class BackgroundThread extends Thread{
 	}
 	
 	private synchronized Runnable getNextAction(){
-		while(m_Actions.isEmpty()){
+		while(m_Actions.isEmpty() && !m_Terminated){
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
@@ -70,7 +71,9 @@ public class BackgroundThread extends Thread{
 	public void run(){
 		while(this.proceed()){
 			Runnable process = this.getNextAction();
-			process.run();
+			if(process != null){
+				process.run();
+			}
 		}
 	}
 	
