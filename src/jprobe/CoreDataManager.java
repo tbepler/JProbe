@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+
 import util.ClassLoaderObjectInputStream;
 import util.OSGIUtils;
 import jprobe.services.CoreEvent;
@@ -36,38 +38,31 @@ import jprobe.services.JProbeCore;
 
 public class CoreDataManager implements DataManager{
 	
-	private JProbeCore m_Core;
+	private final Collection<CoreListener> m_Listeners = new HashSet<CoreListener>();
+
+	private final Map<Class<? extends Data>, List<Data>> m_Data = new HashMap<Class<? extends Data>, List<Data>>();
+	private final Map<Class<? extends Data>, String> m_DataProviders = new HashMap<Class<? extends Data>, String>();
+	private final Map<String, Data> m_NameToData = new HashMap<String, Data>();
+	private final Map<Data, String> m_DataToName = new LinkedHashMap<Data, String>();
+	private final Map<Class<? extends Data>, Integer> m_Counts = new HashMap<Class<? extends Data>, Integer>();
+	private final Map<Class<? extends Data>, DataReader> m_TypeToReader = new HashMap<Class<? extends Data>, DataReader>();
+	private final Map<DataReader, Class<? extends Data>> m_ReaderToType = new HashMap<DataReader, Class<? extends Data>>();
+	private final Map<Class<? extends Data>, DataWriter> m_TypeToWriter = new HashMap<Class<? extends Data>, DataWriter>();
+	private final Map<DataWriter, Class<? extends Data>> m_WriterToType = new HashMap<DataWriter, Class<? extends Data>>();
 	
-	private Collection<CoreListener> m_Listeners;
+
+	private final JProbeCore m_Core;
+
+	private final AbstractServiceListener<DataReader> m_ReaderListener;
+	private final AbstractServiceListener<DataWriter> m_WriterListener;
+	
+	private boolean m_ChangesSinceLastSave = false;
 	
 	private BundleContext m_Context;
-	private Map<Class<? extends Data>, List<Data>> m_Data;
-	private Map<Class<? extends Data>, String> m_DataProviders;
-	private Map<String, Data> m_NameToData;
-	private Map<Data, String> m_DataToName;
-	private Map<Class<? extends Data>, Integer> m_Counts;
-	private Map<Class<? extends Data>, DataReader> m_TypeToReader;
-	private Map<DataReader, Class<? extends Data>> m_ReaderToType;
-	private Map<Class<? extends Data>, DataWriter> m_TypeToWriter;
-	private Map<DataWriter, Class<? extends Data>> m_WriterToType;
-	private boolean m_ChangesSinceLastSave;
-	private AbstractServiceListener<DataReader> m_ReaderListener;
-	private AbstractServiceListener<DataWriter> m_WriterListener;
 	
 	public CoreDataManager(JProbeCore core, BundleContext context){
 		m_Core = core;
 		m_Context = context;
-		m_Listeners = new HashSet<CoreListener>();
-		m_Data = new HashMap<Class<? extends Data>, List<Data>>();
-		m_DataProviders = new HashMap<Class<? extends Data>, String>();
-		m_NameToData = new HashMap<String, Data>();
-		m_DataToName = new HashMap<Data, String>();
-		m_Counts = new HashMap<Class<? extends Data>, Integer>();
-		m_TypeToReader = new HashMap<Class<? extends Data>, DataReader>();
-		m_ReaderToType = new HashMap<DataReader, Class<? extends Data>>();
-		m_TypeToWriter = new HashMap<Class<? extends Data>, DataWriter>();
-		m_WriterToType = new HashMap<DataWriter, Class<? extends Data>>();
-		m_ChangesSinceLastSave = false;
 		m_ReaderListener = new AbstractServiceListener<DataReader>(DataReader.class, context){
 
 			@Override
@@ -189,8 +184,8 @@ public class CoreDataManager implements DataManager{
 	@Override
 	public synchronized List<Data> getAllData(){
 		List<Data> full = new ArrayList<Data>();
-		for(List<Data> part : m_Data.values()){
-			full.addAll(part);
+		for(Data d : m_DataToName.keySet()){
+			full.add(d);
 		}
 		return full;
 	}
@@ -403,7 +398,7 @@ public class CoreDataManager implements DataManager{
 	public synchronized void save(OutputStream out) {
 		try {
 			ObjectOutputStream oout = new ObjectOutputStream(out);
-			for(Data stored : this.getAllData()){
+			for(Data stored : m_DataToName.keySet()){
 				String name = this.getDataName(stored);
 				String bundle = m_DataProviders.get(stored.getClass());
 				oout.writeObject(name);

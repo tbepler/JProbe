@@ -126,7 +126,7 @@ public class SaveLoadUtil {
 		if(unsavedWorkspaceCheck(core, parent) == PROCEED){
 			SAVE_LOAD_CHOOSER.resetChoosableFileFilters();
 			SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);
-			int returnVal = SAVE_LOAD_CHOOSER.showDialog(parent, "Load");
+			int returnVal = SAVE_LOAD_CHOOSER.showDialog(parent, "Open");
 			if(returnVal == JFileChooser.APPROVE_OPTION){
 				File f = SAVE_LOAD_CHOOSER.getSelectedFile();
 				load(core, f);
