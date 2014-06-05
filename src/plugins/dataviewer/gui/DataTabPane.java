@@ -27,7 +27,8 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	public DataTabPane(DataManager dataManager){
 		super();
 		this.setPreferredSize(PREFERRED);
-		this.m_DataManager = dataManager;
+		m_DataManager = dataManager;
+		m_DataManager.addListener(this);
 		m_Constraints = new GridBagConstraints();
 		m_Constraints.fill = GridBagConstraints.BOTH;
 		m_Constraints.weightx = 0.7;
@@ -36,8 +37,11 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 		m_Constraints.gridwidth = 3;
 		m_Tabs = new HashMap<Data, DataTab>();
 		m_TabLables = new HashMap<Data, DataTabLabel>();
-		dataManager.addListener(this);
-		for(Data d : dataManager.getAllData()){
+		this.initTabs();
+	}
+	
+	public void initTabs(){
+		for(Data d : m_DataManager.getAllData()){
 			DataTab tab = new  DataTab(d);
 			m_Tabs.put(d, tab);
 			this.addTab("", tab);
@@ -100,21 +104,50 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 		this.revalidate();
 	}
 	
+	public void clear(){
+		this.removeAll();
+		m_Tabs.clear();
+		m_TabLables.clear();
+		this.revalidate();
+	}
+	
 	void cleanup(){
 		m_DataManager.removeListener(this);
 	}
 	
 	@Override
-	public void update(CoreEvent event) {
-		if(event.type() == CoreEvent.Type.DATA_ADDED){
+	public void update(final CoreEvent event) {
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				process(event);
+			}
+			
+		});
+		
+	}
+	
+	private void process(CoreEvent event){
+		switch(event.type()){
+		case DATA_ADDED:
 			displayData(event.getData());
-		}
-		if(event.type() == CoreEvent.Type.DATA_REMOVED){
-			closeData(event.getData());
-		}
-		if(event.type() == CoreEvent.Type.DATA_NAME_CHANGE){
+			break;
+		case DATA_NAME_CHANGE:
 			m_TabLables.get(event.getData()).setTitle(m_DataManager.getDataName(event.getData()));
-		}
+			break;
+		case DATA_REMOVED:
+			closeData(event.getData());
+			break;
+		case WORKSPACE_CLEARED:
+			this.clear();
+			break;
+		case WORKSPACE_LOADED:
+			this.initTabs();
+			break;
+		default:
+			break;
+		}	
 	}
 
 

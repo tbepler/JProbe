@@ -3,6 +3,7 @@ package plugins.dataviewer.gui.datalist;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import plugins.dataviewer.gui.Constants;
@@ -24,6 +25,10 @@ public class DataListModel extends DefaultTableModel implements CoreListener{
 		super(new String[][]{}, Constants.DATALIST_COL_HEADERS);
 		m_Core = core;
 		m_Core.addCoreListener(this);
+		this.initData();
+	}
+	
+	private void initData(){
 		for(Data d : m_Core.getDataManager().getAllData()){
 			this.add(d);
 		}
@@ -65,6 +70,13 @@ public class DataListModel extends DefaultTableModel implements CoreListener{
 			ErrorHandler.getInstance().handleException(e, DataviewerActivator.getBundle());
 		}
 	}
+	
+	private void clear(){
+		for(int i=this.getRowCount() - 1; i>=0; --i){
+			this.removeRow(i);
+		}
+		m_Data.clear();
+	}
 
 	private void add(Data data){
 		String name = m_Core.getDataManager().getDataName(data);
@@ -95,8 +107,7 @@ public class DataListModel extends DefaultTableModel implements CoreListener{
 		}
 	}
 	
-	@Override
-	public void update(CoreEvent event) {
+	private void process(CoreEvent event){
 		switch(event.type()){
 		case DATA_ADDED:
 			this.add(event.getData());
@@ -107,9 +118,27 @@ public class DataListModel extends DefaultTableModel implements CoreListener{
 		case DATA_NAME_CHANGE:
 			this.rename(event.getData(), event.getOldName(), event.getNewName());
 			break;
+		case WORKSPACE_CLEARED:
+			this.clear();
+			break;
+		case WORKSPACE_LOADED:
+			this.initData();
+			break;
 		default:
-			//do nothing
+			break;
 		}
+	}
+	
+	@Override
+	public void update(final CoreEvent event) {
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				process(event);
+			}
+			
+		});
 	}
 	
 }

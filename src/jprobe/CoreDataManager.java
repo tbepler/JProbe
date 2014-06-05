@@ -133,7 +133,7 @@ public class CoreDataManager implements DataManager{
 		return name;
 	}
 	
-	public synchronized void addData(Data d, String name, Bundle responsible){
+	private synchronized void addData(Data d, String name, Bundle responsible, boolean notify){
 		Class<? extends Data> clazz = d.getClass();
 		if(!m_Data.containsKey(clazz)){
 			List<Data> list = new ArrayList<Data>();
@@ -153,8 +153,14 @@ public class CoreDataManager implements DataManager{
 		}else{
 			m_NameToData.put(name, d);
 			m_DataToName.put(d, name);
-			notifyListeners(new CoreEvent(m_Core, Type.DATA_ADDED, responsible, d));
+			if(notify){
+				notifyListeners(new CoreEvent(m_Core, Type.DATA_ADDED, responsible, d));
+			}
 		}
+	}
+	
+	public synchronized void addData(Data d, String name, Bundle responsible){
+		this.addData(d, name, responsible, true);
 	}
 	
 	@Override
@@ -380,9 +386,11 @@ public class CoreDataManager implements DataManager{
 	}
 	
 	public synchronized void clearData(){
-		for(Data stored : this.getAllData()){
-			this.removeData(stored, JProbeActivator.getBundle());
-		}
+		m_Data.clear();
+		m_NameToData.clear();
+		m_DataToName.clear();
+		m_Counts.clear();
+		this.notifyListeners(new CoreEvent(m_Core, Type.WORKSPACE_CLEARED, JProbeActivator.getBundle()));
 		this.m_ChangesSinceLastSave = false;
 	}
 	
@@ -425,7 +433,7 @@ public class CoreDataManager implements DataManager{
 						oin.setClassLoader(OSGIUtils.getBundleClassLoader(bundle));
 					}
 					Data data = (Data) oin.readObject();
-					this.addData(data, name, JProbeActivator.getBundle());
+					this.addData(data, name, JProbeActivator.getBundle(), false);
 				} catch (ClassNotFoundException e) {
 					//do nothing, this means the plugin that provides the data type is not loaded so simply proceed
 					continue;
@@ -434,6 +442,7 @@ public class CoreDataManager implements DataManager{
 				}
 			}
 			m_ChangesSinceLastSave = false;
+			this.notifyListeners(new CoreEvent(m_Core, Type.WORKSPACE_LOADED, JProbeActivator.getBundle()));
 			oin.close();
 		} catch (IOException e) {
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
