@@ -5,3 +5,4 @@ ProbesReaderWriter
 PWMReaderWriter
 BindingProfileWriter
 GenericTableWriter
+MutationProfileWriter

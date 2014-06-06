@@ -20,6 +20,7 @@ import util.progress.ProgressListener;
 import util.progress.ProgressEvent.Type;
 import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.GenericTable;
+import chiptools.jprobe.data.MutationProfile;
 import chiptools.jprobe.function.AbstractChiptoolsFunction;
 
 public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfilerParams>{
@@ -33,6 +34,7 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 		Collection<Argument<? super MutationProfilerParams>> args = new ArrayList<Argument<? super MutationProfilerParams>>();
 		args.add(new CompareSeqsArg(2, false));
 		args.add(new KmerLibraryArg(false));
+		args.add(new MinEscoreArg(true));
 		args.add(new RecursiveArg());
 		return args;
 	}
@@ -53,7 +55,7 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 
 	@Override
 	public Data execute(ProgressListener l, MutationProfilerParams params) throws Exception {
-		GenericTable mutProfiles = new GenericTable();
+		GenericTable mutProfiles = new MutationProfile();
 		List<File> kmers = new ArrayList<File>();
 		this.extractChildrenFiles(params.kmerLibrary, kmers, params.recursive);
 		for(File f : kmers){
@@ -62,7 +64,11 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 					Kmer kmer = Kmers.readKmer(new FileInputStream(f));
 					if(kmer.size() > 0){
 						l.update(new ProgressEvent(this, Type.UPDATE, "Processing Kmer "+f.getName(), true));
-						profile(kmer, f.getName(), params.seq1, params.seq1Name, params.seq2, params.seq2Name, mutProfiles);
+						if(params.useMinEscore){
+							profile(kmer, f.getName(), params.seq1, params.seq1Name, params.seq2, params.seq2Name, params.minEscore, mutProfiles);
+						}else{
+							profile(kmer, f.getName(), params.seq1, params.seq1Name, params.seq2, params.seq2Name, mutProfiles);
+						}
 					}else{
 						l.update(new ProgressEvent(this, Type.UPDATE, "Skipping Kmer "+f.getName(), true));
 						Log.getInstance().write(ChiptoolsActivator.getBundle(), "MutationProfilter: skipping "+f.getName());
@@ -75,6 +81,52 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 			}
 		}
 		return mutProfiles;
+	}
+	
+	protected void profile(Kmer kmer, String kmerName, String seq1, String seq1Name, String seq2, String seq2Name, double minEscore, GenericTable data){
+		data.appendRow(kmerName);
+		List<Integer> mutations = findMutationIndexes(seq1, seq2);
+		for(int mut : mutations){
+			Map<String, String> subseqMap = getSubseqsOverIndex(kmer, minEscore, seq1, seq2, mut);
+			Scores scores = getLargestScoreDif(kmer, subseqMap);
+			
+			//put seq1 score into table
+			String col = "pos"+(mut+1)+"_"+seq1Name+"_score";
+			if(!data.containsCol(col)){
+				data.appendCol(col);
+			}
+			Object val;
+			if(scores != null){
+				val = scores.seq1Score;
+			}else{
+				val = new Double(-1);
+			}
+			data.put(col, kmerName, val);
+			
+			//put seq2 score into table
+			col = "pos"+(mut+1)+"_"+seq2Name+"_score";
+			if(!data.containsCol(col)){
+				data.appendCol(col);
+			}
+			if(scores != null){
+				val = scores.seq2Score;
+			}else{
+				val = new Double(-1);
+			}
+			data.put(col, kmerName, val);
+			
+			//put score difference into table
+			col = "pos"+(mut+1)+"_dif";
+			if(!data.containsCol(col)){
+				data.appendCol(col);
+			}
+			if(scores != null){
+				val = Math.abs(scores.seq1Score - scores.seq2Score);
+			}else{
+				val = new Double(-1);
+			}
+			data.put(col, kmerName, val);
+		}
 	}
 	
 	protected void profile(Kmer kmer, String kmerName, String seq1, String seq1Name, String seq2, String seq2Name, GenericTable data){
@@ -131,6 +183,23 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 		public Scores(double seq1, double seq2){
 			seq1Score = seq1; seq2Score = seq2;
 		}
+	}
+	
+	protected Map<String, String> getSubseqsOverIndex(Kmer kmer, double minEscore, String seq1, String seq2, int index){
+		Map<String, String> seqMap = new HashMap<String, String>();
+		int seqLen = Math.min(seq1.length(), seq2.length());
+		for(int len : kmer.getWordLengths()){
+			int firstIndex = Math.max(0, index - len + 1);
+			int lastIndex = Math.min(seqLen - len, index);
+			for(int i=firstIndex; i<=lastIndex; i++){
+				String seq1subseq = seq1.substring(i, i+len);
+				String seq2subseq = seq2.substring(i, i+len);
+				if(kmer.escore(seq1subseq) >= minEscore || kmer.escore(seq2subseq) >= minEscore){
+					seqMap.put(seq1subseq, seq2subseq);
+				}
+			}
+		}
+		return seqMap;
 	}
 	
 	protected Map<String, String> getSubseqsOverIndex(Kmer kmer, String seq1, String seq2, int index){
