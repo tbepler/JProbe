@@ -21,23 +21,23 @@ public class Constants {
 	public static final String PLUGIN_AUTODEPLOY = JAR_DIR + File.separator + "plugins";
 	
 	public static final String USER_HOME_DIR = System.getProperty("user.home");
-	public static final String USER_JPROBE_DIR = USER_HOME_DIR + File.separator + "jprobe";
+	public static String USER_JPROBE_DIR = USER_HOME_DIR + File.separator + "jprobe";
 	
-	public static final String USER_PLUGINS_DIR = USER_JPROBE_DIR + File.separator + "plugins";
+	public static String USER_PLUGINS_DIR = USER_JPROBE_DIR + File.separator + "plugins";
 	
-	public static final String FELIX_CACHE_DIR = USER_JPROBE_DIR + File.separator + "cache";
+	public static String FELIX_CACHE_DIR = USER_JPROBE_DIR + File.separator + "cache";
 	
 	public static final String FELIX_FILE_INSTALL_DIR_PROP = "felix.fileinstall.dir";
 	public static final String FELIX_WATCH_DIRS = USER_PLUGINS_DIR;
 	public static final String FELIX_FILE_INSTALL_INITIALDELAY_PROP = "felix.fileinstall.noInitialDelay";
 	public static final String FELIX_INITIALDELAY = "true";
 	
-	public static final String PREFERENCES_DIR = USER_JPROBE_DIR + File.separator + "preferences";
-	public static final String CONFIG_FILE = PREFERENCES_DIR + File.separator + "jprobe.pref";
+	public static String PREFERENCES_DIR = USER_JPROBE_DIR + File.separator + "preferences";
+	public static String CONFIG_FILE = PREFERENCES_DIR + File.separator + "jprobe.pref";
 	
-	public static final String LOG_DIR = USER_JPROBE_DIR + File.separator + "logs";
-	public static final String JPROBE_LOG = LOG_DIR + File.separator + "jprobe.log";
-	public static final String JPROBE_ERROR_LOG = LOG_DIR + File.separator + "jprobe-error.log";
+	public static String LOG_DIR = USER_JPROBE_DIR + File.separator + "logs";
+	public static String JPROBE_LOG = LOG_DIR + File.separator + "jprobe.log";
+	public static String JPROBE_ERROR_LOG = LOG_DIR + File.separator + "jprobe-error.log";
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	

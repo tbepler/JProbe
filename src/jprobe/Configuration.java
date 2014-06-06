@@ -47,6 +47,7 @@ public class Configuration {
 			reader.close();
 		} catch (FileNotFoundException e) {
 			ErrorHandler.getInstance().handleException(e, null);
+			ErrorHandler.getInstance().handleWarning("Initializing preferences file "+configFile, null);
 			configFile.getParentFile().mkdirs();
 			this.writeFile(configFile);
 		} catch (Exception e){

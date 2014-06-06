@@ -22,14 +22,12 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 	public static final String PROTOTYPE_TEXT = "File name here";
 	public static final String PROTOTYPE_VAL = "FILE";
 	
-	private final JFileChooser m_FileChooser;
 	private final JButton m_Button;
 	private final JTextField m_Text;
 	private File m_Selected;
 
-	protected FileArgument(String name, String tooltip, String category, Character shortFlag, boolean optional, JFileChooser fileChooser) {
+	protected FileArgument(String name, String tooltip, String category, Character shortFlag, boolean optional) {
 		super(name, tooltip, category, shortFlag, PROTOTYPE_VAL, optional);
-		m_FileChooser = fileChooser;
 		m_Button = new JButton(this.getButtonText());
 		m_Button.addActionListener(this);
 		m_Text = new JTextField();
@@ -43,6 +41,7 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 		m_Text.setHorizontalAlignment(JTextField.RIGHT);
 	}
 	
+	protected abstract JFileChooser getJFileChooser();
 	protected abstract boolean isValid(File f);
 	protected abstract void process(P params, File f);
 	protected abstract Frame getParentFrame();
@@ -110,9 +109,10 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == m_Button){
-			int result = m_FileChooser.showOpenDialog(this.getParentFrame());
+			JFileChooser chooser = this.getJFileChooser();
+			int result = chooser.showOpenDialog(this.getParentFrame());
 			if(result == JFileChooser.APPROVE_OPTION){
-				this.setFile(m_FileChooser.getSelectedFile());
+				this.setFile(chooser.getSelectedFile());
 			}
 		}
 	}

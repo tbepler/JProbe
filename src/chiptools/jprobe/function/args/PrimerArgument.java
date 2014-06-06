@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
@@ -25,8 +26,7 @@ public class PrimerArgument extends FileArgument<PrimerParam>{
 				Constants.getDescription(PrimerArgument.class),
 				Constants.getCategory(PrimerArgument.class),
 				Constants.getFlag(PrimerArgument.class),
-				optional,
-				Constants.CHIPTOOLS_FILE_CHOOSER
+				optional
 				);
 	}
 	
@@ -86,6 +86,11 @@ public class PrimerArgument extends FileArgument<PrimerParam>{
 	@Override
 	protected Frame getParentFrame() {
 		return ChiptoolsActivator.getGUIFrame();
+	}
+
+	@Override
+	protected JFileChooser getJFileChooser() {
+		return Constants.CHIPTOOLS_FILE_CHOOSER;
 	}
 
 }

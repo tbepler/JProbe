@@ -1,6 +1,5 @@
 package chiptools.jprobe.function;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,7 +7,6 @@ import java.awt.Window;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;

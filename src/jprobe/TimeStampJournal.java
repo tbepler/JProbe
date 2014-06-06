@@ -21,13 +21,15 @@ public class TimeStampJournal implements Journal{
 		try {
 			writer = new BufferedWriter(new FileWriter(log));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Error creating file writer: "+e.getMessage());
 		}
 	}
 	
 	@Override
 	public void write(Bundle bundle, String message) {
+		if(writer == null){
+			return;
+		}
 		try {
 			if(bundle == null){
 				writer.write("<"+Calendar.getInstance().getTime()+"><"+Thread.currentThread().getName()+"><null>"+ message+"\n");

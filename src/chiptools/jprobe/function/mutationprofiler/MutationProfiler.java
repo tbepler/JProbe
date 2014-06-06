@@ -13,28 +13,50 @@ import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 import util.genome.kmer.Kmer;
 import util.genome.kmer.Kmers;
+import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
+import util.progress.ProgressEvent.Type;
 import chiptools.jprobe.data.GenericTable;
 import chiptools.jprobe.function.AbstractChiptoolsFunction;
 
 public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfilerParams>{
 
-	protected MutationProfiler() {
+	public MutationProfiler() {
 		super(MutationProfilerParams.class);
 	}
 
 	@Override
 	public Collection<Argument<? super MutationProfilerParams>> getArguments() {
-		// TODO Auto-generated method stub
-		return null;
+		Collection<Argument<? super MutationProfilerParams>> args = new ArrayList<Argument<? super MutationProfilerParams>>();
+		args.add(new CompareSeqsArg(2, false));
+		args.add(new KmerLibraryArg(false));
+		args.add(new RecursiveArg());
+		return args;
+	}
+	
+	protected void extractChildrenFiles(File dir, List<File> fill, boolean recursive){
+		if(dir.isDirectory()){
+			for(File child : dir.listFiles()){
+				if(recursive && child.isDirectory()){
+					extractChildrenFiles(child, fill, recursive);
+				}else if(!child.isDirectory() && child.canRead()){
+					fill.add(child);
+				}
+			}
+		}else{
+			fill.add(dir);
+		}
 	}
 
 	@Override
 	public Data execute(ProgressListener l, MutationProfilerParams params) throws Exception {
 		GenericTable mutProfiles = new GenericTable();
-		for(File f : params.kmerLibrary){
+		List<File> kmers = new ArrayList<File>();
+		this.extractChildrenFiles(params.kmerLibrary, kmers, params.recursive);
+		for(File f : kmers){
 			if(f.exists() && f.canRead()){
 				Kmer kmer = Kmers.readKmer(new FileInputStream(f));
+				l.update(new ProgressEvent(this, Type.UPDATE, "Processing Kmer "+f.getName(), true));
 				profile(kmer, f.getName(), params.seq1, params.seq1Name, params.seq2, params.seq2Name, mutProfiles);
 			}
 		}
@@ -49,21 +71,21 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 			Scores scores = getLargestScoreDif(kmer, subseqMap);
 			
 			//put seq1 score into table
-			String col = "pos"+mut+"_"+seq1Name+"_score";
+			String col = "pos"+(mut+1)+"_"+seq1Name+"_score";
 			if(!data.containsCol(col)){
 				data.appendCol(col);
 			}
 			data.put(col, kmerName, scores.seq1Score);
 			
 			//put seq2 score into table
-			col = "pos"+mut+"_"+seq2Name+"_score";
+			col = "pos"+(mut+1)+"_"+seq2Name+"_score";
 			if(!data.containsCol(col)){
 				data.appendCol(col);
 			}
 			data.put(col, kmerName, scores.seq2Score);
 			
 			//put score difference into table
-			col = "pos"+mut+"_dif";
+			col = "pos"+(mut+1)+"_dif";
 			if(!data.containsCol(col)){
 				data.appendCol(col);
 			}

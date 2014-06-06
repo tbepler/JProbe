@@ -29,3 +29,6 @@ chiptools.jprobe.function.probefilter.RandomRemovalArgument	Remove		INT	Fields	R
 chiptools.jprobe.function.probefilter.RandomSeedArgument	Seed		INT	Fields	An integer that will be used to seed the random number generator used to remove probes at random. If no seed is specified, then one will be chosen arbitrarily
 chiptools.jprobe.function.probefilter.IncludeChromsArg	IncludeChroms		CHROMS	Fields	Takes a comma separated list of chromosomes and keeps only probes containing an OR of those chromosomes
 chiptools.jprobe.function.probefilter.ExcludeChromsArg	ExcludeChroms		CHROMS	Fields	Takes a comma separated list of chromosomes and removes all probes containing an OR of those chromosomes
+chiptools.jprobe.function.mutationprofiler.CompareSeqsArg	Seqs	s	FILE	Fields	Takes a file containing the sequences to be compared in fasta format or separated by carriage returns
+chiptools.jprobe.function.mutationprofiler.KmerLibraryArg	Kmers	k	DIR	Fields	A directory containing the Kmer library that should be queried for comparing the sequences
+chiptools.jprobe.function.mutationprofiler.RecursiveArg	Recursive	r		Fields	This flag specifies that the Kmer library should be searched recursively for Kmer files. If unset, only the top level directory will be searched.

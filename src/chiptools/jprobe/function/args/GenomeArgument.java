@@ -3,6 +3,8 @@ package chiptools.jprobe.function.args;
 import java.awt.Frame;
 import java.io.File;
 
+import javax.swing.JFileChooser;
+
 import chiptools.Constants;
 import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.function.params.GenomeParam;
@@ -16,8 +18,7 @@ public class GenomeArgument extends FileArgument<GenomeParam>{
 				Constants.getDescription(GenomeArgument.class),
 				Constants.getCategory(GenomeArgument.class),
 				Constants.getFlag(GenomeArgument.class),
-				optional,
-				Constants.CHIPTOOLS_FILE_CHOOSER
+				optional
 				);
 	}
 
@@ -34,6 +35,11 @@ public class GenomeArgument extends FileArgument<GenomeParam>{
 	@Override
 	protected Frame getParentFrame() {
 		return ChiptoolsActivator.getGUIFrame();
+	}
+
+	@Override
+	protected JFileChooser getJFileChooser() {
+		return Constants.CHIPTOOLS_FILE_CHOOSER;
 	}
 
 }

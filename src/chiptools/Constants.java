@@ -34,6 +34,13 @@ public class Constants {
 	public static final String WRITER_FILE = RESOURCES_PATH + "/data_writer.txt";
 	
 	public static final JFileChooser CHIPTOOLS_FILE_CHOOSER = new JFileChooser();
+	public static final JFileChooser CHIPTOOLS_DIR_CHOOSER = createDirChooser();
+	private static JFileChooser createDirChooser(){
+		JFileChooser dir = new JFileChooser();
+		dir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		dir.setAcceptAllFileFilterUsed(false);
+		return dir;
+	}
 	
 	public static final String DATA_PACKAGE = "chiptools.jprobe.data.";
 	
