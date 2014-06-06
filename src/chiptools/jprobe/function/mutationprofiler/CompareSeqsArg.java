@@ -41,7 +41,9 @@ public class CompareSeqsArg extends ChiptoolsFileArg<MutationProfilerParams>{
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.gridy = count;
 			gbc.anchor = GridBagConstraints.WEST;
+			gbc.gridx = 0;
 			m_Panel.add(new JLabel(s + ":"));
+			gbc.gridx = 1;
 			gbc.weightx = 0.7;
 			m_Panel.add(new JLabel(seqs.get(s)));
 			++count;
@@ -69,6 +71,9 @@ public class CompareSeqsArg extends ChiptoolsFileArg<MutationProfilerParams>{
 	
 	protected Map<String, String> parse(File f, int max){
 		Map<String, String> seqMap = new LinkedHashMap<String, String>();
+		if(f == null){
+			return seqMap;
+		}
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(f));
 			String name = null;

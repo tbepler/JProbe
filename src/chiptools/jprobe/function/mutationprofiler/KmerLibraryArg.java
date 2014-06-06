@@ -12,7 +12,7 @@ public class KmerLibraryArg extends ChiptoolsDirArg<MutationProfilerParams>{
 	
 	@Override
 	public boolean isValid(File f){
-		return f.isDirectory() || f.canRead();
+		return f != null && (f.isDirectory() || f.canRead());
 	}
 
 	@Override

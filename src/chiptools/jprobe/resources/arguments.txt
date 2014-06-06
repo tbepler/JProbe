@@ -32,3 +32,5 @@ chiptools.jprobe.function.probefilter.ExcludeChromsArg	ExcludeChroms		CHROMS	Fie
 chiptools.jprobe.function.mutationprofiler.CompareSeqsArg	Seqs	s	FILE	Fields	Takes a file containing the sequences to be compared in fasta format or separated by carriage returns
 chiptools.jprobe.function.mutationprofiler.KmerLibraryArg	Kmers	k	DIR	Fields	A directory containing the Kmer library that should be queried for comparing the sequences
 chiptools.jprobe.function.mutationprofiler.RecursiveArg	Recursive	r		Fields	This flag specifies that the Kmer library should be searched recursively for Kmer files. If unset, only the top level directory will be searched.
+chiptools.jprobe.function.peakfilter.IncludeChromArg	IncludeChroms		CHROMS	Fields	Takes a comma separated list of chromosomes and keeps only peaks positioned on an OR of those chromosomes
+chiptools.jprobe.function.peakfilter.ExcludeChromArg	ExcludeChroms		CHROMS	Fields	Takes a comma separated list of chromosomes	and removes all peaks positioned on an OR of those chromsomes

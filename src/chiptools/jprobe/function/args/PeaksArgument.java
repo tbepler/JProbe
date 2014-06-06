@@ -3,16 +3,16 @@ package chiptools.jprobe.function.args;
 import java.util.List;
 
 import chiptools.Constants;
+import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.Peaks;
 import chiptools.jprobe.function.params.PeaksParam;
-import jprobe.services.JProbeCore;
 import jprobe.services.function.DataArgument;
 
 public class PeaksArgument extends DataArgument<PeaksParam, Peaks>{
 
-	public PeaksArgument(JProbeCore core, boolean optional) {
+	public PeaksArgument(boolean optional) {
 		super(
-				core,
+				ChiptoolsActivator.getCore(),
 				Constants.getName(PeaksArgument.class),
 				Constants.getDescription(PeaksArgument.class),
 				Constants.getCategory(PeaksArgument.class),

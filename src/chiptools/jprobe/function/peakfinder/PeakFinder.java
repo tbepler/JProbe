@@ -8,7 +8,6 @@ import util.genome.peak.PeakSequenceGroup;
 import util.genome.reader.GenomeReader;
 import util.genome.reader.GenomeReaderFactory;
 import util.progress.ProgressListener;
-import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.PeakSequences;
 import chiptools.jprobe.function.AbstractChiptoolsFunction;
 import chiptools.jprobe.function.args.GenomeArgument;
@@ -26,7 +25,7 @@ public class PeakFinder extends AbstractChiptoolsFunction<PeakFinderParams>{
 	@Override
 	public Collection<Argument<? super PeakFinderParams>> getArguments() {
 		Collection<Argument<? super PeakFinderParams>> args = new ArrayList<Argument<? super PeakFinderParams>>();
-		args.add(new PeaksArgument(ChiptoolsActivator.getCore(), false));
+		args.add(new PeaksArgument(false));
 		args.add(new GenomeArgument(false));
 		args.add(new SummitArgument(true));
 		return args;

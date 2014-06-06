@@ -27,12 +27,12 @@ public class GenericTable extends AbstractFinalData{
 	
 	public GenericTable() {
 		super(0, 0);
+		this.appendCol("Row");
 	}
 	
 	public void write(Writer w){
 		//write header
 		try {
-			w.write(DELIM);
 			for(int col=0; col<this.getColumnCount(); ++col){
 				w.write(m_IndexCol.get(col) + DELIM);
 			}
@@ -49,7 +49,6 @@ public class GenericTable extends AbstractFinalData{
 	
 	protected void writeRow(Writer w, int row){
 		try {
-			w.write(m_IndexRow.get(row) + DELIM); //write row name
 			for(int col=0; col<this.getColumnCount(); ++col){ //write table entries
 				Object entry = this.getValueAt(row, col);
 				String val = entry == null ? "" : entry.toString(); //write empty string instead of null
@@ -77,6 +76,7 @@ public class GenericTable extends AbstractFinalData{
 		int index = m_RowIndexes.size();
 		m_RowIndexes.put(row, index);
 		m_IndexRow.put(index, row);
+		this.put(0, index, row);
 	}
 	
 	public void appendCol(String col){
