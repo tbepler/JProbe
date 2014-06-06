@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 import util.genome.kmer.Kmer;
@@ -16,6 +17,7 @@ import util.genome.kmer.Kmers;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 import util.progress.ProgressEvent.Type;
+import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.GenericTable;
 import chiptools.jprobe.function.AbstractChiptoolsFunction;
 
@@ -55,9 +57,18 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 		this.extractChildrenFiles(params.kmerLibrary, kmers, params.recursive);
 		for(File f : kmers){
 			if(f.exists() && f.canRead()){
-				Kmer kmer = Kmers.readKmer(new FileInputStream(f));
-				l.update(new ProgressEvent(this, Type.UPDATE, "Processing Kmer "+f.getName(), true));
-				profile(kmer, f.getName(), params.seq1, params.seq1Name, params.seq2, params.seq2Name, mutProfiles);
+				try{
+					Kmer kmer = Kmers.readKmer(new FileInputStream(f));
+					if(kmer.size() > 0){
+						l.update(new ProgressEvent(this, Type.UPDATE, "Processing Kmer "+f.getName(), true));
+						profile(kmer, f.getName(), params.seq1, params.seq1Name, params.seq2, params.seq2Name, mutProfiles);
+					}else{
+						ErrorHandler.getInstance().handleWarning("skipping "+f.getName(), ChiptoolsActivator.getBundle());
+					}
+				}catch(Exception e){
+					ErrorHandler.getInstance().handleWarning("skipping "+f.getName(), ChiptoolsActivator.getBundle());
+					ErrorHandler.getInstance().handleException(e, ChiptoolsActivator.getBundle());
+				}
 			}
 		}
 		return mutProfiles;

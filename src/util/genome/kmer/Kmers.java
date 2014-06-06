@@ -11,7 +11,7 @@ import util.genome.kmer.Kmer.Score;
 
 public class Kmers {
 	
-	private static final String KMER_REGEX = "^[AaCcGgTt]+\\s+[AaCcGgTt]+\\s+[\\-0123456789Ee\\.]+\\s+[\\-0123456789Ee\\.]+\\s+[\\-0123456789Ee\\.]+$";
+	private static final String KMER_REGEX = "^\\s*[AaCcGgTt]+\\s+[AaCcGgTt]+\\s+[\\-0123456789Ee\\.]+\\s+[\\-0123456789Ee\\.]+\\s+[\\-0123456789Ee\\.]+\\s*$";
 	
 	public static Kmer readKmer(InputStream in){
 		Map <String, Score> words = new LinkedHashMap<String, Score>();
@@ -20,7 +20,7 @@ public class Kmers {
 		try {
 			while((line = reader.readLine()) != null){
 				if(line.matches(KMER_REGEX)){
-					String[] tokens = line.split("\\s+");
+					String[] tokens = line.trim().split("\\s+");
 					Score s = new Score(Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]));
 					words.put(tokens[0], s);
 					words.put(tokens[1], s);
