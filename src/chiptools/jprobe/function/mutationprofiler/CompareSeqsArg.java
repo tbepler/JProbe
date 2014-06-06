@@ -42,10 +42,10 @@ public class CompareSeqsArg extends ChiptoolsFileArg<MutationProfilerParams>{
 			gbc.gridy = count;
 			gbc.anchor = GridBagConstraints.WEST;
 			gbc.gridx = 0;
-			m_Panel.add(new JLabel(s + ":"));
+			m_Panel.add(new JLabel(s + ":"), gbc);
 			gbc.gridx = 1;
 			gbc.weightx = 0.7;
-			m_Panel.add(new JLabel(seqs.get(s)));
+			m_Panel.add(new JLabel(seqs.get(s)), gbc);
 			++count;
 		}
 		m_Panel.setPreferredSize(new Dimension(dim.width, m_Panel.getPreferredSize().height));
