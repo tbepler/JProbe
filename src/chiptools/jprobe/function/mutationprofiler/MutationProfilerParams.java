@@ -4,8 +4,9 @@ import java.io.File;
 
 public class MutationProfilerParams {
 	
-	public boolean useMinEscore = false;
-	public double minEscore = 0.35;
+	public double minEscore = Double.NEGATIVE_INFINITY;
+	public double minDifference = Double.NEGATIVE_INFINITY;
+	public int bindingSite = -1;
 	
 	public File kmerLibrary = null;
 	public boolean recursive = false;
