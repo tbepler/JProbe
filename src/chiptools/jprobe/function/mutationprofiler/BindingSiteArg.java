@@ -4,7 +4,7 @@ import chiptools.jprobe.function.ChiptoolsIntArg;
 
 public class BindingSiteArg extends ChiptoolsIntArg<MutationProfilerParams>{
 
-	protected BindingSiteArg(boolean optional) {
+	public BindingSiteArg(boolean optional) {
 		super(BindingSiteArg.class, "off", optional, 1, 1, Integer.MAX_VALUE, 1);
 	}
 
