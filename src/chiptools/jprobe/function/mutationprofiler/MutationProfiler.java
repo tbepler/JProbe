@@ -30,6 +30,8 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 		args.add(new CompareSeqsArg(2, false));
 		args.add(new KmerLibraryArg(false));
 		args.add(new MinEscoreArg(true));
+		args.add(new MinDifferenceArg(true));
+		args.add(new BindingSiteArg(true));
 		args.add(new RecursiveArg());
 		return args;
 	}

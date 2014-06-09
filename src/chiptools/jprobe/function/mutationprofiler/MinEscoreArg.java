@@ -11,7 +11,6 @@ public class MinEscoreArg extends ChiptoolsDoubleArg<MutationProfilerParams>{
 	@Override
 	protected void process(MutationProfilerParams params, Double value) {
 		params.minEscore = value;
-		params.useMinEscore = true;
 	}
 
 }
