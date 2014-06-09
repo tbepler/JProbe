@@ -24,6 +24,10 @@ public class PeakFilter extends AbstractChiptoolsFunction<PeakFilterParams>{
 		args.add(new PeaksArgument(false));
 		args.add(new IncludeChromArg(true));
 		args.add(new ExcludeChromArg(true));
+		args.add(new MinQValArg(true));
+		args.add(new MaxQValArg(true));
+		args.add(new MinPValArg(true));
+		args.add(new MaxPValArg(true));
 		
 		return args;
 	}

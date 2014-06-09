@@ -4,10 +4,10 @@ import util.genome.peak.Peak;
 import util.genome.peak.PeakUtils.Filter;
 import chiptools.jprobe.function.ChiptoolsDoubleArg;
 
-public class MinQValArg extends ChiptoolsDoubleArg<PeakFilterParams>{
+public class MinPValArg extends ChiptoolsDoubleArg<PeakFilterParams>{
 
-	public MinQValArg(boolean optional) {
-		super(MinQValArg.class, "off", optional, 0, 0, Double.POSITIVE_INFINITY, 1.0);
+	public MinPValArg(boolean optional) {
+		super(MinPValArg.class, "off", optional, 0, 0, Double.POSITIVE_INFINITY, 1.0);
 	}
 
 	@Override
@@ -17,7 +17,7 @@ public class MinQValArg extends ChiptoolsDoubleArg<PeakFilterParams>{
 
 			@Override
 			public boolean keep(Peak p) {
-				return p.getQVal() >= min;
+				return p.getPVal() >= min;
 			}
 			
 		});
