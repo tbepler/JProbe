@@ -1,6 +1,7 @@
 package plugins.functions.gui;
 
 import javax.swing.SwingUtilities;
+
 import org.osgi.framework.Bundle;
 
 import util.gui.OnPress;
@@ -93,6 +94,7 @@ public class SwingFunctionExecutor<T> extends FunctionExecutor<T>{
 		//this.monitor = new ProgressMonitor(null, thread.function.getName(), null, 0, PROGRESS_BOUND);
 		m_Monitor = new ProgressWindow(m_Thread.m_Function.getName(), 0, 0, false, new OnPress(){
 
+			@SuppressWarnings("deprecation")
 			@Override
 			public void act() {
 				m_Thread.stop();

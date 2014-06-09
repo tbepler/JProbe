@@ -17,18 +17,18 @@ chiptools.jprobe.function.bindingprofiler.BindingPWMArgument	PWMs	m	FILES	Data	P
 chiptools.jprobe.function.probemutator.BindingBarrierArgument	BindingSiteBarrier	b	INT{default=2}	Fields	The number of bases on either side of binding sites that cannot be mutated, default=2
 chiptools.jprobe.function.args.PrimerArgument	Primer		FILE	Fields	A file from which the primer should be read. The file can be in fasta format or can simply contain the primer sequence.
 chiptools.jprobe.function.probemutator.MutateBindingSitesArgument	MutateBindingSites			Fields	Setting this flag specifies that binding sites on these probes should be mutated. This will cause every permutation of binding sites on each probe to be mutated. Default=off
-chiptools.jprobe.function.probefilter.MinMutationsArgument	MinMutations		INT	Fields	Filters out all probes with fewer mutations than this number
-chiptools.jprobe.function.probefilter.MaxMutationsArgument	MaxMutations		INT	Fields	Filters out all probes with more mutations than this number
-chiptools.jprobe.function.probefilter.MinBindingDistArgument	MinBindingDistance		INT	Fields	Filters out all probes with binding sites spaced less than this number apart
-chiptools.jprobe.function.probefilter.MaxBindingDistArgument	MaxBindingDistance		INT	Fields	Filters out all probes with binding sites spaced more than this number apart
-chiptools.jprobe.function.probefilter.MinBindingSitesArg	MinBindingSites		INT	Fields	Filters out all probes with fewer binding sites than this number
-chiptools.jprobe.function.probefilter.MaxBindingSitesArg	MaxBindingSites		INT	Fields	Filters out all probes with more binding sites than this number
-chiptools.jprobe.function.probefilter.IncludeSubseqArgument	IncludeSeqs		FILE	Fields	Reads a file containing line separated sequences and keeps only probes containing an OR over the sequences
-chiptools.jprobe.function.probefilter.ExcludeSubseqArgument	ExcludeSeqs		FILE	Fields	Reads a file containing line separated sequences and removes all probes containing an OR over the sequences
-chiptools.jprobe.function.probefilter.RandomRemovalArgument	Remove		INT	Fields	Removes the specified number of probes randomly from the given probes. The random seed can be set using the --Seed argument
-chiptools.jprobe.function.probefilter.RandomSeedArgument	Seed		INT	Fields	An integer that will be used to seed the random number generator used to remove probes at random. If no seed is specified, then one will be chosen arbitrarily
-chiptools.jprobe.function.probefilter.IncludeChromsArg	IncludeChroms		CHROMS	Fields	Takes a comma separated list of chromosomes and keeps only probes containing an OR of those chromosomes
-chiptools.jprobe.function.probefilter.ExcludeChromsArg	ExcludeChroms		CHROMS	Fields	Takes a comma separated list of chromosomes and removes all probes containing an OR of those chromosomes
+chiptools.jprobe.function.probefilter.MinMutationsArgument	MinMutations		INT	Mutations	Filters out all probes with fewer mutations than this number
+chiptools.jprobe.function.probefilter.MaxMutationsArgument	MaxMutations		INT	Mutations	Filters out all probes with more mutations than this number
+chiptools.jprobe.function.probefilter.MinBindingDistArgument	MinBindingDistance		INT	Binding Sites	Filters out all probes with binding sites spaced less than this number apart
+chiptools.jprobe.function.probefilter.MaxBindingDistArgument	MaxBindingDistance		INT	Binding Sites	Filters out all probes with binding sites spaced more than this number apart
+chiptools.jprobe.function.probefilter.MinBindingSitesArg	MinBindingSites		INT	Binding Sites	Filters out all probes with fewer binding sites than this number
+chiptools.jprobe.function.probefilter.MaxBindingSitesArg	MaxBindingSites		INT	Binding Sites	Filters out all probes with more binding sites than this number
+chiptools.jprobe.function.probefilter.IncludeSubseqArgument	IncludeSeqs		FILE	Sequences	Reads a file containing line separated sequences and keeps only probes containing an OR over the sequences
+chiptools.jprobe.function.probefilter.ExcludeSubseqArgument	ExcludeSeqs		FILE	Sequences	Reads a file containing line separated sequences and removes all probes containing an OR over the sequences
+chiptools.jprobe.function.probefilter.RandomRemovalArgument	Remove		INT	Random	Removes the specified number of probes randomly from the given probes. The random seed can be set using the --Seed argument
+chiptools.jprobe.function.probefilter.RandomSeedArgument	Seed		INT	Random	An integer that will be used to seed the random number generator used to remove probes at random. If no seed is specified, then one will be chosen arbitrarily
+chiptools.jprobe.function.probefilter.IncludeChromsArg	IncludeChroms		CHROMS	Chromosomes	Takes a comma separated list of chromosomes and keeps only probes containing an OR of those chromosomes
+chiptools.jprobe.function.probefilter.ExcludeChromsArg	ExcludeChroms		CHROMS	Chromosomes	Takes a comma separated list of chromosomes and removes all probes containing an OR of those chromosomes
 chiptools.jprobe.function.mutationprofiler.CompareSeqsArg	Seqs	s	FILE	Fields	Takes a file containing the sequences to be compared in fasta format or separated by carriage returns
 chiptools.jprobe.function.mutationprofiler.KmerLibraryArg	Kmers	k	DIR	Fields	A directory containing the Kmer library that should be queried for comparing the sequences
 chiptools.jprobe.function.mutationprofiler.RecursiveArg	Recursive	r		Fields	This flag specifies that the Kmer library should be searched recursively for Kmer files. If unset, only the top level directory will be searched.

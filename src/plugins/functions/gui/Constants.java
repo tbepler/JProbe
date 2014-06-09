@@ -13,6 +13,8 @@ public class Constants {
 	public static final ImageIcon X_ICON = new ImageIcon(Constants.class.getResource(X_ICON_PATH));
 	
 	public static final String ARGS_NAME_PROTOTYPE = "long name here";
+	
+	public static final double ARGS_PANEL_TARGET_ASPECT = 2.0;
 
 	
 }
