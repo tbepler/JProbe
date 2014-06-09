@@ -22,6 +22,7 @@ public class DataListTable extends JTable implements MouseListener{
 		m_Model = new DataListModel(core);
 		this.setModel(m_Model);
 		this.setDragEnabled(false);
+		this.setShowGrid(true);
 		for(int i=0; i<this.getColumnCount(); i++){
 			this.getColumnModel().getColumn(i).setMinWidth(Constants.DATALIST_MIN_COL_WIDTH);
 		}
