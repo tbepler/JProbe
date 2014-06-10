@@ -7,6 +7,7 @@ import java.util.Collection;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.ErrorHandler;
@@ -62,6 +63,16 @@ public class GUIActivator implements BundleActivator{
 		//set look and feel to system l+f
 		//UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//		try {
+//		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//		        if ("Nimbus".equals(info.getName())) {
+//		            UIManager.setLookAndFeel(info.getClassName());
+//		            break;
+//		        }
+//		    }
+//		} catch (Exception e) {
+//		    // If Nimbus is not available, you can set the GUI to another look and feel.
+//		}
 		//start gui
 		m_Gui = new JProbeGUIFrame(m_Core, m_Core.getName()+"-"+m_Core.getVersion(), context.getBundle(), m_GuiConfig);
 		m_Gui.setVisible(true);
