@@ -3,11 +3,15 @@ package jprobe.services.data;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import jprobe.Constants;
+import jprobe.JProbeActivator;
+import jprobe.services.ErrorHandler;
 import util.gui.TableFormatter;
 
 public abstract class AbstractFinalData implements Data{
@@ -53,6 +57,11 @@ public abstract class AbstractFinalData implements Data{
 	public JTable createTable() {
 		JTable table = new JTable(this);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		try{
+			((DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+		}catch(Exception e){
+			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+		}
 		TableFormatter.formatTable(table, Constants.DATA_TABLE_MAX_COL_WIDTH, Constants.DATA_TABLE_ROW_SAMPLE);
 		table.setShowGrid(true);
 		return table;

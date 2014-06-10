@@ -23,6 +23,7 @@ public class IconButton extends JButton implements MouseListener{
 		this.addMouseListener(this);
 		this.setBorder(BorderFactory.createEmptyBorder());
 		this.setContentAreaFilled(false);
+		this.setOpaque(false);
 	}
 	
 	@Override
