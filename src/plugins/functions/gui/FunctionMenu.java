@@ -81,8 +81,14 @@ public class FunctionMenu extends JMenu implements CoreListener{
 	
 	private void layoutMenuItems(){
 		this.removeAll();
+		boolean first = true;
 		for(String cat : m_Categories.keySet()){
-			this.add(this.newSeparator(cat));
+			//this.add(this.newSeparator(cat));
+			if(first){
+				first = false;
+			}else{
+				this.addSeparator();
+			}
 			for(Function<?> f : m_Categories.get(cat)){
 				this.add(m_Items.get(f));
 			}

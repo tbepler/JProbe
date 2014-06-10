@@ -60,6 +60,7 @@ public class GUIActivator implements BundleActivator{
 			System.setProperty("com.apple.macos.smallTabs", "true");
 		}
 		//set look and feel to system l+f
+		//UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		//start gui
 		m_Gui = new JProbeGUIFrame(m_Core, m_Core.getName()+"-"+m_Core.getVersion(), context.getBundle(), m_GuiConfig);

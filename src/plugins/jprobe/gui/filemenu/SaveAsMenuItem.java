@@ -1,5 +1,6 @@
 package plugins.jprobe.gui.filemenu;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -21,7 +22,7 @@ public class SaveAsMenuItem extends JMenuItem implements ActionListener{
 		super("Save Workspace As");
 		m_Core = core;
 		this.addActionListener(this);
-		this.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK + InputEvent.CTRL_DOWN_MASK));
+		this.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 	
 	@Override

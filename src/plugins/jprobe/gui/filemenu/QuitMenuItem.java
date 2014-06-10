@@ -1,6 +1,6 @@
 package plugins.jprobe.gui.filemenu;
 
-import java.awt.Event;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,7 +19,7 @@ public class QuitMenuItem extends JMenuItem implements ActionListener{
 		super("Quit");
 		m_ParentFrame = parentFrame;
 		this.setMnemonic(KeyEvent.VK_Q);
-		this.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Event.CTRL_MASK));
+		this.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		this.addActionListener(this);
 	}
 

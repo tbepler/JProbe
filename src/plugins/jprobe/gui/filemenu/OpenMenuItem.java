@@ -1,6 +1,6 @@
 package plugins.jprobe.gui.filemenu;
 
-import java.awt.Event;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -22,7 +22,7 @@ public class OpenMenuItem extends JMenuItem implements ActionListener{
 		m_Core = core;
 		this.addActionListener(this);
 		this.setMnemonic(KeyEvent.VK_O);
-		this.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Event.CTRL_MASK));
+		this.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 	
 	@Override

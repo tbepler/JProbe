@@ -1,11 +1,11 @@
 package plugins.jprobe.gui;
 
-import java.awt.Event;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -92,11 +92,11 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		m_HelpWindow = new TabDialogueWindow(this, "Help", true);
 		m_PreferencesMenu = new DialogueMenu("Preferences", m_PreferencesWindow);
 		m_PreferencesMenu.setMnemonic(KeyEvent.VK_P);
-		m_PreferencesMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK));
+		m_PreferencesMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		m_MenuBar.add(m_PreferencesMenu);
 		m_HelpMenu = new DialogueMenu("Help", m_HelpWindow);
 		m_HelpMenu.setMnemonic(KeyEvent.VK_H);
-		m_HelpMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.CTRL_MASK));
+		m_HelpMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		m_MenuBar.add(m_HelpMenu);
 		
 		m_NotePanel = initNotificationPanel(m_Core);
