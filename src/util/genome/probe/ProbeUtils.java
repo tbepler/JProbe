@@ -9,7 +9,10 @@ import util.genome.Strand;
 import util.genome.kmer.Kmer;
 import util.genome.kmer.NoSuchWordException;
 import util.genome.pwm.PWM;
+import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
+import util.progress.ProgressEvent.Type;
+
 import java.util.*;
 
 public class ProbeUtils {
@@ -179,8 +182,11 @@ public class ProbeUtils {
 			int probeLength,
 			int bindingSiteLength,
 			int windowSize,
-			double escoreThreshhold
+			double escoreThreshhold,
+			ProgressListener l
 			){
+		
+		l.update(new ProgressEvent(null, Type.UPDATE, "Extracting probes from: "+name));
 		
 		Collection<Probe> probes = new LinkedHashSet<Probe>();
 		//scorePWM = 0;

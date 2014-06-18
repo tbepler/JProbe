@@ -69,7 +69,10 @@ public class ParsingEngine {
 		ProgressListener l = new ProgressListener(){
 			@Override
 			public void update(ProgressEvent event) {
-				report.println(event.getMessage());
+				String s = event.getMessage();
+				if(s != null && !s.equals("")){
+					report.println(s);
+				}
 			}
 		};
 		
@@ -90,11 +93,11 @@ public class ParsingEngine {
 			String[] args
 			) throws Exception{
 		
-		T params = parse(func.newParameters(), flags, required, args);
+		T params = parse(l, func.newParameters(), flags, required, args);
 		return func.execute(l, params);
 	}
 	
-	private static <T> T parse(T params, Map<String, Argument<? super T>> flags, Collection<Argument<? super T>> required, String[] args){
+	private static <T> T parse(ProgressListener l, T params, Map<String, Argument<? super T>> flags, Collection<Argument<? super T>> required, String[] args){
 		for(int i=0; i<args.length; i++){
 			String s = args[i];
 			if(!flags.containsKey(s)){
@@ -113,7 +116,7 @@ public class ParsingEngine {
 			System.arraycopy(args, i+1, curArgs, 0, curArgs.length);
 			
 			try{
-				arg.parse(params, curArgs);
+				arg.parse(l, params, curArgs);
 			}catch(Exception e){
 				throw new RuntimeException(e.getMessage());
 			}

@@ -163,7 +163,7 @@ public class Test extends junit.framework.TestCase{
 		public String getPrototypeValue() { return "STRING"; }
 
 		@Override
-		public void parse(TestParameter params, String[] args) {
+		public void parse(ProgressListener l, TestParameter params, String[] args) {
 			if(args.length < 1){
 				throw new RuntimeException("string requires an argument");
 			}
@@ -210,7 +210,7 @@ public class Test extends junit.framework.TestCase{
 		public String getPrototypeValue() { return "INT"; }
 
 		@Override
-		public void parse(TestParameter params, String[] args) {
+		public void parse(ProgressListener l, TestParameter params, String[] args) {
 			params.VALUE_B = Integer.parseInt(args[0]);
 		}
 		
@@ -254,7 +254,7 @@ public class Test extends junit.framework.TestCase{
 		public String getPrototypeValue() { return "DOUBLE"; }
 
 		@Override
-		public void parse(TestParameter params, String[] args) {
+		public void parse(ProgressListener l, TestParameter params, String[] args) {
 			params.VALUE_C = Double.parseDouble(args[0]);
 		}
 		

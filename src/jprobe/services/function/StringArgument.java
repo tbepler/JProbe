@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import util.progress.ProgressListener;
+
 public abstract class StringArgument<P> extends AbstractArgument<P> implements ActionListener{
 	
 	public static final String PROTOTYPE_TEXT = "some string here";
@@ -27,7 +29,7 @@ public abstract class StringArgument<P> extends AbstractArgument<P> implements A
 	protected abstract void process(P params, String s);
 	
 	@Override
-	public void parse(P params, String[] args){
+	public void parse(ProgressListener l, P params, String[] args){
 		if(args.length < 1 || args.length > 1){
 			throw new RuntimeException(this.getName() + " requires 1 argument. Received "+args.length);
 		}

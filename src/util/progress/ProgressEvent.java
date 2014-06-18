@@ -20,6 +20,10 @@ public class ProgressEvent {
 		this(source, type, -1);
 	}
 	
+	public ProgressEvent(Object source, Type type, String message){
+		this(source, type, message, true);
+	}
+	
 	public ProgressEvent(Object source, Type type, int progress){
 		this(source, type, progress, null);
 	}

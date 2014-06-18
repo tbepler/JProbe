@@ -10,6 +10,8 @@ import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import util.progress.ProgressListener;
+
 public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implements ChangeListener{
 	
 	public static interface Spinner<V>{
@@ -87,7 +89,7 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 	protected abstract void process(P params, T value);
 
 	@Override
-	public void parse(P params, String[] args){
+	public void parse(ProgressListener l, P params, String[] args){
 		if(args.length < 1 || args.length > 1){
 			throw new RuntimeException(this.getName() + " requires 1 argument. Received "+args.length);
 		}

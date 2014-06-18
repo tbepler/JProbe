@@ -4,9 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -27,18 +31,16 @@ public class Dictionary<K,V> implements Serializable, Iterable<K>{
 		private static final long serialVersionUID = 1L;
 		
 		public V value;
-		public char edge;
-		public Collection<Node> children;
+		public Map<Character, Node> children;
 		
-		public Node(V value, char edge){
+		public Node(V value){
 			this.value = value;
-			this.edge = edge;
-			children = new ArrayList<Node>();
+			children = new HashMap<Character, Node>();
 		}
 	}
 	
 	private final Set<K> m_KeySet = new HashSet<K>();
-	private final Node m_Root = new Node(null, '~');
+	private final Node m_Root = new Node(null);
 	private final Character m_Wildcard;
 	
 	/**
@@ -49,19 +51,19 @@ public class Dictionary<K,V> implements Serializable, Iterable<K>{
 	}
 	
 	/**
-	 * Returns the number of entries in this dictionary.
-	 * @return
-	 */
-	public int size(){
-		return m_KeySet.size();
-	}
-	
-	/**
 	 * Creates an empty dictionary that uses the given wildcard character.
 	 * @param wildcard
 	 */
 	public Dictionary(char wildcard){
 		m_Wildcard = wildcard;
+	}
+	
+	/**
+	 * Returns the number of entries in this dictionary.
+	 * @return
+	 */
+	public int size(){
+		return m_KeySet.size();
 	}
 	
 	/**
@@ -102,24 +104,23 @@ public class Dictionary<K,V> implements Serializable, Iterable<K>{
 	public List<V> get(K key){
 		String s = key == null ? "" : key.toString();
 		//initialize current node set to contain the root node
-		Set<Node> cur = new HashSet<Node>();
+		Queue<Node> cur = new LinkedList<Node>();
 		cur.add(m_Root);
 		//iterate over each character in the string key
 		for(char c : s.toCharArray()){
 			//if the cur node set is empty stop searching
 			if(cur.isEmpty()) break;
-			//create next node set
-			Set<Node> next = new HashSet<Node>();
-			//iterate over current nodes and put their children that match c into the next set
-			for(Node n : cur){
-				for(Node child : n.children){
-					if(new Character(child.edge).equals(m_Wildcard) || c == child.edge){
-						next.add(child);
-					}
+			int num = cur.size();
+			//pop all the cur nodes and add their children matching c to the queue
+			while(--num >= 0){
+				Node n = cur.poll();
+				if(n.children.containsKey(c)){
+					cur.add(n.children.get(c));
+				}
+				if(n.children.containsKey(m_Wildcard)){
+					cur.add(n.children.get(m_Wildcard));
 				}
 			}
-			//update the cur set to the next set
-			cur = next;
 		}
 		//create the results list
 		List<V> results = new ArrayList<V>();
@@ -157,16 +158,12 @@ public class Dictionary<K,V> implements Serializable, Iterable<K>{
 		for(char c : s.toCharArray()){
 			//initialize next node to null
 			Node next = null;
-			//iterate over children of cur and set next to child if edge matches c
-			for(Node child : cur.children){
-				if(c == child.edge){
-					next = child;
-				}
-			}
-			//if no child edge matched c, create new child for c
-			if(next == null){
-				next = new Node(null, c);
-				cur.children.add(next);
+			//set next to child if edge matches c
+			if(cur.children.containsKey(c)){
+				next = cur.children.get(c);
+			}else{  //if no child edge matched c, create new child for c
+				next = new Node(null);
+				cur.children.put(c, next);
 			}
 			//set cur to next
 			cur = next;

@@ -2,6 +2,8 @@ package jprobe.services.function;
 
 import javax.swing.JComponent;
 
+import util.progress.ProgressListener;
+
 /**
  * This interface represents Arguments for JProbe {@link Function}s. Arguments provide a name, tooltip, and category that are displayed
  * to the user. Arguments also provide a {@link JComponent} that is displayed in the GUI and allows the user to enter a value
@@ -123,9 +125,10 @@ public interface Argument<P> {
 	 * accordingly. If the args are invalid, then this should throw an exception with an informative message
 	 * that will be displayed to the user. After all Arguments are parsed, the parameter will be used
 	 * to execute a function.
+	 * @param l - a ProgressListener to report parsing progress, if desired
 	 * @param params - parameter object to be edited
 	 * @param args - command line values for this argument
 	 */
-	public void parse(P params, String[] args);
+	public void parse(ProgressListener l, P params, String[] args);
 	
 }

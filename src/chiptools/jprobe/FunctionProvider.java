@@ -11,9 +11,11 @@ import jprobe.services.function.Function;
 
 public class FunctionProvider {
 	
+	@SuppressWarnings("rawtypes")
 	private final List<Function> m_Functions = this.generateFunctions();
 	private final List<ServiceRegistration<?>> m_Regs = new ArrayList<ServiceRegistration<?>>();
 	
+	@SuppressWarnings("rawtypes")
 	private List<Function> generateFunctions(){
 		List<Function> list = new ArrayList<Function>();
 		for(Class<? extends Function> clazz : Constants.FUNCTION_CLASSES){
@@ -26,6 +28,7 @@ public class FunctionProvider {
 		return list;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public void start(BundleContext context){
 		for(Function prot : m_Functions){
 			ServiceRegistration<?> reg = context.registerService(Function.class, prot, null);

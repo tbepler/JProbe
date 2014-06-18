@@ -8,6 +8,9 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.filechooser.FileFilter;
 
+import util.progress.ProgressEvent;
+import util.progress.ProgressListener;
+import util.progress.ProgressEvent.Type;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
@@ -80,8 +83,9 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 		process(params, m_Component.getDataArgs());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public void parse(P params, String[] args){
+	public void parse(ProgressListener l, P params, String[] args){
 		if(args.length < m_Min || args.length > m_Max){
 			String message;
 			if(m_Min == m_Max){
@@ -98,6 +102,7 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 				data.add(i, (D) m_Core.getDataManager().getData(arg));
 			}else{
 				DataReader reader = this.getDataReader();
+				l.update(new ProgressEvent(this, Type.UPDATE, "Reading "+m_DataClass.getSimpleName()+" from file "+arg));
 				Data read = this.readFile(arg, reader, this.getFileFilters(reader));
 				if(read == null){
 					throw new RuntimeException("Unable to read data \""+m_DataClass.getName()+"\" from file \""+arg+"\"");

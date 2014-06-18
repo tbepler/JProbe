@@ -16,6 +16,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import util.progress.ProgressListener;
+
 public abstract class FileArgument<P> extends AbstractArgument<P> implements ActionListener{
 	
 	public static final String DEFAULT_BUTTON_TEXT = "Browse";
@@ -55,7 +57,7 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 	}
 	
 	@Override
-	public void parse(P params, String[] args){
+	public void parse(ProgressListener l, P params, String[] args){
 		if(args.length < 1 || args.length > 1){
 			throw new RuntimeException(this.getName()+" requires 1 argument. Received "+args.length);
 		}

@@ -3,6 +3,7 @@ package jprobe.services.function;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import util.progress.ProgressListener;
 import jprobe.JProbeActivator;
 import jprobe.services.ErrorHandler;
 
@@ -48,7 +49,7 @@ public abstract class FlagArgument<P> extends AbstractArgument<P>{
 	}
 
 	@Override
-	public void parse(P params, String[] args) {
+	public void parse(ProgressListener l, P params, String[] args) {
 		if(args.length > 0){
 			String warning = "Argument \"" + this.getName() + "\" takes no arguments, but received arguments:";
 			for(String arg : args){

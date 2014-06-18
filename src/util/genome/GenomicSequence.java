@@ -64,6 +64,18 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return (int) this.getStart().distance(coord);
 	}
 	
+	public GenomicSequence appendPrefix(String prefix){
+		GenomicCoordinate newStart = this.getStart().decrement(prefix.length());
+		String seq = prefix + m_Sequence;
+		return new GenomicSequence(seq, new GenomicRegion(newStart, this.getEnd()));
+	}
+	
+	public GenomicSequence appendSuffix(String suffix){
+		GenomicCoordinate newEnd = this.getEnd().increment(suffix.length());
+		String seq = m_Sequence + suffix;
+		return new GenomicSequence(seq, new GenomicRegion(this.getStart(), newEnd));
+	}
+	
 	public GenomicSequence subsequence(GenomicCoordinate start, GenomicCoordinate end){
 		if(!this.contains(start) || !this.contains(end)){
 			throw new RuntimeException("Cannot subsequence using coordinates not contained by this GenomicSequence");
