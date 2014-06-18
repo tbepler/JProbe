@@ -1,6 +1,5 @@
 package chiptools.jprobe.data;
 
-import java.util.List;
 import util.DNAUtils;
 import util.genome.kmer.Kmer.Score;
 import jprobe.services.data.AbstractFinalData;
@@ -15,12 +14,10 @@ public class Kmer extends AbstractFinalData{
 	private static final int ZSCORE = 4;
 	
 	private final util.genome.kmer.Kmer m_Kmer;
-	private final List<String> m_Rows;
 	
-	public Kmer(util.genome.kmer.Kmer kmer, List<String> rows){
-		super(5, rows.size());
+	public Kmer(util.genome.kmer.Kmer kmer){
+		super(5, kmer.size());
 		m_Kmer = kmer;
-		m_Rows = rows;
 
 	}
 	
@@ -31,8 +28,8 @@ public class Kmer extends AbstractFinalData{
 	@Override
 	public String toString(){
 		String s = "";
-		for(int row=0; row<m_Rows.size(); row++){
-			String fwd = m_Rows.get(row);
+		for(int row=0; row<m_Kmer.size(); row++){
+			String fwd = m_Kmer.getWord(row);
 			String rvs = DNAUtils.reverseCompliment(fwd);
 			Score score = m_Kmer.getScore(fwd);
 			s += fwd + "\t" + rvs + "\t" + score.ESCORE + "\t" + score.INTENSITY + "\t" + score.ZSCORE;
@@ -67,7 +64,7 @@ public class Kmer extends AbstractFinalData{
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		String fwd = m_Rows.get(rowIndex);
+		String fwd = m_Kmer.getWord(rowIndex);
 		switch(columnIndex){
 		case FWD: return fwd;
 		case RVS: return DNAUtils.reverseCompliment(fwd);

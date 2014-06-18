@@ -10,15 +10,16 @@ public class GappedKmer implements Kmer{
 	private static final long serialVersionUID = 1L;
 	
 	private final Dictionary<String, Score> m_Words = new Dictionary<String, Score>('.');
-	
+	private final List<String> m_WordList;
 	private final int[] m_MotifLens;
 	
-	GappedKmer(Map<String, Score> words){
+	GappedKmer(Map<String, Score> words, List<String> wordList){
+		m_WordList = wordList;
 		Set<Integer> sizes = new HashSet<Integer>();
-		
 		for(Entry<String,Score> e : words.entrySet()){
-			sizes.add(e.getKey().length());
-			m_Words.put(e.getKey(), e.getValue());
+			String word = e.getKey();
+			sizes.add(word.length());
+			m_Words.put(word, e.getValue());
 		}
 		m_MotifLens = new int[sizes.size()];
 		int i = 0;
@@ -31,7 +32,7 @@ public class GappedKmer implements Kmer{
 	
 	@Override
 	public int size(){
-		return m_Words.size();
+		return m_WordList.size();
 	}
 	
 	/**
@@ -225,7 +226,7 @@ public class GappedKmer implements Kmer{
 
 	@Override
 	public Iterator<String> iterator() {
-		return m_Words.iterator();
+		return m_WordList.iterator();
 	}
 
 	@Override
@@ -233,6 +234,11 @@ public class GappedKmer implements Kmer{
 		Collection<Score> scores = this.getScores(word);
 		return new Score(GappedKmer.maxEScore(scores), GappedKmer.maxIntensity(scores), GappedKmer.maxZScore(scores));
 		
+	}
+
+	@Override
+	public String getWord(int index) {
+		return m_WordList.get(index);
 	}
 
 }

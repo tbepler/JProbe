@@ -27,6 +27,7 @@ public class SaveUtil {
 				temp = new File(tempName+count);
 				++count;
 			}
+			temp.createNewFile();
 			for(String tag : saveables.keySet()){
 				if(temp.canWrite() && temp.canRead()){
 					FileOutputStream tempOut = new FileOutputStream(temp);
@@ -51,6 +52,7 @@ public class SaveUtil {
 					tempOut.close();
 				}
 			}
+			temp.delete();
 			out.close();
 		} catch (FileNotFoundException e) {
 			throw new SaveException(e);

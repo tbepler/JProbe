@@ -3,16 +3,10 @@ package chiptools.jprobe.data;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -70,44 +64,11 @@ public class KmerReaderWriter implements DataReader, DataWriter{
 			}
 		};
 	}
-	
-	
-	private static List<String> createRows(final util.genome.kmer.Kmer kmer){
-		Collection<String> entered = new HashSet<String>(kmer.size());
-		List<String> rows = new ArrayList<String>(kmer.size() / 2);
-		for(String word : kmer){
-			if(entered.contains(word)) continue;
-			String revcomp = DNAUtils.reverseCompliment(word).intern();
-			if(word.compareTo(revcomp) > 0){
-				rows.add(revcomp);
-			}else{
-				rows.add(word);
-			}
-			entered.add(word);
-			entered.add(revcomp);
-		}
-		System.err.println("Sorting "+System.currentTimeMillis());
-		Collections.sort(rows, new Comparator<String>(){
-
-			@Override
-			public int compare(String s1, String s2) {
-				double score = kmer.escore(s2) - kmer.escore(s2);
-				if(score > 0) return 1;
-				if(score < 0) return -1;
-				return 0;
-			}
-			
-		});
-		System.err.println("Sort completed "+System.currentTimeMillis());
-		return rows;
-	}
 
 	@Override
 	public Data read(FileFilter format, InputStream in) throws Exception {
-		System.err.println("Reading util kmer");
 		util.genome.kmer.Kmer kmer = util.genome.kmer.Kmers.readKmer(in);
-		System.err.println("Creating data kmer "+System.currentTimeMillis());
-		return new Kmer(kmer, createRows(kmer));
+		return new Kmer(kmer);
 	}
 
 	@Override

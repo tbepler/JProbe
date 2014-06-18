@@ -6,11 +6,12 @@ public class UngappedKmer implements Kmer{
 	private static final long serialVersionUID = 1L;
 	
 	private final Map<String, Score> m_Words;
+	private final List<String> m_WordList;
 	private final Collection<Integer> m_WordLens = new HashSet<Integer>();
 
-	UngappedKmer(Map<String, Score> words){
+	UngappedKmer(Map<String, Score> words, List<String> wordList){
 		m_Words = words;
-
+		m_WordList = wordList;
 		for(String word : m_Words.keySet()){
 			m_WordLens.add(word.length());
 		}
@@ -18,7 +19,7 @@ public class UngappedKmer implements Kmer{
 	
 	@Override
 	public int size(){
-		return m_Words.size();
+		return m_WordList.size();
 	}
 	
 	@Override
@@ -102,38 +103,6 @@ public class UngappedKmer implements Kmer{
 			}
 		}
 		return scores;
-	}
-	
-	/**
-	 * Returns a new Kmer containing words from this kmer with escores above or equal to the given escore.
-	 * @param escore - minimum escore of words in kmer returned
-	 * @return new kmer containing words with escores above or equal to the specified escore
-	 */
-	public Kmer filterAboveEScore(double escore){
-		Map<String, Score> words = new LinkedHashMap<String, Score>();
-		for(String word : m_Words.keySet()){
-			Score s = m_Words.get(word);
-			if(s.ESCORE >= escore){
-				words.put(word, s);
-			}
-		}
-		return new UngappedKmer(words);
-	}
-	
-	/**
-	 * Returns a new Kmer containing words from this kmer with escores less than or equal to the given escore.
-	 * @param escore - maximum escore of words in the kmer returned
-	 * @return new kmer containing words with escores less than or equal tothe specified escore
-	 */
-	public Kmer filterBelowEScore(double escore){
-		Map<String, Score> words = new LinkedHashMap<String, Score>();
-		for(String word : m_Words.keySet()){
-			Score s = m_Words.get(word);
-			if(s.ESCORE <= escore){
-				words.put(word, s);
-			}
-		}
-		return new UngappedKmer(words);
 	}
 
 	@Override
@@ -241,12 +210,17 @@ public class UngappedKmer implements Kmer{
 
 	@Override
 	public Iterator<String> iterator() {
-		return m_Words.keySet().iterator();
+		return m_WordList.iterator();
 	}
 
 	@Override
 	public Score getScore(String word) {
 		return m_Words.get(word);
+	}
+
+	@Override
+	public String getWord(int index) {
+		return m_WordList.get(index);
 	}
 	
 	

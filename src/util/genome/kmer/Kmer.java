@@ -45,6 +45,13 @@ public interface Kmer extends Serializable, Iterable<String>{
 	}
 	
 	/**
+	 * Returns the forward word stored at the given index.
+	 * @param index - index of the word to retrieve
+	 * @return
+	 */
+	public String getWord(int index);
+	
+	/**
 	 * Returns the number of entries in this kmer.
 	 * @return
 	 */
