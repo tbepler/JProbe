@@ -64,7 +64,8 @@ class Mutate {
 		
 		MutationRecord record = new MutationRecord();
 		record.seq = mut.asGenomicSequence();
-		record = mutateRecursive(l, record, kmer, protectedRegions, immutableCoords, escoreCutoff, alphabet);
+		//only use the binding sites as protected regions, but prevent mutations in binding site barrier
+		record = mutateRecursive(l, record, kmer, bindingSites, immutableCoords, escoreCutoff, alphabet);
 		
 		List<GenomicCoordinate> mutations = new ArrayList<GenomicCoordinate>(mut.getMutations());
 		for(Mutation m : record.muts){
@@ -86,6 +87,7 @@ class Mutate {
 			){
 		
 		List<GenomicRegion> bindingSites = getBindingSites(p);
+		
 		List<GenomicRegion> protectedRegions = getProtectedRegions(bindingSites, bindingSiteBarrier);
 		Set<GenomicCoordinate> immutableCoords = toCoordinateSet(protectedRegions);
 		
@@ -100,7 +102,8 @@ class Mutate {
 		}
 		MutationRecord record = new MutationRecord();
 		record.seq = fwdGenomicSeq;
-		record = mutateRecursive(l, record, kmer, protectedRegions, fwdImmutable, escoreCutoff, alphabet);
+		//only use the binding sites as protected regions, but prevent mutations in binding site barrier
+		record = mutateRecursive(l, record, kmer, bindingSites, fwdImmutable, escoreCutoff, alphabet);
 		
 		//add the fwd mutations to the mutation map - this guarantees only one mutation per coordinate
 		Map<GenomicCoordinate, Mutation> mutations = new HashMap<GenomicCoordinate, Mutation>();
@@ -119,7 +122,7 @@ class Mutate {
 		}
 		record = new MutationRecord();
 		record.seq = rvsGenomicSeq;
-		record = mutateRecursive(l, record, kmer, protectedRegions, rvsImmutable, escoreCutoff, alphabet);
+		record = mutateRecursive(l, record, kmer, bindingSites, rvsImmutable, escoreCutoff, alphabet);
 		
 		//add the rvs mutations to the mutation map
 		for(Mutation m : record.muts){

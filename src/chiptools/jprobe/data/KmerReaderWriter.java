@@ -86,6 +86,7 @@ public class KmerReaderWriter implements DataReader, DataWriter{
 			entered.add(word);
 			entered.add(revcomp);
 		}
+		System.err.println("Sorting "+System.currentTimeMillis());
 		Collections.sort(rows, new Comparator<String>(){
 
 			@Override
@@ -97,12 +98,15 @@ public class KmerReaderWriter implements DataReader, DataWriter{
 			}
 			
 		});
+		System.err.println("Sort completed "+System.currentTimeMillis());
 		return rows;
 	}
 
 	@Override
 	public Data read(FileFilter format, InputStream in) throws Exception {
+		System.err.println("Reading util kmer");
 		util.genome.kmer.Kmer kmer = util.genome.kmer.Kmers.readKmer(in);
+		System.err.println("Creating data kmer "+System.currentTimeMillis());
 		return new Kmer(kmer, createRows(kmer));
 	}
 

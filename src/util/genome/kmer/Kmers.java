@@ -17,6 +17,7 @@ public class Kmers {
 	public static Kmer readKmer(InputStream in){
 		Map <String, Score> words = new LinkedHashMap<String, Score>(INIT_KMER_CAPACITY);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		System.err.println("Reading file "+System.currentTimeMillis());
 		String line;
 		try {
 			while((line = reader.readLine()) != null){
@@ -36,6 +37,7 @@ public class Kmers {
 		if(isUngapped(words)){
 			return new UngappedKmer(words);
 		}else{
+			System.err.println("Building prefix tree "+System.currentTimeMillis());
 			return new GappedKmer(words);
 		}
 		

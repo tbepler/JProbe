@@ -10,10 +10,12 @@ public class GappedKmer implements Kmer{
 	private static final long serialVersionUID = 1L;
 	
 	private final Dictionary<String, Score> m_Words = new Dictionary<String, Score>('.');
+	
 	private final int[] m_MotifLens;
 	
 	GappedKmer(Map<String, Score> words){
 		Set<Integer> sizes = new HashSet<Integer>();
+		
 		for(Entry<String,Score> e : words.entrySet()){
 			sizes.add(e.getKey().length());
 			m_Words.put(e.getKey(), e.getValue());
