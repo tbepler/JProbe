@@ -176,8 +176,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	
 	public void addComponent(JComponent comp, GridBagConstraints c, Bundle responsible){
 		m_ContentPane.add(comp, c);
-		comp.revalidate();
-		comp.repaint();
+		this.revalidate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.COMPONENT_ADDED, responsible));
 	}
 	
