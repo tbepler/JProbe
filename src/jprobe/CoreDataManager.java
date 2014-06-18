@@ -23,6 +23,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
+import util.ByteCounterOutputStream;
 import util.ClassLoaderObjectInputStream;
 import util.OSGIUtils;
 import jprobe.services.CoreEvent;
@@ -395,9 +396,10 @@ public class CoreDataManager implements DataManager{
 	}
 
 	@Override
-	public synchronized void save(OutputStream out) {
+	public synchronized long save(OutputStream out) {
+		ByteCounterOutputStream counter = new ByteCounterOutputStream(out);
 		try {
-			ObjectOutputStream oout = new ObjectOutputStream(out);
+			ObjectOutputStream oout = new ObjectOutputStream(counter);
 			for(Data stored : m_DataToName.keySet()){
 				String name = this.getDataName(stored);
 				String bundle = m_DataProviders.get(stored.getClass());
@@ -408,8 +410,9 @@ public class CoreDataManager implements DataManager{
 			m_ChangesSinceLastSave = false;
 			oout.close();
 		} catch (IOException e) {
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());	
 		}
+		return counter.bytesWritten();
 	}
 
 	@Override

@@ -72,7 +72,13 @@ public class BackgroundThread extends Thread{
 		while(this.proceed()){
 			Runnable process = this.getNextAction();
 			if(process != null){
-				process.run();
+				try{
+					process.run();
+				} catch(Exception e){
+					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
+				} catch(Throwable t){
+					ErrorHandler.getInstance().handleException(new RuntimeException(t), GUIActivator.getBundle());
+				}
 			}
 		}
 	}

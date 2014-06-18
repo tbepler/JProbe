@@ -33,6 +33,9 @@ public class SwingFunctionExecutor<T> extends FunctionExecutor<T>{
 			} catch (Exception e) {
 				ErrorHandler.getInstance().handleException(e, m_Bundle);
 				done(null);
+			} catch (Throwable t){
+				ErrorHandler.getInstance().handleException(new RuntimeException(t), m_Bundle);
+				done(null);
 			}
 		}
 

@@ -73,11 +73,11 @@ public class KmerReaderWriter implements DataReader, DataWriter{
 	
 	
 	private static List<String> createRows(final util.genome.kmer.Kmer kmer){
-		Collection<String> entered = new HashSet<String>();
-		List<String> rows = new ArrayList<String>();
+		Collection<String> entered = new HashSet<String>(kmer.size());
+		List<String> rows = new ArrayList<String>(kmer.size() / 2);
 		for(String word : kmer){
 			if(entered.contains(word)) continue;
-			String revcomp = DNAUtils.reverseCompliment(word);
+			String revcomp = DNAUtils.reverseCompliment(word).intern();
 			if(word.compareTo(revcomp) > 0){
 				rows.add(revcomp);
 			}else{

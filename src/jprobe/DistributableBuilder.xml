@@ -6,7 +6,10 @@
 			 basedir="bin">
 			<manifest>
 				<attribute name="Main-Class" value="jprobe/Launcher"/>
-				<attribute name="Class-Path" value="lib/felix-framework-4.4.0/bin/felix.jar lib/apache_commons/commons-lang3-3.2.1.jar"/>
+				<attribute
+					name="Class-Path"
+					value="libraries/felix-framework-4.4.0/bin/felix.jar libraries/apache_commons/commons-lang3-3.2.1.jar libraries/commons-io-2.4/commons-io-2.4.jar"
+				/>
 			</manifest>
 		</jar>	
 	</target>

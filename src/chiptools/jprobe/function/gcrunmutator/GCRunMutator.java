@@ -2,21 +2,29 @@ package chiptools.jprobe.function.gcrunmutator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
+import util.DNAUtils;
 import util.genome.GenomicCoordinate;
-import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.probe.Probe;
+import util.genome.probe.ProbeGroup;
 import util.progress.ProgressListener;
+import chiptools.Constants;
+import chiptools.jprobe.data.Probes;
 import chiptools.jprobe.function.AbstractChiptoolsFunction;
 import chiptools.jprobe.function.args.PrimerArgument;
 import chiptools.jprobe.function.args.ProbesArgument;
 
 public class GCRunMutator extends AbstractChiptoolsFunction<GCRunMutatorParams>{
-
-	protected GCRunMutator() {
+	
+	public GCRunMutator() {
 		super(GCRunMutatorParams.class);
 	}
 
@@ -32,26 +40,72 @@ public class GCRunMutator extends AbstractChiptoolsFunction<GCRunMutatorParams>{
 	@Override
 	public Data execute(ProgressListener l, GCRunMutatorParams params) throws Exception {
 		
+		List<Probe> probes = new ArrayList<Probe>();
 		String primer = params.getPrimer();
+		String rvsPrimer = primer == null ? null : DNAUtils.reverseCompliment(primer);
 		for(Probe p : params.getProbes().getProbeGroup()){
-			GenomicRegion region = p.getRegion();
-			String seq = p.getSequence();
+			Set<Mutation> mutations = new HashSet<Mutation>();
+			GenomicSequence seq = primer == null ? p.asGenomicSequence() : p.asGenomicSequence().appendSuffix(primer);
+			this.mutate(seq, mutations);
+			if(rvsPrimer != null){
+				seq = p.asGenomicSequence().appendPrefix(rvsPrimer);
+				this.mutate(seq, mutations);
+			}
 			
+			Set<GenomicCoordinate> probeMuts = new HashSet<GenomicCoordinate>(p.getMutations());
+			GenomicSequence probeSeq = p.asGenomicSequence();
+			boolean mut = false;
+			for(Mutation m : mutations){
+				if(probeSeq.contains(m.coord)){
+					probeSeq = probeSeq.mutate(m.coord, m.base);
+					probeMuts.add(m.coord);
+					mut = true;
+				}
+			}
+			if(mut){
+				probes.add(new Probe(p, probeSeq, new ArrayList<GenomicCoordinate>(probeMuts), probeMuts.isEmpty()));
+			}else{
+				probes.add(p);
+			}
 		}
 		
-		return null;
+		return new Probes(new ProbeGroup(probes));
 	}
 	
-	protected Record mutate(String seq, GenomicRegion region){
-		
+	protected void mutate(GenomicSequence seq, Collection<Mutation> mutations){
+		int run = Constants.GRUN.length();
+		for(int i=0; i<seq.length()-run; i++){
+			if(seq.getSequence().regionMatches(true, i, Constants.GRUN, 0, run)){
+				GenomicCoordinate coord = seq.toCoordinate(i+run/2);
+				mutations.add(new Mutation(coord, 'C'));
+			}else if(seq.getSequence().regionMatches(true, i, Constants.CRUN, 0, run)){
+				GenomicCoordinate coord = seq.toCoordinate(i+run/2);
+				mutations.add(new Mutation(coord, 'G'));
+			}
+		}
 	}
 	
-	protected static class Record{
-		public final String seq;
-		public final Collection<GenomicCoordinate> mutations;
-		
-		public Record(String seq, Collection<GenomicCoordinate> mutations){
-			this.seq = seq; this.mutations = mutations;
+	protected static class Mutation{
+		public final GenomicCoordinate coord;
+		public final char base;
+		private final int m_Hash;
+		public Mutation(GenomicCoordinate coord, char base){
+			this.coord = coord; this.base = base;
+			m_Hash = new HashCodeBuilder(5, 11).append(coord).append(base).toHashCode();
+		}
+		@Override
+		public boolean equals(Object o){
+			if(o == null) return false;
+			if(o == this) return true;
+			if(o instanceof Mutation){
+				Mutation m = (Mutation) o;
+				return coord.equals(m.coord) && base == m.base;
+			}
+			return false;
+		}
+		@Override
+		public int hashCode(){
+			return m_Hash;
 		}
 	}
 

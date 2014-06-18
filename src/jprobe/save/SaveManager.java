@@ -74,6 +74,10 @@ public class SaveManager{
 			m_SaveablesLock.readLock().unlock();
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			this.notifySave(new SaveEvent(SaveEvent.Type.FAILED, saveTo));
+		} catch (Throwable t){
+			m_SaveablesLock.readLock().unlock();
+			ErrorHandler.getInstance().handleException(new RuntimeException(t), JProbeActivator.getBundle());
+			this.notifySave(new SaveEvent(SaveEvent.Type.FAILED, saveTo));
 		}
 	}
 	
@@ -88,6 +92,10 @@ public class SaveManager{
 		} catch (LoadException e) {
 			m_SaveablesLock.readLock().unlock();
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+			this.notifyLoad(new LoadEvent(Type.FAILED, loadFrom));
+		} catch (Throwable t){
+			m_SaveablesLock.readLock().unlock();
+			ErrorHandler.getInstance().handleException(new RuntimeException(t), JProbeActivator.getBundle());
 			this.notifyLoad(new LoadEvent(Type.FAILED, loadFrom));
 		}
 	}

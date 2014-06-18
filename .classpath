@@ -13,5 +13,6 @@
 			<attribute name="javadoc_location" value="jar:file:/home/tbepler/workspace/JProbe/libraries/commons-lang3-3.2.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libraries/commons-io-2.4/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

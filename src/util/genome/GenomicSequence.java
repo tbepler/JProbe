@@ -64,6 +64,10 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return (int) this.getStart().distance(coord);
 	}
 	
+	public GenomicCoordinate toCoordinate(int index){
+		return m_Region.toCoordinate(index);
+	}
+	
 	public GenomicSequence appendPrefix(String prefix){
 		GenomicCoordinate newStart = this.getStart().decrement(prefix.length());
 		String seq = prefix + m_Sequence;

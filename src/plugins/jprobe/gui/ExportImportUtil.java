@@ -115,6 +115,9 @@ public class ExportImportUtil {
 				}catch(Exception e){
 					notifyObservers(new ImportEvent(Type.FAILED, reader.getReadClass(), f));
 					ErrorHandler.getInstance().handleException(e, b);
+				}catch(Throwable t){
+					notifyObservers(new ImportEvent(Type.FAILED, reader.getReadClass(), f));
+					ErrorHandler.getInstance().handleException(new RuntimeException(t), b);
 				}
 			}
 			
@@ -167,6 +170,9 @@ public class ExportImportUtil {
 				}catch(Exception e){
 					notifyObservers(new ExportEvent(ExportEvent.Type.FAILED, dataName, f));
 					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
+				}catch(Throwable t){
+					notifyObservers(new ExportEvent(ExportEvent.Type.FAILED, dataName, f));
+					ErrorHandler.getInstance().handleException(new RuntimeException(t), GUIActivator.getBundle());
 				}
 			}
 			

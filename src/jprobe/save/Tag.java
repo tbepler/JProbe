@@ -6,9 +6,9 @@ public class Tag implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private final String m_Id;
-	private final int m_Bytes;
+	private final long m_Bytes;
 	
-	public Tag(String id, int numBytes){
+	public Tag(String id, long numBytes){
 		m_Id = id;
 		m_Bytes = numBytes;
 	}
@@ -17,7 +17,7 @@ public class Tag implements Serializable{
 		return m_Id;
 	}
 	
-	public int getNumBytes(){
+	public long getNumBytes(){
 		return m_Bytes;
 	}
 

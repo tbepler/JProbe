@@ -189,6 +189,9 @@ public class Constants {
 		"peak"
 	};
 	
+	public static final String GRUN = "ggggg";
+	public static final String CRUN = "ccccc";
+	
 	public static final String POSITIVE_INT_REGEX  = "[0-9]+";
 	
 	public static final String GENOMIC_REGION_FIELD_TOOLTIP = "A genomic region";
