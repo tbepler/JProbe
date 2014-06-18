@@ -1,17 +1,29 @@
 package util.genome.kmer;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.*;
 import java.util.Map.Entry;
 
+import util.DNAUtils;
 import util.Dictionary;
 import util.ArrayUtils;
 
-public class GappedKmer implements Kmer{
+public class GappedKmer implements Kmer, Externalizable{
 	private static final long serialVersionUID = 1L;
 	
 	private final Dictionary<String, Score> m_Words = new Dictionary<String, Score>('.');
-	private final List<String> m_WordList;
-	private final int[] m_MotifLens;
+	private List<String> m_WordList;
+	private int[] m_MotifLens;
+	
+	/**
+	 * Default constructor for deserialization purposes only.
+	 */
+	public GappedKmer(){
+		//default constructor for deserialization purposes
+	}
 	
 	GappedKmer(Map<String, Score> words, List<String> wordList){
 		m_WordList = wordList;
@@ -26,6 +38,55 @@ public class GappedKmer implements Kmer{
 		for(int len : sizes){
 			m_MotifLens[i] = len;
 			i++;
+		}
+		Arrays.sort(m_MotifLens);
+	}
+	
+	/**
+	 * Custom serialization for better efficiency
+	 */
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException{
+		//write the number of entries
+		out.writeInt(m_WordList.size());
+		//write each entry
+		for(String word : m_WordList){ 
+			out.writeObject(word);
+			Score s = getScore(word);
+			out.writeDouble(s.ESCORE);
+			out.writeDouble(s.INTENSITY);
+			out.writeDouble(s.ZSCORE);
+		}
+	}
+	
+	/**
+	 * Customs deserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException{
+		//retrieve the number of entries
+		int entries = in.readInt();
+		m_WordList = new ArrayList<String>(entries);
+		Set<Integer> lens = new HashSet<Integer>();
+		//read each entry
+		while(--entries >= 0){
+			String word = (String) in.readObject();
+			lens.add(word.length());
+			double escore = in.readDouble();
+			double intensity = in.readDouble();
+			double zscore = in.readDouble();
+			Score s = new Score(escore, intensity, zscore);
+			m_WordList.add(word);
+			m_Words.put(word, s);
+			m_Words.put(DNAUtils.reverseCompliment(word), s);
+		}
+		//initialize the length array
+		m_MotifLens = new int[lens.size()];
+		int i = 0;
+		for(int len : lens){
+			m_MotifLens[i++] = len;
 		}
 		Arrays.sort(m_MotifLens);
 	}

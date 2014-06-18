@@ -1,6 +1,7 @@
 package jprobe.save;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.Map;
 
 import org.apache.commons.io.input.BoundedInputStream;
@@ -19,7 +21,7 @@ public class SaveUtil {
 	
 	public static void save(File saveTo, Map<String,Saveable> saveables) throws SaveException{
 		try {
-			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(saveTo));
+			ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(saveTo)));
 			String tempName = ".temp";
 			File temp = new File(tempName);
 			int count = 0;
@@ -30,7 +32,7 @@ public class SaveUtil {
 			temp.createNewFile();
 			for(String tag : saveables.keySet()){
 				if(temp.canWrite() && temp.canRead()){
-					FileOutputStream tempOut = new FileOutputStream(temp);
+					OutputStream tempOut = new BufferedOutputStream( new FileOutputStream(temp));
 					long bytes = saveables.get(tag).save(tempOut);
 					tempOut.close();
 					
@@ -63,7 +65,7 @@ public class SaveUtil {
 	
 	public static void load(File loadFrom, Map<String, Saveable> saveables) throws LoadException{
 		try {
-			ObjectInputStream in = new ObjectInputStream(new FileInputStream(loadFrom));
+			ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(loadFrom)));
 			boolean finished = false;
 			while(!finished){
 				try {
