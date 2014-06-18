@@ -63,7 +63,8 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 						params.getProbeLength(),
 						params.BINDINGSITE,
 						params.WINDOWSIZE,
-						params.getEscore()
+						params.getEscore(),
+						l
 						));
 			} catch (Exception e){
 				throw e;

@@ -2,6 +2,7 @@ package chiptools.jprobe.function.bindingprofiler;
 
 import java.util.List;
 
+import util.progress.ProgressListener;
 import chiptools.Constants;
 import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.PWM;
@@ -30,12 +31,12 @@ public class BindingPWMArgument extends DataArgument<BindingProfileParams, PWM>{
 	}
 	
 	@Override
-	public void parse(BindingProfileParams params, String[] args){
+	public void parse(ProgressListener l, BindingProfileParams params, String[] args){
 		params.PWM_NAMES.clear();
 		for(String s : args){
 			params.PWM_NAMES.add(s);
 		}
-		super.parse(params, args);
+		super.parse(l, params, args);
 	}
 
 }

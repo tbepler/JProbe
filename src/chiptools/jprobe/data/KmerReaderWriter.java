@@ -3,7 +3,12 @@ package chiptools.jprobe.data;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
@@ -65,11 +70,40 @@ public class KmerReaderWriter implements DataReader, DataWriter{
 			}
 		};
 	}
+	
+	
+	private static List<String> createRows(final util.genome.kmer.Kmer kmer){
+		Collection<String> entered = new HashSet<String>();
+		List<String> rows = new ArrayList<String>();
+		for(String word : kmer){
+			if(entered.contains(word)) continue;
+			String revcomp = DNAUtils.reverseCompliment(word);
+			if(word.compareTo(revcomp) > 0){
+				rows.add(revcomp);
+			}else{
+				rows.add(word);
+			}
+			entered.add(word);
+			entered.add(revcomp);
+		}
+		Collections.sort(rows, new Comparator<String>(){
+
+			@Override
+			public int compare(String s1, String s2) {
+				double score = kmer.escore(s2) - kmer.escore(s2);
+				if(score > 0) return 1;
+				if(score < 0) return -1;
+				return 0;
+			}
+			
+		});
+		return rows;
+	}
 
 	@Override
 	public Data read(FileFilter format, InputStream in) throws Exception {
 		util.genome.kmer.Kmer kmer = util.genome.kmer.Kmers.readKmer(in);
-		return new Kmer(kmer);
+		return new Kmer(kmer, createRows(kmer));
 	}
 
 	@Override

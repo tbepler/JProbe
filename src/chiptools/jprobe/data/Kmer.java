@@ -1,64 +1,12 @@
 package chiptools.jprobe.data;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
 import util.DNAUtils;
+import util.genome.kmer.Kmer.Score;
 import jprobe.services.data.AbstractFinalData;
 
 public class Kmer extends AbstractFinalData{
 	private static final long serialVersionUID = 1L;
-	
-	private static class Row implements Comparable<Row>, Serializable{
-		private static final long serialVersionUID = 1L;
-		
-		public final String fwd;
-		public final String rvs;
-		public final double escore;
-		public final double intensity;
-		public final double zscore;
-		
-		public Row(String fwd, String rvs, double escore, double intensity, double zscore){
-			this.fwd = fwd;
-			this.rvs = rvs;
-			this.escore = escore;
-			this.intensity = intensity;
-			this.zscore = zscore;
-		}
-		
-		@Override
-		public int compareTo(Row o) {
-			if(o.escore > this.escore){
-				return 1;
-			}
-			if(o.escore < this.escore){
-				return -1;
-			}
-			return 0;
-		}
-		
-	}
-	
-	private static List<Row> getRows(util.genome.kmer.Kmer kmer){
-		Collection<String> entered = new HashSet<String>();
-		Queue<Row> rows = new PriorityQueue<Row>();
-		for(String word : kmer){
-			if(entered.contains(word)) continue;
-			String revcomp = DNAUtils.reverseCompliment(word);
-			entered.add(word);
-			entered.add(revcomp);
-			double escore = kmer.escore(word);
-			double intensity = kmer.intensity(word);
-			double zscore = kmer.zscore(word);
-			rows.add(new Row(word, revcomp, escore, intensity, zscore));
-		}
-		return new ArrayList<Row>(rows);
-	}
 	
 	private static final int FWD = 0;
 	private static final int RVS = 1;
@@ -67,12 +15,12 @@ public class Kmer extends AbstractFinalData{
 	private static final int ZSCORE = 4;
 	
 	private final util.genome.kmer.Kmer m_Kmer;
-	private final List<Row> m_Rows;
+	private final List<String> m_Rows;
 	
-	public Kmer(util.genome.kmer.Kmer kmer){
-		super(5, getRows(kmer).size());
+	public Kmer(util.genome.kmer.Kmer kmer, List<String> rows){
+		super(5, rows.size());
 		m_Kmer = kmer;
-		m_Rows = getRows(kmer);
+		m_Rows = rows;
 
 	}
 	
@@ -84,8 +32,10 @@ public class Kmer extends AbstractFinalData{
 	public String toString(){
 		String s = "";
 		for(int row=0; row<m_Rows.size(); row++){
-			Row r = m_Rows.get(row);
-			s += r.fwd + "\t" + r.rvs + "\t" + r.escore + "\t" + r.intensity + "\t" + r.zscore;
+			String fwd = m_Rows.get(row);
+			String rvs = DNAUtils.reverseCompliment(fwd);
+			Score score = m_Kmer.getScore(fwd);
+			s += fwd + "\t" + rvs + "\t" + score.ESCORE + "\t" + score.INTENSITY + "\t" + score.ZSCORE;
 			s += "\n";
 		}
 		return s;
@@ -117,13 +67,13 @@ public class Kmer extends AbstractFinalData{
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Row r = m_Rows.get(rowIndex);
+		String fwd = m_Rows.get(rowIndex);
 		switch(columnIndex){
-		case FWD: return r.fwd;
-		case RVS: return r.rvs;
-		case ESCORE: return r.escore;
-		case INTENSITY: return r.intensity;
-		case ZSCORE: return r.zscore;
+		case FWD: return fwd;
+		case RVS: return DNAUtils.reverseCompliment(fwd);
+		case ESCORE: return m_Kmer.escore(fwd);
+		case INTENSITY: return m_Kmer.intensity(fwd);
+		case ZSCORE: return m_Kmer.zscore(fwd);
 		default: return null;
 		}
 	}
