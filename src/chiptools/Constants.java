@@ -113,11 +113,13 @@ public class Constants {
 		String line;
 		try {
 			while((line = reader.readLine()) != null){
-				String[] tokens = line.split("\t");
-				Class<?> clazz = Class.forName(tokens[CLAZZ]);
-				swap(tokens, 2, FLAG);
-				swap(tokens, 3, PROTOTYPE);
-				map.put(clazz, tokens);
+				if(!line.equals("")){
+					String[] tokens = line.split("\t");
+					Class<?> clazz = Class.forName(tokens[CLAZZ]);
+					swap(tokens, 2, FLAG);
+					swap(tokens, 3, PROTOTYPE);
+					map.put(clazz, tokens);
+				}
 			}
 			reader.close();
 		} catch (Exception e) {
@@ -191,6 +193,8 @@ public class Constants {
 	
 	public static final String GRUN = "ggggg";
 	public static final String CRUN = "ccccc";
+	
+	public static final String NEG_CTRL_PROBE_NAME = "NegativeCtrl";
 	
 	public static final String POSITIVE_INT_REGEX  = "[0-9]+";
 	

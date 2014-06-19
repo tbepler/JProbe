@@ -120,6 +120,31 @@ public class Peak implements Serializable{
 		m_PointSource = pointSource;
 	}
 	
+	public Peak aroundSummit(int summitRegion){
+		if(summitRegion < 0){
+			throw new RuntimeException("Summit region must be non-negative");
+		}
+		GenomicCoordinate center;
+		if(m_PointSource >= 0){
+			center = m_Region.getStart().increment(m_PointSource);
+		}else{
+			center = m_Region.getStart().increment((int)m_Region.getSize()/2);
+		}
+		long startIndex = Math.max(1, center.getBaseIndex() - summitRegion);
+		GenomicCoordinate start = new GenomicCoordinate(center.getChromosome(), startIndex);
+		GenomicCoordinate end = center.increment(summitRegion);
+		return new Peak(
+				new GenomicRegion(start, end),
+				this.getName(),
+				this.getScore(),
+				this.getStrand(),
+				this.getSignalVal(),
+				this.getPVal(),
+				this.getQVal(),
+				this.getPointSource()
+				);
+	}
+	
 	@Override
 	public String toString(){
 		return this.getChrom() + "\t" + this.getChromStart() + "\t" + this.getChromEnd() + "\t" +m_Name + "\t" +m_Score + "\t" +m_Strand + "\t" +m_SignalVal

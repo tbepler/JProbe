@@ -38,6 +38,14 @@ public class PeakGroup implements Serializable, Iterable<Peak>{
 		return builder.toHashCode();
 	}
 	
+	public PeakGroup aroundSummit(int summitRegion){
+		List<Peak> peaks = new ArrayList<Peak>();
+		for(Peak p : this){
+			peaks.add(p.aroundSummit(summitRegion));
+		}
+		return new PeakGroup(peaks);
+	}
+	
 	@Override
 	public int hashCode(){
 		return m_Hash;

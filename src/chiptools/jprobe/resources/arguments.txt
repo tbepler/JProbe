@@ -4,7 +4,7 @@ chiptools.jprobe.function.args.SummitArgument	Summit	s	INT	Summit	Bases on eithe
 chiptools.jprobe.function.args.PeakSeqsArgument	PeakSeqs	p	FILE	Data	ChIP-seq peaks with genomic DNA sequences
 chiptools.jprobe.function.args.KmerArgument	KMers	k	FILE	Data	Gapped or ungapped Kmer data for factor of interest
 chiptools.jprobe.function.args.PWMArgument	PWM	m	FILE	Data	Position weight matrix for factor of interest
-chiptools.jprobe.function.args.ProbeLengthArgument	ProbeLength	l	INT{default=36}	Length	Length of probes to be generated, default=36
+chiptools.jprobe.function.args.ProbeLengthArgument	ProbeLength	l	INT{default=36}	Probes	Length of probes to be generated, default=36
 chiptools.jprobe.function.probegenerator.BindingSiteArgument	BindingSite	b	INT{default=9}	Binding Sites	Size of the region that must be spanned by kmers meeting the minimum e-score, default=9
 chiptools.jprobe.function.probegenerator.WindowSizeArgument	Window	w	INT{default=3}	Binding Sites	Number of bases on either side of putative binding site to be scanned with the PWM, default=3
 chiptools.jprobe.function.args.EscoreArgument	Escore	e	ESCORE	E-scores	E-score value between -0.5 and 0.5
@@ -41,3 +41,10 @@ chiptools.jprobe.function.peakfilter.MinQValArg	MinQValue		QVAL	Q-value	This arg
 chiptools.jprobe.function.peakfilter.MaxQValArg	MaxQValue		QVAL	Q-value	This argument specifies the maximum q-value of peaks to be kept. All peaks with q-value above this value will be removed
 chiptools.jprobe.function.peakfilter.MinPValArg	MinPValue		PVAL	P-value	This argument specifies the minimum p-value of peaks to be kept. All peaks with p-value below this value will be removed
 chiptools.jprobe.function.peakfilter.MaxPValArg	MaxPValue		PVAL	P-value	This argument specifies the maximum p-value of peaks to be kept. All peaks with p-value above this value will be removed
+chiptools.jprobe.function.negativecontrolgen.IncludePeaksArg	IncludePeaks	p	PEAKS	Peaks	Genomic regions that will be considered for generating negative control probes. At least one set of regions must be provided.
+chiptools.jprobe.function.negativecontrolgen.ExcludePeaksArg	ExcludePeaks	r	PEAKS	Peaks	Genomic regions that will be excluded from consideration when generating negative control probes. In other words, the included peaks will be filtered such that only regions that do not overlap any of the excluded regions are considered. Default=off
+chiptools.jprobe.function.negativecontrolgen.KmerListArgument	Kmers	k	KMERS	Kmers	Kmers used to ensure that probes have no good binding sites. Only probes with no kmers above the e-score threshold will be generated. Default=off
+chiptools.jprobe.function.negativecontrolgen.NumberArg	Num	n	INT	Probes	The number of negative control probes to generate
+
+
+

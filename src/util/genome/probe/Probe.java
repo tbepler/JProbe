@@ -176,6 +176,10 @@ public class Probe implements Serializable, Comparable<Probe>{
 	public Probe(String seq, String name){
 		this(seq, null, new GenomicRegion[]{}, name);
 	}
+	
+	public Probe(GenomicSequence seq, String name){
+		this(seq, new GenomicRegion[]{}, name);
+	}
 
 	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, boolean mutant){
 		this(seq, region, bindingSites, null, Strand.UNKNOWN, mutant);
