@@ -15,9 +15,9 @@ import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 import util.genome.Chromosome;
 import util.genome.GenomicCoordinate;
-import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.kmer.Kmer;
+import util.genome.kmer.Kmers;
 import util.genome.peak.Peak;
 import util.genome.peak.PeakGroup;
 import util.genome.peak.PeakSequence;
@@ -68,7 +68,6 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 		final Map<Chromosome, List<Peak>> exclude = buildPeakMap(params.getExcludePeaks(), params.getSummit());
 		//filter the include PeakGroup such that no peaks overlap with peaks in the exlude group
 		l.update(new ProgressEvent(this, Type.UPDATE, "Filtering regions..."));
-		
 		include = PeakUtils.filter(include, new Filter(){
 
 			@Override
@@ -90,11 +89,21 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 		GenomeReader reader = GenomeReaderFactory.createGenomeReader(params.getGenomeFile(), l);
 		PeakSequenceGroup peakSeqs = PeakSequenceGroup.readFromGenome(reader, include);
 		
+		Kmer kmer;
+		if(params.getKmers().size() > 1){
+			l.update(new ProgressEvent(this, Type.UPDATE, "Combining kmers..."));
+			kmer = Kmers.combine(toUtilKmer(params.getKmers()));
+		}else if(params.getKmers().size() > 0){
+			kmer = toUtilKmer(params.getKmers()).get(0);
+		}else{
+			kmer = null;
+		}
+		
 		//generate probes
 		l.update(new ProgressEvent(this, Type.UPDATE, "Generating probes..."));
 		ProbeGroup probes = generateProbes(
 				peakSeqs,
-				toUtilKmer(params.getKmers()),
+				kmer,
 				params.getEscore(),
 				params.getProbeLength(),
 				params.getNumPeaks()
@@ -104,34 +113,36 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 		
 	}
 	
-	private static ProbeGroup generateProbes(PeakSequenceGroup peakSeqs, List<Kmer> kmers, double escore, int length){
+	private static ProbeGroup generateProbes(PeakSequenceGroup peakSeqs, Kmer kmer, double escore, int length){
 		List<Probe> probes = new ArrayList<Probe>();
 		for(PeakSequence peakSeq : peakSeqs){
-			GenomicRegion region = new GenomicRegion(peakSeq.getStart(), peakSeq.getStart().increment(length - 1));
+			GenomicCoordinate start = peakSeq.getStart();
 			//iterate over every subregion of the peak sequence of size = length
-			while(peakSeq.getRegion().contains(region)){
+			while(start.getBaseIndex() + length - 1 <= peakSeq.getRegion().getEnd().getBaseIndex()){
 				String name = peakSeq.getName() + "_" + Constants.NEG_CTRL_PROBE_NAME + (probes.size()+1);
 				Probe p = createProbe(
-						peakSeq.getGenomicSequence().subsequence(region),
+						peakSeq.getGenomicSequence(),
+						start,
+						length,
 						name,
-						kmers,
+						kmer,
 						escore
 						);
 				if(p != null){
 					probes.add(p);
-					region = region.increment(length);
+					start = start.increment(length);
 				}else{
 					//increment by length/2 for better efficiency
-					region = region.increment(length/2);
+					start = start.increment(length/2);
 				}
 			}
 		}
 		return new ProbeGroup(probes);
 	}
 	
-	private static ProbeGroup generateProbes(PeakSequenceGroup peakSeqs, List<Kmer> kmers, double escore, int length, int num){
+	private static ProbeGroup generateProbes(PeakSequenceGroup peakSeqs, Kmer kmer, double escore, int length, int num){
 		if(num < 0){
-			return generateProbes(peakSeqs, kmers, escore, length);
+			return generateProbes(peakSeqs, kmer, escore, length);
 		}
 		List<Probe> probes = new ArrayList<Probe>();
 		Random r = new Random();
@@ -162,7 +173,7 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 			if(seqsRemaining.get(curChrom) > 0){
 				processSequence(
 						probes,
-						kmers,
+						kmer,
 						escore,
 						length,
 						lastCoord,
@@ -190,7 +201,7 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 
 	private static void processSequence(
 			List<Probe> probes,
-			List<Kmer> kmers,
+			Kmer kmer,
 			double escore,
 			int length,
 			Map<PeakSequence, GenomicCoordinate> lastCoord,
@@ -216,59 +227,59 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 				startCoord = seq.getStart();
 			}
 			//create the search region
-			GenomicRegion region = new GenomicRegion(startCoord, startCoord.increment(length-1));
 			boolean proceed = false;
 			while(!proceed){
 				//check that the region is fully contained by the sequence
-				if(!seq.contains(region)){
+				if(startCoord.getBaseIndex() + length - 1 > seq.getRegion().getEnd().getBaseIndex()){
 					//swap this peak to the last sequence position, and decrement the number of sequences remaining
 					PeakSequence last = curSeqs.get(numSeqs - 1);
 					curSeqs.set(numSeqs - 1, peakSeq);
 					curSeqs.set(peakIndex, last);
 					seqsRemaining.put(curChrom, numSeqs - 1);
 					//flag peak sequence as fully searched and terminate loop
-					lastCoord.put(peakSeq, region.getStart());
+					lastCoord.put(peakSeq, startCoord);
 					fullySearched.add(peakSeq);
 					proceed = true;
 				}else{
 					//check the region location and generate a probe or increment the region
 					String name = peakSeq.getName() + "_" + Constants.NEG_CTRL_PROBE_NAME + (probes.size()+1);
-					Probe p = createProbe(seq.subsequence(region), name, kmers, escore);
+					Probe p = createProbe(seq, startCoord, length, name, kmer, escore);
 					if(p != null){
 						probes.add(p);
-						lastCoord.put(peakSeq, region.getEnd().increment(1));
+						lastCoord.put(peakSeq, startCoord.increment(length));
 						proceed = true;
 					}else{
-						region = region.increment(1);
+						startCoord = startCoord.increment(1);
 					}
 				}
 			}
 		}
 	}
 	
-	private static Probe createProbe(GenomicSequence seq, String name, List<Kmer> kmers, double escore){
-		for(Kmer kmer : kmers){
+	private static Probe createProbe(GenomicSequence seq, GenomicCoordinate start, int len, String name, Kmer kmer, double escore){
+		if(kmer != null){
 			for(int wordLen : kmer.getWordLengths()){
-				for(String subseq : getSubseqs(wordLen, seq.getSequence())){
-					try{
-						if(kmer.escore(subseq) > escore){
-							return null;
-						}
-					}catch(Exception e){
-						return null;
-					}
+				if(!subseqsMeetScoreThreshold(seq.getSequence(), seq.toIndex(start), len, wordLen, kmer, escore)){
+					return null;
 				}
 			}
 		}
-		return new Probe(seq, name);
+		return new Probe(seq.subsequence(start, start.increment(len - 1)), name);
 	}
 	
-	private static Collection<String> getSubseqs(int len, String seq){
-		Collection<String> strs = new HashSet<String>();
-		for(int i=0; i<seq.length() - len; i++){
-			strs.add(seq.substring(i, i+len));
+	private static boolean subseqsMeetScoreThreshold(String seq, int start, int len, int subseqLen, Kmer kmer, double escore){
+		for(int i=start; i<start + len - subseqLen; i++){
+			String subseq = seq.substring(i, i+subseqLen);
+			try{
+				if(kmer.escore(subseq) > escore){
+					return false;
+				}
+			}catch(Exception e){
+				//the subseq contained unrecognized characters -- return false
+				return false;
+			}
 		}
-		return strs;
+		return true;
 	}
 	
 	private static List<Kmer> toUtilKmer(List<chiptools.jprobe.data.Kmer> kmers){

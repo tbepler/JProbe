@@ -79,7 +79,7 @@ public abstract class ChromsArg<P> extends ChiptoolsTextArg<P> {
 		String[] tokens = s.split(SEP);
 		for(String token : tokens){
 			if(token != null && !token.equals("")){
-				Chromosome chr = new Chromosome(token.trim());
+				Chromosome chr = Chromosome.getInstance(token.trim());
 				chroms.add(chr);
 			}
 		}

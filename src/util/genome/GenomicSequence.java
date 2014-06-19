@@ -29,6 +29,10 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return new HashCodeBuilder(439, 61).append(m_Region).append(m_Sequence).toHashCode();
 	}
 	
+	public int toIndex(GenomicCoordinate c){
+		return m_Region.toIndex(c);
+	}
+	
 	public GenomicSequence join(GenomicSequence other){
 		if(!m_Region.adjacentTo(other.getRegion()) && !m_Region.overlaps(other.getRegion())){
 			throw new RuntimeException("Cannot join two GenomicSequences that are not overlapping or adjacent");
@@ -293,9 +297,10 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 
 	@Override
 	public int compareTo(GenomicSequence o) {
-		if(!m_Region.equals(o.m_Region)){
-			return m_Region.compareTo(o.m_Region);
-		}
+		if(this == o) return 0;
+		if(o == null) return -1;
+		int regionComp = m_Region.compareTo(o.m_Region);
+		if(regionComp != 0) return regionComp;
 		return m_Sequence.compareTo(o.m_Sequence);
 	}
 

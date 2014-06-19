@@ -31,6 +31,9 @@ public class SequenceQueryProcessor implements QueryProcessor{
 	}
 	
 	private void process(SequenceQuery query){
+		if(done()){
+			return;
+		}
 		//get starting search location
 		GenomicCoordinate startFrom;
 		if(m_ProcessedTo.containsKey(query)){

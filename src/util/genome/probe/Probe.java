@@ -226,7 +226,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 	}
 	
 	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, List<GenomicCoordinate> mutations, String name, Strand strand, boolean mutant){
-		GenomicRegion r = region != null ? region : new GenomicRegion(new Chromosome("0"), 1, seq.length());
+		GenomicRegion r = region != null ? region : new GenomicRegion(Chromosome.getInstance("0"), 1, seq.length());
 		m_Seq = new GenomicSequence(seq, r);
 		m_BindingSites = bindingSites == null ? new GenomicRegion[]{} : Arrays.copyOf(bindingSites, bindingSites.length);
 		m_Mutations = new ArrayList<GenomicCoordinate>(mutations);

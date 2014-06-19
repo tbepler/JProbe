@@ -33,7 +33,7 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 	public static GenomicCoordinate parseString(String s) throws ParsingException{
 		try{
 			String chr = s.substring(0, s.indexOf(SEP));
-			Chromosome c = new Chromosome(chr);
+			Chromosome c = Chromosome.getInstance(chr);
 			long baseIndex = Long.parseLong(s.substring(s.indexOf(SEP)+1));
 			return new GenomicCoordinate(c, baseIndex);
 		} catch (Exception e){
@@ -56,7 +56,7 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 	}
 	
 	public GenomicCoordinate(String chrom, long baseIndex){
-		this(new Chromosome(chrom), baseIndex);
+		this(Chromosome.getInstance(chrom), baseIndex);
 	}
 	
 	private int computeHash(){
@@ -126,6 +126,7 @@ public class GenomicCoordinate implements Comparable<GenomicCoordinate>, Seriali
 
 	@Override
 	public int compareTo(GenomicCoordinate o) {
+		if(o == this) return 0;
 		if(o == null) return -1;
 		return this.naturalCompareTo(o);
 	}

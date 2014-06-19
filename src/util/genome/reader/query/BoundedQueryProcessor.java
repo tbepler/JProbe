@@ -13,6 +13,8 @@ public class BoundedQueryProcessor implements QueryProcessor{
 	private final Queue<LocationBoundedSequenceQuery> m_Active;
 	private final Map<LocationBoundedSequenceQuery, GenomicCoordinate> m_ProcessedTo; 
 	private GenomicSequence m_Seq;
+	private Chromosome m_CurChrom;
+	private Queue<LocationBoundedSequenceQuery> m_CurQueries;
 	
 	public BoundedQueryProcessor(List<LocationBoundedSequenceQuery> queries){
 		for(LocationBoundedSequenceQuery q : queries){
@@ -28,6 +30,8 @@ public class BoundedQueryProcessor implements QueryProcessor{
 		m_Active = new PriorityQueue<LocationBoundedSequenceQuery>(10, LocationBoundedSequenceQuery.END_COMPARATOR);
 		m_ProcessedTo = new HashMap<LocationBoundedSequenceQuery, GenomicCoordinate>();
 		m_Seq = null;
+		m_CurChrom = null;
+		m_CurQueries = null;
 	}
 	
 	private int longestQuery(){
@@ -76,6 +80,9 @@ public class BoundedQueryProcessor implements QueryProcessor{
 	
 	@Override
 	public void process(GenomicSequence next) {
+		if(done()){
+			return;
+		}
 		//update the current sequence with the new sequence
 		if(m_Seq == null){
 			m_Seq = next;
@@ -88,10 +95,14 @@ public class BoundedQueryProcessor implements QueryProcessor{
 		}
 		//move remaining queries that start in sequence to active queries
 		Chromosome chrom = m_Seq.getChromosome();
-		if(m_Remaining.containsKey(chrom)){
-			Queue<LocationBoundedSequenceQuery> queue = m_Remaining.get(chrom);
-			while(!queue.isEmpty() && m_Seq.contains(queue.peek().getStart())){
-				LocationBoundedSequenceQuery query = queue.poll();
+		if(!chrom.equals(m_CurChrom)){
+			m_CurChrom = chrom;
+			m_CurQueries = m_Remaining.get(m_CurChrom);
+			m_Remaining.remove(m_CurChrom);
+		}
+		if(m_CurQueries != null){
+			while(!m_CurQueries.isEmpty() && m_Seq.contains(m_CurQueries.peek().getStart())){
+				LocationBoundedSequenceQuery query = m_CurQueries.poll();
 				m_Active.add(query);
 			}
 		}

@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
+
+import util.Timer;
 import util.genome.Chromosome;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
@@ -16,6 +18,7 @@ import util.genome.reader.query.BoundedQueryProcessor;
 import util.genome.reader.query.LocationBoundedSequenceQuery;
 import util.genome.reader.query.LocationQuery;
 import util.genome.reader.query.LocationQueryProcessor;
+import util.genome.reader.query.QueryProcessor;
 import util.genome.reader.query.SequenceQuery;
 import util.genome.reader.query.SequenceQueryProcessor;
 import util.progress.ProgressEvent;
@@ -49,7 +52,7 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 	}
 	
 	protected void notifyCompleted(){
-		this.notifyListeners(new ProgressEvent(this, Type.COMPLETED));
+		this.notifyListeners(new ProgressEvent(this, Type.COMPLETED, "Reading "+m_GenomeFile.getName()+" completed"));
 	}
 	
 	@Override
@@ -63,36 +66,46 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 			GenomicCoordinate seqStart = null;
 			String line;
 			try {
-				while((line = reader.readLine()) != null){
+				while((line = reader.readLine()) != null && !done(locationProcessor, sequenceProcessor, boundedProcessor)){
 					if(line.startsWith(">")){
 						//new chromosome reached
-						Chromosome chrom = new Chromosome(line);
+//						if(seqStart != null){
+//							Timer.stop(seqStart.getChromosome());
+//							System.err.println(Timer.report(seqStart.getChromosome()));
+//						}
+						Chromosome chrom = Chromosome.getInstance(line);
+						Timer.start(chrom);
 						seqStart = new GenomicCoordinate(chrom, 1);
 						this.notifyReadProgress(seqStart.getChromosome());
-						continue;
+					}else{
+						GenomicSequence seq = new GenomicSequence(line, new GenomicRegion(seqStart, seqStart.increment(line.length()-1)));
+						locationProcessor.process(seq);
+						sequenceProcessor.process(seq);
+						boundedProcessor.process(seq);
+						seqStart = seq.getEnd().increment(1);
 					}
-					GenomicSequence seq = new GenomicSequence(line, new GenomicRegion(seqStart, seqStart.increment(line.length()-1)));
-					locationProcessor.process(seq);
-					sequenceProcessor.process(seq);
-					boundedProcessor.process(seq);
-					seqStart = seq.getEnd().increment(1);
 				}
-			} catch (IOException e) {
-				//do nothing
-			}
-			this.notifyCompleted();
-			try {
 				reader.close();
 			} catch (IOException e) {
 				//do nothing
 			}
+//			if(seqStart != null){
+//				Timer.stop(seqStart.getChromosome());
+//				System.err.println(Timer.report(seqStart.getChromosome()));
+//			}
+			this.notifyCompleted();
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 		
 	}
 
-	
+	private static boolean done(QueryProcessor ... processors){
+		for(QueryProcessor p : processors){
+			if(!p.done()) return false;
+		}
+		return true;
+	}
 	
 	
 	

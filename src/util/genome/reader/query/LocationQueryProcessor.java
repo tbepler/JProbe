@@ -17,6 +17,8 @@ public class LocationQueryProcessor implements QueryProcessor{
 	private final Queue<LocationQuery> m_Active;
 	private final TreeSet<LocationQuery> m_ActiveStarts;
 	private GenomicSequence m_Seq;
+	private Chromosome m_CurChrom = null;
+	private Queue<LocationQuery> m_CurQueries = null;
 	
 	public LocationQueryProcessor(List<LocationQuery> queries){
 		for(LocationQuery q : queries){
@@ -32,6 +34,7 @@ public class LocationQueryProcessor implements QueryProcessor{
 		m_Active = new PriorityQueue<LocationQuery>(10, LocationQuery.END_COMPARATOR);
 		m_ActiveStarts = new TreeSet<LocationQuery>(LocationQuery.START_COMPARATOR);
 		m_Seq = null;
+		m_CurQueries = null;
 	}
 	
 	private GenomicCoordinate getFirstActiveStart(){
@@ -40,6 +43,9 @@ public class LocationQueryProcessor implements QueryProcessor{
 	
 	@Override
 	public void process(GenomicSequence next) {
+		if(done()){
+			return;
+		}
 		if(m_Seq == null){
 			m_Seq = next;
 		}else if(!next.getChromosome().equals(m_Seq.getChromosome())){
@@ -49,12 +55,18 @@ public class LocationQueryProcessor implements QueryProcessor{
 		}else{
 			m_Seq = m_Seq.join(next);
 		}
-		//move queries that start in the region to the active queries q
 		Chromosome chrom = m_Seq.getChromosome();
-		if(m_Remaining.containsKey(chrom)){
-			Queue<LocationQuery> queries = m_Remaining.get(chrom);
-			while(!queries.isEmpty() && m_Seq.contains(queries.peek().getStart())){
-				LocationQuery cur = queries.poll();
+		//update the current chromosome and queries to the new chromosome if it has changed
+		if(!chrom.equals(m_CurChrom)){
+			m_CurChrom = chrom;
+			m_CurQueries = m_Remaining.get(m_CurChrom);
+			//System.err.println(m_CurQueries.size() + " queries");
+			m_Remaining.remove(m_CurChrom);
+		}
+		//move queries that start in the region to the active queries q
+		if(m_CurQueries != null){
+			while(!m_CurQueries.isEmpty() && m_Seq.contains(m_CurQueries.peek().getStart())){
+				LocationQuery cur = m_CurQueries.poll();
 				m_Active.add(cur);
 				m_ActiveStarts.add(cur);
 			}

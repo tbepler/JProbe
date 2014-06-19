@@ -82,7 +82,7 @@ public class Peak implements Serializable{
 	}
 	
 	public Peak(String chrom, long chromStart, long chromEnd, Map<String, Object> optionalParams){
-		Chromosome chr = new Chromosome(chrom);
+		Chromosome chr = Chromosome.getInstance(chrom);
 		m_Region = new GenomicRegion(new GenomicCoordinate(chr, chromStart), new GenomicCoordinate(chr, chromEnd));
 		m_SignalVal = optionalParams.containsKey(SIGNAL_VAL) && optionalParams.get(SIGNAL_VAL) instanceof Double ? (Double)optionalParams.get(SIGNAL_VAL) : DEFAULT_SIGNAL_VAL;
 		m_Name = optionalParams.containsKey(NAME) && optionalParams.get(NAME) instanceof String ? (String)optionalParams.get(NAME) : DEFAULT_NAME;
@@ -109,7 +109,7 @@ public class Peak implements Serializable{
 	public Peak(String chrom, long chromStart, long chromEnd,
 			String name, int score, Strand strand, double signalVal,
 			double pVal, double qVal, int pointSource) {
-		Chromosome chr = new Chromosome(chrom);
+		Chromosome chr = Chromosome.getInstance(chrom);
 		m_Region = new GenomicRegion(new GenomicCoordinate(chr, chromStart), new GenomicCoordinate(chr, chromEnd));
 		m_Name = name;
 		m_Score = score;

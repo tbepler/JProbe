@@ -64,7 +64,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable, I
 	public static GenomicRegion parseString(String s) throws ParsingException{
 		s = s.trim();
 		try{
-			Chromosome chr = new Chromosome(s.substring(0,s.indexOf(CHR_SEP)));
+			Chromosome chr = Chromosome.getInstance(s.substring(0,s.indexOf(CHR_SEP)));
 			long start = Long.parseLong(s.substring(s.indexOf(CHR_SEP)+1, s.indexOf(LOC_SEP)));
 			long end = Long.parseLong(s.substring(s.indexOf(LOC_SEP)+1));
 			return new GenomicRegion(new GenomicCoordinate(chr, start), new GenomicCoordinate(chr, end));
@@ -268,6 +268,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable, I
 	}
 	
 	protected int compareByEnd(GenomicRegion o){
+		if(this == o) return 0;
 		if(o == null) return -1;
 		int endComp = m_End.compareTo(o.m_End);
 		if(endComp != 0) return endComp;
@@ -275,6 +276,7 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable, I
 	}
 	
 	protected int compareByStart(GenomicRegion o){
+		if(this == o) return 0;
 		if(o == null) return -1;
 		int startComp = m_Start.compareTo(o.m_Start);
 		if(startComp != 0) return startComp;

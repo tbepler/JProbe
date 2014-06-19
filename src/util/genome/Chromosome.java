@@ -2,6 +2,8 @@ package util.genome;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -29,18 +31,33 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 	public static final String CHR_TAG = "chr";
 	public static final String FASTA_CHR_TAG = ">"+CHR_TAG;
 	
+	private static final Map<String, Chromosome> m_IdMap = new HashMap<String, Chromosome>();
+	
 	private final String m_Id;
 	private final int m_HashCode;
 	
-	public Chromosome(String id){
-		if(id.startsWith(CHR_TAG)){
-			m_Id = id.substring(CHR_TAG.length()).trim();
-		}else if(id.startsWith(FASTA_CHR_TAG)){
-			m_Id = id.substring(FASTA_CHR_TAG.length()).trim();
-		}else{
-			m_Id = id.trim();
-		}
+	private Chromosome(String id){
+		m_Id = id;
 		m_HashCode = new HashCodeBuilder(947, 569).append(m_Id).toHashCode();
+	}
+	
+	private static String processId(String id){
+		if(id.startsWith(CHR_TAG)){
+			id = id.substring(CHR_TAG.length()).trim();
+		}else if(id.startsWith(FASTA_CHR_TAG)){
+			id = id.substring(FASTA_CHR_TAG.length()).trim();
+		}else{
+			id = id.trim();
+		}
+		return id;
+	}
+	
+	public static Chromosome getInstance(String id){
+		id = processId(id);
+		if(m_IdMap.containsKey(id)) return m_IdMap.get(id);
+		Chromosome c = new Chromosome(id);
+		m_IdMap.put(id, c);
+		return c;
 	}
 	
 	public String getId(){
@@ -59,8 +76,12 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 	
 	@Override
 	public boolean equals(Object o){
-		if(o == null) return false;
-		if(this == o) return true;
+		if(o == null){
+			return false;
+		}
+		if(this == o){
+			return true;
+		}
 		if(o instanceof Chromosome){
 			Chromosome other = (Chromosome) o;
 			return m_Id.equals(other.m_Id);
@@ -89,7 +110,12 @@ public class Chromosome implements Comparable<Chromosome>, Serializable{
 
 	@Override
 	public int compareTo(Chromosome o) {
-		if(o == null) return -1;
+		if(this == o){
+			return 0;
+		}
+		if(o == null){
+			return -1;
+		}
 		return this.naturalCompareTo(o);
 	}
 	
