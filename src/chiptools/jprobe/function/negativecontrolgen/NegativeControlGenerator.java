@@ -130,6 +130,7 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 						);
 				if(p != null){
 					probes.add(p);
+					//System.err.println("Probe count = "+probes.size());
 					start = start.increment(length);
 				}else{
 					//increment by length/2 for better efficiency
