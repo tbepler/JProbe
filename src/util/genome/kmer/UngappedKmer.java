@@ -1,12 +1,18 @@
 package util.genome.kmer;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.*;
 
-public class UngappedKmer implements Kmer{
+import util.DNAUtils;
+
+public class UngappedKmer implements Kmer, Externalizable{
 	private static final long serialVersionUID = 1L;
 	
-	private final Map<String, Score> m_Words;
-	private final List<String> m_WordList;
+	private Map<String, Score> m_Words;
+	private List<String> m_WordList;
 	private final Collection<Integer> m_WordLens = new HashSet<Integer>();
 
 	UngappedKmer(Map<String, Score> words, List<String> wordList){
@@ -221,6 +227,46 @@ public class UngappedKmer implements Kmer{
 	@Override
 	public String getWord(int index) {
 		return m_WordList.get(index);
+	}
+	
+	/**
+	 * Custom deserialization
+	 */
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		//read number of entries
+		int entries = in.readInt();
+		m_WordList = new ArrayList<String>(entries);
+		m_Words = new HashMap<String, Score>(entries*2);
+		//read each entry
+		while(--entries >= 0){
+			String word = (String) in.readObject();
+			m_WordLens.add(word.length());
+			double escore = in.readDouble();
+			double intensity = in.readDouble();
+			double zscore = in.readDouble();
+			Score s = new Score(escore, intensity, zscore);
+			m_WordList.add(word);
+			m_Words.put(word, s);
+			m_Words.put(DNAUtils.reverseCompliment(word), s);
+		}
+	}
+	
+	/**
+	 * Custom serialization for better space efficiency
+	 */
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		//write number of entries
+		out.writeInt(m_WordList.size());
+		//write each entry
+		for(String word : m_WordList){
+			out.writeObject(word);
+			Score s = getScore(word);
+			out.writeDouble(s.ESCORE);
+			out.writeDouble(s.INTENSITY);
+			out.writeDouble(s.ZSCORE);
+		}
 	}
 	
 	

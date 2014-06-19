@@ -60,7 +60,7 @@ public class GappedKmer implements Kmer, Externalizable{
 	}
 	
 	/**
-	 * Customs deserialization
+	 * Custom deserialization
 	 * @param in
 	 * @throws IOException
 	 * @throws ClassNotFoundException
