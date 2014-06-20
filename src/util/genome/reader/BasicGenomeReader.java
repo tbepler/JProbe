@@ -40,13 +40,30 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 		m_GenomeFile = genomeFile;
 	}
 	
-	protected void notifyReadProgress(Chromosome chr){
+	protected int notifyReadProgress(Chromosome chr, int progress, int maxProgress, int prevPercent){
+		int percent = 100*progress/maxProgress;
+		if(percent != prevPercent){
+			this.notifyListeners(
+					new ProgressEvent(
+							this,
+							Type.UPDATE,
+							progress,
+							maxProgress,
+							"Reading "+m_GenomeFile.getName()+": "+chr
+							)
+					);
+		}
+		return percent;
+	}
+	
+	protected void notifyNewChromosome(Chromosome chr, int progress, int maxProgress){
 		this.notifyListeners(
 				new ProgressEvent(
 						this,
 						Type.UPDATE,
-						"Reading "+m_GenomeFile.getName()+": "+chr,
-						true
+						progress,
+						maxProgress,
+						"Reading "+m_GenomeFile.getName()+": "+chr
 						)
 				);
 	}
@@ -60,6 +77,10 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 		LocationQueryProcessor locationProcessor = new LocationQueryProcessor(locationQueries);
 		SequenceQueryProcessor sequenceProcessor = new SequenceQueryProcessor(sequenceQueries);
 		BoundedQueryProcessor boundedProcessor = new BoundedQueryProcessor(boundedQueries);
+		
+		int totalQueries = locationQueries.size() + sequenceQueries.size() + boundedQueries.size();
+		int queriesProcessed = 0;
+		int percentProcessed = -1;
 		
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(m_GenomeFile)));
@@ -76,12 +97,13 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 						Chromosome chrom = Chromosome.getInstance(line);
 						Timer.start(chrom);
 						seqStart = new GenomicCoordinate(chrom, 1);
-						this.notifyReadProgress(seqStart.getChromosome());
+						this.notifyNewChromosome(seqStart.getChromosome(), queriesProcessed, totalQueries);
 					}else{
 						GenomicSequence seq = new GenomicSequence(line, new GenomicRegion(seqStart, seqStart.increment(line.length()-1)));
-						locationProcessor.process(seq);
-						sequenceProcessor.process(seq);
-						boundedProcessor.process(seq);
+						queriesProcessed += locationProcessor.process(seq);
+						queriesProcessed += sequenceProcessor.process(seq);
+						queriesProcessed += boundedProcessor.process(seq);
+						percentProcessed = notifyReadProgress(seqStart.getChromosome(), queriesProcessed, totalQueries, percentProcessed);
 						seqStart = seq.getEnd().increment(1);
 					}
 				}

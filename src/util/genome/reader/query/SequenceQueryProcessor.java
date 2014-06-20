@@ -61,7 +61,7 @@ public class SequenceQueryProcessor implements QueryProcessor{
 	}
 	
 	@Override
-	public void process(GenomicSequence next) {
+	public int process(GenomicSequence next) {
 		//update sequence with next sequence
 		if(m_Seq == null || !next.getChromosome().equals(m_Seq.getChromosome())){
 			m_Seq = next;
@@ -78,6 +78,8 @@ public class SequenceQueryProcessor implements QueryProcessor{
 		}else if(m_LongestQuery <= m_Seq.length()){
 			m_Seq = m_Seq.subsequence(m_Seq.getEnd().decrement(m_LongestQuery-2));
 		}
+		
+		return 0;
 	}
 
 	@Override

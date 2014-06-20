@@ -79,9 +79,10 @@ public class BoundedQueryProcessor implements QueryProcessor{
 	}
 	
 	@Override
-	public void process(GenomicSequence next) {
+	public int process(GenomicSequence next) {
+		int numProcessed = 0;
 		if(done()){
-			return;
+			return numProcessed;
 		}
 		//update the current sequence with the new sequence
 		if(m_Seq == null){
@@ -114,6 +115,7 @@ public class BoundedQueryProcessor implements QueryProcessor{
 		while(!m_Active.isEmpty() && m_Seq.contains(m_Active.peek().getEnd())){
 			LocationBoundedSequenceQuery query = m_Active.poll();
 			m_ProcessedTo.remove(query);
+			++numProcessed;
 		}
 		//trim sequence
 		int longestQuery = this.longestQuery();
@@ -122,6 +124,7 @@ public class BoundedQueryProcessor implements QueryProcessor{
 		}else if(longestQuery <= m_Seq.length()){
 			m_Seq = m_Seq.subsequence(m_Seq.getEnd().decrement(longestQuery-2));
 		}
+		return numProcessed;
 	}
 
 	@Override

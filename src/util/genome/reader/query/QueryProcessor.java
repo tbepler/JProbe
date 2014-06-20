@@ -4,7 +4,12 @@ import util.genome.GenomicSequence;
 
 public interface QueryProcessor {
 	
-	public void process(GenomicSequence next);
+	/**
+	 * Returns the number of queries processed
+	 * @param next
+	 * @return
+	 */
+	public int process(GenomicSequence next);
 	public boolean done();
 	
 }

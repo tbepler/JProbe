@@ -42,9 +42,10 @@ public class LocationQueryProcessor implements QueryProcessor{
 	}
 	
 	@Override
-	public void process(GenomicSequence next) {
+	public int process(GenomicSequence next) {
+		int numProcessed = 0;
 		if(done()){
-			return;
+			return numProcessed;
 		}
 		if(m_Seq == null){
 			m_Seq = next;
@@ -77,6 +78,7 @@ public class LocationQueryProcessor implements QueryProcessor{
 			m_ActiveStarts.remove(cur);
 			GenomicSequence subseq = m_Seq.subsequence(cur.getStart(), cur.getEnd());
 			cur.process(subseq);
+			++numProcessed;
 		}
 		//trim sequence
 		if(!m_Active.isEmpty()){
@@ -90,7 +92,7 @@ public class LocationQueryProcessor implements QueryProcessor{
 			m_Seq = null;
 		}
 		
-		
+		return numProcessed;
 	}
 
 	@Override
