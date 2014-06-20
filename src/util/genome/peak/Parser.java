@@ -61,29 +61,7 @@ public class Parser {
 		List<Peak> peakSummits = new ArrayList<Peak>();
 		//for every peak make a new peak object for the summit
 		for(Peak p : peaks){
-			long summit;
-			//if the point source is less than one, then make the summit the center of the peak region
-			if(p.getPointSource() <= 0){
-				summit = p.getChromStart() + (p.getChromEnd() - p.getChromStart())/2;
-			}else{
-				summit = p.getPointSource();
-			}
-			long summitStart = summit - summitRegion;
-			summitStart = Math.max(1, summitStart);
-			long summitEnd = summit + summitRegion;
-			summitEnd = Math.max(1, summitEnd);
-			Peak summitPeak = new Peak(
-					p.getChrom(),
-					summitStart,
-					summitEnd,
-					p.getName(),
-					p.getScore(),
-					p.getStrand(),
-					p.getSignalVal(),
-					p.getPVal(),
-					p.getQVal(),
-					p.getPointSource()
-					);
+			Peak summitPeak = p.aroundSummit(summitRegion);
 			peakSummits.add(summitPeak);
 		}
 		//read the summit peaks from the genome
