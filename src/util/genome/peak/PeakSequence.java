@@ -25,6 +25,21 @@ public class PeakSequence extends Peak{
 		m_Hash = this.computeHash();
 	}
 	
+	public PeakSequence(GenomicSequence sequence, Peak peak, Strand strand){
+		super(
+				sequence.getRegion(),
+				peak.getName(),
+				peak.getScore(),
+				strand,
+				peak.getSignalVal(),
+				peak.getPVal(),
+				peak.getQVal(),
+				peak.getPointSource()
+				);
+		m_Sequence = sequence;
+		m_Hash = this.computeHash();
+	}
+	
 	public PeakSequence(GenomicSequence sequence, String name, int score, Strand strand, double signalVal, double pVal, double qVal, int pointSource){
 		super(sequence.getRegion(), name, score, strand, signalVal, pVal, qVal, pointSource);
 		m_Sequence = sequence;

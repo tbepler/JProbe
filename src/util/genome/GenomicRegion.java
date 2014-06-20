@@ -172,6 +172,21 @@ public class GenomicRegion implements Comparable<GenomicRegion>, Serializable, I
 		
 	}
 	
+	/**
+	 * Returns a new GenomicCoordinate that is the result of reflecting the given coordinate around the center of this region.
+	 * @return
+	 */
+	public GenomicCoordinate mirror(GenomicCoordinate coord){
+		int direction;
+		if(coord.compareTo(m_End) < 0){
+			direction = 1;
+		}else{
+			direction = -1;
+		}
+		int dist = (int) m_End.distance(coord);
+		return m_Start.increment(direction * dist);
+	}
+	
 	public boolean contains(GenomicRegion other){
 		return this.contains(other.m_Start) && this.contains(other.m_End);
 	}

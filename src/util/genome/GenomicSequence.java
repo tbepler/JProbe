@@ -9,6 +9,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import util.DNAUtils;
+
 public class GenomicSequence implements Serializable, Comparable<GenomicSequence>, Iterable<GenomicCoordinate>{
 	private static final long serialVersionUID = 1L;
 	
@@ -33,6 +35,17 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return m_Region.toIndex(c);
 	}
 	
+	public GenomicSequence reverseCompliment(){
+		return new GenomicSequence(DNAUtils.reverseCompliment(m_Sequence), m_Region);
+	}
+	
+	/**
+	 * Joins the other GenomicSequence to this one, assuming that these are both on the plus strand.
+	 * In other words, this returns a new GenomicSequence with is the result of taking the first
+	 * GenomicSequence by natural ordering and appending the second to it.
+	 * @param other
+	 * @return
+	 */
 	public GenomicSequence join(GenomicSequence other){
 		if(!m_Region.adjacentTo(other.getRegion()) && !m_Region.overlaps(other.getRegion())){
 			throw new RuntimeException("Cannot join two GenomicSequences that are not overlapping or adjacent");
@@ -40,7 +53,37 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		GenomicSequence first = m_Region.compareTo(other.getRegion()) < 1 ? this : other;
 		GenomicSequence second = first != this ? this : other;
 		int overlap = (int) m_Region.getOverlap(other.getRegion());
+		if(!first.getSequence().substring(first.length() - overlap).equals(second.getSequence().substring(0, overlap))){
+			throw new RuntimeException("Cannot join GenomicSequences: overlap regions do not match");
+		}
 		String seq = first.getSequence() + second.getSequence().substring(overlap);
+		return new GenomicSequence(seq, m_Region.union(other.getRegion()));
+	}
+	
+	/**
+	 * Joins the given GenomicSequence to this GenomicSequence in accordance with the given strand.
+	 * If the strand is unknown, then it is assumed to be the plus strand. GenomicSequences are joined
+	 * by taking the first sequence by natural ordering (if strand is PLUS) or the second sequence
+	 * by natural ordering (if strand is MINUS) and then appending the other sequence to its end.
+	 * <p>
+	 * Strand == PLUS: new sequence is First + Second
+	 * <p>
+	 * Strand == MINUS: new sequence is Second + First
+	 * @param other
+	 * @param strand
+	 * @return
+	 */
+	public GenomicSequence join(GenomicSequence other, Strand strand){
+		if(strand != Strand.MINUS){
+			return this.join(other);
+		}
+		GenomicSequence first = m_Region.compareTo(other.getRegion()) < 1 ? this : other;
+		GenomicSequence second = first != this ? this : other;
+		int overlap = (int) m_Region.getOverlap(other.getRegion());
+		if(!second.getSequence().substring(second.length() - overlap).equals(first.getSequence().substring(0, overlap))){
+			throw new RuntimeException("Cannot join GenomicSequences: overlap regions do not match");
+		}
+		String seq = second.getSequence() + first.getSequence().substring(overlap);
 		return new GenomicSequence(seq, m_Region.union(other.getRegion()));
 	}
 	
@@ -84,6 +127,14 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return new GenomicSequence(seq, new GenomicRegion(this.getStart(), newEnd));
 	}
 	
+	/**
+	 * This method returns a new GenomicSequence that is a subsequence of this one starting
+	 * at the given start coordinate and ending on the given end coordinate. Assumes that this
+	 * GenomicSequence occurs on the PLUS strand.
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	public GenomicSequence subsequence(GenomicCoordinate start, GenomicCoordinate end){
 		if(!this.contains(start) || !this.contains(end)){
 			throw new RuntimeException("Cannot subsequence using coordinates not contained by this GenomicSequence");
@@ -96,6 +147,28 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		}
 		int startIndex = this.getIndexOf(start);
 		int endIndex = this.getIndexOf(end);
+		
+		String subSeq = m_Sequence.substring(startIndex, endIndex + 1);
+		GenomicRegion subRegion = new GenomicRegion(start, end);
+		
+		return new GenomicSequence(subSeq, subRegion);
+	}
+	
+	public GenomicSequence subsequence(GenomicCoordinate start, GenomicCoordinate end, Strand strand){
+		if(strand != Strand.MINUS){
+			return this.subsequence(start, end);
+		}
+		if(!this.contains(start) || !this.contains(end)){
+			throw new RuntimeException("Cannot subsequence using coordinates not contained by this GenomicSequence");
+		}
+		if(start.compareTo(end) > 0){
+			GenomicCoordinate swap = start;
+			start = end;
+			end = swap;
+		}
+		//mirror the start and end coordinates to correctly reflect locations on the minus strand sequence
+		int endIndex = this.getIndexOf(m_Region.mirror(start));
+		int startIndex = this.getIndexOf(m_Region.mirror(end));
 		
 		String subSeq = m_Sequence.substring(startIndex, endIndex + 1);
 		GenomicRegion subRegion = new GenomicRegion(start, end);
@@ -247,16 +320,34 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 	}
 	
 	/**
-	 * Returns the base, represented as a character, at the given GenomicLocation. If the location
+	 * Returns the base, represented as a character, at the given GenomicCoordinate. If the location
 	 * is not contained within this sequence or the location is null, a RuntimeException is thrown.
-	 * @param loc - location of the base to be returned
-	 * @return a character representing the base within this GenomicSequence at the given GenomicLocation
+	 * Assumes that this sequence is on the plus strand.
+	 * @param coordinate - coordinate of the base to be returned
+	 * @return a character representing the base within this GenomicSequence at the given GenomicCoordinate
 	 */
 	public char getBaseAt(GenomicCoordinate coord){
 		if(!this.contains(coord)){
 			throw new RuntimeException("This sequence does not contain "+coord);
 		}
 		return m_Sequence.charAt(this.getIndexOf(coord));
+	}
+	
+	/**
+	 * Returns the base, represented as a character, at the given GenomicCoordinate. If the strand
+	 * is MINUS, then the coordinate will be mirrored and then treated as if this strand were PLUS.
+	 * This is because coordinates are always according to the PLUS strand. Therefore the last coordinate
+	 * of this region corresponds to the first character in this sequences string, if the string represents
+	 * the MINUS strand.
+	 * @param coord - coordinate of the base to be retrieved
+	 * @param strand - the strand on which this sequence occurs
+	 * @return
+	 */
+	public char getBaseAt(GenomicCoordinate coord, Strand strand){
+		if(strand == Strand.MINUS){
+			return getBaseAt(m_Region.mirror(coord));
+		}
+		return getBaseAt(coord);
 	}
 	
 	/**

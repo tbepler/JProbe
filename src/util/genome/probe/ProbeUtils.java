@@ -42,17 +42,6 @@ public class ProbeUtils {
 		return new ProbeGroup(filtered);
 	}
 	
-	public static Probe reverseCompliment(Probe p){
-		String revComp = DNAUtils.reverseCompliment(p.getSequence());
-		Strand revStrand = Strand.reverse(p.getStrand());
-		GenomicRegion[] bindingSites = p.getBindingSites();
-		GenomicRegion[] mirrored = new GenomicRegion[bindingSites.length];
-		for(int i=0; i<bindingSites.length; i++){
-			mirrored[mirrored.length -1 - i] = bindingSites[i].mirror(p.getRegion());
-		}
-		return new Probe(revComp, p.getRegion(), mirrored, p.getName(), revStrand, p.isMutant());
-	}
-	
 	public static ProbeGroup joinProbes(ProgressListener l, Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist){
 		List<Probe> probes = new ArrayList<Probe>();
 		for(Probe p : givenProbes){
@@ -194,6 +183,7 @@ public class ProbeUtils {
 	
 	public static List<Probe> extractFrom(
 			GenomicSequence seq,
+			Strand strand,
 			String name,
 			Kmer kmer,
 			PWM pwm,
@@ -216,8 +206,10 @@ public class ProbeUtils {
 				//scan window around binding site with the PWM for best scoring region
 				GenomicRegion center = scanWindow(seq, bindingSite.getRegion(), pwm, windowSize);
 				if(center != null){
+					//check which orientation the probe should be
+					boolean reverse = reverseOrientation(seq.subsequence(center), pwm);
 					//create a probe centered on the center region
-					Probe p = createProbe(seq, center, name + "_probe" + (probes.size() + 1), probeLength);
+					Probe p = createProbe(seq, center, strand, name + "_probe" + (probes.size() + 1), probeLength, reverse);
 					//pwm.canScore() ensures that the probe only contains bases recognized
 					//by the pwm
 					if(p != null && !probes.contains(p) && pwm.canScore(p.getSequence())){
@@ -233,7 +225,11 @@ public class ProbeUtils {
 		return probeList;
 	}
 	
-	private static Probe createProbe(GenomicSequence seq, GenomicRegion center, String name, int probeLength){
+	private static boolean reverseOrientation(GenomicSequence seq, PWM pwm){
+		return pwm.score(seq.getSequence().toUpperCase()) < pwm.score(DNAUtils.reverseCompliment(seq.getSequence().toUpperCase()));
+	}
+	
+	private static Probe createProbe(GenomicSequence seq, GenomicRegion center, Strand strand, String name, int probeLength, boolean reverse){
 		int flankLength = probeLength - (int) center.getSize();
 		GenomicCoordinate start;
 		GenomicCoordinate end;
@@ -250,7 +246,11 @@ public class ProbeUtils {
 			return null;
 		}
 		GenomicSequence probeSeq = seq.subsequence(start, end);
-		return new Probe(probeSeq, new GenomicRegion[]{center}, name);
+		if(reverse){
+			probeSeq = probeSeq.reverseCompliment();
+			strand = Strand.reverse(strand);
+		}
+		return new Probe(probeSeq, new GenomicRegion[]{center}, name, strand);
 	}
 	
 	private static GenomicRegion scanWindow(GenomicSequence seq, GenomicRegion bindingSite, PWM pwm, int windowSize){

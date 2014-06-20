@@ -2,14 +2,13 @@ package chiptools.jprobe.function.probegenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
-import util.genome.GenomicSequence;
 import util.genome.peak.PeakSequence;
+import util.genome.peak.PeakSequenceGroup;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
 import util.genome.probe.ProbeUtils;
@@ -53,22 +52,16 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 	@Override
 	public Data execute(ProgressListener l, ProbeGeneratorParams params) throws Exception {
 		
-		List<GenomicSequence> seqs = new ArrayList<GenomicSequence>();
-		List<String> names = new ArrayList<String>();
-		for(PeakSequence p : params.getPeakSeqs().getPeakSeqs()){
-			seqs.add(p.getGenomicSequence());
-			names.add(p.getName());
-		}
-		
-		int prevPercent = this.fireProgressEvent(l, 0, seqs.size(), -1);
+		PeakSequenceGroup peakSeqs = params.getPeakSeqs().getPeakSeqs();
+		int count = 0;
+		int prevPercent = this.fireProgressEvent(l, count, peakSeqs.size(), -1);
 		Queue<Probe> probes = new PriorityQueue<Probe>();
-		for(int i=0; i<seqs.size(); i++){
+		for(PeakSequence peakSeq : peakSeqs){
 			try{
-				GenomicSequence seq = seqs.get(i);
-				String name = names.get(i);
 				probes.addAll(ProbeUtils.extractFrom(
-						seq,
-						name,
+						peakSeq.getGenomicSequence(),
+						peakSeq.getStrand(),
+						peakSeq.getName(),
 						params.getKmers().getKmer(),
 						params.getPWM().getPWM(),
 						params.getProbeLength(),
@@ -80,7 +73,7 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 				throw e;
 			}
 
-			prevPercent = this.fireProgressEvent(l, i+1, seqs.size(), prevPercent);
+			prevPercent = this.fireProgressEvent(l, ++count, peakSeqs.size(), prevPercent);
 		}
 		ProbeGroup group = new ProbeGroup(probes);
 		l.update(new ProgressEvent(this, Type.COMPLETED, "Done generating probes."));

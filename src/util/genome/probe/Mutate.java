@@ -15,6 +15,7 @@ import util.DNAUtils;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
+import util.genome.Strand;
 import util.genome.kmer.Kmer;
 import util.progress.ProgressListener;
 
@@ -64,7 +65,7 @@ class Mutate {
 		Set<GenomicCoordinate> immutableCoords = toCoordinateSet(protectedRegions);
 		
 		MutationRecord record = new MutationRecord();
-		record.seq = mut.asGenomicSequence();
+		record.seq = mut.getStrand() != Strand.MINUS ? mut.asGenomicSequence() : mut.asGenomicSequence().reverseCompliment();
 		//only use the binding sites as protected regions, but prevent mutations in binding site barrier
 		record = mutateRecursive(l, record, kmer, bindingSites, immutableCoords, escoreCutoff, overlap, alphabet);
 		
@@ -73,7 +74,8 @@ class Mutate {
 			mutations.add(m.coord);
 		}
 		
-		return new Probe(mut, record.seq, mutations, !mutations.isEmpty());
+		GenomicSequence mutatedSeq = mut.getStrand() != Strand.MINUS ? record.seq : record.seq.reverseCompliment();
+		return new Probe(mut, mutatedSeq, mutations, !mutations.isEmpty());
 		
 	}
 	
@@ -93,8 +95,10 @@ class Mutate {
 		List<GenomicRegion> protectedRegions = getProtectedRegions(bindingSites, bindingSiteBarrier);
 		Set<GenomicCoordinate> immutableCoords = toCoordinateSet(protectedRegions);
 		
+		GenomicSequence genomicSeq = p.getStrand() != Strand.MINUS ? p.asGenomicSequence() : p.asGenomicSequence().reverseCompliment();
+		
 		//mutate probe sequence + primer
-		String fwdSeq = p.getSequence() + primer;
+		String fwdSeq = genomicSeq.getSequence() + primer;
 		GenomicRegion fwdRegion = new GenomicRegion(p.getRegion().getStart(), p.getRegion().getEnd().increment(primer.length()));
 		GenomicSequence fwdGenomicSeq = new GenomicSequence(fwdSeq, fwdRegion);
 		//add the primer region to the immutable coordinates
@@ -114,7 +118,7 @@ class Mutate {
 		}
 		
 		//mutate reverse comp primer + probe sequence - this is the reverse compliment probe + primerr
-		String rvsSeq = DNAUtils.reverseCompliment(primer) + p.getSequence();
+		String rvsSeq = DNAUtils.reverseCompliment(primer) + genomicSeq.getSequence();
 		GenomicRegion rvsRegion = new GenomicRegion(p.getRegion().getStart().decrement(primer.length()), p.getRegion().getEnd());
 		GenomicSequence rvsGenomicSeq = new GenomicSequence(rvsSeq, rvsRegion);
 		//add the primer region to the immutable coordinates
@@ -133,12 +137,16 @@ class Mutate {
 		
 		//make mutations and store them in a list
 		List<GenomicCoordinate> mutationList = new ArrayList<GenomicCoordinate>();
-		GenomicSequence mutated = p.asGenomicSequence();
+		GenomicSequence mutated = genomicSeq;
 		for(Mutation m : mutations.values()){
 			if(mutated.contains(m.coord)){
 				mutated = makeMutation(m, mutated);
 				mutationList.add(m.coord);
 			}
+		}
+		
+		if(p.getStrand() == Strand.MINUS){
+			mutated = mutated.reverseCompliment();
 		}
 		
 		return new Probe(p, mutated, mutationList, !mutationList.isEmpty());

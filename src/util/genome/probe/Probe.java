@@ -180,6 +180,10 @@ public class Probe implements Serializable, Comparable<Probe>{
 	public Probe(GenomicSequence seq, String name){
 		this(seq, new GenomicRegion[]{}, name);
 	}
+	
+	public Probe(GenomicSequence seq, String name, Strand strand){
+		this(seq, new GenomicRegion[]{}, name, strand);
+	}
 
 	public Probe(String seq, GenomicRegion region, GenomicRegion[] bindingSites, boolean mutant){
 		this(seq, region, bindingSites, null, Strand.UNKNOWN, mutant);
@@ -327,15 +331,57 @@ public class Probe implements Serializable, Comparable<Probe>{
 			mutSet.add(mut);
 		}
 		List<GenomicCoordinate> mutations = new ArrayList<GenomicCoordinate>(mutSet);
-		Strand s = this.getStrand();
-		if(other.getStrand() != this.getStrand() && other.getStrand() != Strand.UNKNOWN){
-			if(this.getStrand() == Strand.UNKNOWN){
-				s = other.getStrand();
-			}else{
-				other = ProbeUtils.reverseCompliment(other);
-			}
+		
+		Strand s;
+		GenomicSequence newSeq;
+		//there are 9 possible combinations of orientation that need to be dealt with when combining probes
+		//this only matters for combining the sequences, because coordinates always run in the plus direction
+		if(this.getStrand() == Strand.PLUS && other.getStrand() == Strand.PLUS){
+			//this is plus and the other is plus -- easy case
+			s = Strand.PLUS;
+			newSeq = this.asGenomicSequence().join(other.asGenomicSequence());
+		}else if(this.getStrand() == Strand.PLUS && other.getStrand() == Strand.MINUS){
+			//need to reverse compliment the other strand an then append to the end of this strand
+			s = Strand.PLUS;
+			newSeq = this.asGenomicSequence().join(other.asGenomicSequence().reverseCompliment());
+		}else if(this.getStrand() == Strand.PLUS){
+			//this is on the plus strand, but the other is on an unknown strand... assume the other
+			//is plus, but flag the combined strand as unknown
+			s = Strand.UNKNOWN;
+			newSeq = this.asGenomicSequence().join(other.asGenomicSequence());
+		}else if(this.getStrand() == Strand.MINUS && other.getStrand() == Strand.MINUS){
+			//both on the minus strand -- this means that the the combined probe should
+			//actually start with the other probe and be on the minus strand
+			s = Strand.MINUS;
+			newSeq = other.asGenomicSequence().join(this.asGenomicSequence(), Strand.MINUS);
+		}else if(this.getStrand() == Strand.MINUS && other.getStrand() == Strand.PLUS){
+			//need to reverse the other strand and then append this strand to it
+			s = Strand.MINUS;
+			newSeq = other.asGenomicSequence().reverseCompliment().join(this.asGenomicSequence(), Strand.MINUS);
+		}else if(this.getStrand() == Strand.MINUS){
+			//this strand is minus, but the other strand is unknown, so assume the other
+			//strand is plus and reverse this strand to match it, but flag the new combined strand
+			//as unknown
+			s = Strand.UNKNOWN;
+			newSeq = this.asGenomicSequence().reverseCompliment().join(other.asGenomicSequence());
+		}else if(other.getStrand() == Strand.PLUS){
+			//this strand is unknown and the other strand is plus, assume that this strand is plus
+			//and combine accordingly
+			s = Strand.UNKNOWN;
+			newSeq = this.asGenomicSequence().join(other.asGenomicSequence());
+		}else if(other.getStrand() == Strand.MINUS){
+			//this strand is unknown but the other strand is minus, assume this strand is plus,
+			//so reverse compliment the other strand and append it to the end of this one
+			s = Strand.UNKNOWN;
+			newSeq = this.asGenomicSequence().join(other.asGenomicSequence().reverseCompliment());
+		}else{
+			//both strands are unknown, so assume they are both plus and combine accordingly
+			s = Strand.UNKNOWN;
+			newSeq = this.asGenomicSequence().join(other.asGenomicSequence());
 		}
-		GenomicSequence newSeq = this.asGenomicSequence().join(other.asGenomicSequence());
+
+		
+		
 		Set<GenomicRegion> bindingSites = new TreeSet<GenomicRegion>();
 		for(GenomicRegion site : m_BindingSites){
 			bindingSites.add(site);
@@ -352,7 +398,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 	}
 	
 	public Probe subprobe(GenomicCoordinate start, GenomicCoordinate end, String subName){
-		GenomicSequence subseq = m_Seq.subsequence(start, end);
+		GenomicSequence subseq = m_Seq.subsequence(start, end, this.getStrand());
 		GenomicRegion subregion = subseq.getRegion();
 		Set<GenomicRegion> bindingSites = new TreeSet<GenomicRegion>();
 		for(GenomicRegion site : m_BindingSites){

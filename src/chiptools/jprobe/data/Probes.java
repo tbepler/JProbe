@@ -12,6 +12,7 @@ import util.Subject;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
+import util.genome.Strand;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
 import jprobe.services.data.AbstractFinalData;
@@ -49,6 +50,24 @@ public class Probes extends AbstractFinalData implements Observer<Preferences.Up
 		return s;
 	}
 	
+	/*
+	 * On the MINUS strand, the string actually starts with the last coordinate and ends with the first coordinate.
+	 * The mutation and binding site coordinates, however, are in accordance with the PLUS strand. Therefore,
+	 * the html needs to start when the END of a binding site or mutation site is reached and the html then
+	 * needs to end at the START of said binding site or mutation site.
+	 */
+	private String stringMutCoordMinusStrand(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations){
+		String s = "";
+		if(coord.equals(seq.getEnd()) || !mutations.contains(coord.increment(1))){
+			s += Preferences.getInstance().getMutStartHTML();
+		}
+		s += seq.getBaseAt(coord, Strand.MINUS);
+		if(coord.equals(seq.getStart()) || !mutations.contains(coord.decrement(1))){
+			s += Preferences.getInstance().getMutEndHTML();
+		}
+		return s;
+	}
+	
 	private String stringBindingCoord(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations, Collection<GenomicCoordinate> binding){
 		String s = "";
 		if(coord.equals(seq.getStart()) || mutations.contains(coord.decrement(1)) || !binding.contains(coord.decrement(1))){
@@ -56,6 +75,24 @@ public class Probes extends AbstractFinalData implements Observer<Preferences.Up
 		}
 		s += seq.getBaseAt(coord);
 		if(coord.equals(seq.getEnd()) || mutations.contains(coord.increment(1)) || !binding.contains(coord.increment(1))){
+			s += Preferences.getInstance().getBindingEndHTML();
+		}
+		return s;
+	}
+	
+	/*
+	 * On the MINUS strand, the string actually starts with the last coordinate and ends with the first coordinate.
+	 * The mutation and binding site coordinates, however, are in accordance with the PLUS strand. Therefore,
+	 * the html needs to start when the END of a binding site or mutation site is reached and the html then
+	 * needs to end at the START of said binding site or mutation site.
+	 */
+	private String stringBindingCoordMinusStrand(GenomicCoordinate coord, GenomicSequence seq, Collection<GenomicCoordinate> mutations, Collection<GenomicCoordinate> binding){
+		String s = "";
+		if(coord.equals(seq.getEnd()) || mutations.contains(coord.increment(1)) || !binding.contains(coord.increment(1))){
+			s += Preferences.getInstance().getBindingStartHTML();
+		}
+		s += seq.getBaseAt(coord, Strand.MINUS);
+		if(coord.equals(seq.getStart()) || mutations.contains(coord.decrement(1)) || !binding.contains(coord.decrement(1))){
 			s += Preferences.getInstance().getBindingEndHTML();
 		}
 		return s;
@@ -72,13 +109,33 @@ public class Probes extends AbstractFinalData implements Observer<Preferences.Up
 		}
 		Collection<GenomicCoordinate> mutations = p.getMutations();
 		
-		for(GenomicCoordinate coord : seq){
-			if(mutations.contains(coord)){
-				s += this.stringMutCoord(coord, seq, mutations);
-			}else if(bindingSites.contains(coord)){
-				s += this.stringBindingCoord(coord, seq, mutations, bindingSites);
-			}else{
-				s += seq.getBaseAt(coord);
+		if(p.getStrand() != Strand.MINUS){
+			//This strand is not minus, so it is either plus or unknown. If unknown, this probe
+			//is assumed to be plus
+			for(GenomicCoordinate coord : seq){
+				if(mutations.contains(coord)){
+					s += this.stringMutCoord(coord, seq, mutations);
+				}else if(bindingSites.contains(coord)){
+					s += this.stringBindingCoord(coord, seq, mutations, bindingSites);
+				}else{
+					s += seq.getBaseAt(coord);
+				}
+			}
+		}else{
+			//on the minus strand, so build string from last coordinate to first coordinate
+			//it is only necessary to reverse the coordinate when accessing the character,
+			//because coordinates are always for the plus strand.
+			//
+			//it is also important to start the html at the end of binding/mutation sites
+			//and end the html at the start of binding/mutation sites becuase of this.
+			for(GenomicCoordinate coord = seq.getEnd(); coord.compareTo(seq.getStart()) >= 0; coord = coord.decrement(1)){
+				if(mutations.contains(coord)){
+					s += this.stringMutCoordMinusStrand(coord, seq, mutations);
+				}else if(bindingSites.contains(coord)){
+					s += this.stringBindingCoordMinusStrand(coord, seq, mutations, bindingSites);
+				}else{
+					s += seq.getBaseAt(coord, Strand.MINUS);
+				}
 			}
 		}
 		s += "</html>";

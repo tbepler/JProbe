@@ -16,6 +16,7 @@ import jprobe.services.function.Argument;
 import util.genome.Chromosome;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicSequence;
+import util.genome.Strand;
 import util.genome.kmer.Kmer;
 import util.genome.kmer.Kmers;
 import util.genome.peak.Peak;
@@ -281,7 +282,7 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 				}
 			}
 		}
-		return new Probe(seq.subsequence(start, start.increment(len - 1)), name);
+		return new Probe(seq.subsequence(start, start.increment(len - 1)), name, Strand.PLUS);
 	}
 	
 	private static boolean subseqsMeetScoreThreshold(String seq, int start, int len, int subseqLen, Kmer kmer, double escore){

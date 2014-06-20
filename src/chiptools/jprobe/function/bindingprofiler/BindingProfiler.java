@@ -10,7 +10,9 @@ import util.genome.Sequences;
 import util.genome.Sequences.Profile;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
+import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
+import util.progress.ProgressEvent.Type;
 import chiptools.jprobe.data.BindingProfile;
 import chiptools.jprobe.function.AbstractChiptoolsFunction;
 import chiptools.jprobe.function.args.ProbesArgument;
@@ -29,6 +31,14 @@ public class BindingProfiler extends AbstractChiptoolsFunction<BindingProfilePar
 		args.add(new BindingPWMArgument(true));
 		return args;
 	}
+	
+	protected int fireProgressUpdate(ProgressListener l, int progress, int maxProgress, int prevPercent){
+		int percent = progress*100/maxProgress;
+		if(percent != prevPercent){
+			l.update(new ProgressEvent(this, Type.UPDATE, progress, maxProgress, "Profiling binding..."));
+		}
+		return percent;
+	}
 
 	@Override
 	public Data execute(ProgressListener l, BindingProfileParams params) throws Exception {
@@ -44,10 +54,13 @@ public class BindingProfiler extends AbstractChiptoolsFunction<BindingProfilePar
 		String[] pwmNames = params.PWM_NAMES.toArray(new String[params.PWM_NAMES.size()]);
 		List<Profile> bindingProfiles = new ArrayList<Profile>();
 		ProbeGroup group = params.getProbes().getProbeGroup();
+		int percentComplete = this.fireProgressUpdate(l, 0, group.size(), -1);
 		for(int i=0; i<group.size(); i++){
 			Probe p = group.getProbe(i);
 			bindingProfiles.add(Sequences.profile(p.getSequence(), p.getName(i+1), kmers, kmerNames, pwms, pwmNames));
+			percentComplete = this.fireProgressUpdate(l, i+1, group.size(), percentComplete);
 		}
+		l.update(new ProgressEvent(this, Type.COMPLETED, "Done profiling binding."));
 		return new BindingProfile(bindingProfiles);
 	}
 
