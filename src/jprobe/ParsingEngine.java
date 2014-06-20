@@ -11,6 +11,7 @@ import java.util.TreeMap;
 
 import org.osgi.framework.Bundle;
 
+import util.progress.PrintStreamProgressBar;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 import jprobe.services.ErrorHandler;
@@ -66,13 +67,12 @@ public class ParsingEngine {
 			}
 		}
 		
+		//wrap a PrintStreamProgressBar around the PrintStream and use it to report progress
+		final PrintStreamProgressBar progressBar = new PrintStreamProgressBar(report);
 		ProgressListener l = new ProgressListener(){
 			@Override
 			public void update(ProgressEvent event) {
-				String s = event.getMessage();
-				if(s != null && !s.equals("")){
-					report.println(s);
-				}
+				progressBar.update(event);
 			}
 		};
 		

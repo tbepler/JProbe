@@ -52,7 +52,7 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 	}
 	
 	protected void notifyCompleted(){
-		this.notifyListeners(new ProgressEvent(this, Type.COMPLETED, "Reading "+m_GenomeFile.getName()+" completed"));
+		this.notifyListeners(new ProgressEvent(this, Type.COMPLETED, "Done reading "+m_GenomeFile.getName()));
 	}
 	
 	@Override

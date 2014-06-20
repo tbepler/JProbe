@@ -83,16 +83,19 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 			}
 			
 		});
+		l.update(new ProgressEvent(this, Type.COMPLETED, "Done filtering regions."));
 		
 		//get genome reader for the genome file
 		l.update(new ProgressEvent(this, Type.UPDATE, "Extracting genomic sequences..."));
 		GenomeReader reader = GenomeReaderFactory.createGenomeReader(params.getGenomeFile(), l);
 		PeakSequenceGroup peakSeqs = PeakSequenceGroup.readFromGenome(reader, include);
+		l.update(new ProgressEvent(this, Type.COMPLETED, "Done extracting sequences."));
 		
 		Kmer kmer;
 		if(params.getKmers().size() > 1){
 			l.update(new ProgressEvent(this, Type.UPDATE, "Combining kmers..."));
 			kmer = Kmers.combine(toUtilKmer(params.getKmers()));
+			l.update(new ProgressEvent(this, Type.COMPLETED, "Done combining kmers."));
 		}else if(params.getKmers().size() > 0){
 			kmer = toUtilKmer(params.getKmers()).get(0);
 		}else{
@@ -100,21 +103,24 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 		}
 		
 		//generate probes
-		l.update(new ProgressEvent(this, Type.UPDATE, "Generating probes..."));
 		ProbeGroup probes = generateProbes(
+				l,
 				peakSeqs,
 				kmer,
 				params.getEscore(),
 				params.getProbeLength(),
 				params.getNumPeaks()
 				);
+		l.update(new ProgressEvent(this, Type.COMPLETED, "Done generating probes."));
 		
 		return new Probes(probes);
 		
 	}
 	
-	private static ProbeGroup generateProbes(PeakSequenceGroup peakSeqs, Kmer kmer, double escore, int length){
+	private static ProbeGroup generateProbes(ProgressListener l, PeakSequenceGroup peakSeqs, Kmer kmer, double escore, int length){
 		List<Probe> probes = new ArrayList<Probe>();
+		int count = 0;
+		int percentProgress = fireProbeGenerationEvent(l, count, peakSeqs.size(), -1);
 		for(PeakSequence peakSeq : peakSeqs){
 			GenomicCoordinate start = peakSeq.getStart();
 			//iterate over every subregion of the peak sequence of size = length
@@ -137,14 +143,16 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 					start = start.increment(length/2);
 				}
 			}
+			percentProgress = fireProbeGenerationEvent(l, ++count, peakSeqs.size(), percentProgress);
 		}
 		return new ProbeGroup(probes);
 	}
 	
-	private static ProbeGroup generateProbes(PeakSequenceGroup peakSeqs, Kmer kmer, double escore, int length, int num){
+	private static ProbeGroup generateProbes(ProgressListener l, PeakSequenceGroup peakSeqs, Kmer kmer, double escore, int length, int num){
 		if(num < 0){
-			return generateProbes(peakSeqs, kmer, escore, length);
+			return generateProbes(l, peakSeqs, kmer, escore, length);
 		}
+		int percentProgress = fireProbeGenerationEvent(l, 0, num, -1);
 		List<Probe> probes = new ArrayList<Probe>();
 		Random r = new Random();
 		Map<PeakSequence, GenomicCoordinate> lastCoord = new HashMap<PeakSequence, GenomicCoordinate>();
@@ -193,11 +201,19 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 			}
 			curSeqs = nextEntry.getValue();
 			curChrom = nextEntry.getKey();
-			
+			percentProgress = fireProbeGenerationEvent(l, probes.size(), num, percentProgress);
 		}
 		
 		return new ProbeGroup(probes);
-		
+	}
+	
+	
+	private static int fireProbeGenerationEvent(ProgressListener l, int progress, int maxProgress, int prevProgress){
+		if(progress * 100 / maxProgress != prevProgress){
+			l.update(new ProgressEvent(null, Type.UPDATE, progress, maxProgress, "Generating probes..."));
+			return progress*100/maxProgress;
+		}
+		return prevProgress;
 	}
 
 	private static void processSequence(

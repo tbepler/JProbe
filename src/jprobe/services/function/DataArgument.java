@@ -112,6 +112,7 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 				}else{
 					throw new RuntimeException("Data in file \""+arg+"\" is not valid");
 				}
+				l.update(new ProgressEvent(this, Type.COMPLETED, "Done reading "+m_DataClass.getSimpleName()+" from file "+arg));
 			}
 		}
 		
