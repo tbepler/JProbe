@@ -56,6 +56,7 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		for(DataSelectionPanel<D> sel : m_DataComps){
 			sel.setEnabled(enabled);
 		}
+		super.setEnabled(enabled);
 	}
 	
 	private void resizeWindow(){
@@ -143,6 +144,7 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 			}
 		}
 		this.add(comp, this.constraints());
+		comp.setEnabled(this.isEnabled());
 	}
 	
 	private void removeDataComponent(DataSelectionPanel<D> comp){

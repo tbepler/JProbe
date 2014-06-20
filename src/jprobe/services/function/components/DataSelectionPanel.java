@@ -68,6 +68,7 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 	public void setEnabled(boolean enabled){
 		m_DataBox.setEnabled(enabled);
 		m_CloseButton.setEnabled(enabled && m_Optional);
+		super.setEnabled(enabled);
 	}
 	
 	public void setCloseAction(OnClose closeAction){
