@@ -296,12 +296,12 @@ public class ProbeUtils {
 		}
 	}
 	
-	public static Probe mutate(ProgressListener l, Probe p, Kmer kmer, Set<Character> alphabet, int bindingSiteBarrier, double escoreCutoff){
-		return Mutate.mutate(l, p, kmer, escoreCutoff, bindingSiteBarrier, alphabet);
+	public static Probe mutate(ProgressListener l, Probe p, Kmer kmer, Set<Character> alphabet, int bindingSiteBarrier, double escoreCutoff, double maxOverlap){
+		return Mutate.mutate(l, p, kmer, escoreCutoff, bindingSiteBarrier, maxOverlap, alphabet);
 	}
 	
-	public static Probe mutate(ProgressListener l, Probe p, Kmer kmer, Set<Character> alphabet, int bindingSiteBarrier, double escoreCutoff, String primer){
-		return Mutate.mutate(l, p, kmer, escoreCutoff, bindingSiteBarrier, alphabet, primer);
+	public static Probe mutate(ProgressListener l, Probe p, Kmer kmer, Set<Character> alphabet, int bindingSiteBarrier, double escoreCutoff, double maxOverlap, String primer){
+		return Mutate.mutate(l, p, kmer, escoreCutoff, bindingSiteBarrier, maxOverlap, alphabet, primer);
 	}
 
 	public static List<Probe> generateBindingSitePermuations(Probe p){

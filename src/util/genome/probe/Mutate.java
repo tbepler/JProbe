@@ -55,6 +55,7 @@ class Mutate {
 			Kmer kmer,
 			double escoreCutoff,
 			int bindingSiteBarrier,
+			double overlap,
 			Set<Character> alphabet
 			){
 		
@@ -65,7 +66,7 @@ class Mutate {
 		MutationRecord record = new MutationRecord();
 		record.seq = mut.asGenomicSequence();
 		//only use the binding sites as protected regions, but prevent mutations in binding site barrier
-		record = mutateRecursive(l, record, kmer, bindingSites, immutableCoords, escoreCutoff, alphabet);
+		record = mutateRecursive(l, record, kmer, bindingSites, immutableCoords, escoreCutoff, overlap, alphabet);
 		
 		List<GenomicCoordinate> mutations = new ArrayList<GenomicCoordinate>(mut.getMutations());
 		for(Mutation m : record.muts){
@@ -82,6 +83,7 @@ class Mutate {
 			Kmer kmer,
 			double escoreCutoff,
 			int bindingSiteBarrier,
+			double overlap,
 			Set<Character> alphabet,
 			String primer
 			){
@@ -103,7 +105,7 @@ class Mutate {
 		MutationRecord record = new MutationRecord();
 		record.seq = fwdGenomicSeq;
 		//only use the binding sites as protected regions, but prevent mutations in binding site barrier
-		record = mutateRecursive(l, record, kmer, bindingSites, fwdImmutable, escoreCutoff, alphabet);
+		record = mutateRecursive(l, record, kmer, bindingSites, fwdImmutable, escoreCutoff, overlap, alphabet);
 		
 		//add the fwd mutations to the mutation map - this guarantees only one mutation per coordinate
 		Map<GenomicCoordinate, Mutation> mutations = new HashMap<GenomicCoordinate, Mutation>();
@@ -122,7 +124,7 @@ class Mutate {
 		}
 		record = new MutationRecord();
 		record.seq = rvsGenomicSeq;
-		record = mutateRecursive(l, record, kmer, bindingSites, rvsImmutable, escoreCutoff, alphabet);
+		record = mutateRecursive(l, record, kmer, bindingSites, rvsImmutable, escoreCutoff, overlap, alphabet);
 		
 		//add the rvs mutations to the mutation map
 		for(Mutation m : record.muts){
@@ -150,11 +152,12 @@ class Mutate {
 			List<GenomicRegion> protectedRegions,
 			Set<GenomicCoordinate> immutable,
 			double escoreCutoff,
+			double overlap,
 			Set<Character> alphabet
 			){
 		
 		GenomicSequence seq = record.seq;
-		Map<GenomicSequence, Double> scores = score(seq, kmer, protectedRegions, immutable);
+		Map<GenomicSequence, Double> scores = score(seq, kmer, protectedRegions, immutable, overlap);
 		
 		if(allScoresBelowCutoff(scores, escoreCutoff)){
 			return record;
@@ -165,13 +168,13 @@ class Mutate {
 		Mutation mut = pickBestMutation(mutate, kmer, immutable, alphabet); //picks the mutation that lowers the score the most
 		if(mut == null){ //no mutation could lower the score
 			immutable.addAll(toCoordinateSet(mutate.getRegion()));
-			return mutateRecursive(l, record, kmer, protectedRegions, immutable, escoreCutoff, alphabet);
+			return mutateRecursive(l, record, kmer, protectedRegions, immutable, escoreCutoff, overlap, alphabet);
 		}else{ //make best mutation
 			GenomicSequence mutatedSeq = makeMutation(mut, seq);
 			record.seq = mutatedSeq;
 			record.muts.add(mut);
 			immutable.add(mut.coord);
-			return mutateRecursive(l, record, kmer, protectedRegions, immutable, escoreCutoff, alphabet);
+			return mutateRecursive(l, record, kmer, protectedRegions, immutable, escoreCutoff, overlap, alphabet);
 		}
 	}
 	
@@ -231,13 +234,14 @@ class Mutate {
 			GenomicSequence seq,
 			Kmer kmer,
 			List<GenomicRegion> protectedRegions,
-			Set<GenomicCoordinate> immutable
+			Set<GenomicCoordinate> immutable,
+			double maxOverlap
 			){
 		
 		Map<GenomicSequence, Double> scores = new HashMap<GenomicSequence, Double>();
 		for(int wordLen : kmer.getWordLengths()){
 			for(GenomicSequence subseq : subseqs(seq, wordLen)){
-				if(!moreThanHalfOverlapsProtected(subseq, protectedRegions) && isMutable(subseq, immutable)){
+				if(meetsOverlapCriteria(subseq, protectedRegions, maxOverlap) && isMutable(subseq, immutable)){
 					scores.put(subseq, kmer.escore(subseq.getSequence()));
 				}
 			}
@@ -252,14 +256,14 @@ class Mutate {
 		return false;
 	}
 	
-	private static boolean moreThanHalfOverlapsProtected(GenomicSequence subseq, List<GenomicRegion> protectedRegions){
-		int maxOverlap = subseq.length() / 2;
+	private static boolean meetsOverlapCriteria(GenomicSequence subseq, List<GenomicRegion> protectedRegions, double maxOverlap){
 		for(GenomicRegion r : protectedRegions){
-			if(maxOverlap < subseq.getOverlap(r)){
-				return true;
+			double overlap = (double) subseq.getOverlap(r) / (double) subseq.length();
+			if(overlap > maxOverlap){
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 	
 	private static List<GenomicSequence> subseqs(GenomicSequence seq, int subseqLength){

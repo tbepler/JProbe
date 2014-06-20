@@ -11,6 +11,7 @@ public class ProbeMutatorParams implements ProbesParam, KmerParam, EscoreParam, 
 	
 	public int BINDING_SITE_BARRIER = 2;
 	public boolean MUTATE_BINDING_SITES = false;
+	public double MAXIMUM_OVERLAP = 0.5;
 	
 	private String m_Primer = null;
 	private double m_Escore = 0.3;
