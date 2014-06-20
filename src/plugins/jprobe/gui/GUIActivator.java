@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
@@ -51,26 +50,7 @@ public class GUIActivator implements BundleActivator{
 		}
 		File prefFile = new File(m_Core.getPreferencesDir() + File.separator + Constants.CONFIG_FILE_NAME);
 		m_GuiConfig = new GUIConfig(prefFile);
-		//check if the user is on a Mac and set some properties accordingly
-		String os = System.getProperty("os.name").toLowerCase();
-		if(os.startsWith("mac os")){
-			System.setProperty("apple.laf.useScreenMenuBar", "true");
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name", m_Core.getName());
-			System.setProperty("com.apple.macos.smallTabs", "true");
-		}
-		//set look and feel to system l+f
-		//UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//		try {
-//		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//		        if ("Nimbus".equals(info.getName())) {
-//		            UIManager.setLookAndFeel(info.getClassName());
-//		            break;
-//		        }
-//		    }
-//		} catch (Exception e) {
-//		    // If Nimbus is not available, you can set the GUI to another look and feel.
-//		}
+		
 		//start gui
 		m_Gui = new JProbeGUIFrame(m_Core, m_Core.getName()+"-"+m_Core.getVersion(), context.getBundle(), m_GuiConfig);
 		m_Gui.setVisible(true);

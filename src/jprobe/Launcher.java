@@ -3,6 +3,7 @@ package jprobe;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.UIManager;
 import jprobe.services.ErrorHandler;
 import jprobe.services.Log;
 
@@ -11,6 +12,54 @@ public class Launcher {
 	public static void main(String[] args){
 		
 		//init the user's jprobe directory
+		initUserDirectory();
+		//init the logs
+		initLogs();
+
+		//checks if user is running mac os and sets the look and feel to system look and feel
+		setSystemSpecificProperties();
+		
+		//init the user subdirectories
+		initDir(Constants.USER_PLUGINS_DIR);
+		initDir(Constants.FELIX_CACHE_DIR);
+		initDir(Constants.PREFERENCES_DIR);
+		
+		Configuration config = new Configuration(new File(Constants.CONFIG_FILE), args);
+		//System.out.println(JAR_URL);
+		//System.out.println(JAR_DIR);
+		new JProbe(config);
+	}
+
+
+
+	private static void setSystemSpecificProperties() {
+		//check if the user is on a Mac and set some properties accordingly
+		String os = System.getProperty("os.name").toLowerCase();
+		if(os.startsWith("mac os")){
+			System.setProperty("apple.laf.useScreenMenuBar", "true");
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name", Constants.NAME);
+			System.setProperty("com.apple.macos.smallTabs", "true");
+		}
+		//set look and feel to system l+f
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e){
+			ErrorHandler.getInstance().handleException(e, null);
+		}
+	}
+
+
+
+	private static void initLogs() {
+		File log = initFile(Constants.JPROBE_LOG);
+		Log.getInstance().init(new TimeStampJournal(log));
+		File errorLog = initFile(Constants.JPROBE_ERROR_LOG);
+		ErrorHandler.getInstance().init(new TimeStampJournal(errorLog));
+	}
+
+
+
+	private static void initUserDirectory() {
 		File jprobeDir = initDir(Constants.USER_JPROBE_DIR);
 		if(!jprobeDir.exists()){
 			System.err.println("Error initializing directory "+jprobeDir);
@@ -33,22 +82,9 @@ public class Launcher {
 			Constants.PREFERENCES_DIR = Constants.USER_JPROBE_DIR + File.separator + "preferences";
 			Constants.CONFIG_FILE = Constants.PREFERENCES_DIR + File.separator + "jprobe.pref";
 		}
-		//init the logs
-		File log = initFile(Constants.JPROBE_LOG);
-		Log.getInstance().init(new TimeStampJournal(log));
-		File errorLog = initFile(Constants.JPROBE_ERROR_LOG);
-		ErrorHandler.getInstance().init(new TimeStampJournal(errorLog));
-		
-		//init the user subdirectories
-		initDir(Constants.USER_PLUGINS_DIR);
-		initDir(Constants.FELIX_CACHE_DIR);
-		initDir(Constants.PREFERENCES_DIR);
-		
-		Configuration config = new Configuration(new File(Constants.CONFIG_FILE), args);
-		//System.out.println(JAR_URL);
-		//System.out.println(JAR_DIR);
-		new JProbe(config);
 	}
+	
+	
 	
 	private static File initDir(String path){
 		File f= new File(path);
