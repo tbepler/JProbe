@@ -25,7 +25,7 @@ public class ProbeJoiner extends AbstractChiptoolsFunction<ProbeJoinerParams>{
 		args.add(new NumBindingSitesArgument(false));
 		args.add(new MinSiteDistArgument(true));
 		args.add(new MaxSiteDistArgument(true));
-		args.add(new ProbeLengthArgument(true));
+		args.add(new ProbeLengthArgument(true, "unbounded"));
 		return args;
 	}
 
@@ -35,6 +35,7 @@ public class ProbeJoiner extends AbstractChiptoolsFunction<ProbeJoinerParams>{
 		Probes combined;
 		if(params.getProbeLength() > 0){
 			combined = new Probes(ProbeUtils.joinProbes(
+					l,
 					p.getProbeGroup(),
 					params.NUMBINDINGSITES,
 					params.MINSITEDIST,
@@ -43,6 +44,7 @@ public class ProbeJoiner extends AbstractChiptoolsFunction<ProbeJoinerParams>{
 					));
 		}else{
 			combined = new Probes(ProbeUtils.joinProbes(
+					l,
 					p.getProbeGroup(),
 					params.NUMBINDINGSITES,
 					params.MINSITEDIST,

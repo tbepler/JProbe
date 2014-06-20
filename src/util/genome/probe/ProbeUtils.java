@@ -53,39 +53,57 @@ public class ProbeUtils {
 		return new Probe(revComp, p.getRegion(), mirrored, p.getName(), revStrand, p.isMutant());
 	}
 	
-	public static ProbeGroup joinProbes(Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist){
+	public static ProbeGroup joinProbes(ProgressListener l, Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist){
 		List<Probe> probes = new ArrayList<Probe>();
 		for(Probe p : givenProbes){
 			probes.add(p);
 		}
 		Collections.sort(probes);
 		Queue<Probe> joinedProbes = new PriorityQueue<Probe>();
-		
+		int percentComplete = fireJoinProbesProgress(l, 0, probes.size(), -1);
 		//for sub list of size=bindingSites in the list of probes
 		for(int i=0; i<probes.size(); i++){
 			Probe combined = join(probes, i, bindingSites, minDist, maxDist);
 			if(combined != null){
 				joinedProbes.add(combined);
 			}
+			percentComplete = fireJoinProbesProgress(l, i+1, probes.size(), percentComplete);
 		}
+		if(l != null){
+			l.update(new ProgressEvent(null, Type.COMPLETED, "Done joining probes."));
+		}
+	
 		
 		return new ProbeGroup(joinedProbes);
 	}
 	
-	public static ProbeGroup joinProbes(Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist, int probeLen){
+	protected static int fireJoinProbesProgress(ProgressListener l, int progress, int maxProgress, int prevPercent){
+		if(l == null) return 0;
+		int percent = progress*100/maxProgress;
+		if(percent != prevPercent){
+			l.update(new ProgressEvent(null, Type.UPDATE, progress, maxProgress, "Joining probes..."));
+		}
+		return percent;
+	}
+	
+	public static ProbeGroup joinProbes(ProgressListener l, Iterable<Probe> givenProbes, int bindingSites, int minDist, int maxDist, int probeLen){
 		List<Probe> probes = new ArrayList<Probe>();
 		for(Probe p : givenProbes){
 			probes.add(p);
 		}
 		Collections.sort(probes);
 		Queue<Probe> joinedProbes = new PriorityQueue<Probe>();
-		
+		int percentComplete = fireJoinProbesProgress(l, 0, probes.size(), -1);
 		//for sub list of size=bindingSites in the list of probes
 		for(int i=0; i<probes.size(); i++){
 			Probe combined = join(probes, i, bindingSites, minDist, maxDist, probeLen);
 			if(combined != null){
 				joinedProbes.add(combined);
 			}
+			percentComplete = fireJoinProbesProgress(l, i+1, probes.size(), percentComplete);
+		}
+		if(l != null){
+			l.update(new ProgressEvent(null, Type.COMPLETED, "Done joining probes."));
 		}
 		
 		return new ProbeGroup(joinedProbes);
@@ -182,11 +200,8 @@ public class ProbeUtils {
 			int probeLength,
 			int bindingSiteLength,
 			int windowSize,
-			double escoreThreshhold,
-			ProgressListener l
+			double escoreThreshhold
 			){
-		
-		l.update(new ProgressEvent(null, Type.UPDATE, "Extracting probes from: "+name));
 		
 		Collection<Probe> probes = new LinkedHashSet<Probe>();
 		//scorePWM = 0;

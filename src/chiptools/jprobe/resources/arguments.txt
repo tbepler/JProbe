@@ -4,7 +4,7 @@ chiptools.jprobe.function.args.SummitArgument	Summit	s	INT	Summit	Bases on eithe
 chiptools.jprobe.function.args.PeakSeqsArgument	PeakSeqs	p	FILE	Data	ChIP-seq peaks with genomic DNA sequences
 chiptools.jprobe.function.args.KmerArgument	KMers	k	FILE	Data	Gapped or ungapped Kmer data for factor of interest
 chiptools.jprobe.function.args.PWMArgument	PWM	m	FILE	Data	Position weight matrix for factor of interest
-chiptools.jprobe.function.args.ProbeLengthArgument	ProbeLength	l	INT{default=36}	Probes	Length of probes to be generated, default=36
+chiptools.jprobe.function.args.ProbeLengthArgument	ProbeLength	l	INT	Probes	Length of probes to be generated
 chiptools.jprobe.function.probegenerator.BindingSiteArgument	BindingSite	b	INT{default=9}	Binding Sites	Size of the region that must be spanned by kmers meeting the minimum e-score, default=9
 chiptools.jprobe.function.probegenerator.WindowSizeArgument	Window	w	INT{default=3}	Binding Sites	Number of bases on either side of putative binding site to be scanned with the PWM, default=3
 chiptools.jprobe.function.args.EscoreArgument	Escore	e	ESCORE	E-scores	E-score value between -0.5 and 0.5

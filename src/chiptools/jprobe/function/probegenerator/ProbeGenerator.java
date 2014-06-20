@@ -13,7 +13,9 @@ import util.genome.peak.PeakSequence;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
 import util.genome.probe.ProbeUtils;
+import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
+import util.progress.ProgressEvent.Type;
 import chiptools.jprobe.data.Probes;
 import chiptools.jprobe.function.AbstractChiptoolsFunction;
 import chiptools.jprobe.function.args.*;
@@ -40,6 +42,14 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 		return args;
 	}
 
+	protected int fireProgressEvent(ProgressListener l, int progress, int maxProgress, int prevPercent){
+		int percent = progress*100/maxProgress;
+		if(percent != prevPercent){
+			l.update(new ProgressEvent(this, Type.UPDATE, progress, maxProgress, "Generating probes..."));
+		}
+		return percent;
+	}
+	
 	@Override
 	public Data execute(ProgressListener l, ProbeGeneratorParams params) throws Exception {
 		
@@ -50,6 +60,7 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 			names.add(p.getName());
 		}
 		
+		int prevPercent = this.fireProgressEvent(l, 0, seqs.size(), -1);
 		Queue<Probe> probes = new PriorityQueue<Probe>();
 		for(int i=0; i<seqs.size(); i++){
 			try{
@@ -63,14 +74,16 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 						params.getProbeLength(),
 						params.BINDINGSITE,
 						params.WINDOWSIZE,
-						params.getEscore(),
-						l
+						params.getEscore()
 						));
 			} catch (Exception e){
 				throw e;
 			}
+
+			prevPercent = this.fireProgressEvent(l, i+1, seqs.size(), prevPercent);
 		}
 		ProbeGroup group = new ProbeGroup(probes);
+		l.update(new ProgressEvent(this, Type.COMPLETED, "Done generating probes."));
 		return new Probes(group);
 	}
 
