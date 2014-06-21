@@ -111,8 +111,29 @@ public class GenomicSequence implements Serializable, Comparable<GenomicSequence
 		return (int) this.getStart().distance(coord);
 	}
 	
+	/**
+	 * Returns the GenomicCoordinate of the base in this sequence at the given string index.
+	 * Assumes that this sequence is on the positive strand.
+	 * @param index
+	 * @return
+	 */
 	public GenomicCoordinate toCoordinate(int index){
 		return m_Region.toCoordinate(index);
+	}
+	
+	/**
+	 * Returns the GenomicCoordinate of the base in this sequence at the given string index.
+	 * If this sequence is on the minus strand, then an index of 0 will correspond to
+	 * the last coordinate of this sequence.
+	 * @param index
+	 * @param strand
+	 * @return
+	 */
+	public GenomicCoordinate toCoordinate(int index, Strand strand){
+		if(strand != Strand.MINUS){
+			return this.toCoordinate(index);
+		}
+		return m_Region.mirror(m_Region.toCoordinate(index));
 	}
 	
 	public GenomicSequence appendPrefix(String prefix){

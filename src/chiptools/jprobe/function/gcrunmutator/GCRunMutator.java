@@ -13,6 +13,7 @@ import jprobe.services.function.Argument;
 import util.DNAUtils;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicSequence;
+import util.genome.Strand;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
 import util.progress.ProgressListener;
@@ -46,24 +47,26 @@ public class GCRunMutator extends AbstractChiptoolsFunction<GCRunMutatorParams>{
 		for(Probe p : params.getProbes().getProbeGroup()){
 			Set<Mutation> mutations = new HashSet<Mutation>();
 			GenomicSequence seq = primer == null ? p.asGenomicSequence() : p.asGenomicSequence().appendSuffix(primer);
-			this.mutate(seq, mutations);
+			seq = this.mutate(seq, mutations, p.getStrand());
+			if(primer != null){
+				seq = seq.subsequence(seq.getStart(), seq.getEnd().decrement(primer.length()));
+			}
 			if(rvsPrimer != null){
 				seq = p.asGenomicSequence().appendPrefix(rvsPrimer);
-				this.mutate(seq, mutations);
+				seq = this.mutate(seq, mutations, p.getStrand());
+				seq = seq.subsequence(seq.getStart().increment(primer.length()));
 			}
 			
 			Set<GenomicCoordinate> probeMuts = new HashSet<GenomicCoordinate>(p.getMutations());
-			GenomicSequence probeSeq = p.asGenomicSequence();
 			boolean mut = false;
 			for(Mutation m : mutations){
-				if(probeSeq.contains(m.coord)){
-					probeSeq = probeSeq.mutate(m.coord, m.base);
+				if(seq.contains(m.coord)){
 					probeMuts.add(m.coord);
 					mut = true;
 				}
 			}
 			if(mut){
-				probes.add(new Probe(p, probeSeq, new ArrayList<GenomicCoordinate>(probeMuts), probeMuts.isEmpty()));
+				probes.add(new Probe(p, seq, new ArrayList<GenomicCoordinate>(probeMuts), probeMuts.isEmpty()));
 			}else{
 				probes.add(p);
 			}
@@ -72,17 +75,20 @@ public class GCRunMutator extends AbstractChiptoolsFunction<GCRunMutatorParams>{
 		return new Probes(new ProbeGroup(probes));
 	}
 	
-	protected void mutate(GenomicSequence seq, Collection<Mutation> mutations){
+	protected GenomicSequence mutate(GenomicSequence seq, Collection<Mutation> mutations, Strand strand){
 		int run = Constants.GRUN.length();
 		for(int i=0; i<seq.length()-run; i++){
 			if(seq.getSequence().regionMatches(true, i, Constants.GRUN, 0, run)){
-				GenomicCoordinate coord = seq.toCoordinate(i+run/2);
+				GenomicCoordinate coord = seq.toCoordinate(i+run/2, strand);
 				mutations.add(new Mutation(coord, 'C'));
+				seq = seq.mutate(coord, 'C');
 			}else if(seq.getSequence().regionMatches(true, i, Constants.CRUN, 0, run)){
-				GenomicCoordinate coord = seq.toCoordinate(i+run/2);
+				GenomicCoordinate coord = seq.toCoordinate(i+run/2, strand);
 				mutations.add(new Mutation(coord, 'G'));
+				seq = seq.mutate(coord, 'G');
 			}
 		}
+		return seq;
 	}
 	
 	protected static class Mutation{
