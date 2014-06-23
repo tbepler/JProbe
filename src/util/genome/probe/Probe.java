@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -32,6 +34,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 	private static final String STRAND_REGEX = Strand.STRAND_REGEX;
 	private static final String MUT_REGEX = "([Mm][Uu][Tt][Aa][Nn][Tt])|([Mm])";
 	private static final String MUT_TYPE_REGEX = MUT_REGEX+"|([Ww][Ii][Ll][Dd][Tt][Yy][Pp][Ee])|([Ww])";
+	private static final String TYPE_REGEX = "_t\\d_";
 	
 	public static Probe parseProbe(String s) throws ParsingException{
 		try{
@@ -242,6 +245,14 @@ public class Probe implements Serializable, Comparable<Probe>{
 			hashBuilder.append(site);
 		}
 		m_Hash = hashBuilder.toHashCode();
+	}
+	
+	public String getType(){
+		Matcher regexMatcher = Pattern.compile(TYPE_REGEX).matcher(m_Name);
+		if(regexMatcher.find()){
+			return regexMatcher.group().replaceAll("_", "");
+		}
+		return null;
 	}
 	
 	public int getLength(){

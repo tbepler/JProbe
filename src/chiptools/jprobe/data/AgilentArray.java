@@ -13,7 +13,7 @@ public class AgilentArray extends AbstractFinalData{
 	private final String m_Name;
 	private final List<AgilentProbe> m_Probes;
 	
-	protected AgilentArray(String name, List<AgilentProbe> probes) {
+	public AgilentArray(String name, List<AgilentProbe> probes) {
 		super(NUM_COLS, probes.size());
 		m_Name = name;
 		m_Probes = probes;
