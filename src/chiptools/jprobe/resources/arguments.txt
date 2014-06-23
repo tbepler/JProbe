@@ -48,6 +48,7 @@ chiptools.jprobe.function.negativecontrolgen.KmerListArgument	Kmers	k	KMERS	Kmer
 chiptools.jprobe.function.negativecontrolgen.NumberArg	Num	n	INT	Probes	The number of negative control probes to generate. WARNING: if you do not set this parameter and you have many large regions, this function will probably take a VERY long time to run
 chiptools.jprobe.function.agilentformatter.ProbeCategoriesArgument	Probes	p	CATEGORY=PROBES	Probes	The probe groups to be combined into an Agilent formatted probe group. Probes for which no category is specified will use the file name as the category.
 chiptools.jprobe.function.agilentformatter.ArrayNameArgument	ArrayName	n	NAME	Name	The name that should be used for this array. Must not exceed 15 characters in length.
-
+chiptools.jprobe.function.agilentformatter.ForwardReplicatesArgument	FwdReps	f	INT	Replicates	The number of forward direction probe replicates
+chiptools.jprobe.function.agilentformatter.ReverseReplicatesArgument	RvsReps	r	INT	Replicates	The number of reverse compliment probe replicates
 
 
