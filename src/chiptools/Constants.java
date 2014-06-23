@@ -25,6 +25,7 @@ public class Constants {
 	public static final String PREF_FILE_NAME = "chiptools.pref";
 	
 	public static final int SEQS_ARG_MAX_DISPLAY = 5;
+	public static final String PROBES_CATEGORIES_SEPARATOR = "=";
 	
 	public static final String RESOURCES_PATH = "/chiptools/jprobe/resources";
 	

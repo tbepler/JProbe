@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -121,30 +122,41 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		this.updateValidity();
 	}
 	
-	private void addDataComponent(){
-		int index = this.getNewComponentIndex();
-		if(!this.canAddComponent(index)){
-			return;
-		}
-		final DataSelectionPanel<D> comp = new DataSelectionPanel<D>( m_Core, this.componentIsOptional(index) );
+	protected DataSelectionPanel<D> newDataSelectionPanel(JProbeCore core, boolean optional){
+		return new DataSelectionPanel<D>( core, optional );
+	}
+	
+	protected void initSelectionPanel(final DataSelectionPanel<D> comp){
 		comp.setCloseAction(new DataSelectionPanel.OnClose() {
 			@Override
 			public void close() {
 				DataArgsComponent.this.removeDataComponent(comp);
 			}
 		});
+		for(Data d : m_Core.getDataManager().getAllData()){
+			if(m_DataClass.isAssignableFrom(d.getClass()) && shouldAddData(d)){
+				comp.addData(m_DataClass.cast(d));
+			}
+		}
+		
+		comp.register(this);
+		comp.setEnabled(this.isEnabled());
+	}
+	
+	private void addDataComponent(){
+		int index = this.getNewComponentIndex();
+		if(!this.canAddComponent(index)){
+			return;
+		}
+		DataSelectionPanel<D> comp = this.newDataSelectionPanel(m_Core, this.componentIsOptional(index));
+		this.initSelectionPanel(comp);
 		
 		m_DataComps.add(index, comp);
 		m_SelectedData.add(index, comp.getSelectedData());
-		comp.register(this);
-		
-		for(Data d : m_Core.getDataManager().getAllData()){
-			if(shouldAddData(d)){
-				comp.addData((D)d);
-			}
-		}
+	
 		this.add(comp, this.constraints());
-		comp.setEnabled(this.isEnabled());
+
+		this.updateValidity();
 	}
 	
 	private void removeDataComponent(DataSelectionPanel<D> comp){
@@ -164,6 +176,10 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 			if(d != null && this.isValid(d)) data.add(d);
 		}
 		return data;
+	}
+	
+	protected List<DataSelectionPanel<D>> getSelectionComps(){
+		return Collections.unmodifiableList(m_DataComps);
 	}
 	
 	private void addData(D d){
@@ -210,16 +226,16 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		switch(event.type()){
 		case DATA_ADDED:
 			d = event.getData();
-			if(this.isValid(d))
-				this.addData((D) d);
+			if(this.isValid(d) && m_DataClass.isAssignableFrom(d.getClass()))
+				this.addData(m_DataClass.cast(d));
 			break;
 		case DATA_NAME_CHANGE:
 			this.renameData(event.getOldName(), event.getNewName());
 			break;
 		case DATA_REMOVED:
 			d = event.getData();
-			if(this.isValid(d)){
-				this.removeData((D)d);
+			if(this.isValid(d) && m_DataClass.isAssignableFrom(d.getClass())){
+				this.removeData(m_DataClass.cast(d));
 			}
 			break;
 		case WORKSPACE_CLEARED:
@@ -227,8 +243,8 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 			break;
 		case WORKSPACE_LOADED:
 			for(Data data : m_Core.getDataManager().getAllData()){
-				if(this.isValid(data)){
-					this.addData((D) data);
+				if(this.isValid(data) && m_DataClass.isAssignableFrom(data.getClass())){
+					this.addData(m_DataClass.cast(data));
 				}
 			}
 		default:

@@ -10,7 +10,6 @@ import java.awt.event.ItemListener;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -44,24 +43,46 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 	public DataSelectionPanel(JProbeCore core, boolean optional){
 		super(new GridBagLayout());
 		m_Optional = optional;
-		m_DataBox = new DataComboBox<D>(core);
+		m_DataBox = this.createdDataComboBox(core);
 		m_DataBox.addItemListener(this);
+		this.add(m_DataBox, this.createDataComboBoxConstraints());
+		m_CloseButton = this.createCloseButton();
+		m_CloseButton.addActionListener(this);
+		m_CloseButton.setEnabled(optional);
+		this.add(m_CloseButton, this.createCloseButtonConstraints());
+		if(optional){
+			m_DataBox.addData(null);
+		}
+	}
+	
+	protected DataComboBox<D> createdDataComboBox(JProbeCore core){
+		return new DataComboBox<D>(core);
+	}
+	
+	protected GridBagConstraints createDataComboBoxConstraints(){
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 		gbc.insets = new Insets(0,0,2,2);
-		this.add(m_DataBox, gbc);
-		m_CloseButton = new IconButton(Constants.X_ICON, Constants.X_HIGHLIGHTED_ICON, Constants.X_CLICKED_ICON);
-		m_CloseButton.addActionListener(this);
-		m_CloseButton.setEnabled(optional);
+		return gbc;
+	}
+	
+	protected JButton createCloseButton(){
+		return new IconButton(Constants.X_ICON, Constants.X_HIGHLIGHTED_ICON, Constants.X_CLICKED_ICON);
+	}
+	
+	protected GridBagConstraints createCloseButtonConstraints(){
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 		gbc.insets = new Insets(0,2,2,0);
-		this.add(m_CloseButton, gbc);
-		if(optional){
-			m_DataBox.addData(null);
-		}
+		return gbc;
+	}
+	
+	public JProbeCore getCore(){
+		return m_DataBox.getCore();
 	}
 	
 	@Override
@@ -70,6 +91,7 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 		m_CloseButton.setEnabled(enabled && m_Optional);
 		super.setEnabled(enabled);
 	}
+	
 	
 	public void setCloseAction(OnClose closeAction){
 		m_CloseAction = closeAction;

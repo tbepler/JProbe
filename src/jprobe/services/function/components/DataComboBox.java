@@ -42,6 +42,10 @@ public class DataComboBox<D extends Data> extends JComboBox<String>{
 		m_Core = core;
 	}
 	
+	public JProbeCore getCore(){
+		return m_Core;
+	}
+	
 	public void addData(D d){
 		if(m_Data.containsKey(d)){
 			return;
