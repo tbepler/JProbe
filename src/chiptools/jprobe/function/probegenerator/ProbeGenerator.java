@@ -52,6 +52,11 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 	@Override
 	public Data execute(ProgressListener l, ProbeGeneratorParams params) throws Exception {
 		
+		//check whether bindingSite + 2x window exceeds PWM length and fire an error
+		if(params.BINDINGSITE + 2 * params.WINDOWSIZE < params.getPWM().getPWM().length()){
+			throw new RuntimeException("PWM length must be <= (binding site + 2*window).");
+		}
+		
 		PeakSequenceGroup peakSeqs = params.getPeakSeqs().getPeakSeqs();
 		int count = 0;
 		int prevPercent = this.fireProgressEvent(l, count, peakSeqs.size(), -1);
