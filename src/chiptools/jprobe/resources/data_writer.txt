@@ -6,3 +6,4 @@ PWMReaderWriter
 BindingProfileWriter
 GenericTableWriter
 MutationProfileWriter
+AgilentArrayWriter
