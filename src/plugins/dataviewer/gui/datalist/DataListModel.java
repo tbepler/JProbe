@@ -25,7 +25,14 @@ public class DataListModel extends DefaultTableModel implements CoreListener{
 		super(new String[][]{}, Constants.DATALIST_COL_HEADERS);
 		m_Core = core;
 		m_Core.addCoreListener(this);
-		this.initData();
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				initData();
+			}
+			
+		});
 	}
 	
 	private void initData(){

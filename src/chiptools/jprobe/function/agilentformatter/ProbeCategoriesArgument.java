@@ -31,7 +31,7 @@ public class ProbeCategoriesArgument extends ListArgument<AgilentFormatterParams
 
 	@Override
 	protected DataCategoriesComponent<Probes> generateComponent() {
-		return new DataCategoriesComponent<Probes>(
+		DataCategoriesComponent<Probes> comp = new DataCategoriesComponent<Probes>(
 				m_Core,
 				1,
 				Integer.MAX_VALUE,
@@ -41,15 +41,17 @@ public class ProbeCategoriesArgument extends ListArgument<AgilentFormatterParams
 
 					@Override
 					public boolean isValid(Data d) {
-						return Probes.class.isAssignableFrom(d.getClass());
+						return d instanceof Probes;
 					}
 					
 				}
 				);
+		return comp;
 	}
 
 	@Override
 	protected boolean isValid(DataCategoriesComponent<Probes> comp) {
+		if(comp == null) return false;
 		return comp.isStateValid();
 	}
 

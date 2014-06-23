@@ -35,7 +35,7 @@ public class AgilentArray extends AbstractFinalData{
 		case NAME:
 			return "Name";
 		default:
-			return AgilentProbe.getEntryName(col + 1);
+			return AgilentProbe.getEntryName(col - 1);
 		}
 	}
 	

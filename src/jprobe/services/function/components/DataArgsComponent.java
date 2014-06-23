@@ -49,7 +49,14 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		m_AllowDuplicates = allowDuplicates;
 		m_DataClass = dataClass;
 		m_ValidFunction = validFunction;
-		this.allocateComponents();
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				allocateComponents();
+			}
+			
+		});
 	}
 	
 	@Override
@@ -133,13 +140,15 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 				DataArgsComponent.this.removeDataComponent(comp);
 			}
 		});
+		
+		comp.register(this);
+		
 		for(Data d : m_Core.getDataManager().getAllData()){
 			if(m_DataClass.isAssignableFrom(d.getClass()) && shouldAddData(d)){
 				comp.addData(m_DataClass.cast(d));
 			}
 		}
 		
-		comp.register(this);
 		comp.setEnabled(this.isEnabled());
 	}
 	
@@ -220,36 +229,48 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		this.allocateComponents();
 	}
 	
-	@Override
-	public void update(CoreEvent event) {
+	public void process(CoreEvent event){
 		Data d;
 		switch(event.type()){
 		case DATA_ADDED:
 			d = event.getData();
-			if(this.isValid(d) && m_DataClass.isAssignableFrom(d.getClass()))
-				this.addData(m_DataClass.cast(d));
+			if(isValid(d) && m_DataClass.isAssignableFrom(d.getClass()))
+				addData(m_DataClass.cast(d));
 			break;
 		case DATA_NAME_CHANGE:
-			this.renameData(event.getOldName(), event.getNewName());
+			renameData(event.getOldName(), event.getNewName());
 			break;
 		case DATA_REMOVED:
 			d = event.getData();
-			if(this.isValid(d) && m_DataClass.isAssignableFrom(d.getClass())){
-				this.removeData(m_DataClass.cast(d));
+			if(isValid(d) && m_DataClass.isAssignableFrom(d.getClass())){
+				removeData(m_DataClass.cast(d));
 			}
 			break;
 		case WORKSPACE_CLEARED:
-			this.clear();
+			clear();
 			break;
 		case WORKSPACE_LOADED:
 			for(Data data : m_Core.getDataManager().getAllData()){
-				if(this.isValid(data) && m_DataClass.isAssignableFrom(data.getClass())){
-					this.addData(m_DataClass.cast(data));
+				if(isValid(data) && m_DataClass.isAssignableFrom(data.getClass())){
+					addData(m_DataClass.cast(data));
 				}
 			}
 		default:
 			break;
 		}
+	}
+	
+	@Override
+	public void update(final CoreEvent event) {
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				process(event);
+			}
+			
+		});
+
 	}
 
 	@Override
@@ -280,7 +301,6 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 			m_Valid = valid;
 			this.notifyListeners();
 		}
-		//System.out.println("Valid="+m_Valid);
 	}
 	
 	protected boolean isValid(Data d){

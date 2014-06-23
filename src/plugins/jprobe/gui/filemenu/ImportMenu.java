@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
@@ -33,12 +34,18 @@ public class ImportMenu extends JMenu implements CoreListener{
 			}
 			
 		});
-		for(Class<? extends Data> readable : m_Core.getDataManager().getReadableDataTypes()){
-			this.addImportItem(readable);
-		}
-		if(m_Items.isEmpty()){
-			this.setEnabled(false);
-		}
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				for(Class<? extends Data> readable : m_Core.getDataManager().getReadableDataTypes()){
+					addImportItem(readable);
+				}
+				setEnabled(!m_Items.isEmpty());
+			}
+			
+		});
+		
 	}
 	
 	public void cleanup(){
@@ -75,8 +82,7 @@ public class ImportMenu extends JMenu implements CoreListener{
 		}
 	}
 
-	@Override
-	public void update(CoreEvent event) {
+	public void process(CoreEvent event){
 		switch(event.type()){
 		case DATAREADER_ADDED:
 			this.addImportItem(event.getDataClass());
@@ -87,6 +93,18 @@ public class ImportMenu extends JMenu implements CoreListener{
 		default:
 			//do nothing
 		}
+	}
+	
+	@Override
+	public void update(final CoreEvent event) {
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				process(event);
+			}
+			
+		});
 	}
 	
 	

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
@@ -25,8 +26,16 @@ public class ExportMenu extends JMenu implements CoreListener{
 		m_Core.addCoreListener(this);
 		m_FileChooser = exportChooser;
 		m_Items = new HashMap<Data, JMenuItem>();
-		this.checkAllCoreData();
-		this.setEnabled(!m_Items.isEmpty());
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				checkAllCoreData();
+				setEnabled(!m_Items.isEmpty());
+			}
+			
+		});
+		
 	}
 	
 	private void checkAllCoreData(){
@@ -69,9 +78,8 @@ public class ExportMenu extends JMenu implements CoreListener{
 	public void cleanup(){
 		m_Core.removeCoreListener(this);
 	}
-
-	@Override
-	public void update(CoreEvent event) {
+	
+	protected void process(CoreEvent event){
 		switch(event.type()){
 		case DATA_ADDED:
 			Data added = event.getData();
@@ -103,6 +111,18 @@ public class ExportMenu extends JMenu implements CoreListener{
 		default:
 			//do nothing
 		}
+	}
+
+	@Override
+	public void update(final CoreEvent event) {
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				process(event);
+			}
+			
+		});
 	}
 	
 	

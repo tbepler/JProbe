@@ -5,9 +5,11 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import jprobe.services.function.components.ValidListener;
+import jprobe.services.function.components.ValidNotifier;
 import util.progress.ProgressListener;
 
-public abstract class ListArgument<P, E, C extends JComponent> extends AbstractArgument<P> {
+public abstract class ListArgument<P, E, C extends JComponent & ValidNotifier> extends AbstractArgument<P> implements ValidListener {
 
 	private C m_Comp = null;
 	
@@ -16,10 +18,15 @@ public abstract class ListArgument<P, E, C extends JComponent> extends AbstractA
 		super(name, tooltip, category, shortFlag, prototypeValue, optional);
 	}
 	
+	private void initComponent(){
+		m_Comp = this.generateComponent();
+		m_Comp.addListener(this);
+	}
+	
 	/**
 	 * This method should create and return the JComponent used by this Argument to accept
-	 * input from the user. This method is called lazily the first time this Argument's component
-	 * is requested.
+	 * input from the user. This method is called lazily the first time the component
+	 * is needed.
 	 * @return JComponent for accepting input from the user
 	 */
 	protected abstract C generateComponent();
@@ -59,14 +66,13 @@ public abstract class ListArgument<P, E, C extends JComponent> extends AbstractA
 
 	@Override
 	public boolean isValid() {
+		if(m_Comp == null) this.initComponent();
 		return this.isValid(m_Comp);
 	}
 
 	@Override
 	public JComponent getComponent() {
-		if(m_Comp == null){
-			m_Comp = this.generateComponent();
-		}
+		if(m_Comp == null) this.initComponent();
 		return m_Comp;
 	}
 	
@@ -93,6 +99,11 @@ public abstract class ListArgument<P, E, C extends JComponent> extends AbstractA
 	public void parse(ProgressListener l, P params, String[] args) {
 		List<E> entries = this.parse(l, args);
 		this.process(params, entries);
+	}
+	
+	@Override
+	public void update(ValidNotifier notifier, boolean valid){
+		this.notifyListeners();
 	}
 
 }

@@ -37,7 +37,14 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 		m_Constraints.gridwidth = 3;
 		m_Tabs = new HashMap<Data, DataTab>();
 		m_TabLables = new HashMap<Data, DataTabLabel>();
-		this.initTabs();
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				initTabs();
+			}
+			
+		});
 	}
 	
 	public void initTabs(){

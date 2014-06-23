@@ -32,7 +32,10 @@ public class DataCategoriesComponent<D extends Data> extends DataArgsComponent<D
 		for(DataSelectionPanel<D> comp : this.getSelectionComps()){
 			if(comp instanceof DataCategoriesSelectionComponent){
 				DataCategoriesSelectionComponent<D> sel = (DataCategoriesSelectionComponent<D>) comp;
-				list.add(sel.getDataCategory());
+				DataCategory<D> category = sel.getDataCategory();
+				if(category != null){
+					list.add(category);
+				}
 			}
 		}
 		return list;

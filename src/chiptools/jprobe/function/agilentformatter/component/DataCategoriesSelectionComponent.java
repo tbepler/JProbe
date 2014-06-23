@@ -29,6 +29,7 @@ public class DataCategoriesSelectionComponent<D extends Data> extends DataSelect
 		}else{
 			text.setText("");
 		}
+		this.revalidate();
 	}
 	
 	@Override
@@ -38,6 +39,9 @@ public class DataCategoriesSelectionComponent<D extends Data> extends DataSelect
 	}
 	
 	public DataCategory<D> getDataCategory(){
+		if(this.getSelectedData() == null){
+			return null;
+		}
 		return new DataCategory<D>(m_Text.getText(), this.getSelectedData());
 	}
 	
@@ -48,26 +52,30 @@ public class DataCategoriesSelectionComponent<D extends Data> extends DataSelect
 	protected GridBagConstraints createTextFieldConstraints(){
 		GridBagConstraints gbc = super.createDataComboBoxConstraints();
 		gbc.gridx = 0;
+		gbc.weightx = 1.0;
 		return gbc;
 	}
 	
 	@Override
 	protected GridBagConstraints createDataComboBoxConstraints(){
 		GridBagConstraints gbc = super.createDataComboBoxConstraints();
+		gbc.weightx = 0;
 		gbc.gridx = 1;
 		return gbc;
 	}
 	
 	@Override
 	protected GridBagConstraints createCloseButtonConstraints(){
-		GridBagConstraints gbc = this.createCloseButtonConstraints();
+		GridBagConstraints gbc = super.createCloseButtonConstraints();
 		gbc.gridx = 2;
 		return gbc;
 	}
 	
 	@Override
 	public void itemStateChanged(ItemEvent e){
-		this.updateCategory(m_Text, this.getSelectedData());
+		if(m_Text != null){
+			this.updateCategory(m_Text, this.getSelectedData());
+		}
 		super.itemStateChanged(e);
 	}
 	
