@@ -90,7 +90,7 @@ public class AgilentFormatter extends AbstractChiptoolsFunction<AgilentFormatter
 	protected static String createInfo(String direction, int replicate, String type){
 		StringBuilder infoBuilder = new StringBuilder();
 		if(type != null) infoBuilder.append(type).append("_");
-		infoBuilder.append("direction").append("_r").append(replicate);
+		infoBuilder.append(direction).append("_r").append(replicate);
 		return infoBuilder.toString();
 	}
 	

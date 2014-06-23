@@ -44,11 +44,11 @@ public class AgilentArray extends AbstractFinalData{
 	}
 	
 	protected int getNumPlaces(){
-		return this.size() / 10 + 1;
+		return 1 + (int) Math.log10(this.size());
 	}
 
 	protected String getName(int index){
-		String format = "%s_%-0"+this.getNumPlaces()+"s";
+		String format = "%s_%0"+this.getNumPlaces()+"d";
 		return String.format(format, m_Name, index+1);
 	}
 	

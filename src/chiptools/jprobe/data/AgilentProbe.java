@@ -96,7 +96,7 @@ public class AgilentProbe implements Serializable{
 	}
 	
 	public String getCategoryAndInfo(int numPlaces){
-		String format = "%s_%-0" + numPlaces + "s_%s";
+		String format = "%s_%0" + numPlaces + "d_%s";
 		return String.format( format , m_Category, m_CategoryNum, m_Info );
 	}
 	

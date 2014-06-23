@@ -34,7 +34,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 	private static final String STRAND_REGEX = Strand.STRAND_REGEX;
 	private static final String MUT_REGEX = "([Mm][Uu][Tt][Aa][Nn][Tt])|([Mm])";
 	private static final String MUT_TYPE_REGEX = MUT_REGEX+"|([Ww][Ii][Ll][Dd][Tt][Yy][Pp][Ee])|([Ww])";
-	private static final String TYPE_REGEX = "_t\\d_";
+	private static final String TYPE_REGEX = "_t\\d([_-]\\.*)?$";
 	
 	public static Probe parseProbe(String s) throws ParsingException{
 		try{
@@ -250,7 +250,7 @@ public class Probe implements Serializable, Comparable<Probe>{
 	public String getType(){
 		Matcher regexMatcher = Pattern.compile(TYPE_REGEX).matcher(m_Name);
 		if(regexMatcher.find()){
-			return regexMatcher.group().replaceAll("_", "");
+			return regexMatcher.group().replaceAll("_", "").replaceAll("-", "");
 		}
 		return null;
 	}

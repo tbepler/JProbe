@@ -55,7 +55,7 @@ public class JProbe implements JProbeCore{
 		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0," +
 				"jprobe.services.data;version=1.0.0," +
 				"jprobe.services.function;version=1.0.0,"
-				+ "jprobe.services.command;version=1.0.0,"
+				+ "jprobe.services.function.components;version=1.0.0,"
 				+ "util.progress;version=1.0.0,"
 				+ "util.gui;version=1.0.0,"
 				+ "util;version=1.0.0,"
