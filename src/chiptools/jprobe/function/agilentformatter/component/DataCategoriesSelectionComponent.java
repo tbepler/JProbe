@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ItemEvent;
 
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import chiptools.jprobe.function.agilentformatter.DataCategory;
 import jprobe.services.JProbeCore;
@@ -19,7 +20,14 @@ public class DataCategoriesSelectionComponent<D extends Data> extends DataSelect
 		super(core, optional);
 		m_Text = this.createCategoryField();
 		this.add(m_Text, this.createTextFieldConstraints());
-		this.updateCategory(m_Text, this.getSelectedData());
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				updateCategory(m_Text, getSelectedData());
+			}
+			
+		});
 	}
 	
 	protected void updateCategory(JTextField text, D selected){
@@ -29,6 +37,7 @@ public class DataCategoriesSelectionComponent<D extends Data> extends DataSelect
 		}else{
 			text.setText("");
 		}
+		text.setEnabled(selected != null);
 		this.revalidate();
 	}
 	
