@@ -7,6 +7,7 @@ import javax.swing.AbstractSpinnerModel;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -27,6 +28,7 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 		
 		private Model(Spinner<V> spin, V startValue){
 			m_Spinner = spin;
+			m_Val = startValue;
 		}
 		
 		@Override
@@ -49,8 +51,10 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 			try{
 				@SuppressWarnings("unchecked")
 				V val = (V) value;
-				m_Val = val;
-				this.fireStateChanged();
+				if(val != m_Val){
+					m_Val = val;
+					this.fireStateChanged();
+				}
 			}catch(Exception e){
 				throw new IllegalArgumentException(e);
 			}
@@ -68,19 +72,25 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 	
 	public static final String PROTOTYPE_TEXT = "entry";
 	
-	private final JSpinner m_Editor;
+	//instantiate the JSpinner lazily
+	private JSpinner m_Editor = null;
 	private final Model<T> m_Model;
+	private final int m_TextAlignment;
 	
 	protected SpinnerArgument(String name, String tooltip, String category, Character shortFlag, String prototypeVal, boolean optional, T startValue, Spinner<T> model, int textAlignment) {
 		super(name, tooltip, category, shortFlag, prototypeVal, optional);
 		m_Model = new Model<T>(model, startValue);
 		m_Model.addChangeListener(this);
+		m_TextAlignment = textAlignment;
+	}
+	
+	private void initSpinner(){
+		JTextField forSizing = new JTextField(PROTOTYPE_TEXT);
+		Dimension size = forSizing.getPreferredSize();
+		
 		m_Editor = new JSpinner(m_Model);
-		getTextField(m_Editor).setHorizontalAlignment(textAlignment);
+		getTextField(m_Editor).setHorizontalAlignment(m_TextAlignment);
 		getTextField(m_Editor).setEditable(true);
-		getTextField(m_Editor).setText(PROTOTYPE_TEXT);
-		Dimension size = getTextField(m_Editor).getPreferredSize();
-		m_Model.setValue(startValue);
 		getTextField(m_Editor).setPreferredSize(size);
 		getTextField(m_Editor).setMinimumSize(size);
 	}
@@ -93,6 +103,7 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 		if(args.length < 1 || args.length > 1){
 			throw new RuntimeException(this.getName() + " requires 1 argument. Received "+args.length);
 		}
+		if(m_Editor == null) this.initSpinner();
 		getTextField(m_Editor).setText(args[0]);
 		try {
 			getTextField(m_Editor).commitEdit();
@@ -113,6 +124,7 @@ public abstract class SpinnerArgument<P,T> extends AbstractArgument<P> implement
 
 	@Override
 	public JComponent getComponent() {
+		if(m_Editor == null) this.initSpinner();
 		return m_Editor;
 	}
 

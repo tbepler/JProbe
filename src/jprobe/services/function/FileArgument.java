@@ -24,12 +24,17 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 	public static final String PROTOTYPE_TEXT = "File name here";
 	public static final String PROTOTYPE_VAL = "FILE";
 	
-	private final JButton m_Button;
-	private final JTextField m_Text;
+	//instantiate the swing components lazily
+	private JButton m_Button = null;
+	private JTextField m_Text = null;
 	private File m_Selected;
 
 	protected FileArgument(String name, String tooltip, String category, Character shortFlag, boolean optional) {
 		super(name, tooltip, category, shortFlag, PROTOTYPE_VAL, optional);
+		//swing components instantiated lazily
+	}
+	
+	private void initComponents(){
 		m_Button = new JButton(this.getButtonText());
 		m_Button.addActionListener(this);
 		m_Text = new JTextField();
@@ -70,7 +75,9 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 
 	protected void setFile(File f){
 		m_Selected = f;
-		m_Text.setText(m_Selected.getPath());
+		if(m_Text != null){
+			m_Text.setText(m_Selected.getPath());
+		}
 		this.notifyListeners();
 	}
 
@@ -81,6 +88,9 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 
 	@Override
 	public JComponent getComponent() {
+		if(m_Text == null || m_Button == null){
+			this.initComponents();
+		}
 		JPanel comp = new JPanel(new GridBagLayout()){
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -88,6 +98,7 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 				for(Component c : this.getComponents()){
 					c.setEnabled(enabled);
 				}
+				super.setEnabled(enabled);
 			}
 		};
 		GridBagConstraints gbc = new GridBagConstraints();

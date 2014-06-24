@@ -13,13 +13,19 @@ public abstract class StringArgument<P> extends AbstractArgument<P> implements A
 	
 	public static final String PROTOTYPE_TEXT = "some string here";
 	
-	private final JTextField m_TextField;
+	private final String m_StartValue;
+	//instantiate lazily
+	private JTextField m_TextField = null;
 
 	protected StringArgument(String name, String tooltip, String category, Character shortFlag, String prototypeVal, boolean optional, String startValue) {
 		super(name, tooltip, category, shortFlag, prototypeVal, optional);
+		m_StartValue = startValue;
+	}
+	
+	private void initTextField(){
 		m_TextField = new JTextField(PROTOTYPE_TEXT);
 		Dimension size = m_TextField.getPreferredSize();
-		m_TextField.setText(startValue);
+		m_TextField.setText(m_StartValue);
 		m_TextField.setPreferredSize(size);
 		m_TextField.setMinimumSize(size);
 		m_TextField.addActionListener(this);
@@ -41,11 +47,13 @@ public abstract class StringArgument<P> extends AbstractArgument<P> implements A
 
 	@Override
 	public boolean isValid() {
+		if(m_TextField == null) this.initTextField();
 		return this.isValid(m_TextField.getText());
 	}
 
 	@Override
 	public JComponent getComponent() {
+		if(m_TextField == null) this.initTextField();
 		return m_TextField;
 	}
 

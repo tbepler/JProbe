@@ -36,7 +36,9 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 	private final JProbeCore m_Core;
 	private final int m_Min;
 	private final int m_Max;
-	private final DataArgsComponent<D> m_Component;
+	private final boolean m_AllowDuplicates;
+	//lazily instantiate the component
+	private DataArgsComponent<D> m_Component = null;
 	private final Class<D> m_DataClass;
 	
 	protected DataArgument(
@@ -57,15 +59,7 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 		m_Core = core;
 		m_Min = minArgs;
 		m_Max = maxArgs;
-		m_Component = this.createDataArgsComponent(
-				core,
-				minArgs,
-				maxArgs,
-				allowDuplicates,
-				dataClass,
-				new DataArgsComponent.DataValidFunction() { @Override public boolean isValid(Data d) { return DataArgument.this.isValid(d); } }
-				);
-		m_Component.addListener(this);
+		m_AllowDuplicates = allowDuplicates;
 	}
 	
 	protected DataArgument(
@@ -119,8 +113,30 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 	 */
 	protected abstract void process(P params, List<D> data);
 
+	private void initComponent(){
+		m_Component = this.createDataArgsComponent(
+				m_Core,
+				m_Min,
+				m_Max,
+				m_AllowDuplicates,
+				m_DataClass,
+				new DataValidFunction(){
+
+					@Override
+					public boolean isValid(Data d) {
+						return DataArgument.this.isValid(d);
+					}
+
+				}
+				);
+		m_Component.addListener(this);
+	}
+
 	@Override
-	public boolean isValid() { return m_Component.isStateValid(); }
+	public boolean isValid() {
+		if(m_Component == null) this.initComponent();
+		return m_Component.isStateValid();
+	}
 	
 	protected boolean isValid(Data d){
 		return m_DataClass.isAssignableFrom(d.getClass());
@@ -128,6 +144,7 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 
 	@Override
 	public JComponent getComponent() {
+		if(m_Component == null) this.initComponent();
 		return m_Component;
 	}
 

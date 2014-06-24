@@ -58,6 +58,7 @@ public class JProbe implements JProbeCore{
 				+ "jprobe.services.function.components;version=1.0.0,"
 				+ "util.progress;version=1.0.0,"
 				+ "util.gui;version=1.0.0,"
+				+ "util.crossplatform;version=1.0.0,"
 				+ "util;version=1.0.0,"
 				+ "util.genome;version=1.0.0,"
 				+ "util.genome.reader;version=1.0.0,"
