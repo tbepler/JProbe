@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.ParsingException;
@@ -42,6 +44,7 @@ public class Parser {
 			queries.add(new PeakQuery(p, peakSeqs));
 		}
 		reader.read(queries, new ArrayList<SequenceQuery>(), new ArrayList<LocationBoundedSequenceQuery>());
+		Collections.sort(peakSeqs);
 		return new PeakSequenceGroup(peakSeqs);
 	}
 	

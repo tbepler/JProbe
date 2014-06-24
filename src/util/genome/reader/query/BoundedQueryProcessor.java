@@ -87,16 +87,14 @@ public class BoundedQueryProcessor implements QueryProcessor{
 		//update the current sequence with the new sequence
 		if(m_Seq == null){
 			m_Seq = next;
-		}else if(!next.getChromosome().equals(m_Seq.getChromosome())){
-			m_Seq = next;
-			m_Active.clear();
-			m_ProcessedTo.clear();
 		}else{
 			m_Seq = m_Seq.join(next);
 		}
 		//move remaining queries that start in sequence to active queries
 		Chromosome chrom = m_Seq.getChromosome();
 		if(!chrom.equals(m_CurChrom)){
+			m_Active.clear();
+			m_ProcessedTo.clear();
 			m_CurChrom = chrom;
 			m_CurQueries = m_Remaining.get(m_CurChrom);
 			m_Remaining.remove(m_CurChrom);
@@ -129,7 +127,7 @@ public class BoundedQueryProcessor implements QueryProcessor{
 
 	@Override
 	public boolean done() {
-		return m_Remaining.isEmpty() && m_Active.isEmpty();
+		return m_Remaining.isEmpty() && m_Active.isEmpty() && (m_CurQueries == null || m_CurQueries.isEmpty());
 	}
 
 }

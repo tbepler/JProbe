@@ -49,19 +49,16 @@ public class LocationQueryProcessor implements QueryProcessor{
 		}
 		if(m_Seq == null){
 			m_Seq = next;
-		}else if(!next.getChromosome().equals(m_Seq.getChromosome())){
-			m_Active.clear();
-			m_ActiveStarts.clear();
-			m_Seq = next;
 		}else{
 			m_Seq = m_Seq.join(next);
 		}
 		Chromosome chrom = m_Seq.getChromosome();
 		//update the current chromosome and queries to the new chromosome if it has changed
 		if(!chrom.equals(m_CurChrom)){
+			m_Active.clear();
+			m_ActiveStarts.clear();
 			m_CurChrom = chrom;
 			m_CurQueries = m_Remaining.get(m_CurChrom);
-			//System.err.println(m_CurQueries.size() + " queries");
 			m_Remaining.remove(m_CurChrom);
 		}
 		//move queries that start in the region to the active queries q
@@ -97,7 +94,7 @@ public class LocationQueryProcessor implements QueryProcessor{
 
 	@Override
 	public boolean done() {
-		return m_Remaining.isEmpty() && m_Active.isEmpty();
+		return m_Remaining.isEmpty() && m_Active.isEmpty() && (m_CurQueries == null || m_CurQueries.isEmpty());
 	}
 
 }

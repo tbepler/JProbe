@@ -12,7 +12,7 @@ import util.genome.GenomicRegion;
 import util.genome.ParsingException;
 import util.genome.Strand;
 
-public class Peak implements Serializable{
+public class Peak implements Serializable, Comparable<Peak>{
 	private static final long serialVersionUID = 1L;
 	
 	public static final String[][] FORMATS = Parser.PEAK_FORMATS;
@@ -141,7 +141,7 @@ public class Peak implements Serializable{
 				this.getSignalVal(),
 				this.getPVal(),
 				this.getQVal(),
-				this.getPointSource()
+				this.getPointSource() < 0 ? this.getPointSource() : summitRegion
 				);
 	}
 	
@@ -215,6 +215,15 @@ public class Peak implements Serializable{
 	}
 	public int getPointSource() {
 		return m_PointSource;
+	}
+
+	@Override
+	public int compareTo(Peak p) {
+		if(p == null) return -1;
+		if(p == this) return 0;
+		int compare = m_Region.compareTo(p.m_Region);
+		if(compare != 0) return compare;
+		return m_Name.compareTo(p.m_Name);
 	}
 	
 }
