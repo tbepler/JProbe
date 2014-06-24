@@ -23,6 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import org.osgi.framework.Bundle;
 
@@ -35,12 +36,18 @@ import plugins.jprobe.gui.services.PreferencesPanel;
 import plugins.jprobe.gui.utils.DialogueMenu;
 import plugins.jprobe.gui.utils.TabDialogueWindow;
 import util.gui.SwingUtils;
+import jprobe.services.CoreEvent;
+import jprobe.services.CoreListener;
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
+import jprobe.services.LoadEvent;
+import jprobe.services.LoadListener;
 import jprobe.services.Log;
+import jprobe.services.SaveEvent;
+import jprobe.services.SaveListener;
 import jprobe.services.data.Data;
 
-public class JProbeGUIFrame extends JFrame implements JProbeGUI{
+public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, SaveListener, LoadListener{
 	private static final long serialVersionUID = 1L;
 	
 	private Bundle m_Bundle;
@@ -57,13 +64,18 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	private JFileChooser m_ExportChooser;
 	private NotificationPanel m_NotePanel;
 	private Collection<GUIListener> m_Listeners;
+	private final String m_Name;
 	
-	JProbeGUIFrame(JProbeCore core, String name, Bundle bundle, GUIConfig config){
-		super(name);
+	public JProbeGUIFrame(JProbeCore core, String name, Bundle bundle, GUIConfig config){
+		super();
+		m_Name = name;
 		m_ImportChooser = new JFileChooser();
 		m_ExportChooser = new JFileChooser();
-		this.m_Bundle = bundle;
-		this.m_Core = core;
+		m_Bundle = bundle;
+		m_Core = core;
+		m_Core.registerSave(this);
+		m_Core.registerLoad(this);
+		m_Core.getDataManager().addListener(this);
 		m_PluginMenuItems = new PriorityQueue<JMenu>(10, new Comparator<JMenu>(){
 			@Override
 			public int compare(JMenu arg0, JMenu arg1){
@@ -101,6 +113,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 		
 		m_NotePanel = initNotificationPanel(m_Core);
 		
+		this.setModified(false);
 		this.pack();
 		this.setSize(config.getDimension());
 		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
@@ -142,6 +155,9 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	
 	@Override
 	public void dispose(){
+		m_Core.getDataManager().removeListener(this);
+		m_Core.unregisterLoad(this);
+		m_Core.unregisterSave(this);
 		m_NotePanel.dispose();
 		super.dispose();
 	}
@@ -261,6 +277,44 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI{
 	@Override
 	public void read(Class<? extends Data> type) {
 		ExportImportUtil.importData(type, m_Core, m_ImportChooser, this);
+	}
+	
+	protected void setModified(final boolean modified){
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				//set the Window.documentModified property for mac os
+				getRootPane().putClientProperty("Window.documentModified", modified);
+				//add a * to the title of the pane if modified is true
+				if(modified){
+					setTitle(m_Name + " - *" + SaveLoadUtil.getWorkspaceName());
+				}else{
+					setTitle(m_Name + " - " + SaveLoadUtil.getWorkspaceName());
+				}
+			}
+			
+		});
+
+	}
+
+	@Override
+	public void update(CoreEvent event) {
+		this.setModified(m_Core.getDataManager().changedSinceSave());
+	}
+
+	@Override
+	public void update(LoadEvent e) {
+		if(e.type == LoadEvent.Type.LOADED){
+			this.setModified(false);
+		}
+	}
+
+	@Override
+	public void update(SaveEvent e) {
+		if(e.type == SaveEvent.Type.SAVED){
+			this.setModified(false);
+		}
 	}
 	
 }

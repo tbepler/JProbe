@@ -57,6 +57,9 @@ public class DataListModel extends DefaultTableModel implements CoreListener{
 	
 	@Override
 	public void setValueAt(Object aValue, int row, int col){
+		if(row < 0 || row >= this.getRowCount() || col < 0 || col >= this.getColumnCount()){
+			return;
+		}
 		try{
 			String newName = (String) aValue;
 			String oldName = (String) this.getValueAt(row, col);

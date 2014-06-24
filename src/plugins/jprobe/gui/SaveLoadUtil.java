@@ -18,6 +18,14 @@ public class SaveLoadUtil {
 	private static volatile File LAST_WORKSPACE_FILE = null;
 	private static File LAST_USER_SAVE_FILE = null;
 	
+	public static String getWorkspaceName(){
+		if(LAST_USER_SAVE_FILE == null){
+			return "Untitled Workspace";
+		}else{
+			return LAST_USER_SAVE_FILE.getName();
+		}
+	}
+	
 	public static File getLastSave(){
 		return LAST_WORKSPACE_FILE;
 	}
