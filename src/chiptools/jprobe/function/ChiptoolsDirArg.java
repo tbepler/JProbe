@@ -15,7 +15,7 @@ public abstract class ChiptoolsDirArg<P> extends ChiptoolsFileArg<P> {
 	
 	@Override
 	protected JFileChooser getJFileChooser(){
-		return Constants.CHIPTOOLS_DIR_CHOOSER;
+		return Constants.getChiptoolsDirChooser();
 	}
 
 	@Override

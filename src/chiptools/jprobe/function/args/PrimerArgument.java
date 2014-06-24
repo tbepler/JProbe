@@ -90,7 +90,7 @@ public class PrimerArgument extends FileArgument<PrimerParam>{
 
 	@Override
 	protected JFileChooser getJFileChooser() {
-		return Constants.CHIPTOOLS_FILE_CHOOSER;
+		return Constants.getChiptoolsFileChooser();
 	}
 
 }

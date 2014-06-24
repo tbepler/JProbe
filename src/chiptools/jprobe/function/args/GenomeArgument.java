@@ -39,7 +39,7 @@ public class GenomeArgument extends FileArgument<GenomeParam>{
 
 	@Override
 	protected JFileChooser getJFileChooser() {
-		return Constants.CHIPTOOLS_FILE_CHOOSER;
+		return Constants.getChiptoolsFileChooser();
 	}
 
 }

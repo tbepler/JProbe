@@ -23,7 +23,7 @@ public abstract class ChiptoolsFileArg<P> extends FileArgument<P>{
 
 	@Override
 	protected JFileChooser getJFileChooser(){
-		return Constants.CHIPTOOLS_FILE_CHOOSER;
+		return Constants.getChiptoolsFileChooser();
 	}
 	
 	@Override

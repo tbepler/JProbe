@@ -34,13 +34,28 @@ public class Constants {
 	public static final String READER_FILE = RESOURCES_PATH + "/data_reader.txt";
 	public static final String WRITER_FILE = RESOURCES_PATH + "/data_writer.txt";
 	
-	public static final JFileChooser CHIPTOOLS_FILE_CHOOSER = new JFileChooser();
-	public static final JFileChooser CHIPTOOLS_DIR_CHOOSER = createDirChooser();
+	//instantiate the JFileChooser lazily
+	private static JFileChooser CHIPTOOLS_FILE_CHOOSER = null;
+	public static JFileChooser getChiptoolsFileChooser(){
+		if(CHIPTOOLS_FILE_CHOOSER == null){
+			CHIPTOOLS_FILE_CHOOSER = new JFileChooser();
+		}
+		return CHIPTOOLS_FILE_CHOOSER;
+	}
+	
+	//instantiate lazily
+	private static JFileChooser CHIPTOOLS_DIR_CHOOSER = null;
 	private static JFileChooser createDirChooser(){
 		JFileChooser dir = new JFileChooser();
 		dir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		dir.setAcceptAllFileFilterUsed(false);
 		return dir;
+	}
+	public static JFileChooser getChiptoolsDirChooser(){
+		if(CHIPTOOLS_DIR_CHOOSER == null){
+			CHIPTOOLS_DIR_CHOOSER = createDirChooser();
+		}
+		return CHIPTOOLS_DIR_CHOOSER;
 	}
 	
 	public static final String DATA_PACKAGE = "chiptools.jprobe.data.";
