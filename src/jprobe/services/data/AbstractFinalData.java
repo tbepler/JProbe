@@ -63,6 +63,7 @@ public abstract class AbstractFinalData implements Data{
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 		}
 		TableFormatter.formatTable(table, Constants.DATA_TABLE_MAX_COL_WIDTH, Constants.DATA_TABLE_ROW_SAMPLE);
+		table.setShowGrid(true);
 		return table;
 	}
 	
