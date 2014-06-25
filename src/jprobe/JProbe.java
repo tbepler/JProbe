@@ -52,24 +52,7 @@ public class JProbe implements JProbeCore{
 		//create felix config map
 		Map felixConfig = new HashMap();
 		//export the core service package
-		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, "jprobe.services;version=1.0.0," +
-				"jprobe.services.data;version=1.0.0," +
-				"jprobe.services.function;version=1.0.0,"
-				+ "jprobe.services.function.components;version=1.0.0,"
-				+ "crossplatform;version=1.0.0,"
-				+ "util.progress;version=1.0.0,"
-				+ "util.gui;version=1.0.0,"
-				+ "util.crossplatform;version=1.0.0,"
-				+ "util;version=1.0.0,"
-				+ "util.genome;version=1.0.0,"
-				+ "util.genome.reader;version=1.0.0,"
-				+ "util.genome.reader.query;version=1.0.0,"
-				+ "util.genome.reader.threaded;version=1.0.0,"
-				+ "util.genome.peak;version=1.0.0,"
-				+ "util.genome.kmer;version=1.0.0,"
-				+ "util.genome.probe;version=1.0.0,"
-				+ "util.genome.pwm;version=1.0.0,"
-				+ "util.xmlserializer;version=1.0.0");
+		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, jprobe.Constants.FELIX_EXPORT_PACKAGES);
 		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,"
 				+ "javax.swing.*");
 		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, config.getFelixStorageClean());

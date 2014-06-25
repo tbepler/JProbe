@@ -20,6 +20,24 @@ public class Constants {
 	
 	public static final String PLUGIN_AUTODEPLOY = JAR_DIR + File.separator + "plugins";
 	
+	public static final String FELIX_EXPORT_PACKAGES = "jprobe.services;version=1.0.0," +
+			"jprobe.services.data;version=1.0.0," +
+			"jprobe.services.function;version=1.0.0,"
+			+ "jprobe.services.function.components;version=1.0.0,"
+			+ "bepler.crossplatform;version=1.0.0,"
+			+ "util.progress;version=1.0.0,"
+			+ "util.gui;version=1.0.0,"
+			+ "util;version=1.0.0,"
+			+ "util.genome;version=1.0.0,"
+			+ "util.genome.reader;version=1.0.0,"
+			+ "util.genome.reader.query;version=1.0.0,"
+			+ "util.genome.reader.threaded;version=1.0.0,"
+			+ "util.genome.peak;version=1.0.0,"
+			+ "util.genome.kmer;version=1.0.0,"
+			+ "util.genome.probe;version=1.0.0,"
+			+ "util.genome.pwm;version=1.0.0,"
+			+ "util.xmlserializer;version=1.0.0";
+	
 	public static final String USER_HOME_DIR = System.getProperty("user.home");
 	public static String USER_JPROBE_DIR = USER_HOME_DIR + File.separator + "jprobe";
 	

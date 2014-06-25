@@ -10,8 +10,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import crossplatform.OS;
-import crossplatform.Platform;
+import bepler.crossplatform.OS;
+import bepler.crossplatform.Platform;
 import jprobe.Constants;
 import jprobe.JProbeActivator;
 import jprobe.services.ErrorHandler;

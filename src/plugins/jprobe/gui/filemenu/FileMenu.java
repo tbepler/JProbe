@@ -2,8 +2,8 @@ package plugins.jprobe.gui.filemenu;
 
 import javax.swing.JMenu;
 
-import crossplatform.OS;
-import crossplatform.Platform;
+import bepler.crossplatform.OS;
+import bepler.crossplatform.Platform;
 import plugins.jprobe.gui.JProbeGUIFrame;
 import jprobe.services.JProbeCore;
 

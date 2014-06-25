@@ -27,8 +27,8 @@ import javax.swing.SwingUtilities;
 
 import org.osgi.framework.Bundle;
 
-import crossplatform.Platform;
-import crossplatform.QuitHandler;
+import bepler.crossplatform.Platform;
+import bepler.crossplatform.QuitHandler;
 import plugins.jprobe.gui.filemenu.FileMenu;
 import plugins.jprobe.gui.notification.NotificationPanel;
 import plugins.jprobe.gui.services.GUIEvent;

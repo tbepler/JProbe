@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
-import crossplatform.Platform;
+import bepler.crossplatform.Platform;
 import plugins.jprobe.gui.services.GUIErrorManager;
 import plugins.jprobe.gui.services.JProbeGUI;
 
