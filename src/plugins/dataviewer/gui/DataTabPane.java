@@ -1,6 +1,5 @@
 package plugins.dataviewer.gui;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +16,7 @@ import jprobe.services.data.Data;
 public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer{
 	private static final long serialVersionUID = 1L;
 	
-	public static final Dimension PREFERRED = new Dimension(800, 800);
+	//public static final Dimension PREFERRED = new Dimension(800, 800);
 	
 	private DataManager m_DataManager;
 	private Map<Data, DataTab> m_Tabs;
@@ -26,7 +25,6 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	
 	public DataTabPane(DataManager dataManager){
 		super();
-		this.setPreferredSize(PREFERRED);
 		m_DataManager = dataManager;
 		m_DataManager.addListener(this);
 		m_Constraints = new GridBagConstraints();

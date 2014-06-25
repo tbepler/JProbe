@@ -1,6 +1,5 @@
 package plugins.dataviewer.gui;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -22,7 +21,6 @@ public class DataTabLabel extends JPanel implements ActionListener{
 		m_Tab = tab;
 		m_Label = new JLabel(title);
 		m_Label.setOpaque(false);
-		m_Label.setAlignmentY(Component.CENTER_ALIGNMENT);
 		this.add(m_Label);
 		JButton close = new IconButton(Constants.getXIcon(), Constants.getXHighlightedIcon(), Constants.getXClickedIcon());
 		close.addActionListener(this);
@@ -31,7 +29,6 @@ public class DataTabLabel extends JPanel implements ActionListener{
 	
 	public void setTitle(String title){
 		m_Label.setText(title);
-		this.revalidate();
 	}
 
 	@Override

@@ -23,7 +23,6 @@ public class DataViewerSplitPane extends JSplitPane{
 		this.setLeftComponent(m_DataTab);
 		this.setRightComponent(m_DataList);
 		this.setResizeWeight(1.0);
-		
 	}
 	
 	public void cleanup(){

@@ -1,6 +1,5 @@
 package jprobe.services.data;
 
-import java.awt.Color;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -10,8 +9,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import bepler.crossplatform.OS;
-import bepler.crossplatform.Platform;
 import jprobe.Constants;
 import jprobe.JProbeActivator;
 import jprobe.services.ErrorHandler;
@@ -66,10 +63,6 @@ public abstract class AbstractFinalData implements Data{
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 		}
 		TableFormatter.formatTable(table, Constants.DATA_TABLE_MAX_COL_WIDTH, Constants.DATA_TABLE_ROW_SAMPLE);
-		if(Platform.getInstance().getOperatingSystem() == OS.MAC){
-			table.setGridColor(Color.BLACK);
-			table.setShowGrid(true);
-		}
 		return table;
 	}
 	
