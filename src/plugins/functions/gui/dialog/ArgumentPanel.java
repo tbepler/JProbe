@@ -116,7 +116,7 @@ public class ArgumentPanel<T> extends JPanel implements Subject<Boolean>, Argume
 	}
 	
 	protected JComponent validComponent(Argument<? super T> arg){
-		ValidLabel label = new ValidLabel(this, this.isArgValid(), Constants.CHECK_ICON, Constants.X_ICON);
+		ValidLabel label = new ValidLabel(this, this.isArgValid(), Constants.getCheckIcon(), Constants.getXIcon());
 		return label;
 	}
 	
