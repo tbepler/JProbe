@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import org.osgi.framework.Bundle;
 
 import bepler.crossplatform.Platform;
+import bepler.crossplatform.PreferencesHandler;
 import bepler.crossplatform.QuitHandler;
 import plugins.jprobe.gui.filemenu.FileMenu;
 import plugins.jprobe.gui.notification.NotificationPanel;
@@ -92,32 +93,16 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 		this.setContentPane(m_ContentPane);
 		m_MenuBar.setVisible(true);
 		m_ContentPane.setVisible(true);
-		//override window closing event to make sure Felix is shutdown correctly
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		this.addWindowListener(new WindowAdapter(){
-			@Override
-			public void windowClosing(WindowEvent event){
-				JProbeGUIFrame.this.quit();
-			}
-		});
-		//set Platform QuitHandler to call this.quit()
-		Platform.getInstance().setQuitHandler(new QuitHandler(){
-
-			@Override
-			public boolean quit() {
-				return JProbeGUIFrame.this.quit();
-			}
-			
-		});
+		
+		initCloseOperation();
 		
 		m_FileMenu = new FileMenu(this, m_Core);
 		m_MenuBar.add(m_FileMenu);
+		
 		m_PreferencesWindow = new PreferencesWindow(this, "Preferences", true);
+		initPreferencesMenu();
+		
 		m_HelpWindow = new TabDialogueWindow(this, "Help", true);
-		m_PreferencesMenu = new DialogueMenu("Preferences", m_PreferencesWindow);
-		m_PreferencesMenu.setMnemonic(KeyEvent.VK_P);
-		m_PreferencesMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		m_MenuBar.add(m_PreferencesMenu);
 		m_HelpMenu = new DialogueMenu("Help", m_HelpWindow);
 		m_HelpMenu.setMnemonic(KeyEvent.VK_H);
 		m_HelpMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -127,6 +112,31 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 		
 		this.setModified(false);
 		this.pack();
+		initSizeAndLocation(config);
+	}
+
+	private void initPreferencesMenu() {
+		if(!Platform.getInstance().setPreferencesHandler(new PreferencesHandler(){
+
+			@Override
+			public void preferences() {
+				m_PreferencesWindow.setVisible(true);
+			}
+			
+		})){
+			//Platform does not support a system preferences event, so add a custom preferences menu to the menu bar
+			m_PreferencesMenu = new DialogueMenu("Preferences", m_PreferencesWindow);
+			m_PreferencesMenu.setMnemonic(KeyEvent.VK_P);
+			m_PreferencesMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			m_MenuBar.add(m_PreferencesMenu);
+		}else{
+			//the platform supports the preferences event, so set the preferences menu to null
+			m_PreferencesMenu = null;
+		}
+		
+	}
+
+	private void initSizeAndLocation(GUIConfig config) {
 		this.setSize(config.getDimension());
 		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
 		int x;
@@ -143,6 +153,28 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 		}
 		this.setLocation(x,y);
 		this.setExtendedState(config.getExtendedState());
+	}
+
+	private void initCloseOperation() {
+		//override window closing event to make sure Felix is shutdown correctly
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent event){
+				JProbeGUIFrame.this.quit();
+			}
+		});
+		//set Platform QuitHandler to call this.quit()
+		Platform.getInstance().setQuitHandler(new QuitHandler(){
+
+			@Override
+			public boolean quit() {
+				JProbeGUIFrame.this.quit();
+				//always return false to guarantee that the core has time to close all the plugins
+				return false;
+			}
+			
+		});
 	}
 	
 	protected NotificationPanel initNotificationPanel(JProbeCore core){
@@ -223,7 +255,9 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 		for(JMenu m : m_PluginMenuItems){
 			m_MenuBar.add(m);
 		}
-		m_MenuBar.add(m_PreferencesMenu);
+		if(m_PreferencesMenu != null){
+			m_MenuBar.add(m_PreferencesMenu);
+		}
 		m_MenuBar.add(m_HelpMenu);
 		m_MenuBar.revalidate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.MENU_ADDED, responsible));
