@@ -115,13 +115,11 @@ public class FunctionMenu extends JMenu implements CoreListener{
 			Function<?> f = event.getFunction();
 			this.addFunction(f);
 			this.layoutMenuItems();
-			this.revalidate();
 		}
 		if(event.type() == CoreEvent.Type.FUNCTION_REMOVED){
 			Function<?> f = event.getFunction();
 			this.removeFunction(f);
 			this.layoutMenuItems();
-			this.revalidate();
 		}
 	}
 	

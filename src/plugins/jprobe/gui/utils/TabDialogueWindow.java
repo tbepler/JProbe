@@ -33,12 +33,14 @@ public class TabDialogueWindow extends JDialog{
 	
 	public void addTab(JComponent tab, String title){
 		m_TabPane.addTab(title, tab);
-		this.revalidate();
+		this.invalidate();
+		this.validate();
 	}
 	
 	public void removeTab(JComponent tab){
 		m_TabPane.remove(tab);
-		this.revalidate();
+		this.invalidate();
+		this.validate();
 	}
 	
 	

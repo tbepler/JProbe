@@ -70,12 +70,14 @@ public class PreferencesWindow extends JDialog implements ActionListener{
 	
 	public void addTab(PreferencesPanel tab, String title){
 		m_TabPane.addTab(title, tab);
-		this.revalidate();
+		this.invalidate();
+		this.validate();
 	}
 	
 	public void removeTab(PreferencesPanel tab){
 		m_TabPane.remove(tab);
-		this.revalidate();
+		this.invalidate();
+		this.validate();
 	}
 	
 	protected void closing(){

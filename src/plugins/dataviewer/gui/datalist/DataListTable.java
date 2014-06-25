@@ -28,7 +28,6 @@ public class DataListTable extends JTable implements MouseListener{
 		}
 		this.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		this.setPreferredScrollableViewportSize(this.getPreferredSize());
-		this.revalidate();
 		this.addMouseListener(this);
 	}
 	

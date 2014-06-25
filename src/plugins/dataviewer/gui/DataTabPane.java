@@ -57,7 +57,6 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 			m_TabLables.put(d, lable);
 			this.setTabComponentAt(index, lable);
 		}
-		this.revalidate();
 	}
 	
 	public GridBagConstraints getGridBagConstraints(){
@@ -92,7 +91,6 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 			DataTabLabel lable = new DataTabLabel(this, tab, m_DataManager.getDataName(data));
 			m_TabLables.put(data, lable);
 			this.setTabComponentAt(index, lable);
-			this.revalidate();
 		}
 	}
 
@@ -101,21 +99,18 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 		this.remove(m_Tabs.get(data));
 		m_Tabs.remove(data);
 		m_TabLables.remove(data);
-		this.revalidate();
 	}
 	
 	public void closeTab(DataTab tab){
 		this.remove(tab);
 		m_Tabs.remove(tab.getData());
 		m_TabLables.remove(tab.getData());
-		this.revalidate();
 	}
 	
 	public void clear(){
 		this.removeAll();
 		m_Tabs.clear();
 		m_TabLables.clear();
-		this.revalidate();
 	}
 	
 	void cleanup(){

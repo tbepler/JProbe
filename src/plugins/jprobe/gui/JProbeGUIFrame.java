@@ -238,13 +238,15 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 	
 	public void addComponent(JComponent comp, GridBagConstraints c, Bundle responsible){
 		m_ContentPane.add(comp, c);
-		this.revalidate();
+		this.invalidate();
+		this.validate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.COMPONENT_ADDED, responsible));
 	}
 	
 	public void removeComponent(JComponent comp, Bundle responsible){
 		m_ContentPane.remove(comp);
-		m_ContentPane.revalidate();
+		m_ContentPane.invalidate();
+		m_ContentPane.validate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.COMPONENT_REMOVED, responsible));
 	}
 	
@@ -259,14 +261,16 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 			m_MenuBar.add(m_PreferencesMenu);
 		}
 		m_MenuBar.add(m_HelpMenu);
-		m_MenuBar.revalidate();
+		m_MenuBar.invalidate();
+		m_MenuBar.validate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.MENU_ADDED, responsible));
 	}
 	
 	public void removeDropdownMenu(JMenu menu, Bundle responsible){
 		m_PluginMenuItems.remove(menu);
 		m_MenuBar.remove(menu);
-		m_MenuBar.revalidate();
+		m_MenuBar.invalidate();
+		m_MenuBar.validate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.MENU_REMOVED, responsible));
 	}
 
