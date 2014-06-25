@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="FunctionGUI.makejar" default="makejar" basedir=".">
+	<target name="makejar" description="Package the Function GUI plugin jar">
+		<jar manifest="src/plugins/functions/gui/MANIFEST.MF" destfile="plugins/jprobe-gui-functions.jar" includes="plugins/functions/**,resources/**" basedir="bin"/>
+	</target>
+</project>

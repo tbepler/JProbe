@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Distributable.makejar" default="makejar" basedir=".">
+	<target name="makejar" description="Package the core distro into a runnable jar">
+		<jar destfile="distributable/jprobe.jar"
+			 includes="jprobe/**,util/**" 
+			 basedir="bin">
+			<manifest>
+				<attribute name="Main-Class" value="jprobe.Launcher"/>
+				<attribute name="Class-Path" value="lib/commons-io-2.4/commons-io-2.4.jar lib/commons-lang3-3.2.1/commons-lang3-3.2.1.jar lib/felix-framework-4.4.0/felix.jar lib/crossplatform-util.jar"/>
+			</manifest>
+		</jar>	
+	</target>
+</project>

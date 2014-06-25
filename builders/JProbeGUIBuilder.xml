@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JProbeGUI.makejar" default="makejar" basedir=".">
+	<target name="makejar" description="Package the JProbe GUI plugin jar">
+		<jar manifest="src/plugins/jprobe/gui/MANIFEST.MF" destfile="plugins/jprobe-gui.jar" includes="plugins/jprobe/**" basedir="bin"/>
+	</target>
+</project>

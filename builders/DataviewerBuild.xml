@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Dataviewer.makejar" default="makejar" basedir=".">
+	<target name="makejar" description="Package the Dataviewer plugin jar">
+		<jar manifest="src/plugins/dataviewer/gui/MANIFEST.MF" destfile="plugins/jprobe-gui-dataviewer.jar" includes="plugins/dataviewer/**" basedir="bin"/>
+	</target>
+</project>

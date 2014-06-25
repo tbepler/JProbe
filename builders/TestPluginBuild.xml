@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TestPlugin.makejar" default="makejar" basedir=".">
+	<target name="makejar" description="Package the Test plugin jar">
+		<jar manifest="src/plugins/testDataAndFunction/MANIFEST.MF" destfile="plugins/test-plugin.jar" includes="plugins/testDataAndFunction/**" basedir="bin"/>
+	</target>
+</project>
