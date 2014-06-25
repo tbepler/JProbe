@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
@@ -17,6 +19,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
+import crossplatform.Platform;
 import plugins.jprobe.gui.services.GUIErrorManager;
 import plugins.jprobe.gui.services.JProbeGUI;
 
@@ -48,6 +51,14 @@ public class GUIActivator implements BundleActivator{
 		if(m_Core.getMode() != Mode.GUI){
 			return;
 		}
+		
+		Platform.getInstance().initPlatformSpecificSettings();
+		try {
+			Platform.getInstance().usePlatformLookAndFeel();
+		} catch (UnsupportedLookAndFeelException e) {
+			ErrorHandler.getInstance().handleException(e, null);
+		}
+		
 		File prefFile = new File(m_Core.getPreferencesDir() + File.separator + Constants.CONFIG_FILE_NAME);
 		m_GuiConfig = new GUIConfig(prefFile);
 		

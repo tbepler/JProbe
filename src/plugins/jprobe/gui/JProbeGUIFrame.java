@@ -27,6 +27,8 @@ import javax.swing.SwingUtilities;
 
 import org.osgi.framework.Bundle;
 
+import crossplatform.Platform;
+import crossplatform.QuitHandler;
 import plugins.jprobe.gui.filemenu.FileMenu;
 import plugins.jprobe.gui.notification.NotificationPanel;
 import plugins.jprobe.gui.services.GUIEvent;
@@ -98,6 +100,16 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 				JProbeGUIFrame.this.quit();
 			}
 		});
+		//set Platform QuitHandler to call this.quit()
+		Platform.getInstance().setQuitHandler(new QuitHandler(){
+
+			@Override
+			public boolean quit() {
+				return JProbeGUIFrame.this.quit();
+			}
+			
+		});
+		
 		m_FileMenu = new FileMenu(this, m_Core);
 		m_MenuBar.add(m_FileMenu);
 		m_PreferencesWindow = new PreferencesWindow(this, "Preferences", true);
@@ -145,12 +157,14 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 		return panel;
 	}
 	
-	public void quit(){
+	public boolean quit(){
 		if(JOptionPane.showConfirmDialog(JProbeGUIFrame.this, "Exit JProbe?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION){
 			if(SaveLoadUtil.unsavedWorkspaceCheck(m_Core, this) == SaveLoadUtil.PROCEED){
 				JProbeGUIFrame.this.m_Core.shutdown();
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	@Override

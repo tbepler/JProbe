@@ -13,7 +13,13 @@ public class SaveLoadUtil {
 	public static final int PROCEED = 0;
 	public static final int CANCEL = 1;
 	
-	private static final JFileChooser SAVE_LOAD_CHOOSER = new JFileChooser();
+	private static JFileChooser SAVE_LOAD_CHOOSER = null;
+	private static JFileChooser getSaveLoadChooser(){
+		if(SAVE_LOAD_CHOOSER == null){
+			SAVE_LOAD_CHOOSER = new JFileChooser();
+		}
+		return SAVE_LOAD_CHOOSER;
+	}
 	
 	private static volatile File LAST_WORKSPACE_FILE = null;
 	private static File LAST_USER_SAVE_FILE = null;
@@ -82,11 +88,12 @@ public class SaveLoadUtil {
 	}
 	
 	public static int saveAs(JProbeCore core, Frame parent){
-		SAVE_LOAD_CHOOSER.resetChoosableFileFilters();
-		SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);
-		int returnVal = SAVE_LOAD_CHOOSER.showDialog(parent, "Save");
+		JFileChooser fileChooser = getSaveLoadChooser();
+		fileChooser.resetChoosableFileFilters();
+		fileChooser.setFileFilter(Constants.SAVE_FILE_FILTER);
+		int returnVal = fileChooser.showDialog(parent, "Save");
 		if(returnVal == JFileChooser.APPROVE_OPTION){
-			String fileName = SAVE_LOAD_CHOOSER.getSelectedFile().toString();
+			String fileName = fileChooser.getSelectedFile().toString();
 			if(!stringEndsWithValidExtension(fileName)){
 				fileName += "." + Constants.SAVE_FILE_EXTENSIONS[0];
 			}
@@ -132,11 +139,12 @@ public class SaveLoadUtil {
 	
 	public static void load(JProbeCore core, Frame parent){
 		if(unsavedWorkspaceCheck(core, parent) == PROCEED){
-			SAVE_LOAD_CHOOSER.resetChoosableFileFilters();
-			SAVE_LOAD_CHOOSER.setFileFilter(Constants.SAVE_FILE_FILTER);
-			int returnVal = SAVE_LOAD_CHOOSER.showDialog(parent, "Open");
+			JFileChooser fileChooser = getSaveLoadChooser();
+			fileChooser.resetChoosableFileFilters();
+			fileChooser.setFileFilter(Constants.SAVE_FILE_FILTER);
+			int returnVal = fileChooser.showDialog(parent, "Open");
 			if(returnVal == JFileChooser.APPROVE_OPTION){
-				File f = SAVE_LOAD_CHOOSER.getSelectedFile();
+				File f = fileChooser.getSelectedFile();
 				load(core, f);
 			}
 		}

@@ -3,10 +3,6 @@ package jprobe;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import crossplatform.Platform;
 import jprobe.services.ErrorHandler;
 import jprobe.services.Log;
 
@@ -18,9 +14,6 @@ public class Launcher {
 		initUserDirectory();
 		//init the logs
 		initLogs();
-
-		//checks if user is running mac os and sets the look and feel to system look and feel
-		setSystemSpecificProperties();
 		
 		//init the user subdirectories
 		initDir(Constants.USER_PLUGINS_DIR);
@@ -32,31 +25,6 @@ public class Launcher {
 		//System.out.println(JAR_DIR);
 		new JProbe(config);
 	}
-
-
-
-	private static void setSystemSpecificProperties() {
-		//check if the user is on a Mac and set some properties accordingly
-//		String os = System.getProperty("os.name").toLowerCase();
-//		if(os.startsWith("mac os")){
-//			System.setProperty("apple.laf.useScreenMenuBar", "true");
-//			System.setProperty("com.apple.mrj.application.apple.menu.about.name", Constants.NAME);
-//			System.setProperty("com.apple.macos.smallTabs", "true");
-//		}
-//		//set look and feel to system l+f
-//		try {
-//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//		} catch (Exception e){
-//			ErrorHandler.getInstance().handleException(e, null);
-//		}
-		Platform.getInstance().initPlatformSpecificSettings();
-		try {
-			Platform.getInstance().usePlatformLookAndFeel();
-		} catch (UnsupportedLookAndFeelException e) {
-			ErrorHandler.getInstance().handleException(e, null);
-		}
-	}
-
 
 
 	private static void initLogs() {

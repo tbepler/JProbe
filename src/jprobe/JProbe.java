@@ -56,6 +56,7 @@ public class JProbe implements JProbeCore{
 				"jprobe.services.data;version=1.0.0," +
 				"jprobe.services.function;version=1.0.0,"
 				+ "jprobe.services.function.components;version=1.0.0,"
+				+ "crossplatform;version=1.0.0,"
 				+ "util.progress;version=1.0.0,"
 				+ "util.gui;version=1.0.0,"
 				+ "util.crossplatform;version=1.0.0,"

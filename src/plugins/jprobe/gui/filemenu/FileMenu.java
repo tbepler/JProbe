@@ -2,6 +2,8 @@ package plugins.jprobe.gui.filemenu;
 
 import javax.swing.JMenu;
 
+import crossplatform.OS;
+import crossplatform.Platform;
 import plugins.jprobe.gui.JProbeGUIFrame;
 import jprobe.services.JProbeCore;
 
@@ -18,8 +20,11 @@ public class FileMenu extends JMenu{
 		this.addSeparator();
 		this.add(new ImportMenu(core, parentFrame.getImportChooser()));
 		this.add(new ExportMenu(core, parentFrame.getExportChooser()));
-		this.addSeparator();
-		this.add(new QuitMenuItem(parentFrame));
+		//only add the quit menu if not on Mac
+		if(Platform.getInstance().getOperatingSystem() != OS.MAC){
+			this.addSeparator();
+			this.add(new QuitMenuItem(parentFrame));
+		}
 	}
 	
 }
