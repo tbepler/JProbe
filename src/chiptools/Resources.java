@@ -76,8 +76,16 @@ public class Resources {
 		return null;
 	}
 	
+	private static String getArgsFile(Class<? extends Function<?>> clazz){
+		String[] entries = getFunctionEntries(clazz);
+		if(entries != null){
+			return entries[FUNCTION_ARGS_FILE];
+		}
+		return null;
+	}
+	
 	private static final int ARGUMENT_CLASS = 0;
-	private static final int ARUMENT_NAME = 1;
+	private static final int ARGUMENT_NAME = 1;
 	private static final int ARGUMENT_FLAG = 2;
 	private static final int ARGUMENT_PROTOTYPE = 3;
 	private static final int ARGUMENT_CATEGORY = 4;
@@ -85,7 +93,86 @@ public class Resources {
 	private static final Map<Class<? extends Function<?>>, Map<Class<? extends Argument<?>>, String[]>> ARGS_MAP =
 			new HashMap<Class<? extends Function<?>>, Map<Class<? extends Argument<?>>, String[]>>();
 	
+	@SuppressWarnings("unchecked")
+	private static Map<Class<? extends Argument<?>>, String[]> readArguments(String argsFile){
+		Map<Class<? extends Argument<?>>, String[]> map = new HashMap<Class<? extends Argument<?>>, String[]>();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(argsFile)));
+		String line;
+		try {
+			while((line = reader.readLine()) != null){
+				String[] tokens = line.split(DELIM);
+				Class<?> clazz = Class.forName(tokens[ARGUMENT_CLASS]);
+				if(Argument.class.isAssignableFrom(clazz)){
+					map.put((Class<? extends Argument<?>>) clazz , tokens);
+				}
+			}
+			reader.close();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return map;
+	}
 	
+	private static Map<Class<? extends Argument<?>>, String[]> getArguments(Class<? extends Function<?>> clazz){
+		if(!ARGS_MAP.containsKey(clazz)){
+			//read the arguments file for the function class and store it in the ARGS_MAP
+			String argsFile = getArgsFile(clazz);
+			if(argsFile != null){
+				argsFile = Constants.RESOURCES_PATH + "/" + argsFile;
+				Map<Class<? extends Argument<?>>, String[]> argMap = readArguments(argsFile);
+				ARGS_MAP.put(clazz, argMap);
+				return argMap;
+			}
+		}
+		return ARGS_MAP.get(clazz);
+	}
 	
+	private static String[] getArgumentEntries(Class<? extends Function<?>> funcClass, Class<? extends Argument<?>> argClass){
+		Map<Class<? extends Argument<?>>, String[]> argMap = getArguments(funcClass);
+		if(argMap != null){
+			return argMap.get(argClass);
+		}
+		return null;
+	}
+	
+	public static String getArgumentName(Class<? extends Function<?>> funcClass, Class<? extends Argument<?>> argClass){
+		String[] entries = getArgumentEntries(funcClass, argClass);
+		if(entries != null){
+			return entries[ARGUMENT_NAME];
+		}
+		return null;
+	}
+	
+	public static Character getArgumentFlag(Class<? extends Function<?>> funcClass, Class<? extends Argument<?>> argClass){
+		String[] entries = getArgumentEntries(funcClass, argClass);
+		if(entries != null && entries[ARGUMENT_FLAG].length() > 0){
+			return entries[ARGUMENT_FLAG].charAt(0);
+		}
+		return null;
+	}
+	
+	public static String getArgumentPrototype(Class<? extends Function<?>> funcClass, Class<? extends Argument<?>> argClass){
+		String[] entries = getArgumentEntries(funcClass, argClass);
+		if(entries != null){
+			return entries[ARGUMENT_PROTOTYPE];
+		}
+		return null;
+	}
+	
+	public static String getArgumentCategory(Class<? extends Function<?>> funcClass, Class<? extends Argument<?>> argClass){
+		String[] entries = getArgumentEntries(funcClass, argClass);
+		if(entries != null){
+			return entries[ARGUMENT_CATEGORY];
+		}
+		return null;
+	}
+	
+	public static String getArgumentDescription(Class<? extends Function<?>> funcClass, Class<? extends Argument<?>> argClass){
+		String[] entries = getArgumentEntries(funcClass, argClass);
+		if(entries != null){
+			return entries[ARGUMENT_DESCRIPTION];
+		}
+		return null;
+	}
 	
 }
