@@ -1,17 +1,14 @@
 package chiptools.jprobe.function.probejoiner;
 
-import chiptools.Constants;
-import jprobe.services.function.IntArgument;
+import chiptools.jprobe.function.ChiptoolsIntArg;
+import jprobe.services.function.Function;
 
-public class MinSiteDistArgument extends IntArgument<ProbeJoinerParams>{
+public class MinSiteDistArgument extends ChiptoolsIntArg<ProbeJoinerParams>{
 
-	public MinSiteDistArgument(boolean optional) {
+	public MinSiteDistArgument(Function<?> parent, boolean optional) {
 		super(
-				Constants.getName(MinSiteDistArgument.class),
-				Constants.getDescription(MinSiteDistArgument.class),
-				Constants.getCategory(MinSiteDistArgument.class),
-				Constants.getFlag(MinSiteDistArgument.class),
-				Constants.getPrototypeValue(MinSiteDistArgument.class),
+				parent.getClass(),
+				MinSiteDistArgument.class,
 				optional,
 				2,
 				0,

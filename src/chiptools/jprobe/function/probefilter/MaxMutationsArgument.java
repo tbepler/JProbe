@@ -1,13 +1,14 @@
 package chiptools.jprobe.function.probefilter;
 
+import jprobe.services.function.Function;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeUtils.Filter;
 import chiptools.jprobe.function.ChiptoolsIntArg;
 
 public class MaxMutationsArgument extends ChiptoolsIntArg<ProbeFilterParam>{
 
-	protected MaxMutationsArgument(boolean optional) {
-		super(MaxMutationsArgument.class, "off", optional, 0, 0, Integer.MAX_VALUE, 1);
+	protected MaxMutationsArgument(Function<?> parent, boolean optional) {
+		super(parent.getClass(), MaxMutationsArgument.class, "off", optional, 0, 0, Integer.MAX_VALUE, 1);
 	}
 
 	@Override

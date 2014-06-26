@@ -1,5 +1,6 @@
 package chiptools.jprobe.function.probefilter;
 
+import jprobe.services.function.Function;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeUtils.Filter;
 import chiptools.jprobe.function.ChiptoolsIntArg;
@@ -7,8 +8,9 @@ import chiptools.jprobe.function.ChiptoolsIntArg;
 public class MinMutationsArgument extends ChiptoolsIntArg<ProbeFilterParam>{
 
 
-	protected MinMutationsArgument(boolean optional) {
+	protected MinMutationsArgument(Function<?> parent, boolean optional) {
 		super(
+				parent.getClass(),
 				MinMutationsArgument.class,
 				"off",
 				optional,

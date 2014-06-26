@@ -1,17 +1,14 @@
 package chiptools.jprobe.function.probejoiner;
 
-import chiptools.Constants;
-import jprobe.services.function.IntArgument;
+import chiptools.jprobe.function.ChiptoolsIntArg;
+import jprobe.services.function.Function;
 
-public class MaxSiteDistArgument extends IntArgument<ProbeJoinerParams>{
+public class MaxSiteDistArgument extends ChiptoolsIntArg<ProbeJoinerParams>{
 
-	public MaxSiteDistArgument(boolean optional) {
+	public MaxSiteDistArgument(Function<?> parent, boolean optional) {
 		super(
-				Constants.getName(MaxSiteDistArgument.class),
-				Constants.getDescription(MaxSiteDistArgument.class),
-				Constants.getCategory(MaxSiteDistArgument.class),
-				Constants.getFlag(MaxSiteDistArgument.class),
-				Constants.getPrototypeValue(MaxSiteDistArgument.class),
+				parent.getClass(),
+				MaxSiteDistArgument.class,
 				optional,
 				16,
 				0,

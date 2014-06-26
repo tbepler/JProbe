@@ -2,6 +2,7 @@ package chiptools.jprobe.function.probefilter;
 
 import java.util.Collection;
 
+import jprobe.services.function.Function;
 import util.genome.Chromosome;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeUtils.Filter;
@@ -9,8 +10,8 @@ import chiptools.jprobe.function.ChromsArg;
 
 public class ExcludeChromsArg extends ChromsArg<ProbeFilterParam>{
 
-	protected ExcludeChromsArg(boolean optional) {
-		super(ExcludeChromsArg.class, "off", optional, "");
+	protected ExcludeChromsArg(Function<?> parent, boolean optional) {
+		super(parent.getClass(), ExcludeChromsArg.class, "off", optional, "");
 	}
 
 	@Override

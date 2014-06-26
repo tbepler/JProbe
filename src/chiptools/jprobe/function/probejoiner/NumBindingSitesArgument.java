@@ -1,17 +1,14 @@
 package chiptools.jprobe.function.probejoiner;
 
-import chiptools.Constants;
-import jprobe.services.function.IntArgument;
+import chiptools.jprobe.function.ChiptoolsIntArg;
+import jprobe.services.function.Function;
 
-public class NumBindingSitesArgument extends IntArgument<ProbeJoinerParams>{
+public class NumBindingSitesArgument extends ChiptoolsIntArg<ProbeJoinerParams>{
 
-	public NumBindingSitesArgument(boolean optional) {
+	public NumBindingSitesArgument(Function<?> parent, boolean optional) {
 		super(
-				Constants.getName(NumBindingSitesArgument.class),
-				Constants.getDescription(NumBindingSitesArgument.class),
-				Constants.getCategory(NumBindingSitesArgument.class),
-				Constants.getFlag(NumBindingSitesArgument.class),
-				Constants.getPrototypeValue(NumBindingSitesArgument.class),
+				parent.getClass(),
+				NumBindingSitesArgument.class,
 				optional,
 				0,
 				0,

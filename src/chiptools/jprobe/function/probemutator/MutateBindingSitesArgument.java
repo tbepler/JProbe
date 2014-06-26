@@ -1,16 +1,13 @@
 package chiptools.jprobe.function.probemutator;
 
-import chiptools.Constants;
-import jprobe.services.function.FlagArgument;
+import chiptools.jprobe.function.ChiptoolsFlagArg;
+import jprobe.services.function.Function;
 
-public class MutateBindingSitesArgument extends FlagArgument<ProbeMutatorParams>{
+public class MutateBindingSitesArgument extends ChiptoolsFlagArg<ProbeMutatorParams>{
 
-	protected MutateBindingSitesArgument() {
+	protected MutateBindingSitesArgument(Function<?> parent) {
 		super(
-				Constants.getName(MutateBindingSitesArgument.class),
-				Constants.getDescription(MutateBindingSitesArgument.class),
-				Constants.getCategory(MutateBindingSitesArgument.class),
-				Constants.getFlag(MutateBindingSitesArgument.class)
+				parent.getClass(), MutateBindingSitesArgument.class
 				);
 	}
 

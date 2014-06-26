@@ -21,11 +21,11 @@ public class ProbeJoiner extends AbstractChiptoolsFunction<ProbeJoinerParams>{
 	@Override
 	public Collection<Argument<? super ProbeJoinerParams>> getArguments() {
 		Collection<Argument<? super ProbeJoinerParams>> args = new ArrayList<Argument<? super ProbeJoinerParams>>();
-		args.add(new ProbesArgument(false));
-		args.add(new NumBindingSitesArgument(false));
-		args.add(new MinSiteDistArgument(true));
-		args.add(new MaxSiteDistArgument(true));
-		args.add(new ProbeLengthArgument(true, "unbounded"));
+		args.add(new ProbesArgument(this, false));
+		args.add(new NumBindingSitesArgument(this, false));
+		args.add(new MinSiteDistArgument(this, true));
+		args.add(new MaxSiteDistArgument(this, true));
+		args.add(new ProbeLengthArgument(this, true, "unbounded"));
 		return args;
 	}
 

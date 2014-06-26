@@ -1,17 +1,14 @@
 package chiptools.jprobe.function.probemutator;
 
-import chiptools.Constants;
-import jprobe.services.function.IntArgument;
+import chiptools.jprobe.function.ChiptoolsIntArg;
+import jprobe.services.function.Function;
 
-public class BindingBarrierArgument extends IntArgument<ProbeMutatorParams>{
+public class BindingBarrierArgument extends ChiptoolsIntArg<ProbeMutatorParams>{
 
-	public BindingBarrierArgument(boolean optional) {
+	public BindingBarrierArgument(Function<?> parent, boolean optional) {
 		super(
-				Constants.getName(BindingBarrierArgument.class),
-				Constants.getDescription(BindingBarrierArgument.class),
-				Constants.getCategory(BindingBarrierArgument.class),
-				Constants.getFlag(BindingBarrierArgument.class),
-				Constants.getPrototypeValue(BindingBarrierArgument.class),
+				parent.getClass(),
+				BindingBarrierArgument.class,
 				optional,
 				2,
 				0,

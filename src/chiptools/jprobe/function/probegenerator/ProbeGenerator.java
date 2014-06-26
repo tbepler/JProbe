@@ -29,14 +29,14 @@ public class ProbeGenerator extends AbstractChiptoolsFunction<ProbeGeneratorPara
 	public Collection<Argument<? super ProbeGeneratorParams>> getArguments() {
 		Collection<Argument<? super ProbeGeneratorParams>> args = new ArrayList<Argument<? super ProbeGeneratorParams>>();
 		
-		args.add(new PeakSeqsArgument(false));
-		args.add(new KmerArgument(false));
-		args.add(new PWMArgument(false));
+		args.add(new PeakSeqsArgument(this, false));
+		args.add(new KmerArgument(this, false));
+		args.add(new PWMArgument(this, false));
 		
-		args.add(new ProbeLengthArgument(true));
-		args.add(new BindingSiteArgument(true));
-		args.add(new WindowSizeArgument(true));
-		args.add(new EscoreArgument(true, 0.4));
+		args.add(new ProbeLengthArgument(this, true));
+		args.add(new BindingSiteArgument(this, true));
+		args.add(new WindowSizeArgument(this, true));
+		args.add(new EscoreArgument(this, true, 0.4));
 		
 		return args;
 	}

@@ -25,9 +25,9 @@ public class PeakFinder extends AbstractChiptoolsFunction<PeakFinderParams>{
 	@Override
 	public Collection<Argument<? super PeakFinderParams>> getArguments() {
 		Collection<Argument<? super PeakFinderParams>> args = new ArrayList<Argument<? super PeakFinderParams>>();
-		args.add(new PeaksArgument(false));
-		args.add(new GenomeArgument(false));
-		args.add(new SummitArgument(true));
+		args.add(new PeaksArgument(this, false));
+		args.add(new GenomeArgument(this, false));
+		args.add(new SummitArgument(this, true));
 		return args;
 	}
 

@@ -1,17 +1,14 @@
 package chiptools.jprobe.function.probegenerator;
 
-import chiptools.Constants;
-import jprobe.services.function.IntArgument;
+import chiptools.jprobe.function.ChiptoolsIntArg;
+import jprobe.services.function.Function;
 
-public class BindingSiteArgument extends IntArgument<ProbeGeneratorParams>{
+public class BindingSiteArgument extends ChiptoolsIntArg<ProbeGeneratorParams>{
 
-	public BindingSiteArgument(boolean optional) {
+	public BindingSiteArgument(Function<?> parent, boolean optional) {
 		super(
-				Constants.getName(BindingSiteArgument.class),
-				Constants.getDescription(BindingSiteArgument.class),
-				Constants.getCategory(BindingSiteArgument.class), 
-				Constants.getFlag(BindingSiteArgument.class),
-				Constants.getPrototypeValue(BindingSiteArgument.class),
+				parent.getClass(),
+				BindingSiteArgument.class,
 				optional,
 				9,
 				1,

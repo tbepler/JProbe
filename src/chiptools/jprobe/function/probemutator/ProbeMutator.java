@@ -39,13 +39,13 @@ public class ProbeMutator extends AbstractChiptoolsFunction<ProbeMutatorParams>{
 	@Override
 	public Collection<Argument<? super ProbeMutatorParams>> getArguments() {
 		Collection<Argument<? super ProbeMutatorParams>> args = new ArrayList<Argument<? super ProbeMutatorParams>>();
-		args.add(new ProbesArgument(false));
-		args.add(new KmerArgument(false));
-		args.add(new PrimerArgument(true));
-		args.add(new EscoreArgument(true, 0.3));
-		args.add(new BindingBarrierArgument(true));
-		args.add(new MaximumOverlapArgument(true));
-		args.add(new MutateBindingSitesArgument());
+		args.add(new ProbesArgument(this, false));
+		args.add(new KmerArgument(this, false));
+		args.add(new PrimerArgument(this, true));
+		args.add(new EscoreArgument(this, true, 0.3));
+		args.add(new BindingBarrierArgument(this, true));
+		args.add(new MaximumOverlapArgument(this, true));
+		args.add(new MutateBindingSitesArgument(this));
 		return args;
 	}
 	

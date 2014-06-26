@@ -1,13 +1,14 @@
 package chiptools.jprobe.function.probefilter;
 
+import jprobe.services.function.Function;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeUtils.Filter;
 import chiptools.jprobe.function.ChiptoolsIntArg;
 
 public class MaxBindingSitesArg extends ChiptoolsIntArg<ProbeFilterParam>{
 
-	public MaxBindingSitesArg(boolean optional) {
-		super(MaxBindingSitesArg.class, "off", optional, 0, 0, Integer.MAX_VALUE, 1);
+	public MaxBindingSitesArg(Function<?> parent, boolean optional) {
+		super(parent.getClass(), MaxBindingSitesArg.class, "off", optional, 0, 0, Integer.MAX_VALUE, 1);
 	}
 
 	@Override

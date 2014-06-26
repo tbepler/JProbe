@@ -24,19 +24,19 @@ public class ProbeFilter extends AbstractChiptoolsFunction<ProbeFilterParam>{
 	@Override
 	public Collection<Argument<? super ProbeFilterParam>> getArguments() {
 		Collection<Argument<? super ProbeFilterParam>> args = new ArrayList<Argument<? super ProbeFilterParam>>();
-		args.add(new ProbesArgument(false));
-		args.add(new MinMutationsArgument(true));
-		args.add(new MaxMutationsArgument(true));
-		args.add(new MinBindingDistArgument(true));
-		args.add(new MaxBindingDistArgument(true));
-		args.add(new MinBindingSitesArg(true));
-		args.add(new MaxBindingSitesArg(true));
-		args.add(new IncludeSubseqArgument(true));
-		args.add(new ExcludeSubseqArgument(true));
-		args.add(new IncludeChromsArg(true));
-		args.add(new ExcludeChromsArg(true));
-		args.add(new RandomRemovalArgument(true));
-		args.add(new RandomSeedArgument(true));
+		args.add(new ProbesArgument(this, false));
+		args.add(new MinMutationsArgument(this, true));
+		args.add(new MaxMutationsArgument(this, true));
+		args.add(new MinBindingDistArgument(this, true));
+		args.add(new MaxBindingDistArgument(this, true));
+		args.add(new MinBindingSitesArg(this, true));
+		args.add(new MaxBindingSitesArg(this, true));
+		args.add(new IncludeSubseqArgument(this, true));
+		args.add(new ExcludeSubseqArgument(this, true));
+		args.add(new IncludeChromsArg(this, true));
+		args.add(new ExcludeChromsArg(this, true));
+		args.add(new RandomRemovalArgument(this, true));
+		args.add(new RandomSeedArgument(this, true));
 		
 		return args;
 	}

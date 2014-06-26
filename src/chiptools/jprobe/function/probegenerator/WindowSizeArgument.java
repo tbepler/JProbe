@@ -1,17 +1,14 @@
 package chiptools.jprobe.function.probegenerator;
 
-import chiptools.Constants;
-import jprobe.services.function.IntArgument;
+import chiptools.jprobe.function.ChiptoolsIntArg;
+import jprobe.services.function.Function;
 
-public class WindowSizeArgument extends IntArgument<ProbeGeneratorParams>{
+public class WindowSizeArgument extends ChiptoolsIntArg<ProbeGeneratorParams>{
 
-	public WindowSizeArgument(boolean optional) {
+	public WindowSizeArgument(Function<?> parent, boolean optional) {
 		super(
-				Constants.getName(WindowSizeArgument.class),
-				Constants.getDescription(WindowSizeArgument.class),
-				Constants.getCategory(WindowSizeArgument.class),
-				Constants.getFlag(WindowSizeArgument.class),
-				Constants.getPrototypeValue(WindowSizeArgument.class),
+				parent.getClass(),
+				WindowSizeArgument.class,
 				optional,
 				3,
 				0,

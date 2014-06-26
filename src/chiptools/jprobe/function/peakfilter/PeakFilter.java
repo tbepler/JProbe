@@ -21,13 +21,13 @@ public class PeakFilter extends AbstractChiptoolsFunction<PeakFilterParams>{
 	@Override
 	public Collection<Argument<? super PeakFilterParams>> getArguments() {
 		Collection<Argument<? super PeakFilterParams>> args = new ArrayList<Argument<? super PeakFilterParams>>();
-		args.add(new PeaksArgument(false));
-		args.add(new IncludeChromArg(true));
-		args.add(new ExcludeChromArg(true));
-		args.add(new MinQValArg(true));
-		args.add(new MaxQValArg(true));
-		args.add(new MinPValArg(true));
-		args.add(new MaxPValArg(true));
+		args.add(new PeaksArgument(this, false));
+		args.add(new IncludeChromArg(this, true));
+		args.add(new ExcludeChromArg(this, true));
+		args.add(new MinQValArg(this, true));
+		args.add(new MaxQValArg(this, true));
+		args.add(new MinPValArg(this, true));
+		args.add(new MaxPValArg(this, true));
 		
 		return args;
 	}

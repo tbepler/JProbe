@@ -2,14 +2,15 @@ package chiptools.jprobe.function.probefilter;
 
 import java.util.List;
 
+import jprobe.services.function.Function;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeUtils.Filter;
 import chiptools.jprobe.function.SequencesArg;
 
 public class IncludeSubseqArgument extends SequencesArg<ProbeFilterParam>{
 
-	public IncludeSubseqArgument(boolean optional) {
-		super(IncludeSubseqArgument.class, optional);
+	public IncludeSubseqArgument(Function<?> parent, boolean optional) {
+		super(parent.getClass(), IncludeSubseqArgument.class, optional);
 	}
 
 	@Override

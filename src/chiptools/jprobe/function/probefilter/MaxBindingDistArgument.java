@@ -1,5 +1,6 @@
 package chiptools.jprobe.function.probefilter;
 
+import jprobe.services.function.Function;
 import util.genome.GenomicRegion;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeUtils.Filter;
@@ -7,8 +8,8 @@ import chiptools.jprobe.function.ChiptoolsIntArg;
 
 public class MaxBindingDistArgument extends ChiptoolsIntArg<ProbeFilterParam>{
 
-	protected MaxBindingDistArgument(boolean optional) {
-		super(MaxBindingDistArgument.class, "off", optional, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+	protected MaxBindingDistArgument(Function<?> parent, boolean optional) {
+		super(parent.getClass(), MaxBindingDistArgument.class, "off", optional, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
 	}
 
 	@Override

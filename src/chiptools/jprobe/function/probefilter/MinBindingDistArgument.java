@@ -1,5 +1,6 @@
 package chiptools.jprobe.function.probefilter;
 
+import jprobe.services.function.Function;
 import util.genome.GenomicRegion;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeUtils.Filter;
@@ -7,8 +8,8 @@ import chiptools.jprobe.function.ChiptoolsIntArg;
 
 public class MinBindingDistArgument extends ChiptoolsIntArg<ProbeFilterParam>{
 
-	protected MinBindingDistArgument(boolean optional) {
-		super(MinBindingDistArgument.class, "off", optional, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+	protected MinBindingDistArgument(Function<?> parent, boolean optional) {
+		super(parent.getClass(), MinBindingDistArgument.class, "off", optional, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
 	}
 
 	@Override
