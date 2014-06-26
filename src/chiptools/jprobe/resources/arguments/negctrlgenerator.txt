@@ -1,0 +1,13 @@
+chiptools.jprobe.function.args.GenomeArgument	Genome	g	FILE	Genome	Genome file in fasta format from which sequences will be extracted to generate negative probes.
+
+chiptools.jprobe.function.negativecontrolgen.IncludePeaksArg	IncludePeaks	p	PEAKS	Peaks	Genomic regions that will be considered for generating negative control probes. At least one set of regions must be provided.
+chiptools.jprobe.function.negativecontrolgen.ExcludePeaksArg	ExcludePeaks	r	PEAKS	Peaks	Genomic regions that will be excluded from consideration when generating negative control probes. In other words, the included peaks will be filtered such that only regions that do not overlap any of the excluded regions are considered. Default=off
+
+chiptools.jprobe.function.args.SummitArgument	Summit	s	INT	Summit	Specifies that peaks should be treated as the summit +/- this value. The summit is determined by the PointSource column of the peak file. If there is none or the PointSource is < 0, then the summit will be the center of the peak region. The size of the resulting regions will be 1 + 2*value. Default=off
+
+chiptools.jprobe.function.negativecontrolgen.KmerListArgument	K-mers	k	KMERS	Scoring	K-mers used to ensure that probes have no good binding sites. Only probes with no k-mers above the e-score threshold will be generated. Default=off
+chiptools.jprobe.function.args.EscoreArgument	Escore	e	ESCORE	Scoring	E-score value between -0.5 and 0.5. This is the maximum e-score that a negative probe may contain.
+
+chiptools.jprobe.function.negativecontrolgen.NumberArg	Num	n	INT	Probes	The number of negative control probes to generate. WARNING: if you do not set this parameter and you have many large regions, this function may take a VERY long time to run.
+chiptools.jprobe.function.args.ProbeLengthArgument	ProbeLength	l	INT	Probes	Length of probes to be generated
+

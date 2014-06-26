@@ -1,11 +1,14 @@
 package chiptools.jprobe.function;
 
-import chiptools.Constants;
+import chiptools.Resources;
 import jprobe.services.function.Function;
 
 public abstract class AbstractChiptoolsFunction<P> implements Function<P>{
 	
 	private final Class<P> m_ParamsClass;
+	private final String m_Name = Resources.getFunctionName(this.getClass());
+	private final String m_Description = Resources.getFunctionDescription(this.getClass());
+	private final String m_Category = Resources.getFunctionCategory(this.getClass());
 	
 	protected AbstractChiptoolsFunction(Class<P> paramsClass){
 		m_ParamsClass = paramsClass;
@@ -13,17 +16,17 @@ public abstract class AbstractChiptoolsFunction<P> implements Function<P>{
 	
 	@Override
 	public String getName() {
-		return Constants.getName(this.getClass());
+		return m_Name;
 	}
 
 	@Override
 	public String getDescription() {
-		return Constants.getDescription(this.getClass());
+		return m_Description;
 	}
 
 	@Override
 	public String getCategory() {
-		return Constants.getCategory(this.getClass());
+		return m_Category;
 	}
 
 	@Override

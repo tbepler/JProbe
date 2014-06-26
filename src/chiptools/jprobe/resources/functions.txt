@@ -1,11 +1,15 @@
-chiptools.jprobe.function.peakfinder.PeakFinder	peakfinder	Genome	This function extracts ChIP-seq peak sequences from the genome.
-chiptools.jprobe.function.probegenerator.ProbeGenerator	probegenerator	Chiptools	This function generates probes from peak sequences using Kmer data and a PWM for the factor of interest.
-chiptools.jprobe.function.probejoiner.ProbeJoiner	probejoiner	Chiptools	This function takes existing probes and combines overlapping ones into multiple binding site probes.
-chiptools.jprobe.function.bindingprofiler.BindingProfiler	bindingprofiler	Profile	This function takes existing probes and profiles them using specified KMers and/or PWMs.
-chiptools.jprobe.function.probemutator.ProbeMutator	probemutator	Chiptools	This function takes existing probes and mutates them such that no Kmers outside of the binding site regions exceed a provided E-score cutoff.
-chiptools.jprobe.function.probefilter.ProbeFilter	probefilter	Filter	This function filters probes based on the set of conditions passed to this function. The returned probes will be a subset of the given probes such that each probe in the subset passes all filters specified.
-chiptools.jprobe.function.mutationprofiler.MutationProfiler	mutationprofiler	Profile	This function takes two sequences and a library of Kmers. For each Kmer it reports the E-scores of the words with the largest difference at each base that differs between the sequences.
-chiptools.jprobe.function.peakfilter.PeakFilter	peakfilter	Filter	This function filters peaks based on the set of conditions passed. The returned peaks will be a subset of the given peaks such that each peak in the subset passes all filters specified. 
-chiptools.jprobe.function.gcrunmutator.GCRunMutator	gcmutator	Chiptools	This function takes probes and an optional primer and mutates 5G or 5C runs on the probes by changing the center C to a G or vice versa.
-chiptools.jprobe.function.negativecontrolgen.NegativeControlGenerator	negctrlgen	Chiptools	This function generates negative control probes from specified genomic regions with the option of excluding specific peak regions. The probes generated will contain no Kmers with e-scores above the specified threshold.
-chiptools.jprobe.function.agilentformatter.AgilentFormatter	agilentformatter	Agilent	This function takes one or more probe groups, appends the given prime to them, and combines them into an Agilent formatted probe group with the specified array name, categories, and forward and reverse replicates.
+chiptools.jprobe.function.peakfinder.PeakFinder	arguments/peakfinder.txt	peakfinder	Genome	This function extracts ChIP-seq peak sequences from the genome.
+chiptools.jprobe.function.negativecontrolgen.NegativeControlGenerator	arguments/negctrlgenerator.txt	negctrlgenerator	Genome	This function generates negative control probes from given genomic regions with the option of excluding specific peak regions. The probes generated will contain no k-mers with e-scores above the specified threshold.
+
+chiptools.jprobe.function.probegenerator.ProbeGenerator	arguments/probegenerator.txt	probegenerator	Chiptools	This function generates probes from peak sequences using Kmer data and a PWM for the factor of interest.
+chiptools.jprobe.function.probejoiner.ProbeJoiner	arguments/probejoiner.txt	probejoiner	Chiptools	This function takes existing probes and combines overlapping ones into multiple binding site probes.
+chiptools.jprobe.function.probemutator.ProbeMutator	arguments/probemutator.txt	probemutator	Chiptools	This function takes existing probes and mutates them such that no Kmers outside of the binding site regions exceed a provided E-score cutoff.
+chiptools.jprobe.function.gcrunmutator.GCRunMutator	arguments/gcrunmutator.txt	gcmutator	Chiptools	This function takes probes and an optional primer and mutates 5G or 5C runs on the probes by changing the center C to a G or vice versa.
+
+chiptools.jprobe.function.bindingprofiler.BindingProfiler	arguments/bindingprofiler.txt	bindingprofiler	Profile	This function takes existing probes and profiles them using specified KMers and/or PWMs.
+chiptools.jprobe.function.mutationprofiler.MutationProfiler	arguments/mutationprofiler.txt	mutationprofiler	Profile	This function takes two sequences and a library of Kmers. For each Kmer it reports the E-scores of the words with the largest difference at each base that differs between the sequences.
+
+chiptools.jprobe.function.probefilter.ProbeFilter	arguments/probefilter.txt	probefilter	Filter	This function filters probes based on the set of conditions passed to this function. The returned probes will be a subset of the given probes such that each probe in the subset passes all filters specified.
+chiptools.jprobe.function.peakfilter.PeakFilter	arguments/peakfilter.txt	peakfilter	Filter	This function filters peaks based on the set of conditions passed. The returned peaks will be a subset of the given peaks such that each peak in the subset passes all filters specified. 
+
+chiptools.jprobe.function.agilentformatter.AgilentFormatter	arguments/agilentformatter.txt	agilentformatter	Agilent	This function takes one or more probe groups, appends the given prime to them, and combines them into an Agilent formatted probe group with the specified array name, categories, and forward and reverse replicates.

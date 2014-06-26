@@ -16,14 +16,15 @@ import javax.swing.SwingUtilities;
 import chiptools.Constants;
 import chiptools.jprobe.ChiptoolsActivator;
 import jprobe.services.ErrorHandler;
+import jprobe.services.function.Function;
 
 public abstract class SequencesArg<P> extends ChiptoolsFileArg<P>{
 	
 	private final JPanel m_Panel = new JPanel();
 
 	@SuppressWarnings("rawtypes")
-	protected SequencesArg(Class<? extends SequencesArg> clazz, boolean optional) {
-		super(clazz, optional);
+	protected SequencesArg(Class<? extends Function> funcClass, Class<? extends SequencesArg> clazz, boolean optional) {
+		super(funcClass, clazz, optional);
 		m_Panel.setLayout(new BoxLayout(m_Panel, BoxLayout.Y_AXIS));
 	}
 	

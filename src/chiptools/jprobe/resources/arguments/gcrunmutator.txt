@@ -1,0 +1,3 @@
+chiptools.jprobe.function.args.ProbesArgument	Probes	p	FILE	Probes	Probes that will be mutated.
+
+chiptools.jprobe.function.args.PrimerArgument	Primer		FILE	Primer	A file from which the primer should be read. The file can be in fasta format or can simply contain the primer sequence. If a primer is specified, then probes will be mutated with consideration of the primer sequence being attached to either orientation of the probe.

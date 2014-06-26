@@ -1,0 +1,9 @@
+chiptools.jprobe.function.mutationprofiler.CompareSeqsArg	Seqs	s	FILE	Sequences	Takes a file containing the sequences to be compared in fasta format or separated by carriage returns.
+
+chiptools.jprobe.function.mutationprofiler.KmerLibraryArg	K-merLib	k	DIR	Library	A directory containing the k-mer library that should be queried for comparing the sequences.
+chiptools.jprobe.function.mutationprofiler.RecursiveArg	Recursive	r		Library	This flag specifies that the k-mer library should be searched recursively for k-mer files. If unset, only the top level directory will be searched.
+
+chiptools.jprobe.function.mutationprofiler.MinEscoreArg	MinE-score	e	ESCORE	E-scores	This argument specifies a minimum e-score that must occur on at least one sequence over a mutation site for the e-score difference to be reported. If this minimum is not met, then -1 will be reported for the site.
+chiptools.jprobe.function.mutationprofiler.MinDifferenceArg	MinDifference	d	ESCORE	E-scores	This argument specifies a minimum e-score difference that must occur over a mutation for the difference to be reported. If this minimum is not met, then -1 will be reported for the site.
+
+chiptools.jprobe.function.mutationprofiler.BindingSiteArg	BindingSite	b	INT	Binding Sites	This argument specifies the binding site length. This specifies a sequence length that must be tiled by k-mer words exceeding the e-score minimum for those sequences to be considered. If the site does not meet this criteria, then none of the words there will be considered.

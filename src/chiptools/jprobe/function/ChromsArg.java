@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import jprobe.services.function.Function;
 import util.genome.Chromosome;
 
 /**
@@ -39,8 +40,8 @@ public abstract class ChromsArg<P> extends ChiptoolsTextArg<P> {
 	};
 
 	@SuppressWarnings("rawtypes")
-	protected ChromsArg(Class<? extends ChromsArg> clazz, String defaultVal, boolean optional, String startValue) {
-		super(clazz, defaultVal, optional, startValue);
+	protected ChromsArg(Class<? extends Function> funcClass, Class<? extends ChromsArg> clazz, String defaultVal, boolean optional, String startValue) {
+		super(funcClass, clazz, defaultVal, optional, startValue);
 		m_Panel.setLayout(new BoxLayout(m_Panel, BoxLayout.Y_AXIS));
 	}
 	

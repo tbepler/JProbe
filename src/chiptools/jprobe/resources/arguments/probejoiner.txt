@@ -1,0 +1,7 @@
+chiptools.jprobe.function.probejoiner.NumBindingSitesArgument	NumBindingSites	n	INT	Binding Sites	The number of binding sites combined probes should have, must be >= 0.
+chiptools.jprobe.function.probejoiner.MaxSiteDistArgument	MaxSiteDistance		INT	Binding Sites	The maximum distance between binding sites on joined probes.
+chiptools.jprobe.function.probejoiner.MinSiteDistArgument	MinSiteDistance		INT	Binding Sites	The minimum distance between binding sites on joined probes.
+
+chiptools.jprobe.function.args.ProbesArgument	Probes	p	FILE	Probes	Probes that will be combined into probes meeting the specified criteria.
+
+chiptools.jprobe.function.args.ProbeLengthArgument	ProbeLength	l	INT	Probes	Length of probes to be generated.

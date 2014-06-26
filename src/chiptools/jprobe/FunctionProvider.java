@@ -6,7 +6,7 @@ import java.util.List;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import chiptools.Constants;
+import chiptools.Resources;
 import jprobe.services.function.Function;
 
 public class FunctionProvider {
@@ -18,7 +18,7 @@ public class FunctionProvider {
 	@SuppressWarnings("rawtypes")
 	private List<Function> generateFunctions(){
 		List<Function> list = new ArrayList<Function>();
-		for(Class<? extends Function> clazz : Constants.FUNCTION_CLASSES){
+		for(Class<? extends Function> clazz : Resources.getFunctionClasses()){
 			try {
 				list.add(clazz.newInstance());
 			} catch (Exception e){

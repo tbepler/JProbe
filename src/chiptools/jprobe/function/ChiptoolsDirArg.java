@@ -4,13 +4,14 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 
+import jprobe.services.function.Function;
 import chiptools.Constants;
 
 public abstract class ChiptoolsDirArg<P> extends ChiptoolsFileArg<P> {
 
 	@SuppressWarnings("rawtypes")
-	protected ChiptoolsDirArg(Class<? extends ChiptoolsDirArg> clazz, boolean optional) {
-		super(clazz, optional);
+	protected ChiptoolsDirArg(Class<? extends Function> funcClass, Class<? extends ChiptoolsDirArg> clazz, boolean optional) {
+		super(funcClass, clazz, optional);
 	}
 	
 	@Override

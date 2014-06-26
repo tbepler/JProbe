@@ -1,0 +1,8 @@
+chiptools.jprobe.function.agilentformatter.ProbeCategoriesArgument	Probes	p	CATEGORY=PROBES	Probes	The probe groups to be combined into an Agilent formatted probe group. Probes for which no category is specified will use the file name as the category.
+
+chiptools.jprobe.function.agilentformatter.ArrayNameArgument	ArrayName	n	NAME	Name	The name that should be used for this array. Must not exceed 15 characters in length.
+
+chiptools.jprobe.function.agilentformatter.ForwardReplicatesArgument	FwdReps	f	INT	Replicates	The number of forward direction probe replicates.
+chiptools.jprobe.function.agilentformatter.ReverseReplicatesArgument	RvsReps	r	INT	Replicates	The number of reverse compliment probe replicates.
+
+chiptools.jprobe.function.args.PrimerArgument	Primer		FILE	Primer	A file from which the primer should be read. The file can be in fasta format or can simply contain the primer sequence.

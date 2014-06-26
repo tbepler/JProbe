@@ -1,0 +1,3 @@
+chiptools.jprobe.function.args.GenomeArgument	Genome	g	FILE	Genome	Genome file in fasta format from which peak sequences will be extracted
+chiptools.jprobe.function.args.PeaksArgument	Peaks	p	FILE	Peaks	ChIP-seq peaks for which sequences will be extracted
+chiptools.jprobe.function.args.SummitArgument	Summit	s	INT	Summit	Specifies that peaks should be treated as the summit +/- this value. The summit is determined by the PointSource column of the peak file. If there is none or the PointSource is < 0, then the summit will be the center of the peak region. The size of the resulting regions will be 1 + 2*value. Default=off

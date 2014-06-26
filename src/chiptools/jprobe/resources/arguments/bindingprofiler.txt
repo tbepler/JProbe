@@ -1,0 +1,4 @@
+chiptools.jprobe.function.args.ProbesArgument	Probes	p	FILE	Probes	Probes that will be scored using the given K-mers and PWMs.
+
+chiptools.jprobe.function.bindingprofiler.BindingKmerArgument	K-mers	k	FILES	Scoring	K-mers for scoring sequences.
+chiptools.jprobe.function.bindingprofiler.BindingPWMArgument	PWMs	m	FILES	Scoring	PWMs for scoring sequences. Only given sequence direction is scored with the PWMs.

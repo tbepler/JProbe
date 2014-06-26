@@ -1,0 +1,10 @@
+chiptools.jprobe.function.args.ProbesArgument	Probes	p	FILE	Probes	Probes that will be mutated.
+
+chiptools.jprobe.function.args.KmerArgument	K-mer	k	FILE	Scoring	K-mer data that will be used to determine whether probes should be mutated.
+chiptools.jprobe.function.args.EscoreArgument	E-score	e	ESCORE	Scoring	E-score value between -0.5 and 0.5. This is the maximum e-score that a probe can have outside of binding sites. Words with e-scores greater than this will be mutated to reduce their e-scores below this threshold.
+
+chiptools.jprobe.function.probemutator.BindingBarrierArgument	BindingSiteBarrier	b	INT{default=2}	Binding Sites	The number of bases on either side of binding sites that cannot be mutated. Default=2
+chiptools.jprobe.function.probemutator.MaximumOverlapArgument	Overlap	o	RATIO	Binding Sites	The maximum fraction by which a word can overlap binding sites on the probe to be considered for mutation.
+chiptools.jprobe.function.probemutator.MutateBindingSitesArgument	MutateBindingSites			Binding Sites	Setting this flag specifies that binding sites on these probes should be mutated. This will cause every permutation of binding sites on each probe to be mutated. Default=off
+
+chiptools.jprobe.function.args.PrimerArgument	Primer		FILE	Primer	A file from which the primer should be read. The file can be in fasta format or can simply contain the primer sequence. If a primer is specified, then probes will be mutated with consideration of the primer sequence being attached in either orientation of the probe.

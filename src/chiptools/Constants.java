@@ -4,15 +4,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.swing.JFileChooser;
 
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
-import jprobe.services.function.Function;
 import util.genome.peak.PeakSequence;
 
 public class Constants {
@@ -30,7 +26,6 @@ public class Constants {
 	public static final String RESOURCES_PATH = "/chiptools/jprobe/resources";
 	
 	public static final String FUNCTIONS_FILE = RESOURCES_PATH + "/functions.txt";
-	public static final String ARGUMENTS_FILE = RESOURCES_PATH + "/arguments.txt";
 	public static final String READER_FILE = RESOURCES_PATH + "/data_reader.txt";
 	public static final String WRITER_FILE = RESOURCES_PATH + "/data_writer.txt";
 	
@@ -62,92 +57,6 @@ public class Constants {
 	
 	public static List<Class<? extends DataReader>> READER_CLASSES = getClasses(DataReader.class, READER_FILE, DATA_PACKAGE);
 	public static List<Class<? extends DataWriter>> WRITER_CLASSES = getClasses(DataWriter.class, WRITER_FILE, DATA_PACKAGE);
-	
-	@SuppressWarnings("rawtypes")
-	public static final List<Class<? extends Function>> FUNCTION_CLASSES = getClasses(Function.class, FUNCTIONS_FILE, "");
-	
-	private static final int CLAZZ = 0;
-	private static final int NAME = 1;
-	private static final int CAT = 2;
-	private static final int DESC = 3;
-	private static final int FLAG = 4;
-	private static final int PROTOTYPE = 5;
-	
-	public static String getName(Class<?> clazz){
-		return CLASS_MAP.get(clazz)[NAME];
-	}
-	
-	public static String getDescription(Class<?> clazz){
-		return CLASS_MAP.get(clazz)[DESC];
-	}
-	
-	public static String getCategory(Class<?> clazz){
-		return CLASS_MAP.get(clazz)[CAT];
-	}
-	
-	public static Character getFlag(Class<?> clazz){
-		Character c;
-		String flag = CLASS_MAP.get(clazz)[FLAG];
-		if(flag.equals("") || flag == null){
-			c = null;
-		}else{
-			c = flag.charAt(0);
-		}
-		return c;
-	}
-	
-	public static String getPrototypeValue(Class<?> clazz){
-		return CLASS_MAP.get(clazz)[PROTOTYPE];
-	}
-	
-	private static final Map<Class<?>, String[]> CLASS_MAP = readFunctionsAndArguments();
-	
-	private static Map<Class<?>, String[]> readFunctionsAndArguments(){
-		Map<Class<?>, String[]> map = new HashMap<Class<?>, String[]>();
-		readFunctions(map);
-		readArguments(map);
-		return map;
-	}
-	
-	private static void readFunctions(Map<Class<?>, String[]> map){
-		BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(FUNCTIONS_FILE)));
-		String line;
-		try {
-			while((line = reader.readLine()) != null){
-				String[] tokens = line.split("\t");
-				Class<?> clazz = Class.forName(tokens[CLAZZ]);
-				map.put(clazz, tokens);
-			}
-			reader.close();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private static void readArguments(Map<Class<?>, String[]> map){
-		BufferedReader reader = new BufferedReader(new InputStreamReader(Constants.class.getResourceAsStream(ARGUMENTS_FILE)));
-		String line;
-		try {
-			while((line = reader.readLine()) != null){
-				if(!line.equals("")){
-					String[] tokens = line.split("\t");
-					Class<?> clazz = Class.forName(tokens[CLAZZ]);
-					swap(tokens, 2, FLAG);
-					swap(tokens, 3, PROTOTYPE);
-					map.put(clazz, tokens);
-				}
-			}
-			reader.close();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private static void swap(String[] tokens, int i, int j){
-		String temp = tokens[i];
-		tokens[i] = tokens[j];
-		tokens[j] = temp;
-	}
 	
 	@SuppressWarnings("unchecked")
 	private static <T> List<Class<? extends T>> getClasses(Class<T> clazz, String file, String pckg){
