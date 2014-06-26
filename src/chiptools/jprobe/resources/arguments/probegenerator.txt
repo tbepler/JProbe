@@ -1,11 +1,11 @@
-chiptools.jprobe.function.args.PeakSeqsArgument	PeakSeqs	p	FILE	Sequences	ChIP-seq peaks with genomic DNA sequences from which probes will be generated
+chiptools.jprobe.function.args.PeakSeqsArgument	PeakSeqs	p	FILE	Sequences	ChIP-seq peaks with genomic DNA sequences from which probes will be generated.
 
 chiptools.jprobe.function.args.KmerArgument	K-mer	k	FILE	Scoring	K-mer data for factor of interest. The k-mer data is used to identify potential binding sites over which probes should be created, according to the BindingSite and E-score arguments.
 chiptools.jprobe.function.args.PWMArgument	PWM	m	FILE	Scoring	Position weight matrix for factor of interest. The PWM is used to center probes when potential binding sites are identified by the k-mer data.
 
 chiptools.jprobe.function.args.ProbeLengthArgument	ProbeLength	l	INT	Length	Length of probes to be generated.
 
-chiptools.jprobe.function.probegenerator.BindingSiteArgument	BindingSite	b	INT{default=9}	Binding Sites	Size of the region that must be spanned by k-mers meeting the minimum e-score. Default=9
-chiptools.jprobe.function.probegenerator.WindowSizeArgument	Window	w	INT{default=3}	Binding Sites	Number of bases on either side of potential binding sites that will be scanned with the PWM to center the probe. (2*Window + BindingSite) >= PWM length is required for this to be possible. It is recommended that this value should exceed the PWM length. Otherwise, the PWM is useless. Default=3
+chiptools.jprobe.function.probegenerator.BindingSiteArgument	BindingSite	b	INT	Binding Sites	Size of the region that must be spanned by k-mers meeting the minimum e-score.
+chiptools.jprobe.function.probegenerator.WindowSizeArgument	Window	w	INT	Binding Sites	Number of bases on either side of potential binding sites that will be scanned with the PWM to center the probe. (2*Window + BindingSite) >= PWM length is required for this to be possible. It is recommended that this value should exceed the PWM length. Otherwise, the PWM is useless.
 
 chiptools.jprobe.function.args.EscoreArgument	E-score	e	ESCORE	Binding Sites	E-score value between -0.5 and 0.5. This is the minimum e-score that k-mers spanning a region of length BindingSite must have in order to identify that region as a potential binding site.
