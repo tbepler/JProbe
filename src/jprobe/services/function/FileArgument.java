@@ -46,6 +46,8 @@ public abstract class FileArgument<P> extends AbstractArgument<P> implements Act
 		m_Text.setPreferredSize(d);
 		//
 		m_Text.setHorizontalAlignment(JTextField.RIGHT);
+		//since the text field is just used to show the file path to the user, disable editing
+		m_Text.setEditable(false);
 	}
 	
 	protected abstract JFileChooser getJFileChooser();
