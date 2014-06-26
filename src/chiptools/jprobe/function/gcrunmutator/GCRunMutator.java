@@ -32,8 +32,8 @@ public class GCRunMutator extends AbstractChiptoolsFunction<GCRunMutatorParams>{
 	@Override
 	public Collection<Argument<? super GCRunMutatorParams>> getArguments() {
 		Collection<Argument<? super GCRunMutatorParams>> args = new ArrayList<Argument<? super GCRunMutatorParams>>();
-		args.add(new ProbesArgument(false));
-		args.add(new PrimerArgument(true));
+		args.add(new ProbesArgument(this, false));
+		args.add(new PrimerArgument(this, true));
 		
 		return args;
 	}

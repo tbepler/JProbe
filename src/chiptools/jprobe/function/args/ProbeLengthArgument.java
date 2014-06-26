@@ -1,18 +1,15 @@
 package chiptools.jprobe.function.args;
 
-import chiptools.Constants;
+import chiptools.jprobe.function.ChiptoolsIntArg;
 import chiptools.jprobe.function.params.ProbeLenParam;
-import jprobe.services.function.IntArgument;
+import jprobe.services.function.Function;
 
-public class ProbeLengthArgument extends IntArgument<ProbeLenParam>{
+public class ProbeLengthArgument extends ChiptoolsIntArg<ProbeLenParam>{
 
-	public ProbeLengthArgument(boolean optional) {
+	public ProbeLengthArgument(Function<?> parent, boolean optional) {
 		super(
-				Constants.getName(ProbeLengthArgument.class),
-				Constants.getDescription(ProbeLengthArgument.class) + ", default="+36,
-				Constants.getCategory(ProbeLengthArgument.class),
-				Constants.getFlag(ProbeLengthArgument.class),
-				Constants.getPrototypeValue(ProbeLengthArgument.class) + "{default="+36+"}",
+				parent.getClass(),
+				ProbeLengthArgument.class,
 				optional,
 				36,
 				1,
@@ -21,13 +18,11 @@ public class ProbeLengthArgument extends IntArgument<ProbeLenParam>{
 				);
 	}
 	
-	public ProbeLengthArgument(boolean optional, String defaultVal) {
+	public ProbeLengthArgument(Function<?> parent, boolean optional, String defaultVal) {
 		super(
-				Constants.getName(ProbeLengthArgument.class),
-				Constants.getDescription(ProbeLengthArgument.class) + ", default="+defaultVal,
-				Constants.getCategory(ProbeLengthArgument.class),
-				Constants.getFlag(ProbeLengthArgument.class),
-				Constants.getPrototypeValue(ProbeLengthArgument.class) + "{default="+defaultVal+"}",
+				parent.getClass(),
+				ProbeLengthArgument.class,
+				defaultVal,
 				optional,
 				36,
 				1,

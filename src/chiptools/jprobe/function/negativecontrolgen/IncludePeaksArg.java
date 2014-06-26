@@ -2,22 +2,18 @@ package chiptools.jprobe.function.negativecontrolgen;
 
 import java.util.List;
 
-import chiptools.Constants;
-import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.Peaks;
-import jprobe.services.function.DataArgument;
+import chiptools.jprobe.function.ChiptoolsDataArg;
+import jprobe.services.function.Function;
 
-public class IncludePeaksArg extends DataArgument<NegControlParams, Peaks>{
+public class IncludePeaksArg extends ChiptoolsDataArg<NegControlParams, Peaks>{
 
-	public IncludePeaksArg(boolean optional) {
+	public IncludePeaksArg(Function<?> parent, boolean optional) {
 		super(
-				ChiptoolsActivator.getCore(),
-				Constants.getName(IncludePeaksArg.class),
-				Constants.getDescription(IncludePeaksArg.class),
-				Constants.getCategory(IncludePeaksArg.class),
-				Constants.getFlag(IncludePeaksArg.class),
-				optional,
+				parent.getClass(),
+				IncludePeaksArg.class,
 				Peaks.class,
+				optional,
 				1,
 				Integer.MAX_VALUE,
 				false

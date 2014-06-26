@@ -2,23 +2,19 @@ package chiptools.jprobe.function.args;
 
 import java.util.List;
 
-import chiptools.Constants;
-import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.Kmer;
+import chiptools.jprobe.function.ChiptoolsDataArg;
 import chiptools.jprobe.function.params.KmerParam;
-import jprobe.services.function.DataArgument;
+import jprobe.services.function.Function;
 
-public class KmerArgument extends DataArgument<KmerParam, Kmer>{
+public class KmerArgument extends ChiptoolsDataArg<KmerParam, Kmer>{
 
-	public KmerArgument(boolean optional) {
+	public KmerArgument(Function<?> parent, boolean optional) {
 		super(
-				ChiptoolsActivator.getCore(),
-				Constants.getName(KmerArgument.class),
-				Constants.getDescription(KmerArgument.class),
-				Constants.getCategory(KmerArgument.class),
-				Constants.getFlag(KmerArgument.class),
-				optional,
+				parent.getClass(),
+				KmerArgument.class,
 				Kmer.class,
+				optional,
 				1,
 				1,
 				false

@@ -1,12 +1,14 @@
 package chiptools.jprobe.function.mutationprofiler;
 
 import java.io.File;
+
+import jprobe.services.function.Function;
 import chiptools.jprobe.function.ChiptoolsDirArg;
 
 public class KmerLibraryArg extends ChiptoolsDirArg<MutationProfilerParams>{
 
-	public KmerLibraryArg(boolean optional) {
-		super(KmerLibraryArg.class, optional);
+	public KmerLibraryArg(Function<?> parent, boolean optional) {
+		super(parent.getClass(), KmerLibraryArg.class, optional);
 	}
 	
 	

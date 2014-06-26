@@ -1,18 +1,16 @@
 package chiptools.jprobe.function.args;
 
-import chiptools.Constants;
+import chiptools.jprobe.function.ChiptoolsIntArg;
 import chiptools.jprobe.function.params.SummitParam;
-import jprobe.services.function.IntArgument;
+import jprobe.services.function.Function;
 
-public class SummitArgument extends IntArgument<SummitParam>{
+public class SummitArgument extends ChiptoolsIntArg<SummitParam>{
 
-	public SummitArgument(boolean optional) {
+	public SummitArgument(Function<?> parent, boolean optional) {
 		super(
-				Constants.getName(SummitArgument.class),
-				Constants.getDescription(SummitArgument.class),
-				Constants.getCategory(SummitArgument.class),
-				Constants.getFlag(SummitArgument.class),
-				Constants.getPrototypeValue(SummitArgument.class),
+				parent.getClass(),
+				SummitArgument.class,
+				"off",
 				optional,
 				0,
 				0,

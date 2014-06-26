@@ -1,11 +1,13 @@
 package chiptools.jprobe.function.agilentformatter;
 
+import jprobe.services.function.Function;
 import chiptools.jprobe.function.ChiptoolsIntArg;
 
 public class ReverseReplicatesArgument extends ChiptoolsIntArg<AgilentFormatterParams>{
 
-	public ReverseReplicatesArgument(boolean optional) {
+	public ReverseReplicatesArgument(Function<?> parent, boolean optional) {
 		super(
+				parent.getClass(),
 				ReverseReplicatesArgument.class,
 				optional,
 				3,

@@ -2,23 +2,19 @@ package chiptools.jprobe.function.args;
 
 import java.util.List;
 
-import chiptools.Constants;
-import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.PWM;
+import chiptools.jprobe.function.ChiptoolsDataArg;
 import chiptools.jprobe.function.params.PWMParam;
-import jprobe.services.function.DataArgument;
+import jprobe.services.function.Function;
 
-public class PWMArgument extends DataArgument<PWMParam, PWM>{
+public class PWMArgument extends ChiptoolsDataArg<PWMParam, PWM>{
 
-	public PWMArgument(boolean optional) {
+	public PWMArgument(Function<?> parent, boolean optional) {
 		super(
-				ChiptoolsActivator.getCore(),
-				Constants.getName(PWMArgument.class),
-				Constants.getDescription(PWMArgument.class),
-				Constants.getCategory(PWMArgument.class),
-				Constants.getFlag(PWMArgument.class),
-				optional,
+				parent.getClass(),
+				PWMArgument.class,
 				PWM.class,
+				optional,
 				1,
 				1,
 				false

@@ -27,11 +27,11 @@ public class AgilentFormatter extends AbstractChiptoolsFunction<AgilentFormatter
 	@Override
 	public Collection<Argument<? super AgilentFormatterParams>> getArguments() {
 		Collection<Argument<? super AgilentFormatterParams>> args = new ArrayList<Argument<? super AgilentFormatterParams>>();
-		args.add(new ProbeCategoriesArgument(false));
-		args.add(new ArrayNameArgument(false));
-		args.add(new PrimerArgument(true));
-		args.add(new ForwardReplicatesArgument(true));
-		args.add(new ReverseReplicatesArgument(true));
+		args.add(new ProbeCategoriesArgument(this.getClass(), false));
+		args.add(new ArrayNameArgument(this, false));
+		args.add(new PrimerArgument(this, true));
+		args.add(new ForwardReplicatesArgument(this, true));
+		args.add(new ReverseReplicatesArgument(this, true));
 		
 		return args;
 	}

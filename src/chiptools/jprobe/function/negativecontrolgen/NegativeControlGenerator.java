@@ -50,14 +50,14 @@ public class NegativeControlGenerator extends AbstractChiptoolsFunction<NegContr
 	@Override
 	public Collection<Argument<? super NegControlParams>> getArguments() {
 		Collection<Argument<? super NegControlParams>> args = new ArrayList<Argument<? super NegControlParams>>();
-		args.add(new GenomeArgument(false));
-		args.add(new IncludePeaksArg(false));
-		args.add(new ExcludePeaksArg(true));
-		args.add(new SummitArgument(true));
-		args.add(new KmerListArgument(true));
-		args.add(new EscoreArgument(true, 0.3));
-		args.add(new ProbeLengthArgument(true));
-		args.add(new NumberArg(true));
+		args.add(new GenomeArgument(this, false));
+		args.add(new IncludePeaksArg(this, false));
+		args.add(new ExcludePeaksArg(this, true));
+		args.add(new SummitArgument(this, true));
+		args.add(new KmerListArgument(this, true));
+		args.add(new EscoreArgument(this, true, 0.3));
+		args.add(new ProbeLengthArgument(this, true));
+		args.add(new NumberArg(this, true));
 		
 		return args;
 	}

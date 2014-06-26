@@ -26,9 +26,9 @@ public class BindingProfiler extends AbstractChiptoolsFunction<BindingProfilePar
 	@Override
 	public Collection<Argument<? super BindingProfileParams>> getArguments() {
 		Collection<Argument<? super BindingProfileParams>> args = new ArrayList<Argument<? super BindingProfileParams>>();
-		args.add(new ProbesArgument(false));
-		args.add(new BindingKmerArgument(true));
-		args.add(new BindingPWMArgument(true));
+		args.add(new ProbesArgument(this, false));
+		args.add(new BindingKmerArgument(this, true));
+		args.add(new BindingPWMArgument(this, true));
 		return args;
 	}
 	

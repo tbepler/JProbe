@@ -2,23 +2,19 @@ package chiptools.jprobe.function.args;
 
 import java.util.List;
 
-import chiptools.Constants;
-import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.PeakSequences;
+import chiptools.jprobe.function.ChiptoolsDataArg;
 import chiptools.jprobe.function.params.PeakSeqsParam;
-import jprobe.services.function.DataArgument;
+import jprobe.services.function.Function;
 
-public class PeakSeqsArgument extends DataArgument<PeakSeqsParam, PeakSequences>{
+public class PeakSeqsArgument extends ChiptoolsDataArg<PeakSeqsParam, PeakSequences>{
 
-	public PeakSeqsArgument(boolean optional) {
+	public PeakSeqsArgument(Function<?> parent, boolean optional) {
 		super(
-				ChiptoolsActivator.getCore(),
-				Constants.getName(PeakSeqsArgument.class),
-				Constants.getDescription(PeakSeqsArgument.class),
-				Constants.getCategory(PeakSeqsArgument.class),
-				Constants.getFlag(PeakSeqsArgument.class),
-				optional,
+				parent.getClass(),
+				PeakSeqsArgument.class,
 				PeakSequences.class,
+				optional,
 				1,
 				1,
 				false

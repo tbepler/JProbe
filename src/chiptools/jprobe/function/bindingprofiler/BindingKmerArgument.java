@@ -3,22 +3,18 @@ package chiptools.jprobe.function.bindingprofiler;
 import java.util.List;
 
 import util.progress.ProgressListener;
-import chiptools.Constants;
-import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.Kmer;
-import jprobe.services.function.DataArgument;
+import chiptools.jprobe.function.ChiptoolsDataArg;
+import jprobe.services.function.Function;
 
-public class BindingKmerArgument extends DataArgument<BindingProfileParams, Kmer>{
+public class BindingKmerArgument extends ChiptoolsDataArg<BindingProfileParams, Kmer>{
 
-	public BindingKmerArgument(boolean optional) {
+	public BindingKmerArgument(Function<?> parent, boolean optional) {
 		super(
-				ChiptoolsActivator.getCore(),
-				Constants.getName(BindingKmerArgument.class),
-				Constants.getDescription(BindingKmerArgument.class),
-				Constants.getCategory(BindingKmerArgument.class),
-				Constants.getFlag(BindingKmerArgument.class),
-				optional,
+				parent.getClass(),
+				BindingKmerArgument.class,
 				Kmer.class,
+				optional,
 				0,
 				Integer.MAX_VALUE,
 				false

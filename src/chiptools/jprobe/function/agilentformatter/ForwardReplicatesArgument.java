@@ -1,11 +1,13 @@
 package chiptools.jprobe.function.agilentformatter;
 
+import jprobe.services.function.Function;
 import chiptools.jprobe.function.ChiptoolsIntArg;
 
 public class ForwardReplicatesArgument extends ChiptoolsIntArg<AgilentFormatterParams>{
 
-	public ForwardReplicatesArgument(boolean optional) {
+	public ForwardReplicatesArgument(Function<?> parent, boolean optional) {
 		super(
+				parent.getClass(),
 				ForwardReplicatesArgument.class,
 				optional,
 				3,

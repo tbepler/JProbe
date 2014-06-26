@@ -1,31 +1,27 @@
 package chiptools.jprobe.function.args;
 
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-import chiptools.Constants;
-import chiptools.jprobe.ChiptoolsActivator;
+import chiptools.jprobe.function.ChiptoolsFileArg;
 import chiptools.jprobe.function.params.PrimerParam;
-import jprobe.services.function.FileArgument;
+import jprobe.services.function.Function;
 
-public class PrimerArgument extends FileArgument<PrimerParam>{
+public class PrimerArgument extends ChiptoolsFileArg<PrimerParam>{
 	
-	private final JLabel m_PrimerLabel = new JLabel();
+	//instantiate lazily
+	private JLabel m_PrimerLabel = null;
 	
-	public PrimerArgument(boolean optional) {
+	public PrimerArgument(Function<?> parent, boolean optional) {
 		super(
-				Constants.getName(PrimerArgument.class),
-				Constants.getDescription(PrimerArgument.class),
-				Constants.getCategory(PrimerArgument.class),
-				Constants.getFlag(PrimerArgument.class),
+				parent.getClass(),
+				PrimerArgument.class,
 				optional
 				);
 	}
@@ -54,8 +50,10 @@ public class PrimerArgument extends FileArgument<PrimerParam>{
 	protected void setFile(File f){
 		String primer = this.parsePrimer(f);
 		if(primer != null && !primer.equals("")){
-			m_PrimerLabel.setText(primer);
-			SwingUtilities.getWindowAncestor(m_PrimerLabel).pack();
+			if(m_PrimerLabel != null){
+				m_PrimerLabel.setText(primer);
+				SwingUtilities.getWindowAncestor(m_PrimerLabel).pack();
+			}
 			super.setFile(f);
 		}
 	}
@@ -68,6 +66,9 @@ public class PrimerArgument extends FileArgument<PrimerParam>{
 		gbc.gridx = 0;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
+		if(m_PrimerLabel == null){
+			m_PrimerLabel = new JLabel();
+		}
 		comp.add(m_PrimerLabel, gbc);
 		return comp;
 	}
@@ -81,16 +82,6 @@ public class PrimerArgument extends FileArgument<PrimerParam>{
 	protected void process(PrimerParam params, File f) {
 		String primer = this.parsePrimer(f);
 		params.setPrimer(primer);
-	}
-
-	@Override
-	protected Frame getParentFrame() {
-		return ChiptoolsActivator.getGUIFrame();
-	}
-
-	@Override
-	protected JFileChooser getJFileChooser() {
-		return Constants.getChiptoolsFileChooser();
 	}
 
 }

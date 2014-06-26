@@ -1,11 +1,13 @@
 package chiptools.jprobe.function.agilentformatter;
 
+import jprobe.services.function.Function;
 import chiptools.jprobe.function.ChiptoolsTextArg;
 
 public class ArrayNameArgument extends ChiptoolsTextArg<AgilentFormatterParams> {
 
-	protected ArrayNameArgument(boolean optional) {
+	public ArrayNameArgument(Function<?> parent, boolean optional) {
 		super(
+				parent.getClass(),
 				ArrayNameArgument.class,
 				"array_name",
 				optional,

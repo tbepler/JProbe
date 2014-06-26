@@ -3,22 +3,18 @@ package chiptools.jprobe.function.bindingprofiler;
 import java.util.List;
 
 import util.progress.ProgressListener;
-import chiptools.Constants;
-import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.PWM;
-import jprobe.services.function.DataArgument;
+import chiptools.jprobe.function.ChiptoolsDataArg;
+import jprobe.services.function.Function;
 
-public class BindingPWMArgument extends DataArgument<BindingProfileParams, PWM>{
+public class BindingPWMArgument extends ChiptoolsDataArg<BindingProfileParams, PWM>{
 
-	public BindingPWMArgument(boolean optional) {
+	public BindingPWMArgument(Function<?> parent, boolean optional) {
 		super(
-				ChiptoolsActivator.getCore(),
-				Constants.getName(BindingPWMArgument.class),
-				Constants.getDescription(BindingPWMArgument.class),
-				Constants.getCategory(BindingPWMArgument.class),
-				Constants.getFlag(BindingPWMArgument.class),
-				optional,
+				parent.getClass(),
+				BindingPWMArgument.class,
 				PWM.class,
+				optional,
 				0,
 				Integer.MAX_VALUE,
 				false

@@ -5,12 +5,14 @@ import java.util.List;
 
 import util.progress.ProgressListener;
 import chiptools.Constants;
+import chiptools.Resources;
 import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.Probes;
 import chiptools.jprobe.function.agilentformatter.component.DataCategoriesComponent;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 import jprobe.services.function.DataArgument;
+import jprobe.services.function.Function;
 import jprobe.services.function.ListArgument;
 import jprobe.services.function.components.DataArgsComponent.DataValidFunction;
 
@@ -18,13 +20,14 @@ public class ProbeCategoriesArgument extends ListArgument<AgilentFormatterParams
 	
 	private final JProbeCore m_Core = ChiptoolsActivator.getCore();
 	
-	public ProbeCategoriesArgument(boolean optional) {
+	@SuppressWarnings("rawtypes")
+	public ProbeCategoriesArgument(Class<? extends Function> funcClass, boolean optional) {
 		super(
-				Constants.getName(ProbeCategoriesArgument.class),
-				Constants.getDescription(ProbeCategoriesArgument.class),
-				Constants.getCategory(ProbeCategoriesArgument.class),
-				Constants.getFlag(ProbeCategoriesArgument.class),
-				Constants.getPrototypeValue(ProbeCategoriesArgument.class),
+				Resources.getArgumentName(funcClass, ProbeCategoriesArgument.class),
+				Resources.getArgumentDescription(funcClass, ProbeCategoriesArgument.class),
+				Resources.getArgumentCategory(funcClass, ProbeCategoriesArgument.class),
+				Resources.getArgumentFlag(funcClass, ProbeCategoriesArgument.class),
+				Resources.getArgumentPrototype(funcClass, ProbeCategoriesArgument.class),
 				optional
 				);
 	}

@@ -2,23 +2,19 @@ package chiptools.jprobe.function.negativecontrolgen;
 
 import java.util.List;
 
-import chiptools.Constants;
-import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.data.Kmer;
+import chiptools.jprobe.function.ChiptoolsDataArg;
 import chiptools.jprobe.function.params.KmerListParam;
-import jprobe.services.function.DataArgument;
+import jprobe.services.function.Function;
 
-public class KmerListArgument extends DataArgument<KmerListParam, Kmer>{
+public class KmerListArgument extends ChiptoolsDataArg<KmerListParam, Kmer>{
 
-	public KmerListArgument(boolean optional) {
+	public KmerListArgument(Function<?> parent, boolean optional) {
 		super(
-				ChiptoolsActivator.getCore(),
-				Constants.getName(KmerListArgument.class),
-				Constants.getDescription(KmerListArgument.class),
-				Constants.getCategory(KmerListArgument.class),
-				Constants.getFlag(KmerListArgument.class),
-				optional,
+				parent.getClass(),
+				KmerListArgument.class,
 				Kmer.class,
+				optional,
 				0,
 				Integer.MAX_VALUE,
 				false

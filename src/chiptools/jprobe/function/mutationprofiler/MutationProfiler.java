@@ -27,12 +27,12 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 	@Override
 	public Collection<Argument<? super MutationProfilerParams>> getArguments() {
 		Collection<Argument<? super MutationProfilerParams>> args = new ArrayList<Argument<? super MutationProfilerParams>>();
-		args.add(new CompareSeqsArg(2, false));
-		args.add(new KmerLibraryArg(false));
-		args.add(new MinEscoreArg(true));
-		args.add(new MinDifferenceArg(true));
-		args.add(new BindingSiteArg(true));
-		args.add(new RecursiveArg());
+		args.add(new CompareSeqsArg(this, 2, false));
+		args.add(new KmerLibraryArg(this, false));
+		args.add(new MinEscoreArg(this, true));
+		args.add(new MinDifferenceArg(this, true));
+		args.add(new BindingSiteArg(this, true));
+		args.add(new RecursiveArg(this));
 		return args;
 	}
 	

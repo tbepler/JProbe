@@ -1,11 +1,13 @@
 package chiptools.jprobe.function.negativecontrolgen;
 
+import jprobe.services.function.Function;
 import chiptools.jprobe.function.ChiptoolsIntArg;
 
 public class NumberArg extends ChiptoolsIntArg<NegControlParams>{
 
-	public NumberArg(boolean optional) {
+	public NumberArg(Function<?> parent, boolean optional) {
 		super(
+				parent.getClass(),
 				NumberArg.class,
 				"unlimited",
 				optional,

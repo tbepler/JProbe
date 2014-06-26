@@ -1,17 +1,12 @@
 package chiptools.jprobe.function.mutationprofiler;
 
-import chiptools.Constants;
-import jprobe.services.function.FlagArgument;
+import chiptools.jprobe.function.ChiptoolsFlagArg;
+import jprobe.services.function.Function;
 
-public class RecursiveArg extends FlagArgument<MutationProfilerParams>{
+public class RecursiveArg extends ChiptoolsFlagArg<MutationProfilerParams>{
 
-	protected RecursiveArg() {
-		super(
-				Constants.getName(RecursiveArg.class),
-				Constants.getDescription(RecursiveArg.class),
-				Constants.getCategory(RecursiveArg.class),
-				Constants.getFlag(RecursiveArg.class)
-				);
+	public RecursiveArg(Function<?> parent) {
+		super(parent.getClass(), RecursiveArg.class);
 	}
 
 	@Override

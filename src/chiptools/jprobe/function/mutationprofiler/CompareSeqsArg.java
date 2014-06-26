@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import jprobe.services.ErrorHandler;
+import jprobe.services.function.Function;
 import chiptools.jprobe.ChiptoolsActivator;
 import chiptools.jprobe.function.ChiptoolsFileArg;
 
@@ -25,8 +26,8 @@ public class CompareSeqsArg extends ChiptoolsFileArg<MutationProfilerParams>{
 	private final int m_NumSeqs;
 	private final JPanel m_Panel = new JPanel(new GridBagLayout());
 	
-	public CompareSeqsArg(int numSeqs, boolean optional) {
-		super(CompareSeqsArg.class, optional);
+	public CompareSeqsArg(Function<?> parent, int numSeqs, boolean optional) {
+		super(parent.getClass(), CompareSeqsArg.class, optional);
 		m_NumSeqs = numSeqs;
 	}
 	
