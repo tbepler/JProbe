@@ -34,7 +34,9 @@ public class SwingFunctionExecutor<T> extends FunctionExecutor<T>{
 				ErrorHandler.getInstance().handleException(e, m_Bundle);
 				done(null);
 			} catch (Throwable t){
-				ErrorHandler.getInstance().handleException(new RuntimeException(t), m_Bundle);
+				//don't report this event, as canceling the thread will cause this to notify the user
+				//with java.lang.ThreadDeath
+				//ErrorHandler.getInstance().handleException(new RuntimeException(t), m_Bundle);
 				done(null);
 			}
 		}

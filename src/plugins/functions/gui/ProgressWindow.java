@@ -101,7 +101,9 @@ public class ProgressWindow implements ActionListener{
 	}
 	
 	public void dispose(){
-		m_Window.dispose();
+		if(m_Window != null){
+			m_Window.dispose();
+		}
 		m_Content = null;
 		m_Window = null;
 	}
