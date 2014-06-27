@@ -10,7 +10,7 @@ import javax.swing.JMenu;
 
 import org.osgi.framework.Bundle;
 
-import jprobe.services.DataManager;
+import jprobe.services.Workspace;
 import jprobe.services.JProbeCore;
 import plugins.jprobe.gui.services.Disposable;
 import plugins.jprobe.gui.services.JProbeWindow;
@@ -51,7 +51,7 @@ public class PluginServiceView implements JProbeWindow{
 	}
 
 	@Override
-	public DataManager getWorkspace() {
+	public Workspace getWorkspace() {
 		return m_Frame.getJProbeCore().getDataManager();
 	}
 

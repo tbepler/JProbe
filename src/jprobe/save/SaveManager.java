@@ -13,7 +13,7 @@ import jprobe.services.ErrorHandler;
 import jprobe.services.LoadEvent;
 import jprobe.services.LoadEvent.Type;
 import jprobe.services.LoadListener;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 import jprobe.services.SaveEvent;
 import jprobe.services.SaveListener;
 import jprobe.services.Saveable;
@@ -68,7 +68,7 @@ public class SaveManager{
 		try{
 			SaveUtil.save(saveTo, m_Saveables);
 			m_SaveablesLock.readLock().unlock();
-			Log.getInstance().write(JProbeActivator.getBundle(), "Saved workspace to file "+saveTo);
+			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Saved workspace to file "+saveTo);
 			this.notifySave(new SaveEvent(SaveEvent.Type.SAVED, saveTo));
 		} catch (SaveException e){
 			m_SaveablesLock.readLock().unlock();
@@ -87,7 +87,7 @@ public class SaveManager{
 		try {
 			SaveUtil.load(loadFrom, m_Saveables);
 			m_SaveablesLock.readLock().unlock();
-			Log.getInstance().write(JProbeActivator.getBundle(), "Opened workspace "+loadFrom);
+			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Opened workspace "+loadFrom);
 			this.notifyLoad(new LoadEvent(Type.LOADED, loadFrom));
 		} catch (LoadException e) {
 			m_SaveablesLock.readLock().unlock();

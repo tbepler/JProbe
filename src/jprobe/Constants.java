@@ -28,6 +28,7 @@ public class Constants {
 			+ "util.progress;version=1.0.0,"
 			+ "util.gui;version=1.0.0,"
 			+ "util;version=1.0.0,"
+			+ "util.logging;version=1.0.0,"
 			+ "util.genome;version=1.0.0,"
 			+ "util.genome.reader;version=1.0.0,"
 			+ "util.genome.reader.query;version=1.0.0,"

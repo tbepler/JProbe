@@ -6,7 +6,7 @@ import java.io.FileFilter;
 import util.FileUtil;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 
 public class AutosaveThread extends Thread{
 	
@@ -81,7 +81,7 @@ public class AutosaveThread extends Thread{
 			save = new File(name + index + ext);
 			++index;
 		}
-		Log.getInstance().write(GUIActivator.getBundle(), "Autosaving...");
+		JProbeLog.getInstance().write(GUIActivator.getBundle(), "Autosaving...");
 		SaveLoadUtil.save(m_Core, save);
 	}
 	

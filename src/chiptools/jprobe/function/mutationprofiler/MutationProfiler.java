@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import jprobe.services.ErrorHandler;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 import util.genome.kmer.Kmer;
@@ -75,11 +75,11 @@ public class MutationProfiler extends AbstractChiptoolsFunction<MutationProfiler
 								);
 					}else{
 						l.update(new ProgressEvent(this, Type.UPDATE, "Skipping Kmer "+f.getName(), true));
-						Log.getInstance().write(ChiptoolsActivator.getBundle(), "MutationProfilter: skipping "+f.getName());
+						JProbeLog.getInstance().write(ChiptoolsActivator.getBundle(), "MutationProfilter: skipping "+f.getName());
 					}
 				}catch(Exception e){
 					l.update(new ProgressEvent(this, Type.UPDATE, "Skipping Kmer "+f.getName(), true));
-					Log.getInstance().write(ChiptoolsActivator.getBundle(), "MutationProfilter: skipping "+f.getName());
+					JProbeLog.getInstance().write(ChiptoolsActivator.getBundle(), "MutationProfilter: skipping "+f.getName());
 					ErrorHandler.getInstance().handleException(e, ChiptoolsActivator.getBundle());
 				}
 			}

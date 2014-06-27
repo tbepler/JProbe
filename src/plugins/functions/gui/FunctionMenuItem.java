@@ -11,7 +11,7 @@ import plugins.functions.gui.dialog.FunctionDialogHandler;
 import plugins.functions.gui.dialog.FunctionPanel;
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 import jprobe.services.function.Function;
 
 public class FunctionMenuItem extends JMenuItem implements ActionListener{
@@ -35,7 +35,7 @@ public class FunctionMenuItem extends JMenuItem implements ActionListener{
 	private void doFunction(){
 		//code for executing function here
 		if(Debug.getLevel() == Debug.FULL){
-			Log.getInstance().write(m_Bundle, this.getText()+" clicked");
+			JProbeLog.getInstance().write(m_Bundle, this.getText()+" clicked");
 		}
 		try {
 			m_FunctionDialog.display(m_FunctionPanel);

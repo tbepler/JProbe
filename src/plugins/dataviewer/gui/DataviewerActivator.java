@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -53,7 +53,7 @@ public class DataviewerActivator implements BundleActivator{
 		m_Panel = new DataViewerSplitPane(m_Core, m_Gui);
 		m_Gui.addComponent(m_Panel, m_Panel.getGridBagConstraints(), m_BC.getBundle());
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			Log.getInstance().write(m_BC.getBundle(), "DataViewer started.");
+			JProbeLog.getInstance().write(m_BC.getBundle(), "DataViewer started.");
 		}
 	}
 	
@@ -80,7 +80,7 @@ public class DataviewerActivator implements BundleActivator{
 			m_Gui = null;
 		}
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			Log.getInstance().write(m_BC.getBundle(), "DataViewer stopped.");
+			JProbeLog.getInstance().write(m_BC.getBundle(), "DataViewer stopped.");
 		}
 	}
 

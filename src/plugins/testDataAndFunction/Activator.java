@@ -2,7 +2,7 @@ package plugins.testDataAndFunction;
 
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
 import jprobe.services.function.Function;
@@ -49,7 +49,7 @@ public class Activator implements BundleActivator{
 		core.getDataManager().addDataReader(testReader, context.getBundle());
 		core.getDataManager().addDataWriter(testWriter, context.getBundle());
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			Log.getInstance().write(context.getBundle(), "TestPlugin started.");
+			JProbeLog.getInstance().write(context.getBundle(), "TestPlugin started.");
 		}
 	}
 
@@ -63,7 +63,7 @@ public class Activator implements BundleActivator{
 		core.getDataManager().removeDataReader(testReader, context.getBundle());
 		core.getDataManager().removeDataWriter(testWriter, context.getBundle());
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			Log.getInstance().write(context.getBundle(), "TestPlugin stopped.");
+			JProbeLog.getInstance().write(context.getBundle(), "TestPlugin stopped.");
 		}
 	}
 

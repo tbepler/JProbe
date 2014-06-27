@@ -7,7 +7,7 @@ import org.osgi.framework.Bundle;
 import util.gui.OnPress;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
-import jprobe.services.DataManager;
+import jprobe.services.Workspace;
 import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
 import jprobe.services.function.Function;
@@ -66,11 +66,11 @@ public class SwingFunctionExecutor<T> extends FunctionExecutor<T>{
 	}
 	
 	private Bundle m_Bundle;
-	private DataManager m_DataManager;
+	private Workspace m_DataManager;
 	private FunctionThread m_Thread;
 	private ProgressWindow m_Monitor;
 
-	public SwingFunctionExecutor(Function<T> function, T params, DataManager dataManager, Bundle bundle) {
+	public SwingFunctionExecutor(Function<T> function, T params, Workspace dataManager, Bundle bundle) {
 		super(function);
 		m_DataManager = dataManager;
 		m_Bundle = bundle;

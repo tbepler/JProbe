@@ -46,7 +46,7 @@ import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
 import jprobe.services.LoadEvent;
 import jprobe.services.LoadListener;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 import jprobe.services.SaveEvent;
 import jprobe.services.SaveListener;
 import jprobe.services.data.Data;
@@ -226,7 +226,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 	private void checkDebugAndLog(String message){
 		Debug debugLevel = Debug.getLevel();
 		if(debugLevel == Debug.LOG || debugLevel == Debug.FULL){
-			Log.getInstance().write(m_Bundle, message);
+			JProbeLog.getInstance().write(m_Bundle, message);
 		}
 	}
 	

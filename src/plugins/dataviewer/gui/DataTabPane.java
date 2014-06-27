@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 import plugins.dataviewer.gui.services.DataViewer;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
-import jprobe.services.DataManager;
+import jprobe.services.Workspace;
 import jprobe.services.data.Data;
 
 public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer{
@@ -18,12 +18,12 @@ public class DataTabPane extends JTabbedPane implements CoreListener, DataViewer
 	
 	//public static final Dimension PREFERRED = new Dimension(800, 800);
 	
-	private DataManager m_DataManager;
+	private Workspace m_DataManager;
 	private Map<Data, DataTab> m_Tabs;
 	private Map<Data, DataTabLabel> m_TabLables;
 	private GridBagConstraints m_Constraints;
 	
-	public DataTabPane(DataManager dataManager){
+	public DataTabPane(Workspace dataManager){
 		super();
 		m_DataManager = dataManager;
 		m_DataManager.addListener(this);

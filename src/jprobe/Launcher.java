@@ -3,8 +3,9 @@ package jprobe;
 import java.io.File;
 import java.io.IOException;
 
+import util.logging.TimeStampLog;
 import jprobe.services.ErrorHandler;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 
 public class Launcher {
 	
@@ -29,9 +30,9 @@ public class Launcher {
 
 	private static void initLogs() {
 		File log = initFile(Constants.JPROBE_LOG);
-		Log.getInstance().init(new TimeStampJournal(log));
+		JProbeLog.getInstance().init(new TimeStampLog(log));
 		File errorLog = initFile(Constants.JPROBE_ERROR_LOG);
-		ErrorHandler.getInstance().init(new TimeStampJournal(errorLog));
+		ErrorHandler.getInstance().init(new TimeStampLog(errorLog));
 	}
 
 

@@ -1,4 +1,4 @@
-package jprobe;
+package util.logging;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,15 +6,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
 
-import jprobe.services.Journal;
-
-import org.osgi.framework.Bundle;
-
-public class TimeStampJournal implements Journal{
+public class TimeStampLog implements Log{
 
 	private BufferedWriter writer;
 	
-	public TimeStampJournal(File log){
+	public TimeStampLog(File log){
 		if(!log.exists()){
 			log.getParentFile().mkdirs();
 		}
@@ -26,16 +22,16 @@ public class TimeStampJournal implements Journal{
 	}
 	
 	@Override
-	public void write(Bundle bundle, String message) {
+	public void write(String message) {
 		if(writer == null){
 			return;
 		}
 		try {
-			if(bundle == null){
-				writer.write("<"+Calendar.getInstance().getTime()+"><"+Thread.currentThread().getName()+"><null>"+ message+"\n");
-			}else{
-				writer.write("<"+Calendar.getInstance().getTime()+"><"+Thread.currentThread().getName()+"><"+bundle.getSymbolicName()+">"+ message+"\n");
-			}
+			StringBuilder builder = new StringBuilder();
+			builder.append("<").append(Calendar.getInstance().getTime()).append(">");
+			builder.append("<").append(Thread.currentThread().getName()).append(">");
+			builder.append(message).append("\n");
+			writer.write(builder.toString());
 			writer.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

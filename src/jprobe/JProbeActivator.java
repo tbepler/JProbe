@@ -2,7 +2,7 @@ package jprobe;
 
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -45,7 +45,7 @@ public class JProbeActivator implements BundleActivator{
 			m_Context.addServiceListener(l);
 		}
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			Log.getInstance().write(JProbeActivator.getBundle(), "JProbe started.");
+			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "JProbe started.");
 		}
 	}
 

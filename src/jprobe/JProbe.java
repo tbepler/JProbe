@@ -11,13 +11,13 @@ import java.util.Properties;
 
 import jprobe.save.SaveManager;
 import jprobe.services.CoreListener;
-import jprobe.services.DataManager;
+import jprobe.services.Workspace;
 import jprobe.services.Debug;
 import jprobe.services.ErrorHandler;
 import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
 import jprobe.services.LoadListener;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 import jprobe.services.SaveListener;
 import jprobe.services.Saveable;
 import jprobe.services.data.Data;
@@ -132,7 +132,7 @@ public class JProbe implements JProbeCore{
 	public void shutdown(){
 		try{
 			if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-				Log.getInstance().write(JProbeActivator.getBundle(), "JProbe shutting down.");
+				JProbeLog.getInstance().write(JProbeActivator.getBundle(), "JProbe shutting down.");
 			}
 			m_Felix.stop();
 		} catch (Exception e){
@@ -179,7 +179,7 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public DataManager getDataManager() {
+	public Workspace getDataManager() {
 		return m_DataManager;
 	}
 
@@ -206,7 +206,7 @@ public class JProbe implements JProbeCore{
 	@Override
 	public void newWorkspace() {
 		m_DataManager.clearData();
-		Log.getInstance().write(JProbeActivator.getBundle(), "Opened new workspace");
+		JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Opened new workspace");
 	}
 
 	@Override

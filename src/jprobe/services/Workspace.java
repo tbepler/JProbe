@@ -13,7 +13,7 @@ import jprobe.services.data.DataWriter;
 
 import org.osgi.framework.Bundle;
 
-public interface DataManager extends Saveable{
+public interface Workspace extends Saveable{
 	
 	public void addListener(CoreListener listener);
 	public void removeListener(CoreListener listener);

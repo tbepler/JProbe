@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.Log;
+import jprobe.services.JProbeLog;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -52,7 +52,7 @@ public class Activator implements BundleActivator{
 		menu = new FunctionMenu( GUI.getGUIFrame(), core, bc.getBundle());
 		GUI.addDropdownMenu(menu, bc.getBundle());
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			Log.getInstance().write(BUNDLE, "Function menu started.");
+			JProbeLog.getInstance().write(BUNDLE, "Function menu started.");
 		}
 	}
 	
@@ -80,7 +80,7 @@ public class Activator implements BundleActivator{
 			GUI = null;
 		}
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			Log.getInstance().write(BUNDLE, "Function menu stopped.");
+			JProbeLog.getInstance().write(BUNDLE, "Function menu stopped.");
 		}
 	}
 

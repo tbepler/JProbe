@@ -33,11 +33,11 @@ import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreListener;
-import jprobe.services.DataManager;
+import jprobe.services.Workspace;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 
-public class CoreDataManager implements DataManager{
+public class CoreDataManager implements Workspace{
 	
 	private final Collection<CoreListener> m_Listeners = new HashSet<CoreListener>();
 

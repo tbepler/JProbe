@@ -13,7 +13,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import jprobe.services.AbstractServiceListener;
-import jprobe.services.DataManager;
+import jprobe.services.Workspace;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.JProbeCore.Mode;
@@ -149,7 +149,7 @@ public class GUIActivator implements BundleActivator{
 		return err;
 	}
 	
-	private JProbeGUIFrame newJProbeFrame(JProbeCore core, DataManager workspace, GUIConfig config){
+	private JProbeGUIFrame newJProbeFrame(JProbeCore core, Workspace workspace, GUIConfig config){
 		JProbeGUIFrame frame = new JProbeGUIFrame(core, core.getName() + "-" + core.getVersion(), config);
 		m_Frames.add(frame);
 		this.newGUIServiceListener(frame);
