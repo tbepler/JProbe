@@ -1,8 +1,8 @@
 package plugins.jprobe.gui.utils;
 
+import java.awt.Component;
 import java.awt.Frame;
 
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 
@@ -31,13 +31,13 @@ public class TabDialogueWindow extends JDialog{
 		super.setVisible(vis);
 	}
 	
-	public void addTab(JComponent tab, String title){
+	public void addTab(Component tab, String title){
 		m_TabPane.addTab(title, tab);
 		this.invalidate();
 		this.validate();
 	}
 	
-	public void removeTab(JComponent tab){
+	public void removeTab(Component tab){
 		m_TabPane.remove(tab);
 		this.invalidate();
 		this.validate();

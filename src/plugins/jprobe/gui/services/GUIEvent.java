@@ -11,17 +11,17 @@ public class GUIEvent {
 		MENU_REMOVED;
 	};
 	
-	private JProbeGUI source;
-	private Bundle cause;
-	private Type type;
+	private final JProbeWindow source;
+	private final Bundle cause;
+	private final Type type;
 	
-	public GUIEvent(JProbeGUI source, Type type, Bundle cause){
+	public GUIEvent(JProbeWindow source, Type type, Bundle cause){
 		this.source = source;
 		this.type = type;
 		this.cause = cause;
 	}
 	
-	public JProbeGUI getSource(){
+	public JProbeWindow getSource(){
 		return source;
 	}
 	

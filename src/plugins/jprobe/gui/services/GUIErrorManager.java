@@ -3,6 +3,7 @@ package plugins.jprobe.gui.services;
 import java.awt.Frame;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.osgi.framework.Bundle;
 
@@ -17,13 +18,27 @@ public class GUIErrorManager implements ErrorManager{
 	}
 
 	@Override
-	public void handleException(Exception e, Bundle thrower) {
-		JOptionPane.showMessageDialog(m_Parent, e.getMessage(), thrower.getSymbolicName(), JOptionPane.ERROR_MESSAGE);
+	public void handleException(final Exception e, final Bundle thrower) {
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				JOptionPane.showMessageDialog(m_Parent, e.getMessage(), thrower.getSymbolicName(), JOptionPane.ERROR_MESSAGE);
+			}
+			
+		});
 	}
 
 	@Override
-	public void handleWarning(String warning, Bundle thrower) {
-		JOptionPane.showMessageDialog(m_Parent, warning, thrower.getSymbolicName(), JOptionPane.WARNING_MESSAGE);
+	public void handleWarning(final String warning, final Bundle thrower) {
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				JOptionPane.showMessageDialog(m_Parent, warning, thrower.getSymbolicName(), JOptionPane.WARNING_MESSAGE);
+			}
+			
+		});
 	}
 
 }

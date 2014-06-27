@@ -1,5 +1,9 @@
 package jprobe.services;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -8,7 +12,9 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
 public abstract class AbstractServiceListener<S> implements ServiceListener{
-
+	
+	private final Map<S, Bundle> m_Services = new HashMap<S, Bundle>();
+	
 	private Class<S> m_Target;
 	private BundleContext m_Context;
 	
@@ -34,19 +40,29 @@ public abstract class AbstractServiceListener<S> implements ServiceListener{
 		return this;
 	}
 	
-	@SuppressWarnings("unchecked")
+	public AbstractServiceListener<S> unregisterAll(){
+		for(Entry<S,Bundle> entry : m_Services.entrySet()){
+			this.unregister(entry.getKey(), entry.getValue());
+		}
+		m_Services.clear();
+		return this;
+	}
+	
 	@Override
 	public void serviceChanged(ServiceEvent ev) {
 		ServiceReference<?> sr = ev.getServiceReference();
 		Bundle bundle = sr.getBundle();
-		Object service = m_Context.getService(sr);
-		if(m_Target.isAssignableFrom(service.getClass())){
+		Object o = m_Context.getService(sr);
+		if(m_Target.isAssignableFrom(o.getClass())){
+			S service = m_Target.cast(o);
 			switch(ev.getType()) {
 			case ServiceEvent.REGISTERED:
-				register((S) service, bundle);
+				register(service, bundle);
+				m_Services.put(service, bundle);
 				break;
 			case ServiceEvent.UNREGISTERING:
-				unregister((S) service, bundle);
+				unregister(service, bundle);
+				m_Services.remove(service);
 				break;
 			default:
 				break;

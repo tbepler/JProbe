@@ -1,5 +1,6 @@
 package plugins.jprobe.gui;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -53,7 +54,6 @@ import jprobe.services.data.Data;
 public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, SaveListener, LoadListener{
 	private static final long serialVersionUID = 1L;
 	
-	private Bundle m_Bundle;
 	private JProbeCore m_Core;
 	private JPanel m_ContentPane;
 	private JMenuBar m_MenuBar;
@@ -69,12 +69,11 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 	private Collection<GUIListener> m_Listeners;
 	private final String m_Name;
 	
-	public JProbeGUIFrame(JProbeCore core, String name, Bundle bundle, GUIConfig config){
+	public JProbeGUIFrame(JProbeCore core, String name, GUIConfig config){
 		super();
 		m_Name = name;
 		m_ImportChooser = new JFileChooser();
 		m_ExportChooser = new JFileChooser();
-		m_Bundle = bundle;
 		m_Core = core;
 		m_Core.registerSave(this);
 		m_Core.registerLoad(this);
@@ -236,21 +235,21 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 		return m_Core;
 	}
 	
-	public void addComponent(JComponent comp, GridBagConstraints c, Bundle responsible){
+	public void addComponent(Component comp, GridBagConstraints c, Bundle responsible){
 		m_ContentPane.add(comp, c);
 		this.invalidate();
 		this.validate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.COMPONENT_ADDED, responsible));
 	}
 	
-	public void removeComponent(JComponent comp, Bundle responsible){
+	public void removeComponent(Component comp, Bundle responsible){
 		m_ContentPane.remove(comp);
 		m_ContentPane.invalidate();
 		m_ContentPane.validate();
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.COMPONENT_REMOVED, responsible));
 	}
 	
-	public void addDropdownMenu(JMenu menu, Bundle responsible){
+	public void addMenu(JMenu menu, Bundle responsible){
 		m_PluginMenuItems.add(menu);
 		m_MenuBar.removeAll();
 		m_MenuBar.add(m_FileMenu);
@@ -266,7 +265,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 		this.notifyListeners(new GUIEvent(this, GUIEvent.Type.MENU_ADDED, responsible));
 	}
 	
-	public void removeDropdownMenu(JMenu menu, Bundle responsible){
+	public void removeMenu(JMenu menu, Bundle responsible){
 		m_PluginMenuItems.remove(menu);
 		m_MenuBar.remove(menu);
 		m_MenuBar.invalidate();
@@ -280,13 +279,13 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 	}
 
 	@Override
-	public void addHelpTab(JComponent component, String tabName, Bundle responsible) {
+	public void addHelpTab(Component component, String tabName, Bundle responsible) {
 		m_HelpWindow.addTab(component, tabName);
 		checkDebugAndLog("Help tab "+tabName+" added by plugin: "+responsible.getSymbolicName());
 	}
 
 	@Override
-	public void removeHelpTab(JComponent component, Bundle responsible) {
+	public void removeHelpTab(Component component, Bundle responsible) {
 		m_HelpWindow.removeTab(component);
 		checkDebugAndLog("Help tab "+component.toString()+" removed by plugin: "+responsible.getSymbolicName());
 	}

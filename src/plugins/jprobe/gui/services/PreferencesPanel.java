@@ -4,7 +4,7 @@ import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
 
-public abstract class PreferencesPanel extends JPanel{
+public abstract class PreferencesPanel extends JPanel implements Disposable{
 	
 	public PreferencesPanel() {
 		super();
