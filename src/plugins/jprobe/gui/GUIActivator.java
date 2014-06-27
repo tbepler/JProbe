@@ -1,5 +1,6 @@
 package plugins.jprobe.gui;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,23 +102,9 @@ public class GUIActivator implements BundleActivator{
 			m_ErrorManager = null;
 		}
 		this.stopGUI(m_GuiConfig);
-		
-		if(m_Gui != null){
-			if(m_GuiConfig != null){
-				File lastSave = SaveLoadUtil.getLastSave();
-				String path = lastSave == null ? "" : lastSave.getCanonicalPath();
-				m_GuiConfig.setLastWorkspace(path);
-				m_GuiConfig.save(m_Gui.getSize(), m_Gui.getExtendedState(), m_Gui.getX(), m_Gui.getY());
-				m_GuiConfig = null;
-			}
-			m_Gui.dispose();
-			m_Gui = null;
-		}
-		if(m_ServiceListeners != null){
-			for(AbstractServiceListener<?> l : m_ServiceListeners){
-				l.unload();
-			}
-			m_ServiceListeners = null;
+		if(m_GuiConfig != null){
+			m_GuiConfig.save();
+			m_GuiConfig = null;
 		}
 		BackgroundThread.getInstance().terminate();
 		BackgroundThread.getInstance().join();
@@ -131,8 +118,28 @@ public class GUIActivator implements BundleActivator{
 	}
 
 	private void stopGUI(GUIConfig config){
-		for(JProbeGUIFrame frame : m_Frames){
-
+		int size = m_Frames.size();
+		List<Dimension> dims = new ArrayList<Dimension>(size);
+		List<Integer> extendedStates = new ArrayList<Integer>(size);
+		List<Integer> xs = new ArrayList<Integer>(size);
+		List<Integer> ys = new ArrayList<Integer>(size);
+		List<String> workspaces = new ArrayList<String>(size);
+		//iterate through frames from the back so that removal does not cause problems
+		for(int i=m_Frames.size()-1; i>=0; --i){
+			JProbeGUIFrame frame = m_Frames.get(i);
+			dims.add(0, frame.getSize());
+			extendedStates.add(0, frame.getExtendedState());
+			xs.add(0, frame.getX());
+			ys.add(0, frame.getY());
+			workspaces.add(0, frame.getWorkspace.getPath());
+			this.disposeJProbeFrame(i, false);
+		}
+		if(config != null){
+			config.setDimensions(dims);
+			config.setExtendedStates(extendedStates);
+			config.setXs(xs);
+			config.setYs(ys);
+			config.setPrevWorkspaces(workspaces);
 		}
 	}
 	
@@ -149,10 +156,25 @@ public class GUIActivator implements BundleActivator{
 		return frame;
 	}
 	
-	private void disposeJProbeFrame(JProbeGUIFrame frame){
-		this.removeGUIServiceListener(frame);
-		m_Frames.remove(frame);
-		frame.dispose();
+	private void disposeJProbeFrame(JProbeGUIFrame frame, boolean saveConfig){
+		int index = m_Frames.indexOf(frame);
+		this.disposeJProbeFrame(index, saveConfig);
+	}
+	
+	private void disposeJProbeFrame(int index, boolean saveConfig){
+		if(index < m_Frames.size() && index >= 0){
+			JProbeGUIFrame frame = m_Frames.get(index);
+			if(saveConfig && m_GuiConfig != null){
+				m_GuiConfig.setDimension(index, frame.getSize());
+				m_GuiConfig.setExtendedState(index, frame.getExtendedState());
+				m_GuiConfig.setX(index, frame.getX());
+				m_GuiConfig.setY(index, frame.getY());
+				m_GuiConfig.setPrevWorkspace(index, frame.getWorkspace().getPath());
+			}
+			this.removeGUIServiceListener(frame);
+			m_Frames.remove(index);
+			frame.dispose();
+		}
 	}
 	
 	private AbstractServiceListener<PluginGUIService> newGUIServiceListener(JProbeGUIFrame frame){

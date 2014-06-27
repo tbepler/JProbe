@@ -1,5 +1,6 @@
 package plugins.jprobe.gui.filemenu;
 
+import java.awt.Frame;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,16 +17,17 @@ import jprobe.services.data.Data;
 public class ExportMenu extends JMenu implements CoreListener{
 	private static final long serialVersionUID = 1L;
 	
-	private JProbeCore m_Core;
-	private JFileChooser m_FileChooser;
-	private Map<Data, JMenuItem> m_Items;
+	private final Frame m_Parent;
+	private final JProbeCore m_Core;
+	private final JFileChooser m_FileChooser;
+	private final Map<Data, JMenuItem> m_Items = new HashMap<Data, JMenuItem>();;
 	
-	public ExportMenu(JProbeCore core, JFileChooser exportChooser){
+	public ExportMenu(Frame parent, JProbeCore core, JFileChooser exportChooser){
 		super("Export");
+		m_Parent = parent;
 		m_Core = core;
 		m_Core.addCoreListener(this);
 		m_FileChooser = exportChooser;
-		m_Items = new HashMap<Data, JMenuItem>();
 		SwingUtilities.invokeLater(new Runnable(){
 
 			@Override
@@ -52,7 +54,7 @@ public class ExportMenu extends JMenu implements CoreListener{
 		if(m_Items.containsKey(data)){
 			this.remove(m_Items.get(data));
 		}
-		JMenuItem item = new ExportMenuItem(data, m_Core, m_FileChooser);
+		JMenuItem item = new ExportMenuItem(m_Parent, data, m_Core, m_FileChooser);
 		m_Items.put(data, item);
 		this.add(item);
 		this.revalidate();

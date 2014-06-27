@@ -8,14 +8,12 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import plugins.jprobe.gui.GUIActivator;
-import plugins.jprobe.gui.SaveLoadUtil;
 import jprobe.services.JProbeCore;
 
 public class NewMenuItem extends JMenuItem implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
-	private JProbeCore m_Core;
+	private final JProbeCore m_Core;
 	
 	public NewMenuItem(JProbeCore core){
 		super("New Workspace");
@@ -27,7 +25,7 @@ public class NewMenuItem extends JMenuItem implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		SaveLoadUtil.newWorkspace(m_Core, GUIActivator.getFrame());
+		m_Core.newWorkspace();
 	}
 
 }

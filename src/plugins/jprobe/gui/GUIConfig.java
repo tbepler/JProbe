@@ -202,14 +202,20 @@ public class GUIConfig {
 		return Collections.unmodifiableList(m_PrevWorkspaces);
 	}
 	
-	public void save(Dimension d, int extendedState, int x, int y){
+	public void save(){
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(m_File));
-			writeln(writer, WIDTH_TAG, d.width);
-			writeln(writer, HEIGHT_TAG, d.height);
-			writeln(writer, EXTENDEDSTATE_TAG, extendedState);
-			writeln(writer, X_TAG, x);
-			writeln(writer, Y_TAG, y);
+			List<Integer> widths = new ArrayList<Integer>(m_Dim.size());
+			List<Integer> heights = new ArrayList<Integer>(m_Dim.size());
+			for(Dimension d : m_Dim){
+				widths.add(d.width);
+				heights.add(d.height);
+			}
+			writeln(writer, WIDTH_TAG, widths);
+			writeln(writer, HEIGHT_TAG, heights);
+			writeln(writer, EXTENDEDSTATE_TAG, m_ExtendedState);
+			writeln(writer, X_TAG, m_X);
+			writeln(writer, Y_TAG, m_Y);
 			writeln(writer, AUTOSAVE_TAG, m_Autosave);
 			writeln(writer, AUTOSAVE_FREQ_TAG, m_AutosaveFreq);
 			writeln(writer, MAX_AUTOSAVES_TAG, m_MaxAutosaves);
@@ -228,12 +234,14 @@ public class GUIConfig {
 				StringBuilder builder = new StringBuilder();
 				boolean first = true;
 				for(Object o : (Collection<?>) value){
-					if(first){
-						builder.append(o);
-						first = false;
-					}else{
-						builder.append(SEP);
-						builder.append(o);
+					if(o != null){
+						if(first){
+							builder.append(o);
+							first = false;
+						}else{
+							builder.append(SEP);
+							builder.append(o);
+						}
 					}
 				}
 				val = builder.toString();

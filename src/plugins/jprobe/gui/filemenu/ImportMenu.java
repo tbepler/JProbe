@@ -1,5 +1,6 @@
 package plugins.jprobe.gui.filemenu;
 
+import java.awt.Frame;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,12 +18,14 @@ import jprobe.services.data.Data;
 public class ImportMenu extends JMenu implements CoreListener{
 	private static final long serialVersionUID = 1L;
 	
-	private JProbeCore m_Core;
-	private JFileChooser m_FileChooser;
-	private Map<Class<? extends Data>, JMenuItem> m_Items;
+	private final Frame m_Parent;
+	private final JProbeCore m_Core;
+	private final JFileChooser m_FileChooser;
+	private final Map<Class<? extends Data>, JMenuItem> m_Items;
 	
-	public ImportMenu(JProbeCore core, JFileChooser importChooser){
+	public ImportMenu(Frame parent, JProbeCore core, JFileChooser importChooser){
 		super("Import");
+		m_Parent = parent;
 		m_Core = core;
 		m_Core.addCoreListener(this);
 		m_FileChooser = importChooser;
@@ -63,7 +66,7 @@ public class ImportMenu extends JMenu implements CoreListener{
 		if(m_Items.containsKey(importClass)){
 			this.remove(m_Items.get(importClass));
 		}
-		JMenuItem item = new ImportMenuItem(importClass, m_Core, m_FileChooser);
+		JMenuItem item = new ImportMenuItem(m_Parent, importClass, m_Core, m_FileChooser);
 		m_Items.put(importClass, item);
 		this.allocateItems();
 		this.revalidate();
