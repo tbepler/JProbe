@@ -1,6 +1,8 @@
 package plugins.jprobe.gui;
 
 import java.awt.Dimension;
+import java.awt.Frame;
+
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Constants {
@@ -9,6 +11,9 @@ public class Constants {
 	
 	public static final int DEFAULT_WIDTH = 1000;
 	public static final int DEFAULT_HEIGHT = 800;
+	public static final Dimension DEFAULT_DIMENSION = new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	
+	public static final int DEFAULT_EXTENDED_STATE = Frame.NORMAL;
 	
 	public static final String BACKGROUND_THREAD_NAME = "BackgroundThread";
 	
