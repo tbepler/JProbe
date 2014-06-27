@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.io.input.BoundedInputStream;
 
-import jprobe.services.Saveable;
+import util.save.Saveable;
 
 public class SaveUtil {
 	

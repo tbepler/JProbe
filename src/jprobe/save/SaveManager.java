@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import util.save.Saveable;
 import jprobe.JProbeActivator;
 import jprobe.services.ErrorHandler;
 import jprobe.services.LoadEvent;
@@ -16,7 +17,6 @@ import jprobe.services.LoadListener;
 import jprobe.services.JProbeLog;
 import jprobe.services.SaveEvent;
 import jprobe.services.SaveListener;
-import jprobe.services.Saveable;
 
 public class SaveManager{
 	

@@ -19,7 +19,6 @@ import jprobe.services.JProbeCore;
 import jprobe.services.LoadListener;
 import jprobe.services.JProbeLog;
 import jprobe.services.SaveListener;
-import jprobe.services.Saveable;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataWriter;
 
@@ -30,6 +29,8 @@ import org.apache.felix.main.Main;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
+
+import util.save.Saveable;
 
 public class JProbe implements JProbeCore{
 	

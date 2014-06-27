@@ -3,6 +3,9 @@ package jprobe.services;
 import java.util.Collection;
 import java.util.List;
 
+import jprobe.services.data.Data;
+import jprobe.services.data.DataReader;
+import jprobe.services.data.DataWriter;
 import jprobe.services.function.Function;
 
 /**
@@ -121,6 +124,13 @@ public interface JProbeCore {
 	public Workspace getWorkspace(int index);
 	
 	/**
+	 * Returns the index of the given {@link Workspace} or -1 if the Workspace is not in the core.
+	 * @param w
+	 * @return
+	 */
+	public int indexOf(Workspace w);
+	
+	/**
 	 * Returns an unmodifiable list containing all the current {@link Workspace}s.
 	 * @return
 	 */
@@ -131,6 +141,12 @@ public interface JProbeCore {
 	 * @param index
 	 */
 	public void closeWorkspace(int index);
+	
+	/**
+	 * Closes the specified {@link Workspace}.
+	 * @param w
+	 */
+	public void closeWorkspace(Workspace w);
 	
 	/**
 	 * Returns the number of currently opened {@link Workspace}s.
@@ -145,5 +161,51 @@ public interface JProbeCore {
 	 * @return unmodifiable collection of the registered Functions
 	 */
 	public Collection<Function<?>> getFunctions();
+	
+	/**
+	 * Returns an unmodifiable collection containing the currently registers {@link DataReader}s. DataReaders can be
+	 * registered by submitting a DataReader service through the BundleContext received in a plugin's BundleActivator.start()
+	 * method.
+	 * @return unmodifiable collection of the registered DataReaders
+	 */
+	public Collection<DataReader> getDataReaders();
+	
+	/**
+	 * Returns an unmodifiable collection containing the currently registered {@link DataReader}s capable of reading
+	 * the specified Data class.
+	 * @param readClass
+	 * @return
+	 */
+	public Collection<DataReader> getDataReader(Class<? extends Data> readClass);
+	
+	/**
+	 * Returns true if there exists at least one {@link DataReader} for the given Data class. Otherwise, returns false.
+	 * @param dataClass
+	 * @return
+	 */
+	public boolean isReadable(Class<? extends Data> dataClass);
+	
+	/**
+	 * Returns an unmodifiable collection containing the currently registers {@link DataWriter}s. DataWriters can be
+	 * registered by submitting a DataWriter service through the BundleContext received in a plugin's BundleActivator.start()
+	 * method.
+	 * @return unmodifiable collection of the registered DataWriters
+	 */
+	public Collection<DataWriter> getDataWriters();
+	
+	/**
+	 * Returns an unmodifiable collection containing the currently registered {@link DataWriter}s capable of writing
+	 * the specified Data class.
+	 * @param writeClass
+	 * @return
+	 */
+	public Collection<DataWriter> getDataWriters(Class<? extends Data> writeClass);
+	
+	/**
+	 * Returns true if there exists at least one (@link DataWriter} for the given Data class. Otherwise, returns false.
+	 * @param dataClass
+	 * @return
+	 */
+	public boolean isWritable(Class<? extends Data> dataClass);
 	
 }

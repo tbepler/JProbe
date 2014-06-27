@@ -1,94 +1,50 @@
 package jprobe.services;
 
-import jprobe.services.data.Data;
+import jprobe.services.data.DataReader;
+import jprobe.services.data.DataWriter;
 import jprobe.services.function.Function;
-
-import org.osgi.framework.Bundle;
 
 public class CoreEvent {
 
 	public enum Type{
-		DATA_ADDED,
-		DATA_REMOVED,
-		DATA_NAME_CHANGE,
 		DATAREADER_ADDED,
 		DATAREADER_REMOVED,
 		DATAWRITER_ADDED,
 		DATAWRITER_REMOVED,
 		FUNCTION_ADDED,
 		FUNCTION_REMOVED,
-		WORKSPACE_CLEARED,
-		WORKSPACE_LOADED;
+		WORKSPACE_NEW,
+		WORKSPACE_CLOSED;
 	};
 	
-	private Type m_Type;
-	private JProbeCore m_Source;
-	private Data m_DataEffected = null;
-	private Class<? extends Data> m_DataClass = null;
-	private Function<?> m_FunctionEffected = null;
-	private Bundle m_Cause = null;
-	private String m_OldName = null;
-	private String m_NewName = null;
+	public final Type type;
+	public final DataReader reader;
+	public final DataWriter writer;
+	public final Function<?> function;
+	public final Workspace workspace;
 	
-	public CoreEvent(JProbeCore source, Type type, Bundle responsible){
-		this.m_Source = source;
-		this.m_Type = type;
+	private CoreEvent(Type type, DataReader reader, DataWriter writer, Function<?> function, Workspace workspace){
+		this.type = type;
+		this.reader = reader;
+		this.writer = writer;
+		this.function = function;
+		this.workspace = workspace;
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Data effected){
-		this(source, type, responsible);
-		m_DataEffected = effected;
-		m_DataClass = effected.getClass();
+	public CoreEvent(Type type, DataReader reader){
+		this(type, reader, null, null, null);
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Data effected, String oldName, String newName){
-		this(source, type, responsible, effected);
-		m_OldName = oldName;
-		m_NewName = newName;
+	public CoreEvent(Type type, DataWriter writer){
+		this(type, null, writer, null, null);
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Class<? extends Data> effected){
-		this(source, type, responsible);
-		m_DataClass = effected;
+	public CoreEvent(Type type, Function<?> function){
+		this(type, null, null, function, null);
 	}
 	
-	public CoreEvent(JProbeCore source, Type type, Bundle responsible, Function<?> effected){
-		this(source, type, responsible);
-		m_FunctionEffected = effected;
+	public CoreEvent(Type type, Workspace workspace){
+		this(type , null, null, null, workspace);
 	}
-	
-	public Type type(){
-		return m_Type;
-	}
-	
-	public Bundle getCause(){
-		return m_Cause;
-	}
-	
-	public JProbeCore getSource(){
-		return m_Source;
-	}
-	
-	public Data getData(){
-		return m_DataEffected;
-	}
-	
-	public Class<? extends Data> getDataClass(){
-		return m_DataClass;
-	}
-	
-	public Function<?> getFunction(){
-		return m_FunctionEffected;
-	}
-	
-	public String getOldName(){
-		return m_OldName;
-	}
-	
-	public String getNewName(){
-		return m_NewName;
-	}
-	
-	
-	
+
 }
