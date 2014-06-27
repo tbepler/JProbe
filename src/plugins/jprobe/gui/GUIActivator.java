@@ -3,7 +3,9 @@ package plugins.jprobe.gui;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -42,26 +44,19 @@ public class GUIActivator implements BundleActivator{
 		}
 	}
 	
-	private static JProbeGUIFrame newJProbeFrame(JProbeCore core, DataManager workspace, GUIConfig config){
-		return new JProbeGUIFrame(core, core.getName() + "-" + core.getVersion(), config);
-	}
-	
 	private static GUIConfig readConfig(JProbeCore core){
 		File prefFile = new File(core.getPreferencesDir() + File.separator + Constants.CONFIG_FILE_NAME);
 		return new GUIConfig(prefFile);
 	}
 	
-	private final List<JProbeGUIFrame> m_Frames = new ArrayList<JProbeGUIFrame>();
-	private final Collection<AbstractServiceListener<?>> m_ServiceListeners = new ArrayList<AbstractServiceListener<?>>();
-	
 	private BundleContext m_Context;
 	private JProbeCore m_Core;
+	
+	//lazily instantiate data structures, so that they are only instantiated if needed
+	private List<JProbeGUIFrame> m_Frames;
+	private Map<JProbeGUIFrame, AbstractServiceListener<?>> m_ServiceListeners;
 	private GUIConfig m_GuiConfig;
 	private GUIErrorManager m_ErrorManager = null;
-	
-	private void newGUIServiceListener(JProbeGUIFrame frame){
-		AbstractServiceListener<PluginGUIService> listener = new PluginGUIServiceListener(frame, m_Context);
-	}
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -73,24 +68,15 @@ public class GUIActivator implements BundleActivator{
 			return;
 		}
 		
+		//initialize data structures lazily
+		m_Frames = new ArrayList<JProbeGUIFrame>();
+		m_ServiceListeners = new HashMap<JProbeGUIFrame, AbstractServiceListener<?>>();
+		
 		initPlatformSettings(context.getBundle());
 		m_GuiConfig = readConfig(m_Core);
-		
-		//start gui
-		JProbeGUIFrame gui = newJProbeFrame(m_Core, m_Core.getDataManager(), m_GuiConfig);
-		m_Frames.add(gui);
-		gui.setVisible(true);
-		
-		//start the GUI error manager
-		m_ErrorManager = new GUIErrorManager(gui);
-		ErrorHandler.getInstance().addErrorManager(m_ErrorManager);
-		
-		//check autosave config and start the autosave thread
-		if(m_GuiConfig.getAutosave()){
-			String autosaveDir = m_Core.getUserDir() + File.separator + Constants.AUTOSAVE_DIR_NAME;
-			m_AutosaveThread = new AutosaveThread(m_Core, autosaveDir, m_GuiConfig.getAutosaveFreq(), m_GuiConfig.getMaxAutosaves());
-			m_AutosaveThread.start();
-		}
+		this.startGUI(m_Core, m_GuiConfig);
+		m_ErrorManager = this.startErrorHandler();
+	
 		
 		//check load workspace config and load the last workspace
 		if(m_GuiConfig.getLoadWorkspace()){
@@ -108,21 +94,14 @@ public class GUIActivator implements BundleActivator{
 		}
 	}
 
-
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		if(m_Registration != null){
-			m_Registration.unregister();
-			m_Registration = null;
-		}
 		if(m_ErrorManager != null){
 			ErrorHandler.getInstance().removeErrorManager(m_ErrorManager);
 			m_ErrorManager = null;
 		}
-		if(m_AutosaveThread != null){
-			m_AutosaveThread.terminate();
-			m_AutosaveThread = null;
-		}
+		this.stopGUI(m_GuiConfig);
+		
 		if(m_Gui != null){
 			if(m_GuiConfig != null){
 				File lastSave = SaveLoadUtil.getLastSave();
@@ -143,6 +122,53 @@ public class GUIActivator implements BundleActivator{
 		BackgroundThread.getInstance().terminate();
 		BackgroundThread.getInstance().join();
 		m_Bundle = null;
+	}
+	
+
+	private void startGUI(JProbeCore core, GUIConfig config){
+		JProbeGUIFrame gui = newJProbeFrame(core, core.getDataManager(), config);
+		gui.setVisible(true);
+	}
+
+	private void stopGUI(GUIConfig config){
+		for(JProbeGUIFrame frame : m_Frames){
+
+		}
+	}
+	
+	private GUIErrorManager startErrorHandler(){
+		GUIErrorManager err = new GUIErrorManager(m_Frames.get(0));
+		ErrorHandler.getInstance().addErrorManager(err);
+		return err;
+	}
+	
+	private JProbeGUIFrame newJProbeFrame(JProbeCore core, DataManager workspace, GUIConfig config){
+		JProbeGUIFrame frame = new JProbeGUIFrame(core, core.getName() + "-" + core.getVersion(), config);
+		m_Frames.add(frame);
+		this.newGUIServiceListener(frame);
+		return frame;
+	}
+	
+	private void disposeJProbeFrame(JProbeGUIFrame frame){
+		this.removeGUIServiceListener(frame);
+		m_Frames.remove(frame);
+		frame.dispose();
+	}
+	
+	private AbstractServiceListener<PluginGUIService> newGUIServiceListener(JProbeGUIFrame frame){
+		AbstractServiceListener<PluginGUIService> listener = new PluginGUIServiceListener(frame, m_Context);
+		m_ServiceListeners.put(frame, listener);
+		listener.load();
+		return listener;
+	}
+	
+	private void removeGUIServiceListener(JProbeGUIFrame frame){
+		if(m_ServiceListeners.containsKey(frame)){
+			AbstractServiceListener<?> listener = m_ServiceListeners.get(frame);
+			listener.unload();
+			listener.unregisterAll();
+			m_ServiceListeners.remove(frame);
+		}
 	}
 
 }

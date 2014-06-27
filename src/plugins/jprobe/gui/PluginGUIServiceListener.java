@@ -13,7 +13,7 @@ import jprobe.services.AbstractServiceListener;
 
 public class PluginGUIServiceListener extends AbstractServiceListener<PluginGUIService>{
 	
-	private final Map<Bundle, PluginServiceView> m_BundleViews = new HashMap<Bundle, PluginServiceView>();
+	private final Map<PluginGUIService, PluginServiceView> m_ServiceViews = new HashMap<PluginGUIService, PluginServiceView>();
 	private final JProbeGUIFrame m_Frame;
 	
 	public PluginGUIServiceListener(JProbeGUIFrame frame, BundleContext context) {
@@ -24,12 +24,12 @@ public class PluginGUIServiceListener extends AbstractServiceListener<PluginGUIS
 	@Override
 	public void register(final PluginGUIService service, Bundle provider) {
 		final PluginServiceView view;
-		if(!m_BundleViews.containsKey(provider)){ //expected case
+		if(!m_ServiceViews.containsKey(provider)){ //expected case
 			view = new PluginServiceView(m_Frame, provider);
-			m_BundleViews.put(provider, view);
+			m_ServiceViews.put(service, view);
 		}else{
 			//this means the service is being reregistered...
-			view = m_BundleViews.get(provider);
+			view = m_ServiceViews.get(provider);
 		}
 		SwingUtilities.invokeLater(new Runnable(){
 
@@ -43,8 +43,8 @@ public class PluginGUIServiceListener extends AbstractServiceListener<PluginGUIS
 
 	@Override
 	public void unregister(PluginGUIService service, Bundle provider) {
-		if(m_BundleViews.containsKey(provider)){
-			final PluginServiceView view = m_BundleViews.get(provider);
+		if(m_ServiceViews.containsKey(service)){
+			final PluginServiceView view = m_ServiceViews.get(service);
 			SwingUtilities.invokeLater(new Runnable(){
 
 				@Override
