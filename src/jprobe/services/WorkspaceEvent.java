@@ -9,7 +9,9 @@ public class WorkspaceEvent {
 		DATA_REMOVED,
 		DATA_RENAMED,
 		WORKSPACE_CLEARED,
-		WORKSPACE_LOADED;
+		WORKSPACE_LOADED,
+		WORKSPACE_IMPORTED,
+		WORKSPACE_RENAMED;
 	}
 	
 	public final Type type;

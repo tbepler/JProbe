@@ -13,6 +13,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import jprobe.Constants;
+
 import org.apache.commons.io.input.BoundedInputStream;
 
 import util.save.Saveable;
@@ -22,7 +24,7 @@ public class SaveUtil {
 	public static void save(File saveTo, Map<String,Saveable> saveables) throws SaveException{
 		try {
 			ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(saveTo)));
-			String tempName = ".temp";
+			String tempName = Constants.USER_JPROBE_DIR + File.separator + ".temp."+saveTo.getName();
 			File temp = new File(tempName);
 			int count = 0;
 			while(temp.exists()){
@@ -33,7 +35,7 @@ public class SaveUtil {
 			for(String tag : saveables.keySet()){
 				if(temp.canWrite() && temp.canRead()){
 					OutputStream tempOut = new BufferedOutputStream( new FileOutputStream(temp));
-					long bytes = saveables.get(tag).save(tempOut);
+					long bytes = saveables.get(tag).saveTo(tempOut, saveTo.getCanonicalPath());
 					tempOut.close();
 					
 					Tag header = new Tag(tag, bytes);
@@ -46,7 +48,7 @@ public class SaveUtil {
 					tempIn.close();
 				}else{
 					ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
-					long bytes = saveables.get(tag).save(tempOut);
+					long bytes = saveables.get(tag).saveTo(tempOut, saveTo.getCanonicalPath());
 					Tag header = new Tag(tag, bytes);
 					out.writeObject(header);
 					
@@ -78,7 +80,7 @@ public class SaveUtil {
 						BoundedInputStream tempIn = new BoundedInputStream(in, size);
 						//pass the new inputstream to the saveable for loading
 						try{
-							saveables.get(id).load(tempIn);
+							saveables.get(id).loadFrom(tempIn, loadFrom.getCanonicalPath());
 						} catch (Exception e){
 							//an error occurred in the saveable while loading, ignore it and move on
 						}

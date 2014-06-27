@@ -18,8 +18,8 @@ public class JProbeActivator implements BundleActivator{
 	private ServiceListener[] m_Listeners;
 	private JProbe m_Core = null;
 	private ServiceRegistration<JProbeCore> m_Registration = null;
-	private CoreFunctionManager m_FncManager = null;
-	private CoreDataManager m_DataManager = null;
+	private FunctionManager m_FncManager = null;
+	private DataManager m_DataManager = null;
 	
 	JProbeActivator(JProbe core, ServiceListener ... listeners){
 		this.m_Core = core;
@@ -34,10 +34,10 @@ public class JProbeActivator implements BundleActivator{
 	public void start(BundleContext context) throws Exception {
 		m_Context = context;
 		m_Bundle = m_Context.getBundle();
-		m_FncManager = new CoreFunctionManager(m_Core, context);
+		m_FncManager = new FunctionManager(m_Core, context);
 		m_Core.setFunctionManager(m_FncManager);
 		m_FncManager.load();
-		m_DataManager = new CoreDataManager(m_Core, context);
+		m_DataManager = new DataManager(m_Core, context);
 		m_Core.setDataManager(m_DataManager);
 		m_DataManager.load();
 		m_Registration = context.registerService(JProbeCore.class, m_Core, null);

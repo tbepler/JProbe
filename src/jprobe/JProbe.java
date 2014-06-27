@@ -35,8 +35,8 @@ import util.save.Saveable;
 public class JProbe implements JProbeCore{
 	
 	private Mode m_Mode;
-	private CoreDataManager m_DataManager;
-	private CoreFunctionManager m_FunctionManager;
+	private DataManager m_DataManager;
+	private FunctionManager m_FunctionManager;
 	private SaveManager m_SaveManager;
 	private JProbeActivator m_Activator;
 	private Felix m_Felix;
@@ -109,13 +109,13 @@ public class JProbe implements JProbeCore{
 		System.exit(0);
 	}
 	
-	void setDataManager(CoreDataManager dataManager){
+	void setDataManager(DataManager dataManager){
 		m_SaveManager.removeSaveable(m_DataManager, "core");
 		m_DataManager = dataManager;
 		m_SaveManager.addSaveable(m_DataManager, "core");
 	}
 	
-	void setFunctionManager(CoreFunctionManager fncManager){
+	void setFunctionManager(FunctionManager fncManager){
 		m_FunctionManager = fncManager;
 	}
 	
