@@ -18,12 +18,12 @@ public abstract class AbstractServiceListener<S> implements ServiceListener{
 	private Class<S> m_Target;
 	private BundleContext m_Context;
 	
-	public AbstractServiceListener(Class<S> listenFor, BundleContext context){
+	public AbstractServiceListener(Class<S> listenFor){
 		m_Target = listenFor;
-		m_Context = context;
 	}
 	
-	public AbstractServiceListener<S> load(){
+	public AbstractServiceListener<S> load(BundleContext context){
+		m_Context = context;
 		m_Context.addServiceListener(this);
 		try {
 			for(ServiceReference<S> ref : m_Context.getServiceReferences(m_Target, null)){
@@ -35,8 +35,11 @@ public abstract class AbstractServiceListener<S> implements ServiceListener{
 		return this;
 	}
 	
-	public AbstractServiceListener<S> unload(){
-		m_Context.removeServiceListener(this);
+	public AbstractServiceListener<S> unload(BundleContext context){
+		if(m_Context != null){
+			m_Context.removeServiceListener(this);
+			m_Context = null;
+		}
 		return this;
 	}
 	
@@ -52,20 +55,22 @@ public abstract class AbstractServiceListener<S> implements ServiceListener{
 	public void serviceChanged(ServiceEvent ev) {
 		ServiceReference<?> sr = ev.getServiceReference();
 		Bundle bundle = sr.getBundle();
-		Object o = m_Context.getService(sr);
-		if(m_Target.isAssignableFrom(o.getClass())){
-			S service = m_Target.cast(o);
-			switch(ev.getType()) {
-			case ServiceEvent.REGISTERED:
-				register(service, bundle);
-				m_Services.put(service, bundle);
-				break;
-			case ServiceEvent.UNREGISTERING:
-				unregister(service, bundle);
-				m_Services.remove(service);
-				break;
-			default:
-				break;
+		if(m_Context != null){
+			Object o = m_Context.getService(sr);
+			if(m_Target.isAssignableFrom(o.getClass())){
+				S service = m_Target.cast(o);
+				switch(ev.getType()) {
+				case ServiceEvent.REGISTERED:
+					register(service, bundle);
+					m_Services.put(service, bundle);
+					break;
+				case ServiceEvent.UNREGISTERING:
+					unregister(service, bundle);
+					m_Services.remove(service);
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}

@@ -175,9 +175,7 @@ public class DataManager implements Saveable{
 	private void setChanged(boolean changed){
 		if(changed != m_ChangesSinceLastSave){
 			m_ChangesSinceLastSave = changed;
-			if(m_ChangesSinceLastSave){
-				this.notifyListeners(new SaveableEvent(SaveableEvent.Type.CHANGED));
-			}
+			this.notifyListeners(new SaveableEvent(SaveableEvent.Type.CHANGED));
 		}
 	}
 	

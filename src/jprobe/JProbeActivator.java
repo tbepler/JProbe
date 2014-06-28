@@ -1,5 +1,6 @@
 package jprobe;
 
+import jprobe.services.AbstractServiceListener;
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
 import jprobe.services.JProbeLog;
@@ -7,45 +8,38 @@ import jprobe.services.JProbeLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceRegistration;
 
 public class JProbeActivator implements BundleActivator{
 	
 	private static Bundle m_Bundle = null;
 	
-	private BundleContext m_Context = null;
-	private ServiceListener[] m_Listeners;
-	private JProbe m_Core = null;
-	private ServiceRegistration<JProbeCore> m_Registration = null;
-	private FunctionManager m_FncManager = null;
-	private DataManager m_DataManager = null;
-	
-	JProbeActivator(JProbe core, ServiceListener ... listeners){
-		this.m_Core = core;
-		m_Listeners = listeners;
-	}
-	
 	public static Bundle getBundle(){
 		return m_Bundle;
+	}
+	
+	private final AbstractServiceListener<?>[] m_Listeners;
+	private final JProbe m_Core;
+	
+	private BundleContext m_Context = null;
+	private ServiceRegistration<JProbeCore> m_Registration = null;
+	
+	public JProbeActivator(JProbe core, AbstractServiceListener<?> ... listeners){
+		m_Core = core;
+		m_Listeners = listeners;
 	}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		m_Context = context;
 		m_Bundle = m_Context.getBundle();
-		m_FncManager = new FunctionManager(m_Core, context);
-		m_Core.setFunctionManager(m_FncManager);
-		m_FncManager.load();
-		m_DataManager = new DataManager(m_Core, context);
-		m_Core.setDataManager(m_DataManager);
-		m_DataManager.load();
+		
 		m_Registration = context.registerService(JProbeCore.class, m_Core, null);
-		for(ServiceListener l : m_Listeners){
-			m_Context.addServiceListener(l);
+		for(AbstractServiceListener<?> l : m_Listeners){
+			l.load(m_Context);
 		}
 		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "JProbe started.");
+			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "JProbe bundle started.");
 		}
 	}
 
@@ -54,19 +48,17 @@ public class JProbeActivator implements BundleActivator{
 		if(m_Registration!=null){
 			m_Registration.unregister();
 		}
-		if(m_FncManager != null){
-			m_FncManager.unload();
-			m_FncManager = null;
+		for(AbstractServiceListener<?> l : m_Listeners){
+			l.unload(context);
 		}
-		if(m_DataManager != null){
-			m_DataManager.unload();
-			m_DataManager = null;
+		
+		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
+			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "JProbe bundle stopped.");
 		}
-		for(ServiceListener l : m_Listeners){
-			m_Context.removeServiceListener(l);
-		}
+		
 		m_Bundle = null;
 		m_Context = null;
+		
 	}
 	
 	public BundleContext getBundleContext(){

@@ -34,68 +34,69 @@ import util.save.Saveable;
 
 public class JProbe implements JProbeCore{
 	
-	private Mode m_Mode;
-	private DataManager m_DataManager;
-	private FunctionManager m_FunctionManager;
-	private SaveManager m_SaveManager;
-	private JProbeActivator m_Activator;
-	private Felix m_Felix;
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public JProbe(Configuration config){
-		m_Mode = Mode.COMMAND;
-		String[] args = config.getArgs();
-		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
-			m_Mode = Mode.GUI;
-		}
-		//init save manager and start the save thread
-		m_SaveManager = new SaveManager();
-		//create felix config map
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static Map createFelixConfig(Configuration config, BundleActivator systemActivator) {
 		Map felixConfig = new HashMap();
 		//export the core service package
 		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, jprobe.Constants.FELIX_EXPORT_PACKAGES);
-		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,"
-				+ "javax.swing.*");
+		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*");
 		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, config.getFelixStorageClean());
 		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE, jprobe.Constants.FELIX_CACHE_DIR);
-		//create activator and add to config map
-		m_Activator = new JProbeActivator(this);
+		
 		List<BundleActivator> l = new ArrayList<BundleActivator>();
-		l.add(m_Activator);
+		l.add(systemActivator);
 		felixConfig.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, l);
+		return felixConfig;
+	}
+	
+	private static Properties initSystemProperties() {
+		Properties props = new Properties();
+		Main.copySystemProperties(props);
+		props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, jprobe.Constants.PLUGIN_AUTODEPLOY);
+		props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
+		//set properties for the FileInstall bundle
+		System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_DIR_PROP, jprobe.Constants.FELIX_WATCH_DIRS);
+		System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_INITIALDELAY_PROP, jprobe.Constants.FELIX_INITIALDELAY);
+		return props;
+	}
+	
+	
+	private final Mode m_Mode;
+	private final JProbeActivator m_Activator;
+	private final Felix m_Felix;
+	
+	private FunctionManager m_FunctionManager;
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public JProbe(Configuration config){
+		String[] args = config.getArgs();
+		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
+			m_Mode = Mode.GUI;
+		}else{
+			m_Mode = Mode.COMMAND;
+		}
+		
+		//create system bundle activator
+		m_Activator = new JProbeActivator(this);
+		//create felix config map
+		Map felixConfig = createFelixConfig(config, m_Activator);
 		
 		try{
 			//create and instance of the felix framework using the config map
 			m_Felix = new Felix(felixConfig);
-			Properties props = new Properties();
-			Main.copySystemProperties(props);
-			props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, jprobe.Constants.PLUGIN_AUTODEPLOY);
-			props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
-			//set properties for the FileInstall bundle
-			System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_DIR_PROP, jprobe.Constants.FELIX_WATCH_DIRS);
-			System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_INITIALDELAY_PROP, jprobe.Constants.FELIX_INITIALDELAY);
+			//get properties to pass the felix
+			Properties props = initSystemProperties();
 			m_Felix.init();
 			AutoProcessor.process(props, m_Felix.getBundleContext());
 			//start the felix instance
 			m_Felix.start();
-			
 		} catch (Exception e){
 			System.err.println("Error creating Felix framework: "+e);
 			e.printStackTrace();
+			System.exit(1);
 		}
-		m_DataManager.setBundleContext(m_Activator.getBundleContext());
 		if(m_Mode == Mode.COMMAND){ //parse args, execute, and quit
-			Data d = ParsingEngine.parseAndExecute(System.err, m_FunctionManager, args);
-			if(d != null){
-				DataWriter writer = m_DataManager.getDataWriter(d.getClass());
-				try {
-					BufferedWriter out = new BufferedWriter(new PrintWriter(System.out));
-					writer.write(d, writer.getValidWriteFormats()[0], out);
-					out.close();
-				} catch (Exception e) {
-					ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
-				}
-			}
+			this.parseAndExecute(args);
 			this.shutdown();
 		}
 		
@@ -108,11 +109,19 @@ public class JProbe implements JProbeCore{
 		//now exit the program
 		System.exit(0);
 	}
-	
-	void setDataManager(DataManager dataManager){
-		m_SaveManager.removeSaveable(m_DataManager, "core");
-		m_DataManager = dataManager;
-		m_SaveManager.addSaveable(m_DataManager, "core");
+
+	private void parseAndExecute(String[] args) {
+		Data d = ParsingEngine.parseAndExecute(System.err, m_FunctionManager, args);
+		if(d != null){
+			DataWriter writer = m_DataManager.getDataWriter(d.getClass());
+			try {
+				BufferedWriter out = new BufferedWriter(new PrintWriter(System.out));
+				writer.write(d, writer.getValidWriteFormats()[0], out);
+				out.close();
+			} catch (Exception e) {
+				ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+			}
+		}
 	}
 	
 	void setFunctionManager(FunctionManager fncManager){
