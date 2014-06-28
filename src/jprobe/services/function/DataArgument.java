@@ -12,6 +12,7 @@ import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 import util.progress.ProgressEvent.Type;
 import jprobe.services.JProbeCore;
+import jprobe.services.Workspace;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
 import jprobe.services.function.components.DataArgsComponent;
@@ -188,15 +189,20 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 	}
 	
 	public static <D extends Data> D parse(JProbeCore core, Class<D> dataClass, DataValidFunction validFunction, String arg, ProgressListener l){
-		if(core.getDataManager().contains(arg)){
-			Data d = core.getDataManager().getData(arg);
-			if(validFunction.isValid(d) && dataClass.isAssignableFrom(d.getClass())){
-				return dataClass.cast(d);
+		for(Workspace w : core.getWorkspaces()){
+			if(w.contains(arg)){
+				Data d = w.getData(arg);
+				if(validFunction.isValid(d) && dataClass.isAssignableFrom(d.getClass())){
+					return dataClass.cast(d);
+				}
 			}
 		}
-		DataReader reader = getDataReader(core, dataClass);
 		l.update(new ProgressEvent(null, Type.UPDATE, "Reading "+dataClass.getSimpleName()+" from file "+arg));
-		Data read = readFile(arg, reader, getFileFilters(reader));
+		Data read = null;
+		for(DataReader reader : core.getDataReaders(dataClass)){
+			read = readFile(arg, reader, getFileFilters(reader));
+			if(read != null) break;
+		}
 		if(read == null){
 			throw new RuntimeException("Unable to read data \""+dataClass.getName()+"\" from file \""+arg+"\"");
 		}
@@ -208,24 +214,12 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 		}
 	}
 	
-	private static DataReader getDataReader(JProbeCore core, Class<? extends Data> dataClass){
-		DataReader reader = core.getDataManager().getDataReader(dataClass);
-		if(reader == null){
-			throw new RuntimeException("No DataReader for class \""+dataClass.getName()+"\" found.");
-		}
-		return reader;
-	}
-	
 	protected static FileFilter[] getFileFilters(DataReader reader){
 		FileFilter[] formats = reader.getValidReadFormats();
 		if(formats.length < 1){
 			throw new RuntimeException("No valid read formats for data \""+reader.getReadClass().getName()+"\"");
 		}
 		return formats;
-	}
-	
-	protected DataReader getDataReader(){
-		return getDataReader(m_Core, m_DataClass);
 	}
 	
 	protected static Data readFile(String file, DataReader reader, FileFilter[] formats){

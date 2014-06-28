@@ -1,9 +1,10 @@
 package jprobe.services.function;
 
-import java.util.Collection;
-import java.util.HashSet;
+import javax.swing.JComponent;
 
-public abstract class AbstractArgument<P> implements Argument<P> {
+import jprobe.services.function.components.ChangeNotifier;
+
+public abstract class AbstractArgument<P, C extends JComponent & ChangeNotifier> implements Argument<P, C> {
 	
 	private final String m_Name;
 	private final String m_Tooltip;
@@ -11,7 +12,6 @@ public abstract class AbstractArgument<P> implements Argument<P> {
 	private final Character m_Flag;
 	private final String m_Prototype;
 	private final boolean m_Optional;
-	private final Collection<ArgumentListener> m_Listeners = new HashSet<ArgumentListener>();
 	
 	protected AbstractArgument(String name, String tooltip, String category, Character shortFlag, String prototypeValue, boolean optional){
 		m_Name = name;
@@ -40,16 +40,5 @@ public abstract class AbstractArgument<P> implements Argument<P> {
 	@Override
 	public boolean isOptional() { return m_Optional; }
 
-	@Override
-	public void addListener(ArgumentListener l) { m_Listeners.add(l); }
-
-	@Override
-	public void removeListener(ArgumentListener l) { m_Listeners.remove(l); }
-	
-	protected void notifyListeners(){
-		for(ArgumentListener l : m_Listeners){
-			l.update(this, this.isValid());
-		}
-	}
 
 }

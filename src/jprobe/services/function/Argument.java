@@ -2,6 +2,8 @@ package jprobe.services.function;
 
 import javax.swing.JComponent;
 
+import jprobe.services.Workspace;
+import jprobe.services.function.components.ChangeNotifier;
 import util.progress.ProgressListener;
 
 /**
@@ -15,8 +17,9 @@ import util.progress.ProgressListener;
  * @author Tristan Bepler
  *
  * @param <P> - the parameter class that this Argument modifies
+ * @param <C> - the class of the component created by this argument for the GUI
  */
-public interface Argument<P> {
+public interface Argument<P, C extends JComponent & ChangeNotifier> {
 	
 	/**
 	 * The name for this argument that will be displayed to the user. This also doubles
@@ -70,41 +73,26 @@ public interface Argument<P> {
 	/**
 	 * Boolean indicating whether the current value of this argument is valid or not. If the current value
 	 * is not valid and this argument is required, then the {@link Function} will not be able to {@link Function#execute(ProgressListener,P)} until
-	 * the value of this argument becomes valid. The argument object is responsible for checking its 
-	 * {@link JComponent} to see if the value is valid. Furthermore, Arguments should report changes to their
-	 * validity to their {@link ArgumentListener}s, if any.
+	 * the value of this argument becomes valid.
+	 * @param component - the argument component to test for validity
 	 * @return boolean indicating whether this argument's value is valid
 	 * @see #isOptional()
 	 * @see #process(P)
 	 * @see #addListener(ArgumentListener)
 	 * @see Function
 	 */
-	public boolean isValid();
-	
-	/**
-	 * Adds an {@link ArgumentListener} to this Argument. ArgumentListeners listen for changes
-	 * to this object's validity.
-	 * @param l - ArgumentListener to be added
-	 * @see #isValid()
-	 * @see ArgumentListener#update(Argument, boolean)
-	 */
-	public void addListener(ArgumentListener l);
-	
-	/**
-	 * Removes the specified {@link ArgumentListener} from this Argument.
-	 * @param l - ArgumentListener to remove
-	 */
-	public void removeListener(ArgumentListener l);
+	public boolean isValid(C component);
 	
 	/**
 	 * Returns the {@link JComponent} that will be presented to the user in order to fill this argument.
 	 * This Argument is responsible for monitoring the JComponent to determine the validity of the value
 	 * and to fill the value into the parameter object when this argument is {@link #process(P)}'d.
-	 * @return - JComponent used by the user to fill the value of this argument
+	 * @params w - the Workspace to which the component should refer if needed
+	 * @return - component used by the user to fill the value of this argument
 	 * @see #isValid()
 	 * @see #process(P)
 	 */
-	public JComponent getComponent();
+	public C createComponent(Workspace w);
 	
 	/**
 	 * Process this argument and return a parameter object with this argument's value filled in. This method
@@ -113,12 +101,13 @@ public interface Argument<P> {
 	 * have been processed. This Argument is responsible for monitoring its {@link JComponent} and extracting
 	 * the user entered value from the JComponent if applicable.
 	 * @param params - parameter object to have this Argument's value added to
+	 * @param component - the argument component from which the value should be taken
 	 * @see #isValid()
-	 * @see #getComponent()
+	 * @see #createComponent()
 	 * @see Function
 	 * @see Function#execute(ProgressListener, P)
 	 */
-	public void process(P params);
+	public void process(P params, C component);
 	
 	/**
 	 * Parses this argument from the given command line arguments and edits the given parameter object
