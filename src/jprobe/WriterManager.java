@@ -50,12 +50,12 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 		return Collections.unmodifiableCollection(m_Writer);
 	}
 
-	public Collection<DataWriter> getDataWriters(Class<? extends Data> readClass) {
-		if(m_ClassWriters.containsKey(readClass)){
-			return Collections.unmodifiableCollection(m_ClassWriters.get(readClass));
+	public Collection<DataWriter> getDataWriters(Class<? extends Data> writeClass) {
+		if(m_ClassWriters.containsKey(writeClass)){
+			return Collections.unmodifiableCollection(m_ClassWriters.get(writeClass));
 		}
 		Collection<DataWriter> empty = new HashSet<DataWriter>();
-		m_ClassWriters.put(readClass, empty);
+		m_ClassWriters.put(writeClass, empty);
 		return Collections.unmodifiableCollection(empty);
 	}
 

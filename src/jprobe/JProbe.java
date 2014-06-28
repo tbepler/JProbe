@@ -1,7 +1,6 @@
 package jprobe;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import jprobe.save.SaveManager;
 import jprobe.services.CoreListener;
 import jprobe.services.Workspace;
 import jprobe.services.Debug;
@@ -26,11 +24,8 @@ import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.main.AutoProcessor;
 import org.apache.felix.main.Main;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
-
-import util.save.Saveable;
 
 public class JProbe implements JProbeCore{
 	
@@ -67,8 +62,9 @@ public class JProbe implements JProbeCore{
 	private final FunctionManager m_FunctionManager;
 	private final ReaderManager m_ReaderManager;
 	private final WriterManager m_WriterManager;
+	private final WorkspaceManager m_WorkspaceManager;
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	public JProbe(Configuration config){
 		String[] args = config.getArgs();
 		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
@@ -79,8 +75,9 @@ public class JProbe implements JProbeCore{
 		m_FunctionManager = new FunctionManager(this);
 		m_ReaderManager = new ReaderManager(this);
 		m_WriterManager = new WriterManager(this);
+		m_WorkspaceManager = new WorkspaceManager(this);
 		//create system bundle activator
-		m_Activator = new JProbeActivator(this, m_FunctionManager, m_ReaderManager, m_WriterManager);
+		m_Activator = new JProbeActivator(this, m_FunctionManager, m_ReaderManager, m_WriterManager, m_WorkspaceManager);
 		//create felix config map
 		Map felixConfig = createFelixConfig(config, m_Activator);
 		
@@ -119,13 +116,21 @@ public class JProbe implements JProbeCore{
 	private void parseAndExecute(String[] args) {
 		Data d = ParsingEngine.parseAndExecute(System.err, m_FunctionManager, args);
 		if(d != null){
-			DataWriter writer = m_DataManager.getDataWriter(d.getClass());
-			try {
-				BufferedWriter out = new BufferedWriter(new PrintWriter(System.out));
-				writer.write(d, writer.getValidWriteFormats()[0], out);
-				out.close();
-			} catch (Exception e) {
-				ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+			Collection<DataWriter> writers = m_WriterManager.getDataWriters(d.getClass());
+			boolean writeSuccesful = false;
+			for(DataWriter writer : writers){
+				try {
+					BufferedWriter out = new BufferedWriter(new PrintWriter(System.out));
+					writer.write(d, writer.getValidWriteFormats()[0], out);
+					out.close();
+					writeSuccesful = true;
+					break;
+				} catch (Exception e) {
+					//try next one
+				}
+			}
+			if(!writeSuccesful){
+				ErrorHandler.getInstance().handleException(new RuntimeException("Unable to write "+d.getClass()+"."), JProbeActivator.getBundle());
 			}
 		}
 	}
@@ -155,17 +160,18 @@ public class JProbe implements JProbeCore{
 
 	@Override
 	public void addCoreListener(CoreListener listener) {
-		//frame.addListener(listener);
-		m_DataManager.addListener(listener);
 		m_FunctionManager.addListener(listener);
-		
+		m_ReaderManager.addCoreListener(listener);
+		m_WriterManager.addCoreListener(listener);
+		m_WorkspaceManager.addCoreListener(listener);
 	}
 
 	@Override
 	public void removeCoreListener(CoreListener listener) {
-		//frame.removeListener(listener);
-		m_DataManager.removeListener(listener);
 		m_FunctionManager.removeListener(listener);
+		m_ReaderManager.removeCoreListener(listener);
+		m_WriterManager.removeCoreListener(listener);
+		m_WorkspaceManager.removeCoreListener(listener);
 	}
 
 
@@ -185,94 +191,78 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public void newWorkspace() {
-		m_DataManager.clearData();
-		JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Opened new workspace");
-	}
-
-
-	@Override
 	public String getUserDir() {
 		return jprobe.Constants.USER_JPROBE_DIR;
 	}
 
 	@Override
+	public Workspace newWorkspace() {
+		return m_WorkspaceManager.newWorkspace();
+	}
+
+	@Override
 	public Workspace getWorkspace(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		return m_WorkspaceManager.getWorkspace(index);
 	}
 
 	@Override
 	public int indexOf(Workspace w) {
-		// TODO Auto-generated method stub
-		return 0;
+		return m_WorkspaceManager.indexOf(w);
 	}
 
 	@Override
 	public List<Workspace> getWorkspaces() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_WorkspaceManager.getWorkspaces();
 	}
 
 	@Override
 	public void closeWorkspace(int index) {
-		// TODO Auto-generated method stub
-		
+		m_WorkspaceManager.closeWorkspace(index);
 	}
 
 	@Override
 	public void closeWorkspace(Workspace w) {
-		// TODO Auto-generated method stub
-		
+		m_WorkspaceManager.closeWorkspace(w);
 	}
 
 	@Override
 	public int numWorkspaces() {
-		// TODO Auto-generated method stub
-		return 0;
+		return m_WorkspaceManager.numWorkspaces();
 	}
 
 	@Override
 	public Collection<Function<?>> getFunctions() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_FunctionManager.getFunctions();
 	}
 
 	@Override
 	public Collection<DataReader> getDataReaders() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_ReaderManager.getDataReaders();
 	}
 
 	@Override
 	public Collection<DataReader> getDataReaders(Class<? extends Data> readClass) {
-		// TODO Auto-generated method stub
-		return null;
+		return m_ReaderManager.getDataReaders(readClass);
 	}
 
 	@Override
 	public boolean isReadable(Class<? extends Data> dataClass) {
-		// TODO Auto-generated method stub
-		return false;
+		return m_ReaderManager.isReadable(dataClass);
 	}
 
 	@Override
 	public Collection<DataWriter> getDataWriters() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_WriterManager.getDataWriters();
 	}
 
 	@Override
-	public Collection<DataWriter> getDataWriters(
-			Class<? extends Data> writeClass) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<DataWriter> getDataWriters(Class<? extends Data> writeClass) {
+		return m_WriterManager.getDataWriters(writeClass);
 	}
 
 	@Override
 	public boolean isWritable(Class<? extends Data> dataClass) {
-		// TODO Auto-generated method stub
-		return false;
+		return m_WriterManager.isWritable(dataClass);
 	}
 
 

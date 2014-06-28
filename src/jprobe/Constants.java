@@ -12,6 +12,7 @@ public class Constants {
 	public static final String AUTHOR = "Tristan Bepler";
 	
 	public static final String WORKSPACE_FILE_EXTENSION = "sav";
+	public static final String WORKSPACE_DEFAULT_NAME = "Untitled Workspace";
 
 	public static final String URL_PATH_SEPARATOR = "/";
 	

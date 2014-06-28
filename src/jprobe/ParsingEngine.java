@@ -1,21 +1,20 @@
 package jprobe;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
-
-import org.osgi.framework.Bundle;
 
 import util.progress.PrintStreamProgressBar;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 import jprobe.services.ErrorHandler;
-import jprobe.services.FunctionManager;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 import jprobe.services.function.Function;
@@ -37,11 +36,11 @@ public class ParsingEngine {
 		String[] funcArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, funcArgs, 0, funcArgs.length);
 		
-		return execute(report, funcManager.getProvider(func), func, funcArgs);
+		return execute(report, func, funcArgs);
 		
 	}
 	
-	private static <T> Data execute(final PrintStream report, Bundle bundle, Function<T> func, String[] args){
+	private static <T> Data execute(final PrintStream report, Function<T> func, String[] args){
 		
 		//check for help flag
 		for(String s : args){
@@ -79,7 +78,7 @@ public class ParsingEngine {
 		try {
 			return execute(func, l, flags, requiredArgs, args);
 		} catch (Exception e) {
-			ErrorHandler.getInstance().handleException(e, bundle);
+			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			report.println(getFunctionUsage(func));
 			return null;
 		}
@@ -215,8 +214,14 @@ public class ParsingEngine {
 	}
 	
 	private static Function<?> getFunction(FunctionManager mngr, String name){
-		Function<?>[] funcs = mngr.getFunctions(name);
-		if(funcs.length < 1){
+		Collection<Function<?>> funcs = mngr.getFunctions();
+		List<Function<?>> namedFuncs = new ArrayList<Function<?>>();
+		for(Function<?> f : funcs){
+			if(f.getName().equals(name)){
+				namedFuncs.add(f);
+			}
+		}
+		if(namedFuncs.size() < 1){
 			if(name.matches(Constants.INDEXED_FUNC_REGEX)){
 				try{
 					int index = Integer.parseInt(name.substring(name.lastIndexOf('[')+1, name.lastIndexOf(']')));
@@ -228,26 +233,32 @@ public class ParsingEngine {
 			}
 			return null;
 		}
-		if(funcs.length > 1){
+		if(namedFuncs.size() > 1){
 			return null;
 		}
-		return funcs[0];
+		return namedFuncs.get(0);
 		
 	}
 	
 	private static Function<?> getFunction(FunctionManager mngr, String name, int index){
-		Function<?>[] funcs = mngr.getFunctions(name);
-		if(funcs.length < 1){
+		Collection<Function<?>> rawFuncs = mngr.getFunctions();
+		List<Function<?>> funcs = new ArrayList<Function<?>>();
+		for(Function<?> f : rawFuncs){
+			if(f.getName().equals(name)){
+				funcs.add(f);
+			}
+		}
+		if(funcs.size() < 1){
 			return null;
 		}
-		if(index < 0 || index >= funcs.length){
+		if(index < 0 || index >= funcs.size()){
 			return null;
 		}
-		return funcs[index];
+		return funcs.get(index);
 	}
 	
 	private static void printHelpStatement(PrintStream out, FunctionManager mngr){
-		Map<String, Collection<Function<?>>> categories = groupByCategory(mngr.getAllFunctions());
+		Map<String, Collection<Function<?>>> categories = groupByCategory(mngr.getFunctions());
 		
 		out.println(Constants.NAME + " " + Constants.VERSION + "\nCreated by "+Constants.AUTHOR);
 		out.println(Constants.HELP_MESSAGE);
@@ -270,7 +281,7 @@ public class ParsingEngine {
 		}
 	}
 	
-	private static Map<String, Collection<Function<?>>> groupByCategory(Function<?>[] funcs){
+	private static Map<String, Collection<Function<?>>> groupByCategory(Collection<Function<?>> funcs){
 		Map<String, Collection<Function<?>>> categories = new TreeMap<String, Collection<Function<?>>>();
 		for(Function<?> func : funcs){
 			String cat = func.getCategory();
