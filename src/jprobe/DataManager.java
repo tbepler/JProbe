@@ -1,6 +1,5 @@
 package jprobe;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
@@ -30,29 +29,30 @@ import jprobe.services.WorkspaceEvent;
 import jprobe.services.WorkspaceEvent.Type;
 import jprobe.services.WorkspaceListener;
 
-public class DataManager implements Workspace{
+public class DataManager implements Saveable{
 	
 	private final Collection<WorkspaceListener> m_WorkspaceListeners = new HashSet<WorkspaceListener>();
 	private final Collection<SaveableListener> m_SaveableListeners = new HashSet<SaveableListener>();
-	private final Map<String, Saveable> m_Saveables = new HashMap<String, Saveable>();
 	
 	private final List<Data> m_Data = new ArrayList<Data>();
 	private final Map<String, Data> m_NameToData = new HashMap<String, Data>();
 	private final Map<Data, String> m_DataToName = new HashMap<Data, String>();
 	
 	private final BundleContext m_Context;
+	private final Workspace m_Parent;
 	
 	private boolean m_ChangesSinceLastSave = false;
 	private String m_Name;
 	
-	public DataManager(BundleContext context, String name){
+	public DataManager(BundleContext context, Workspace parent, String name){
 		m_Context = context;
+		m_Parent = parent;
 		m_Name = name;
 	}
 
 	protected synchronized void notifyListeners(WorkspaceEvent event){
 		for(WorkspaceListener l : m_WorkspaceListeners){
-			l.update(this, event);
+			l.update(m_Parent, event);
 		}
 	}
 	
@@ -85,12 +85,10 @@ public class DataManager implements Workspace{
 		}
 	}
 	
-	@Override
 	public synchronized void addData(Data d, String name){
 		this.addData(d, name, true);
 	}
 	
-	@Override
 	public synchronized void addData(Data d){
 		this.addData(d, assignName(d));
 	}
@@ -105,32 +103,26 @@ public class DataManager implements Workspace{
 		this.setChanged(true);
 	}
 	
-	@Override
 	public synchronized void removeData(String name){
 		removeData(name, m_NameToData.get(name));
 	}
 	
-	@Override
 	public synchronized void removeData(Data d){
 		removeData(m_DataToName.get(d), d);
 	}
 	
-	@Override
 	public synchronized List<Data> getAllData(){
 		return Collections.unmodifiableList(m_Data);
 	}
 	
-	@Override
 	public synchronized Data getData(String name){
 		return m_NameToData.get(name);
 	}
 	
-	@Override
 	public synchronized String getDataName(Data d){
 		return m_DataToName.get(d);
 	}
 	
-	@Override
 	public synchronized Collection<String> getDataNames(){
 		return Collections.unmodifiableCollection(m_NameToData.keySet());
 	}
@@ -148,12 +140,10 @@ public class DataManager implements Workspace{
 		}
 	}
 	
-	@Override
 	public synchronized void rename(Data d, String name){
 		this.rename(d, this.getDataName(d), name, true);
 	}
 	
-	@Override
 	public synchronized void rename(String oldName, String newName){
 		Data d = this.getData(oldName);
 		if(d != null){
@@ -161,18 +151,14 @@ public class DataManager implements Workspace{
 		}
 	}
 
-
-	@Override
 	public synchronized boolean contains(String name) {
 		return m_NameToData.containsKey(name);
 	}
 
-	@Override
 	public synchronized boolean contains(Data data) {
 		return m_DataToName.containsKey(data);
 	}
 	
-	@Override
 	public synchronized void clear(){
 		boolean changed = !m_Data.isEmpty();
 		m_Data.clear();
@@ -182,7 +168,6 @@ public class DataManager implements Workspace{
 		this.setChanged(changed);
 	}
 	
-	@Override
 	public synchronized boolean unsavedChanges(){
 		return m_ChangesSinceLastSave;
 	}
@@ -196,42 +181,30 @@ public class DataManager implements Workspace{
 		}
 	}
 	
-
-	@Override
-	public void saveTo(File saveTo) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void loadFrom(File loadFrom) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void importFrom(File f) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	@Override
 	public synchronized long saveTo(OutputStream out, String outName) {
+		this.notifyListeners(new SaveableEvent(SaveableEvent.Type.SAVING, outName));
 		ByteCounterOutputStream counter = new ByteCounterOutputStream(out);
 		try {
 			ObjectOutputStream oout = new ObjectOutputStream(counter);
+			//first right the workspace name
 			oout.writeObject(m_Name);
+			//now right the stored data
 			for(Data stored : m_DataToName.keySet()){
 				Bundle source = FrameworkUtil.getBundle(stored.getClass());
 				String name = this.getDataName(stored);
 				oout.writeObject(name);
+				//recording the bundle name is necessary for the right class loader to
+				//be used when deserializing the Data object
 				oout.writeObject(source.getSymbolicName());
 				oout.writeObject(stored);
 			}
 			this.setChanged(false);
 			oout.close();
+			this.notifyListeners(new SaveableEvent(SaveableEvent.Type.SAVED, outName));
 		} catch (IOException e) {
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());	
+			this.notifyListeners(new SaveableEvent(SaveableEvent.Type.FAILED, outName));
+			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 		}
 		return counter.bytesWritten();
 	}
@@ -239,36 +212,25 @@ public class DataManager implements Workspace{
 	@Override
 	public synchronized void loadFrom(InputStream in, String source) {
 		try {
+			//loading replaces the currently stored data, so clear
 			this.clear();
+			this.notifyListeners(new SaveableEvent(SaveableEvent.Type.LOADING, source));
 			ClassLoaderObjectInputStream oin = new ClassLoaderObjectInputStream(in, this.getClass().getClassLoader());
+			//first read the workspace name
 			try {
 				m_Name = (String) oin.readObject();
 			} catch (ClassNotFoundException e1) {
 				//zzzzzzzzz
 			}
-			boolean finished = false;
-			while(!finished){
-				try {
-					oin.setClassLoader(this.getClass().getClassLoader());
-					String name = (String) oin.readObject();
-					String bundleName = (String) oin.readObject();
-					Bundle bundle = OSGIUtils.getBundleWithName(bundleName, m_Context);
-					if(bundle!=null){
-						oin.setClassLoader(OSGIUtils.getBundleClassLoader(bundle));
-					}
-					Data data = (Data) oin.readObject();
-					this.addData(data, name, false);
-				} catch (ClassNotFoundException e) {
-					//do nothing, this means the plugin that provides the data type is not loaded so simply proceed
-					continue;
-				} catch (Exception e){
-					finished = true;
-				}
-			}
+			//then read the data
+			this.readDataFrom(oin);
+			//this workspace was already saved, so set changed to false
 			this.setChanged(false);
 			this.notifyListeners(new WorkspaceEvent(Type.WORKSPACE_LOADED));
 			oin.close();
+			this.notifyListeners(new SaveableEvent(SaveableEvent.Type.LOADED, source));
 		} catch (IOException e) {
+			this.notifyListeners(new SaveableEvent(SaveableEvent.Type.FAILED, source));
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 		}
 	}
@@ -276,35 +238,62 @@ public class DataManager implements Workspace{
 	@Override
 	public synchronized void importFrom(InputStream in, String sourceName) {
 		try {
+			//importing reads in additional data, so the current data is not cleared
+			this.notifyListeners(new SaveableEvent(SaveableEvent.Type.IMPORTING, sourceName));
 			ClassLoaderObjectInputStream oin = new ClassLoaderObjectInputStream(in, this.getClass().getClassLoader());
+			//read the imported workspace name, but ignore it
 			try {
-				oin.readObject(); //read the imported workspace name, but ignore it
+				oin.readObject();
 			} catch (ClassNotFoundException e1) {
 				//zzzzzzzzz
 			}
-			boolean finished = false;
-			while(!finished){
-				try {
-					oin.setClassLoader(this.getClass().getClassLoader());
-					String name = (String) oin.readObject();
-					String bundleName = (String) oin.readObject();
-					Bundle bundle = OSGIUtils.getBundleWithName(bundleName, m_Context);
-					if(bundle!=null){
-						oin.setClassLoader(OSGIUtils.getBundleClassLoader(bundle));
-					}
-					Data data = (Data) oin.readObject();
-					this.addData(data, name, false);
-				} catch (ClassNotFoundException e) {
-					//do nothing, this means the plugin that provides the data type is not loaded so simply proceed
-					continue;
-				} catch (Exception e){
-					finished = true;
-				}
-			}
+			//read in the data
+			this.readDataFrom(oin);
 			this.notifyListeners(new WorkspaceEvent(Type.WORKSPACE_IMPORTED));
 			oin.close();
+			this.notifyListeners(new SaveableEvent(SaveableEvent.Type.IMPORTED, sourceName));
 		} catch (IOException e) {
+			this.notifyListeners(new SaveableEvent(SaveableEvent.Type.FAILED, sourceName));
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+		}
+	}
+	
+	private void readDataFrom(ClassLoaderObjectInputStream oin) {
+		boolean finished = false;
+		while(!finished){
+			try {
+				//set the class loader to the default class loader
+				oin.setClassLoader(this.getClass().getClassLoader());
+				String name = (String) oin.readObject();
+				//read the name of the bundle that provided this data before
+				//and see if it is available
+				String bundleName = (String) oin.readObject();
+				Bundle bundle = OSGIUtils.getBundleWithName(bundleName, m_Context);
+				if(bundle!=null){
+					//the bundle recorded as providing this data is available, so use its class loader
+					//for deserializing the data
+					oin.setClassLoader(OSGIUtils.getBundleClassLoader(bundle));
+				}
+				Data data = (Data) oin.readObject();
+				//if importing there is still stored Data, so check to make sure that there will
+				//be no naming collisions
+				if(this.contains(name)){
+					//there is a naming collision, so append numbers until an open name is found
+					int count = 1;
+					String tryName = name + "(" + count + ")";
+					while(this.contains(tryName)){
+						tryName = name + "(" + (++count) + ")";
+					}
+					name = tryName;
+				}
+				this.addData(data, name, false);
+			} catch (ClassNotFoundException e) {
+				//do nothing, this means the plugin that provides the data type is not loaded so simply proceed
+				continue;
+			} catch (Exception e){
+				//an unknown error occured - the stream may have been fully read, so terminate the loop
+				finished = true;
+			}
 		}
 	}
 
@@ -318,38 +307,22 @@ public class DataManager implements Workspace{
 		m_SaveableListeners.remove(l);
 	}
 
-	@Override
 	public synchronized void addWorkspaceListener(WorkspaceListener listener) {
 		m_WorkspaceListeners.add(listener);
 	}
 
-	@Override
 	public synchronized void removeWorkspaceListener(WorkspaceListener listener) {
 		m_WorkspaceListeners.remove(listener);
 	}
 
-	@Override
 	public synchronized String getWorkspaceName() {
 		return m_Name;
 	}
 
-	@Override
 	public synchronized void setWorkspaceName(String name) {
 		if(!name.equals(m_Name)){
 			m_Name = name;
 			this.notifyListeners(new WorkspaceEvent(Type.WORKSPACE_RENAMED));
-		}
-	}
-
-	@Override
-	public synchronized void putSaveable(String tag, Saveable s) {
-		m_Saveables.put(tag, s);
-	}
-
-	@Override
-	public synchronized void removeSaveable(String tag, Saveable s) {
-		if(m_Saveables.containsKey(tag) && m_Saveables.get(tag) == s){
-			m_Saveables.remove(tag);
 		}
 	}
 

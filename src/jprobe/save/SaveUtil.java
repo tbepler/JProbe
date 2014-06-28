@@ -17,14 +17,16 @@ import jprobe.Constants;
 
 import org.apache.commons.io.input.BoundedInputStream;
 
+import util.ByteCounterOutputStream;
 import util.save.Saveable;
 
 public class SaveUtil {
 	
-	public static void save(File saveTo, Map<String,Saveable> saveables) throws SaveException{
+	public static long save(ObjectOutputStream out, String outName, Map<String,Saveable> saveables) throws SaveException{
+		ByteCounterOutputStream counter = new ByteCounterOutputStream(out);
 		try {
-			ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(saveTo)));
-			String tempName = Constants.USER_JPROBE_DIR + File.separator + ".temp."+saveTo.getName();
+			ObjectOutputStream oout = new ObjectOutputStream(counter);
+			String tempName = Constants.USER_JPROBE_DIR + File.separator + ".temp."+outName;
 			File temp = new File(tempName);
 			int count = 0;
 			while(temp.exists()){
@@ -35,24 +37,24 @@ public class SaveUtil {
 			for(String tag : saveables.keySet()){
 				if(temp.canWrite() && temp.canRead()){
 					OutputStream tempOut = new BufferedOutputStream( new FileOutputStream(temp));
-					long bytes = saveables.get(tag).saveTo(tempOut, saveTo.getCanonicalPath());
+					long bytes = saveables.get(tag).saveTo(tempOut, outName);
 					tempOut.close();
 					
 					Tag header = new Tag(tag, bytes);
-					out.writeObject(header);
+					oout.writeObject(header);
 					BufferedInputStream tempIn = new BufferedInputStream( new FileInputStream(temp) );
 					int read;
 					while((read = tempIn.read()) != -1){
-						out.writeByte(read);
+						oout.writeByte(read);
 					}
 					tempIn.close();
 				}else{
 					ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
-					long bytes = saveables.get(tag).saveTo(tempOut, saveTo.getCanonicalPath());
+					long bytes = saveables.get(tag).saveTo(tempOut, outName);
 					Tag header = new Tag(tag, bytes);
-					out.writeObject(header);
+					oout.writeObject(header);
 					
-					tempOut.writeTo(out);
+					tempOut.writeTo(oout);
 					tempOut.close();
 				}
 			}
@@ -63,11 +65,11 @@ public class SaveUtil {
 		} catch (IOException e) {
 			throw new SaveException(e);
 		}
+		return counter.bytesWritten();
 	}
 	
-	public static void load(File loadFrom, Map<String, Saveable> saveables) throws LoadException{
+	public static void load(ObjectInputStream in, String inName, Map<String, Saveable> saveables) throws LoadException{
 		try {
-			ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(loadFrom)));
 			boolean finished = false;
 			while(!finished){
 				try {
@@ -80,7 +82,7 @@ public class SaveUtil {
 						BoundedInputStream tempIn = new BoundedInputStream(in, size);
 						//pass the new inputstream to the saveable for loading
 						try{
-							saveables.get(id).loadFrom(tempIn, loadFrom.getCanonicalPath());
+							saveables.get(id).loadFrom(tempIn, inName);
 						} catch (Exception e){
 							//an error occurred in the saveable while loading, ignore it and move on
 						}
@@ -103,4 +105,43 @@ public class SaveUtil {
 			throw new LoadException(e);
 		}
 	}
+	
+	public static void importFrom(ObjectInputStream in, String inName, Map<String, Saveable> saveables) throws ImportException{
+		try {
+			boolean finished = false;
+			while(!finished){
+				try {
+					//read a block of saved data
+					Tag header = (Tag) in.readObject();
+					String id = header.getId();
+					long size = header.getNumBytes();
+					if(saveables.containsKey(id)){
+						//link the input stream to a BoundedInputStream of appropriate size
+						BoundedInputStream tempIn = new BoundedInputStream(in, size);
+						//pass the new inputstream to the saveable for importing
+						try{
+							saveables.get(id).importFrom(tempIn, inName);
+						} catch (Exception e){
+							//an error occurred in the saveable while importing, ignore it and move on
+						}
+						tempIn.close();
+					}else{
+						//there is no saveable loaded to read this data, so skip it
+						for(int i=0; i<size; i++){
+							in.read();
+						}
+					}
+				} catch (Exception e) {
+					//an exception occurred, so importing is finished
+					finished = true;
+				}
+			}
+			in.close();
+		} catch (FileNotFoundException e) {
+			throw new ImportException(e);
+		} catch (IOException e) {
+			throw new ImportException(e);
+		}
+	}
+	
 }

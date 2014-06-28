@@ -1,6 +1,5 @@
 package jprobe.services;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,18 +21,6 @@ public interface Workspace extends Saveable{
 	public void removeWorkspaceListener(WorkspaceListener listener);
 	
 	/**
-	 * Returns the name of this Workspace.
-	 * @return
-	 */
-	public String getWorkspaceName();
-	
-	/**
-	 * Sets the name of this Workspace.
-	 * @param name - new name for this Workspace
-	 */
-	public void setWorkspaceName(String name);
-	
-	/**
 	 * Adds the given {@link Saveable} to this Workspace. Whenever this Workspaces saves,
 	 * loads, or imports, all registered Saveables will as well. Saveables are mapped
 	 * by their tags. If a Saveable is already registered by the given tag, then it
@@ -49,22 +36,16 @@ public interface Workspace extends Saveable{
 	public void removeSaveable(String tag, Saveable s);
 	
 	/**
-	 * Saves this Workspace to the given file.
-	 * @param saveTo
+	 * Returns the name of this Workspace.
+	 * @return
 	 */
-	public void saveTo(File saveTo);
+	public String getWorkspaceName();
 	
 	/**
-	 * Loads this Workspace from the given file.
-	 * @param loadFrom
+	 * Sets the name of this Workspace.
+	 * @param name - new name for this Workspace
 	 */
-	public void loadFrom(File loadFrom);
-	
-	/**
-	 * Imports the Workspace from the given file into this Workspace.
-	 * @param f
-	 */
-	public void importFrom(File f);
+	public void setWorkspaceName(String name);
 	
 	/**
 	 * Adds the given {@link Data} object to this Workspace using the given name for the data.
