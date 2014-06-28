@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.function.Function;
@@ -30,8 +28,8 @@ public class FunctionManager extends AbstractServiceListener<Function>{
 
 	private final JProbeCore m_Core;
 	
-	public FunctionManager(JProbeCore core, BundleContext context){
-		super(Function.class, context);
+	public FunctionManager(JProbeCore core){
+		super(Function.class);
 		this.m_Core = core;
 	}
 	

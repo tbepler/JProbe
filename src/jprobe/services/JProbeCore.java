@@ -176,7 +176,7 @@ public interface JProbeCore {
 	 * @param readClass
 	 * @return
 	 */
-	public Collection<DataReader> getDataReader(Class<? extends Data> readClass);
+	public Collection<DataReader> getDataReaders(Class<? extends Data> readClass);
 	
 	/**
 	 * Returns true if there exists at least one {@link DataReader} for the given Data class. Otherwise, returns false.

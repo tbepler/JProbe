@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +15,12 @@ import jprobe.services.CoreListener;
 import jprobe.services.Workspace;
 import jprobe.services.Debug;
 import jprobe.services.ErrorHandler;
-import jprobe.services.FunctionManager;
 import jprobe.services.JProbeCore;
-import jprobe.services.LoadListener;
 import jprobe.services.JProbeLog;
-import jprobe.services.SaveListener;
 import jprobe.services.data.Data;
+import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
+import jprobe.services.function.Function;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
@@ -64,8 +64,9 @@ public class JProbe implements JProbeCore{
 	private final Mode m_Mode;
 	private final JProbeActivator m_Activator;
 	private final Felix m_Felix;
-	
-	private FunctionManager m_FunctionManager;
+	private final FunctionManager m_FunctionManager;
+	private final ReaderManager m_ReaderManager;
+	private final WriterManager m_WriterManager;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JProbe(Configuration config){
@@ -75,14 +76,16 @@ public class JProbe implements JProbeCore{
 		}else{
 			m_Mode = Mode.COMMAND;
 		}
-		
+		m_FunctionManager = new FunctionManager(this);
+		m_ReaderManager = new ReaderManager(this);
+		m_WriterManager = new WriterManager(this);
 		//create system bundle activator
-		m_Activator = new JProbeActivator(this);
+		m_Activator = new JProbeActivator(this, m_FunctionManager, m_ReaderManager, m_WriterManager);
 		//create felix config map
 		Map felixConfig = createFelixConfig(config, m_Activator);
 		
 		try{
-			//create and instance of the felix framework using the config map
+			//create an instance of the felix framework using the config map
 			m_Felix = new Felix(felixConfig);
 			//get properties to pass the felix
 			Properties props = initSystemProperties();
@@ -94,6 +97,9 @@ public class JProbe implements JProbeCore{
 			System.err.println("Error creating Felix framework: "+e);
 			e.printStackTrace();
 			System.exit(1);
+			//this should never happen... but the compiler needs this to allow later
+			//references to m_Felix without "Field may not have been initialized"
+			throw new Error();
 		}
 		if(m_Mode == Mode.COMMAND){ //parse args, execute, and quit
 			this.parseAndExecute(args);
@@ -122,10 +128,6 @@ public class JProbe implements JProbeCore{
 				ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			}
 		}
-	}
-	
-	void setFunctionManager(FunctionManager fncManager){
-		m_FunctionManager = fncManager;
 	}
 	
 	@Override
@@ -167,37 +169,6 @@ public class JProbe implements JProbeCore{
 	}
 
 
-
-	@Override
-	public void addSaveable(Saveable add, Bundle bundle) {
-		m_SaveManager.addSaveable(add, bundle.getSymbolicName());
-	}
-
-	@Override
-	public void removeSaveable(Saveable remove, Bundle bundle) {
-		m_SaveManager.removeSaveable(remove, bundle.getSymbolicName());
-	}
-	
-	@Override
-	public void save(File toFile){
-		m_SaveManager.save(toFile);
-	}
-	
-	@Override
-	public void load(File fromFile){
-		m_SaveManager.load(fromFile);
-	}
-
-	@Override
-	public Workspace getDataManager() {
-		return m_DataManager;
-	}
-
-	@Override
-	public FunctionManager getFunctionManager() {
-		return m_FunctionManager;
-	}
-
 	@Override
 	public Mode getMode() {
 		return m_Mode;
@@ -219,10 +190,6 @@ public class JProbe implements JProbeCore{
 		JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Opened new workspace");
 	}
 
-	@Override
-	public boolean changedSinceLastSave() {
-		return m_SaveManager.changesSinceSave();
-	}
 
 	@Override
 	public String getUserDir() {
@@ -230,24 +197,85 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public void registerSave(SaveListener l) {
-		m_SaveManager.registerSave(l);
+	public Workspace getWorkspace(int index) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public void unregisterSave(SaveListener l) {
-		m_SaveManager.unregisterSave(l);
+	public int indexOf(Workspace w) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
-	public void registerLoad(LoadListener l) {
-		m_SaveManager.registerLoad(l);
+	public List<Workspace> getWorkspaces() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public void unregisterLoad(LoadListener l) {
-		m_SaveManager.unregisterLoad(l);
+	public void closeWorkspace(int index) {
+		// TODO Auto-generated method stub
+		
 	}
+
+	@Override
+	public void closeWorkspace(Workspace w) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int numWorkspaces() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Collection<Function<?>> getFunctions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<DataReader> getDataReaders() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<DataReader> getDataReaders(Class<? extends Data> readClass) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isReadable(Class<? extends Data> dataClass) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Collection<DataWriter> getDataWriters() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<DataWriter> getDataWriters(
+			Class<? extends Data> writeClass) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isWritable(Class<? extends Data> dataClass) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 
 
 	
