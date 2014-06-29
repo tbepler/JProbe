@@ -3,7 +3,7 @@ package jprobe.services.function;
 import javax.swing.JComponent;
 
 import jprobe.services.Workspace;
-import jprobe.services.function.components.ChangeNotifier;
+import util.gui.ChangeNotifier;
 import util.progress.ProgressListener;
 
 /**

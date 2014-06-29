@@ -6,13 +6,15 @@ import util.MathUtils;
 
 public abstract class DoubleArgument<P> extends SpinnerArgument<P, Double>{
 	
-	protected static class DoubleModel implements SpinnerArgument.Spinner<Double>{
+	protected static class DoubleModel extends SpinnerArgument.Model<Double>{
+		private static final long serialVersionUID = 1L;
 		
 		private final double m_Min;
 		private final double m_Max;
 		private final double m_Increment;
 		
-		protected DoubleModel(double min, double max, double increment){
+		protected DoubleModel(double startVal, double min, double max, double increment){
+			super(startVal);
 			m_Min = min;
 			m_Max = max;
 			m_Increment = increment;
@@ -21,10 +23,10 @@ public abstract class DoubleArgument<P> extends SpinnerArgument<P, Double>{
 		private boolean legal(double val){
 			return val >= m_Min && val <= m_Max;
 		}
-		
+
 		@Override
-		public Double next(Double cur) {
-			double next = cur + m_Increment;
+		public Double getNextValue() {
+			double next = this.getValue() + m_Increment;
 			if(this.legal(next)){
 				return next;
 			}else{
@@ -33,8 +35,8 @@ public abstract class DoubleArgument<P> extends SpinnerArgument<P, Double>{
 		}
 
 		@Override
-		public Double prev(Double cur) {
-			double prev = cur - m_Increment;
+		public Double getPreviousValue() {
+			double prev = this.getValue() - m_Increment;
 			if(this.legal(prev)){
 				return prev;
 			}else{
@@ -46,6 +48,8 @@ public abstract class DoubleArgument<P> extends SpinnerArgument<P, Double>{
 	
 	private final double m_Min;
 	private final double m_Max;
+	private final double m_Start;
+	private final double m_Increment;
 	
 	protected DoubleArgument(
 			String name,
@@ -66,19 +70,29 @@ public abstract class DoubleArgument<P> extends SpinnerArgument<P, Double>{
 				shortFlag,
 				prototypeVal,
 				optional,
-				startValue,
-				new DoubleModel(min, max, increment),
 				JTextField.RIGHT
 				);
 		
 		m_Min = min;
 		m_Max = max;
+		m_Start = startValue;
+		m_Increment = increment;
 	}
 
 	@Override
 	protected boolean isValid(Double value) {
 		if(value == null) return false;
 		return value >= m_Min && value <= m_Max;
+	}
+	
+	@Override
+	protected Model<Double> createModel(){
+		return new DoubleModel(m_Start, m_Min, m_Max, m_Increment);
+	}
+	
+	@Override
+	protected Double parse(String arg){
+		return Double.valueOf(arg);
 	}
 
 }

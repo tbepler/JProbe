@@ -50,7 +50,7 @@ public interface Function<P> {
 	 * @see Argument
 	 * @return collection of arguments
 	 */
-	public Collection<Argument<? super P>> getArguments();
+	public Collection<Argument<? super P, ?>> getArguments();
 	
 	/**
 	 * The core functionality of Functions. This method takes a ProgressListener and a parameter object

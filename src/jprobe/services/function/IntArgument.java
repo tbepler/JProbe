@@ -6,13 +6,15 @@ import util.MathUtils;
 
 public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 	
-	protected static class IntModel implements SpinnerArgument.Spinner<Integer>{
+	protected static class IntModel extends SpinnerArgument.Model<Integer>{
+		private static final long serialVersionUID = 1L;
 		
 		private final int m_Min;
 		private final int m_Max;
 		private final int m_Increment;
 		
-		protected IntModel(int min, int max, int increment){
+		protected IntModel(int start, int min, int max, int increment){
+			super(start);
 			m_Min = min;
 			m_Max = max;
 			m_Increment = increment;
@@ -23,8 +25,8 @@ public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 		}
 		
 		@Override
-		public Integer next(Integer cur) {
-			int next = cur + m_Increment;
+		public Integer getNextValue() {
+			int next = this.getValue() + m_Increment;
 			if(this.legal(next)){
 				return next;
 			}else{
@@ -33,8 +35,8 @@ public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 		}
 
 		@Override
-		public Integer prev(Integer cur) {
-			int prev = cur - m_Increment;
+		public Integer getPreviousValue() {
+			int prev = this.getValue() - m_Increment;
 			if(this.legal(prev)){
 				return prev;
 			}else{
@@ -46,6 +48,8 @@ public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 	
 	private final int m_Min;
 	private final int m_Max;
+	private final int m_Start;
+	private final int m_Inc;
 
 	protected IntArgument(
 			String name,
@@ -66,19 +70,29 @@ public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 				shortFlag,
 				prototypeVal,
 				optional,
-				startValue,
-				new IntModel(min, max, increment),
 				JTextField.RIGHT
 				);
 		
 		m_Min = min;
 		m_Max = max;
+		m_Start = startValue;
+		m_Inc = increment;
 	}
 
 	@Override
 	protected boolean isValid(Integer value) {
 		if(value == null) return false;
 		return value >= m_Min && value <= m_Max;
+	}
+	
+	@Override
+	protected Model<Integer> createModel(){
+		return new IntModel(m_Start, m_Min, m_Max, m_Inc);
+	}
+	
+	@Override
+	protected Integer parse(String arg){
+		return Integer.parseInt(arg);
 	}
 
 }

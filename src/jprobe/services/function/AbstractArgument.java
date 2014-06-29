@@ -2,7 +2,7 @@ package jprobe.services.function;
 
 import javax.swing.JComponent;
 
-import jprobe.services.function.components.ChangeNotifier;
+import util.gui.ChangeNotifier;
 
 public abstract class AbstractArgument<P, C extends JComponent & ChangeNotifier> implements Argument<P, C> {
 	

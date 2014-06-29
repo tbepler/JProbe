@@ -1,4 +1,6 @@
-package jprobe.services.function.components;
+package util.gui;
+
+import javax.swing.event.ChangeListener;
 
 public interface ChangeNotifier {
 	
