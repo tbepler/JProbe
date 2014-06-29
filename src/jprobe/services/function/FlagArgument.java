@@ -1,11 +1,10 @@
 package jprobe.services.function;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
 import util.progress.ProgressListener;
 import jprobe.JProbeActivator;
 import jprobe.services.ErrorHandler;
+import jprobe.services.Workspace;
+import jprobe.services.function.components.NullComponent;
 
 /**
  * This class represents a flag argument. Flag arguments are boolean arguments that are always optional.
@@ -17,7 +16,7 @@ import jprobe.services.ErrorHandler;
  * @param <P> - The parameter class used by this argument.
  */
 
-public abstract class FlagArgument<P> extends AbstractArgument<P>{
+public abstract class FlagArgument<P> extends AbstractArgument<P, NullComponent>{
 
 	protected FlagArgument(String name, String tooltip, String category,
 			Character shortFlag) {
@@ -34,17 +33,17 @@ public abstract class FlagArgument<P> extends AbstractArgument<P>{
 	protected abstract void process(P params, boolean flagSet);
 	
 	@Override
-	public boolean isValid() {
+	public boolean isValid(NullComponent c) {
 		return true;
 	}
 
 	@Override
-	public JComponent getComponent() {
-		return new JPanel();
+	public NullComponent createComponent(Workspace w) {
+		return new NullComponent();
 	}
 
 	@Override
-	public void process(P params) {
+	public void process(P params, NullComponent c) {
 		this.process(params, true);
 	}
 

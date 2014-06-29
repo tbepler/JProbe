@@ -1,34 +1,28 @@
 package jprobe.services.function;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JComponent;
-import javax.swing.JTextField;
-
+import jprobe.services.Workspace;
+import util.gui.ChangeNotifierTextField;
 import util.progress.ProgressListener;
 
-public abstract class StringArgument<P> extends AbstractArgument<P> implements ActionListener{
+public abstract class StringArgument<P> extends AbstractArgument<P, ChangeNotifierTextField>{
 	
 	public static final String PROTOTYPE_TEXT = "some string here";
 	
 	private final String m_StartValue;
-	//instantiate lazily
-	private JTextField m_TextField = null;
 
 	protected StringArgument(String name, String tooltip, String category, Character shortFlag, String prototypeVal, boolean optional, String startValue) {
 		super(name, tooltip, category, shortFlag, prototypeVal, optional);
 		m_StartValue = startValue;
 	}
 	
-	private void initTextField(){
-		m_TextField = new JTextField(PROTOTYPE_TEXT);
-		Dimension size = m_TextField.getPreferredSize();
-		m_TextField.setText(m_StartValue);
-		m_TextField.setPreferredSize(size);
-		m_TextField.setMinimumSize(size);
-		m_TextField.addActionListener(this);
+	public ChangeNotifierTextField createComponent(Workspace w){
+		ChangeNotifierTextField field = new ChangeNotifierTextField(PROTOTYPE_TEXT);
+		Dimension size = field.getPreferredSize();
+		field.setText(m_StartValue);
+		field.setPreferredSize(size);
+		field.setMinimumSize(size);
+		return field;
 	}
 	
 	protected abstract boolean isValid(String s);
@@ -46,27 +40,13 @@ public abstract class StringArgument<P> extends AbstractArgument<P> implements A
 	}
 
 	@Override
-	public boolean isValid() {
-		if(m_TextField == null) this.initTextField();
-		return this.isValid(m_TextField.getText());
+	public boolean isValid(ChangeNotifierTextField field) {
+		return this.isValid(field.getText());
 	}
 
 	@Override
-	public JComponent getComponent() {
-		if(m_TextField == null) this.initTextField();
-		return m_TextField;
-	}
-
-	@Override
-	public void process(P params) {
-		process(params, m_TextField.getText());
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == m_TextField){
-			this.notifyListeners();
-		}
+	public void process(P params, ChangeNotifierTextField field) {
+		process(params, field.getText());
 	}
 
 }

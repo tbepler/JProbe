@@ -11,27 +11,33 @@ import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import util.Observer;
 import util.Subject;
+import util.gui.ChangeNotifier;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
+import jprobe.services.Workspace;
+import jprobe.services.WorkspaceEvent;
+import jprobe.services.WorkspaceListener;
 import jprobe.services.data.Data;
 
-public class DataArgsComponent<D extends Data> extends JPanel implements ValidNotifier, Observer<D>, CoreListener{
+public class DataArgsComponent<D extends Data> extends JPanel implements ChangeNotifier, Observer<D>, WorkspaceListener{
 	private static final long serialVersionUID = 1L;
 	
 	public static interface DataValidFunction{
 		public boolean isValid(Data d);
 	}
 	
-	private final Collection<ValidListener> m_Listeners = new HashSet<ValidListener>();
+	private final Collection<ChangeListener> m_Listeners = new HashSet<ChangeListener>();
 	
 	private final List<DataSelectionPanel<D>> m_DataComps = new ArrayList<DataSelectionPanel<D>>();
 	private final List<D> m_SelectedData = new ArrayList<D>();
 	
-	private final JProbeCore m_Core;
+	private final Workspace m_Workspace;
 	private final int m_MinArgs;
 	private final int m_MaxArgs;
 	private final boolean m_AllowDuplicates;
@@ -40,23 +46,16 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 	
 	private boolean m_Valid;
 	
-	public DataArgsComponent(JProbeCore core, int minArgs, int maxArgs, boolean allowDuplicates, Class<D> dataClass, DataValidFunction validFunction){
+	public DataArgsComponent(Workspace w, int minArgs, int maxArgs, boolean allowDuplicates, Class<D> dataClass, DataValidFunction validFunction){
 		super(new GridBagLayout());
-		m_Core = core;
-		m_Core.addCoreListener(this);
+		m_Workspace = w;
+		m_Workspace.addWorkspaceListener(this);
 		m_MinArgs = minArgs;
 		m_MaxArgs = maxArgs;
 		m_AllowDuplicates = allowDuplicates;
 		m_DataClass = dataClass;
 		m_ValidFunction = validFunction;
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run() {
-				allocateComponents();
-			}
-			
-		});
+		this.allocateComponents();
 	}
 	
 	@Override
@@ -229,15 +228,15 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		this.allocateComponents();
 	}
 	
-	public void process(CoreEvent event){
+	protected void process(WorkspaceEvent event){
 		Data d;
-		switch(event.type()){
+		switch(event.type){
 		case DATA_ADDED:
-			d = event.getData();
+			d = event.data;
 			if(isValid(d) && m_DataClass.isAssignableFrom(d.getClass()))
 				addData(m_DataClass.cast(d));
 			break;
-		case DATA_NAME_CHANGE:
+		case DATA_RENAMED:
 			renameData(event.getOldName(), event.getNewName());
 			break;
 		case DATA_REMOVED:
@@ -279,27 +278,6 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		//System.out.println("Selection changed at index="+index);
 		if(index >= 0){
 			this.setData(index, notification);
-			this.updateValidity();
-		}
-	}
-	
-	private void updateValidity(){
-		boolean valid = true;
-		for(int i=0 ; i<m_SelectedData.size(); i++){
-			D d = m_SelectedData.get(i);
-			if(this.isRequired(i)){
-				valid = valid && d != null && this.isValid(d);
-			}else{
-				valid = valid && (d == null || this.isValid(d));
-			}
-		}
-		this.setValid(valid);
-	}
-	
-	protected void setValid(boolean valid){
-		if(m_Valid != valid){
-			m_Valid = valid;
-			this.notifyListeners();
 		}
 	}
 	
@@ -307,25 +285,27 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ValidNo
 		return m_DataClass.isAssignableFrom(d.getClass()) && m_ValidFunction.isValid(d);
 	}
 	
-	@Override
-	public boolean isStateValid() {
-		return m_Valid;
-	}
-	
-	protected void notifyListeners(){
-		for(ValidListener l : m_Listeners){
-			l.update(this, this.isStateValid());
+	protected void fireChanged(){
+		ChangeEvent event = new ChangeEvent(this);
+		for(ChangeListener l : m_Listeners){
+			l.stateChanged(event);;
 		}
 	}
 
 	@Override
-	public void addListener(ValidListener l) {
+	public void addChangeListener(ChangeListener l) {
 		m_Listeners.add(l);
 	}
 
 	@Override
-	public void removeListener(ValidListener l) {
+	public void removeChangeListener(ChangeListener l) {
 		m_Listeners.remove(l);
+	}
+
+	@Override
+	public void update(Workspace source, WorkspaceEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
