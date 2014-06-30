@@ -1,13 +1,17 @@
 package jprobe;
 
-import java.io.BufferedWriter;
-import java.io.PrintWriter;
+import java.io.BufferedOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import jprobe.services.CoreListener;
 import jprobe.services.Workspace;
@@ -16,8 +20,9 @@ import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.JProbeLog;
 import jprobe.services.data.Data;
-import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
+import jprobe.services.data.ReadException;
+import jprobe.services.data.WriteException;
 import jprobe.services.function.Function;
 
 import org.apache.felix.framework.Felix;
@@ -116,12 +121,12 @@ public class JProbe implements JProbeCore{
 	private void parseAndExecute(String[] args) {
 		Data d = ParsingEngine.parseAndExecute(System.err, m_FunctionManager, args);
 		if(d != null){
-			Collection<DataWriter> writers = m_WriterManager.getDataWriters(d.getClass());
+			Collection<DataWriter<?>> writers = m_WriterManager.getDataWriters(d.getClass());
 			boolean writeSuccesful = false;
-			for(DataWriter writer : writers){
+			for(DataWriter<?> writer : writers){
 				try {
-					BufferedWriter out = new BufferedWriter(new PrintWriter(System.out));
-					writer.write(d, writer.getValidWriteFormats()[0], out);
+					OutputStream out = new BufferedOutputStream(System.out);
+					this.writeData(writer, d, writer.getWriteFormats().get(0), out);
 					out.close();
 					writeSuccesful = true;
 					break;
@@ -133,6 +138,11 @@ public class JProbe implements JProbeCore{
 				ErrorHandler.getInstance().handleException(new RuntimeException("Unable to write "+d.getClass()+"."), JProbeActivator.getBundle());
 			}
 		}
+	}
+	
+	private <D extends Data> void writeData(DataWriter<D> writer, Data d, FileNameExtensionFilter format, OutputStream out) throws WriteException{
+		D write = writer.getWriteClass().cast(d);
+		writer.write(write, format, out);
 	}
 	
 	@Override
@@ -236,33 +246,47 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public Collection<DataReader> getDataReaders() {
-		return m_ReaderManager.getDataReaders();
-	}
-
-	@Override
-	public Collection<DataReader> getDataReaders(Class<? extends Data> readClass) {
-		return m_ReaderManager.getDataReaders(readClass);
-	}
-
-	@Override
 	public boolean isReadable(Class<? extends Data> dataClass) {
 		return m_ReaderManager.isReadable(dataClass);
 	}
 
-	@Override
-	public Collection<DataWriter> getDataWriters() {
-		return m_WriterManager.getDataWriters();
-	}
-
-	@Override
-	public Collection<DataWriter> getDataWriters(Class<? extends Data> writeClass) {
-		return m_WriterManager.getDataWriters(writeClass);
-	}
 
 	@Override
 	public boolean isWritable(Class<? extends Data> dataClass) {
 		return m_WriterManager.isWritable(dataClass);
+	}
+
+	@Override
+	public Collection<Class<? extends Data>> getReadableDataClasses() {
+		return m_ReaderManager.getReadableDataClasses();
+	}
+
+	@Override
+	public List<FileFilter> getReadFormats(Class<? extends Data> readClass) {
+		return m_ReaderManager.getReadableFormats(readClass);
+	}
+
+	@Override
+	public <D extends Data> D readData(Class<D> readClass, FileFilter format,
+			InputStream in) throws ReadException {
+		return m_ReaderManager.readData(readClass, format, in);
+	}
+
+	@Override
+	public Collection<Class<? extends Data>> getWritableDataClasses() {
+		return m_WriterManager.getWritableDataClasses();
+	}
+
+	@Override
+	public List<FileNameExtensionFilter> getWriteFormats(
+			Class<? extends Data> writeClass) {
+		return m_WriterManager.getWriteFormats(writeClass);
+	}
+
+	@Override
+	public void writeData(Data d, FileNameExtensionFilter format,
+			OutputStream out) throws WriteException {
+		m_WriterManager.writeData(d, format, out);
 	}
 
 

@@ -1,7 +1,9 @@
 package jprobe.services.function;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ import util.progress.ProgressEvent.Type;
 import jprobe.services.JProbeCore;
 import jprobe.services.Workspace;
 import jprobe.services.data.Data;
-import jprobe.services.data.DataReader;
+import jprobe.services.data.ReadException;
 import jprobe.services.function.components.DataArgsComponent;
 import jprobe.services.function.components.DataArgsComponent.DataValidFunction;
 
@@ -177,13 +179,9 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P,
 			}
 		}
 		l.update(new ProgressEvent(null, Type.UPDATE, "Reading "+dataClass.getSimpleName()+" from file "+arg));
-		Data read = null;
-		for(DataReader reader : core.getDataReaders(dataClass)){
-			read = readFile(arg, reader, getFileFilters(reader));
-			if(read != null) break;
-		}
+		D read = readFile(arg, core, dataClass);
 		if(read == null){
-			throw new RuntimeException("Unable to read data \""+dataClass.getName()+"\" from file \""+arg+"\"");
+			throw new RuntimeException("Unable to read data class \""+dataClass+"\" from file \""+arg+"\"");
 		}
 		if(validFunction.isValid(read) && dataClass.isAssignableFrom(read.getClass())){
 			l.update(new ProgressEvent(null, Type.COMPLETED, "Done reading "+dataClass.getSimpleName()+" from file "+arg));
@@ -193,28 +191,27 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P,
 		}
 	}
 	
-	protected static FileFilter[] getFileFilters(DataReader reader){
-		FileFilter[] formats = reader.getValidReadFormats();
-		if(formats.length < 1){
-			throw new RuntimeException("No valid read formats for data \""+reader.getReadClass().getName()+"\"");
-		}
-		return formats;
-	}
-	
-	protected static Data readFile(String file, DataReader reader, FileFilter[] formats){
+	protected static <D extends Data> D readFile(String file, JProbeCore core, Class<D> dataClass){
 		File f = new File(file);
 		if(!f.canRead()){
 			throw new RuntimeException("File \""+file+"\" not readable");
 		}
-		Data d = null;
-		int filter = 0;
-		while(d == null && filter<formats.length){
-			try{
-				d = reader.read(formats[filter], new FileInputStream(f));
-			} catch(Exception e){
-				//do nothing
+		D d = null;
+		List<FileFilter> formats = core.getReadFormats(dataClass);
+		if(formats.isEmpty()){
+			throw new RuntimeException("No valid read formats for data class: "+dataClass);
+		}
+		for(FileFilter format : formats){
+			try {
+				d = core.readData(dataClass, format, new BufferedInputStream(new FileInputStream(f)));
+				if(d != null){
+					return d;
+				}
+			} catch (FileNotFoundException e) {
+				//do nothing, try next filter
+			} catch (ReadException e) {
+				//do nothing, try next filter
 			}
-			++filter;
 		}
 		return d;
 	}

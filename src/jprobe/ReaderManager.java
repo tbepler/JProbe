@@ -94,7 +94,6 @@ public class ReaderManager extends AbstractServiceListener<DataReader>{
 			return Collections.unmodifiableCollection(m_ClassReaders.get(readClass));
 		}
 		Collection<DataReader<?>> empty = new HashSet<DataReader<?>>();
-		m_ClassReaders.put(readClass, empty);
 		return Collections.unmodifiableCollection(empty);
 	}
 
@@ -106,7 +105,8 @@ public class ReaderManager extends AbstractServiceListener<DataReader>{
 		m_Readers.add(reader);
 		Class<? extends Data> clazz = reader.getReadClass();
 		if(m_ClassReaders.containsKey(clazz)){
-			m_ClassReaders.get(clazz).add(reader);
+			Collection<DataReader<?>> classReaders = m_ClassReaders.get(clazz);
+			classReaders.add(reader);
 		}else{
 			Collection<DataReader<?>> classReaders = new HashSet<DataReader<?>>();
 			classReaders.add(reader);
@@ -121,8 +121,10 @@ public class ReaderManager extends AbstractServiceListener<DataReader>{
 		}
 		Class<? extends Data> clazz = reader.getReadClass();
 		if(m_ClassReaders.containsKey(clazz)){
-			m_ClassReaders.get(clazz).remove(reader);
-			if(m_ClassReaders.get(clazz).isEmpty()){
+			Collection<DataReader<?>> col = m_ClassReaders.get(clazz);
+			col.remove(reader);
+			if(col.isEmpty()){
+				m_ClassReaders.remove(clazz);
 				this.notifyListeners(new CoreEvent(Type.DATA_UNREADABLE, clazz));
 			}
 		}

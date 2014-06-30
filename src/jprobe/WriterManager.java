@@ -1,10 +1,15 @@
 package jprobe;
 
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.osgi.framework.Bundle;
 
@@ -17,7 +22,9 @@ import jprobe.services.JProbeCore;
 import jprobe.services.JProbeLog;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataWriter;
+import jprobe.services.data.WriteException;
 
+@SuppressWarnings("rawtypes")
 public class WriterManager extends AbstractServiceListener<DataWriter>{
 
 	private final Collection<CoreListener> m_Listeners = new HashSet<CoreListener>();
@@ -46,45 +53,85 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 		}
 	}
 	
+	public Collection<Class<? extends Data>> getWritableDataClasses(){
+		return Collections.unmodifiableCollection(m_ClassWriters.keySet());
+	}
+	
+	public List<FileNameExtensionFilter> getWriteFormats(Class<? extends Data> writeClass){
+		List<FileNameExtensionFilter> formats = new ArrayList<FileNameExtensionFilter>();
+		if(m_ClassWriters.containsKey(writeClass)){
+			for(DataWriter<?> writer : m_ClassWriters.get(writeClass)){
+				formats.addAll(writer.getWriteFormats());
+			}
+		}
+		return formats;
+	}
+	
+	public void writeData(Data d, FileNameExtensionFilter format, OutputStream out) throws WriteException{
+		Collection<DataWriter<?>> writers = this.getDataWriters(d.getClass());
+		if(!writers.isEmpty()){
+			for(DataWriter<?> w : writers){
+				if(w.getWriteFormats().contains(format)){
+					this.writeData(w, d, format, out);
+					return;
+				}
+			}
+			throw new WriteException("Unable to write data class: "+d.getClass()+" with format: "+format.getDescription());
+		}
+		throw new WriteException("Unable to write data class: "+d.getClass());
+	}
+	
+	private <D extends Data> void writeData(DataWriter<D> writer, Data d, FileNameExtensionFilter format, OutputStream out) throws WriteException{
+		D write = writer.getWriteClass().cast(d);
+		writer.write(write, format, out);
+	}
+	
 	public Collection<DataWriter<? extends Data>> getDataWriters() {
 		return Collections.unmodifiableCollection(m_Writer);
 	}
 
 	public Collection<DataWriter<? extends Data>> getDataWriters(Class<? extends Data> writeClass) {
-		if(m_ClassWriters.containsKey(writeClass)){
-			return Collections.unmodifiableCollection(m_ClassWriters.get(writeClass));
+		Collection<DataWriter<?>> writers = new HashSet<DataWriter<?>>();
+		for(Class<? extends Data> clazz : m_ClassWriters.keySet()){
+			if(clazz.isAssignableFrom(writeClass)){
+				writers.addAll(m_ClassWriters.get(clazz));
+			}
 		}
-		Collection<DataWriter<?>> empty = new HashSet<DataWriter<?>>();
-		m_ClassWriters.put(writeClass, empty);
-		return Collections.unmodifiableCollection(empty);
+		return Collections.unmodifiableCollection(writers);
 	}
 
 	public boolean isWritable(Class<? extends Data> dataClass) {
+		
 		return m_ClassWriters.containsKey(dataClass) && !m_ClassWriters.get(dataClass).isEmpty();
 	}
 	
-	protected void addDataWriter(DataWriter writer){
+	protected void addDataWriter(DataWriter<?> writer){
 		m_Writer.add(writer);
 		Class<? extends Data> clazz = writer.getWriteClass();
 		if(m_ClassWriters.containsKey(clazz)){
-			m_ClassWriters.get(clazz).add(writer);
+			Collection<DataWriter<?>> col = m_ClassWriters.get(clazz);
+			col.add(writer);
 		}else{
-			Collection<DataWriter> classReaders = new HashSet<DataWriter>();
+			Collection<DataWriter<?>> classReaders = new HashSet<DataWriter<?>>();
 			classReaders.add(writer);
 			m_ClassWriters.put(clazz, classReaders);
+			this.notifyListeners(new CoreEvent(Type.DATA_WRITABLE, clazz));
 		}
-		this.notifyListeners(new CoreEvent(Type.DATAWRITER_ADDED, writer));
 	}
 	
-	protected void removeDataWriter(DataWriter writer){
+	protected void removeDataWriter(DataWriter<?> writer){
 		if(m_Writer.contains(writer)){
 			m_Writer.remove(writer);
 		}
 		Class<? extends Data> clazz = writer.getWriteClass();
 		if(m_ClassWriters.containsKey(clazz)){
-			m_ClassWriters.get(clazz).remove(writer);
+			Collection<DataWriter<?>> col = m_ClassWriters.get(clazz);
+			col.remove(writer);
+			if(col.isEmpty()){
+				m_ClassWriters.remove(clazz);
+				this.notifyListeners(new CoreEvent(Type.DATA_UNWRITABLE, clazz));
+			}
 		}
-		this.notifyListeners(new CoreEvent(Type.DATAWRITER_REMOVED, writer));
 	}
 
 	@Override
