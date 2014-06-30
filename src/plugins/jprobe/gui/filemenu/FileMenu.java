@@ -5,13 +5,15 @@ import javax.swing.JMenu;
 
 import bepler.crossplatform.OS;
 import bepler.crossplatform.Platform;
+import plugins.jprobe.gui.JProbeFrame;
 import plugins.jprobe.gui.JProbeGUIFrame;
+import plugins.jprobe.gui.services.JProbeWindow;
 import jprobe.services.JProbeCore;
 
 public class FileMenu extends JMenu{
 	private static final long serialVersionUID = 1L;
 	
-	public FileMenu(JProbeGUIFrame parentFrame, JProbeCore core, JFileChooser importChooser, JFileChooser exportChooser){
+	public FileMenu(JProbeWindow window){
 		super("File");
 		this.add(new NewMenuItem(core));
 		this.add(new OpenMenuItem(parentFrame, core));
