@@ -10,6 +10,8 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -34,47 +36,61 @@ import bepler.crossplatform.PreferencesHandler;
 import bepler.crossplatform.QuitHandler;
 import plugins.jprobe.gui.filemenu.FileMenu;
 import plugins.jprobe.gui.notification.NotificationPanel;
-import plugins.jprobe.gui.services.GUIEvent;
-import plugins.jprobe.gui.services.GUIListener;
-import plugins.jprobe.gui.services.JProbeGUI;
+import plugins.jprobe.gui.services.Disposable;
 import plugins.jprobe.gui.services.JProbeWindow;
+import plugins.jprobe.gui.services.Notification;
 import plugins.jprobe.gui.services.PreferencesPanel;
 import plugins.jprobe.gui.utils.DialogueMenu;
 import plugins.jprobe.gui.utils.TabDialogueWindow;
 import util.gui.SortedJMenuBar;
 import util.gui.SwingUtils;
+import util.save.ImportException;
+import util.save.LoadException;
+import util.save.SaveException;
+import util.save.Saveable;
+import util.save.SaveableEvent;
+import util.save.SaveableListener;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.LoadEvent;
-import jprobe.services.LoadListener;
 import jprobe.services.JProbeLog;
-import jprobe.services.SaveEvent;
-import jprobe.services.SaveListener;
 import jprobe.services.Workspace;
+import jprobe.services.WorkspaceEvent;
+import jprobe.services.WorkspaceListener;
 import jprobe.services.data.Data;
+import jprobe.services.data.ReadException;
+import jprobe.services.data.WriteException;
 
-public class JProbeFrame extends JFrame implements JProbeWindow{
+public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListener, SaveableListener{
 	private static final long serialVersionUID = 1L;
 	
 	private final JFileChooser m_ImportChooser = new JFileChooser();
 	private final JFileChooser m_ExportChooser = new JFileChooser();
-	
 
 	private final PreferencesWindow m_PreferencesWindow = new PreferencesWindow(this, Constants.PREFERENCES_NAME, true);
 	private final TabDialogueWindow m_HelpWindow = new TabDialogueWindow(this, Constants.HELP_NAME, true);
 	
 	private final JProbeCore m_Core;
+	private final Workspace m_Workspace;
 	private final JPanel m_ContentPane;
 	private final JMenuBar m_MenuBar;
+	private final String m_Name;
 	
+	private final BackgroundThread m_BackgroundThread;
 	
-	private NotificationPanel m_NotePanel;
+	private final NotificationPanel m_NotePanel;
 	
-	public JProbeFrame(JProbeCore core, Workspace w, GUIConfig config){
+	public JProbeFrame(String frameName, JProbeCore core, Workspace w, GUIConfig config){
 		super();
+		m_Name = frameName;
 		m_Core = core;
+		m_Workspace = w;
+		m_Workspace.addSaveableListener(this);
+		m_Workspace.addWorkspaceListener(this);
+		m_BackgroundThread = new BackgroundThread(m_Workspace.getWorkspaceName());
+		m_BackgroundThread.start();
+		
 		
 		m_ContentPane = this.createContentPane();
 		this.setContentPane(m_ContentPane);
@@ -84,7 +100,7 @@ public class JProbeFrame extends JFrame implements JProbeWindow{
 		
 		this.initCloseOperation();
 		
-		m_NotePanel = initNotificationPanel(m_Core);
+		m_NotePanel = initNotificationPanel();
 		
 		this.setModified(false);
 		this.pack();
@@ -175,8 +191,8 @@ public class JProbeFrame extends JFrame implements JProbeWindow{
 		});
 	}
 	
-	protected NotificationPanel initNotificationPanel(JProbeCore core){
-		NotificationPanel panel = new NotificationPanel(core);
+	protected NotificationPanel initNotificationPanel(){
+		NotificationPanel panel = new NotificationPanel();
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -199,45 +215,159 @@ public class JProbeFrame extends JFrame implements JProbeWindow{
 	
 	@Override
 	public void dispose(){
-		m_Core.getDataManager().removeListener(this);
-		m_Core.unregisterLoad(this);
-		m_Core.unregisterSave(this);
-		m_NotePanel.dispose();
 		super.dispose();
 	}
 	
-	private void checkDebugAndLog(String message){
-		Debug debugLevel = Debug.getLevel();
-		if(debugLevel == Debug.LOG || debugLevel == Debug.FULL){
-			JProbeLog.getInstance().write(m_Bundle, message);
+	protected void setModified(boolean modified){
+		//set the Window.documentModified property for mac os
+		getRootPane().putClientProperty("Window.documentModified", modified);
+		//add a * to the title of the pane if modified is true
+		if(modified){
+			this.setTitle(m_Name + " - *" + m_Workspace.getWorkspaceName());
+		}else{
+			this.setTitle(m_Name + " - " + m_Workspace.getWorkspaceName());
 		}
 	}
-	
-	public JFileChooser getExportChooser(){
-		return m_ExportChooser;
+
+	@Override
+	public <T extends Component & Disposable> void addComponent(T component, GridBagConstraints gbc) {
+		m_ContentPane.add(component, gbc);
+		this.invalidate();
+		this.validate();
 	}
 	
-	public JFileChooser getImportChooser(){
-		return m_ImportChooser;
+	@Override
+	public void removeComponent(Component c){
+		m_ContentPane.remove(c);
+		this.invalidate();
+		this.validate();
+	}
+
+	@Override
+	public <T extends JMenu & Disposable> void addMenu(T menu) {
+		m_MenuBar.add(menu);
 	}
 	
-	protected void setModified(final boolean modified){
-		SwingUtilities.invokeLater(new Runnable(){
+	@Override
+	public void removeMenu(JMenu menu){
+		m_MenuBar.remove(menu);
+	}
+	
+	@Override
+	public void addPreferencesPanel(PreferencesPanel panel, String tabName) {
+		m_PreferencesWindow.addTab(panel, tabName);
+	}
+	
+	@Override
+	public void removePreferencesPanel(PreferencesPanel panel){
+		m_PreferencesWindow.removeTab(panel);
+	}
+	
+	@Override
+	public <T extends Component & Disposable> void addHelpComponent(T component, String tabName) {
+		m_HelpWindow.addTab(component, tabName);
+	}
+	
+	@Override
+	public void removeHelpComponent(Component comp){
+		m_HelpWindow.removeTab(comp);
+	}
 
-			@Override
-			public void run() {
-				//set the Window.documentModified property for mac os
-				getRootPane().putClientProperty("Window.documentModified", modified);
-				//add a * to the title of the pane if modified is true
-				if(modified){
-					setTitle(m_Name + " - *" + SaveLoadUtil.getWorkspaceName());
-				}else{
-					setTitle(m_Name + " - " + SaveLoadUtil.getWorkspaceName());
-				}
-			}
-			
-		});
+	@Override
+	public void newWorkspace() {
+		m_Core.newWorkspace();
+	}
 
+	@Override
+	public void saveWorkspace() throws SaveException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveWorkspace(OutputStream out, String name) throws SaveException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void openWorkspace() throws LoadException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void openWorkspace(InputStream in, String name) throws LoadException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void importWorkspace() throws ImportException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void importWorkspace(InputStream in, String name)
+			throws ImportException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void importData(Class<? extends Data> dataClass)
+			throws ReadException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void exportData(Data d) throws WriteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean close() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void pushNotification(Notification note) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Frame getParentFrame() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Workspace getWorkspace() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JProbeCore getCore() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(Saveable s, SaveableEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(Workspace source, WorkspaceEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

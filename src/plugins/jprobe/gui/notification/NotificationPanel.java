@@ -7,97 +7,61 @@ import java.util.TimerTask;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-import plugins.jprobe.gui.ExportImportUtil;
-import util.Observer;
-import util.Subject;
-import jprobe.services.JProbeCore;
-import jprobe.services.LoadEvent;
-import jprobe.services.LoadListener;
-import jprobe.services.SaveEvent;
-import jprobe.services.SaveListener;
+import plugins.jprobe.gui.services.Notification;
 
-public class NotificationPanel extends JLabel implements SaveListener, LoadListener{
+public class NotificationPanel extends JLabel{
 	private static final long serialVersionUID = 1L;
-	
-	private static final long MILLIS_DISPLAY = 1500;
 	
 	private static final float FONT_SIZE = 12;
 	
-	private final JProbeCore m_Core;
 	private Timer m_Timer = null;
-	private final Stack<String> m_Text = new Stack<String>();
-	private final Stack<Long> m_Duration = new Stack<Long>();
-	private final Observer<ImportEvent> m_ImportObs = new Observer<ImportEvent>(){
-
-		@Override
-		public void update(Subject<ImportEvent> observed, ImportEvent notification) {
-			NotificationPanel.this.update(notification);
-		}
-		
-	};
+	private final Stack<Notification> m_Notes = new Stack<Notification>();
 	
-	private final Observer<ExportEvent> m_ExportObs = new Observer<ExportEvent>(){
-
-		@Override
-		public void update(Subject<ExportEvent> observed, ExportEvent notification) {
-			NotificationPanel.this.update(notification);
-		}
-		
-	};
-	
-	public NotificationPanel(JProbeCore core){
+	public NotificationPanel(){
 		super();
 		this.setHorizontalAlignment(JLabel.LEFT);
 		this.setFont(this.getFont().deriveFont(FONT_SIZE));
 		this.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		m_Core = core;
-		m_Core.registerLoad(this);
-		m_Core.registerSave(this);
-		ExportImportUtil.registerExportObs(m_ExportObs);
-		ExportImportUtil.registerImportObs(m_ImportObs);
 	}
 	
-	protected void pushText(String text, long duration){
-		m_Text.push(text);
-		m_Duration.push(duration);
-		this.updateText();
+	public synchronized void pushNotification(Notification n){
+		if(n.isEnd()){
+			m_Notes.remove(n.getStart());
+		}
+		m_Notes.push(n);
+		
 	}
 	
-	protected void popText(){
-		m_Text.pop();
-		m_Duration.pop();
-		this.updateText();
+	protected synchronized void removeNotification(Notification n){
+		if(n == this.getCurNotification()){
+			m_Notes.pop();
+			this.updateText();
+		}else{
+			m_Notes.remove(n);
+		}
+	}
+	
+	protected Notification getCurNotification(){
+		if(!m_Notes.isEmpty()){
+			return m_Notes.peek();
+		}
+		return null;
 	}
 	
 	protected void updateText(){
-		if(m_Text.isEmpty()){
+		if(m_Notes.isEmpty()){
 			this.setText("");
 		}else{
-			this.setText(m_Text.peek());
-			long duration = m_Duration.peek();
+			Notification n = m_Notes.peek();
+			this.setText(n.getMessage());
+			long duration = n.getDuration();
 			if(duration > 0){
-				this.startTimer(duration);
+				this.startTimer(n);
 			}
 		}
 	}
 	
-	protected void removeText(String text){
-		int index = m_Text.indexOf(text);
-		m_Text.remove(index);
-		m_Duration.remove(index);
-	}
-	
-	public void dispose(){
-		m_Core.unregisterLoad(this);
-		m_Core.unregisterSave(this);
-		ExportImportUtil.unregisterExportObs(m_ExportObs);
-		ExportImportUtil.unregisterImportObs(m_ImportObs);
-		if(m_Timer != null){
-			m_Timer.cancel();
-		}
-	}
-	
-	private void startTimer(long duration){
+	private void startTimer( final Notification n){
 		if(m_Timer != null){
 			m_Timer.cancel();
 		}
@@ -110,112 +74,14 @@ public class NotificationPanel extends JLabel implements SaveListener, LoadListe
 
 					@Override
 					public void run() {
-						popText();
+						removeNotification(n);
 					}
 					
 				});
 			}
 			
-		}, duration);
-	}
-	
-	protected void update(final ExportEvent e){
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run() {
-				String start = "Exporting "+e.name+" to file "+e.file;
-				switch(e.type){
-				case EXPORTED:
-					removeText(start);
-					pushText("Exported "+e.name+" to file "+e.file, MILLIS_DISPLAY);
-					break;
-				case EXPORTING:
-					pushText(start, 0);
-					break;
-				case FAILED:
-					removeText(start);
-					pushText("Failed to export "+e.name+" to file "+e.file, MILLIS_DISPLAY);
-					break;
-				}
-			}
-			
-		});
-	}
-	
-	protected void update(final ImportEvent e){
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run() {
-				String start = "Importing "+e.dataClass.getSimpleName() + " from file "+e.file;
-				switch(e.type){
-				case FAILED:
-					removeText(start);
-					pushText("Failed to import "+e.dataClass.getSimpleName() + " from file "+e.file, MILLIS_DISPLAY);
-					break;
-				case IMPORTED:
-					removeText(start);
-					pushText("Imported "+e.dataClass.getSimpleName() + " from file "+e.file, MILLIS_DISPLAY);
-					break;
-				case IMPORTING:
-					pushText(start, 0);
-					break;
-				}
-			}
-			
-		});
+		}, n.getDuration());
 	}
 
-	@Override
-	public void update(final LoadEvent e) {
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run() {
-				String start = "Opening workspace: "+e.file;
-				switch(e.type){
-				case FAILED:
-					removeText(start);
-					pushText("Failed to open workspace: "+e.file, MILLIS_DISPLAY);
-					break;
-				case LOADED:
-					removeText(start);
-					pushText("Opened workspace: "+e.file, MILLIS_DISPLAY);
-					break;
-				case LOADING:
-					pushText(start, 0);
-					break;
-				}
-			}
-			
-		});
-	}
-
-	@Override
-	public void update(final SaveEvent e) {
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run() {
-				String start = "Saving workspace to file: "+e.file;
-				switch(e.type){
-				case FAILED:
-					removeText(start);
-					pushText("Failed to save file: "+e.file, MILLIS_DISPLAY);
-					break;
-				case SAVED:
-					removeText(start);
-					pushText("Saved workspace to file: "+e.file, MILLIS_DISPLAY);
-					break;
-				case SAVING:
-					pushText(start, 0);
-					break;
-				}
-			}
-			
-		});
-		
-	}
 
 }

@@ -6,31 +6,8 @@ import jprobe.services.ErrorHandler;
 
 public class BackgroundThread extends Thread{
 	
-	private static BackgroundThread m_Thread = null;
-	
-	public static BackgroundThread getInstance(){
-		if(m_Thread == null){ //instantiate lazily
-			m_Thread = new BackgroundThread();
-			m_Thread.start();
-		}
-		return m_Thread;
-	}
-	
-	public static BackgroundThread restart(){ //terminates the background thread and starts a new one
-		if(m_Thread != null){
-			m_Thread.terminate();
-			try {
-				m_Thread.join();
-			} catch (InterruptedException e) {
-				ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
-			}
-			m_Thread = null;
-		}
-		return getInstance();
-	}
-	
-	private BackgroundThread(){ //prevent external construction
-		super(Constants.BACKGROUND_THREAD_NAME);
+	public BackgroundThread(String name){
+		super(name);
 	}
 	
 	private final Queue<Runnable> m_Actions = new LinkedList<Runnable>();

@@ -27,10 +27,22 @@ public interface JProbeWindow {
 	public <T extends Component & Disposable> void addComponent(T component, GridBagConstraints gbc);
 	
 	/**
+	 * Removes the specified component from this window.
+	 * @param c
+	 */
+	public void removeComponent(Component c);
+	
+	/**
 	 * Adds the specified menu to the menu bar of this window.
 	 * @param menu
 	 */
 	public <T extends JMenu & Disposable> void addMenu(T menu);
+	
+	/**
+	 * Removes the specified menu from this window's menu bar.
+	 * @param menu
+	 */
+	public void removeMenu(JMenu menu);
 	
 	/**
 	 * Adds a tab the the preferences dialog window containing the given PreferencesPanel and using the specified name.
@@ -40,11 +52,23 @@ public interface JProbeWindow {
 	public void addPreferencesPanel(PreferencesPanel panel, String tabName);
 	
 	/**
+	 * Removes the the preferences dialog window tab containing the specified panel.
+	 * @param panel
+	 */
+	public void removePreferencesPanel(PreferencesPanel panel);
+	
+	/**
 	 * Adds a tab to the help dialog window containing the given component and using the specified name.
 	 * @param component
 	 * @param tabName
 	 */
 	public <T extends Component & Disposable> void addHelpComponent(T component, String tabName);
+	
+	/**
+	 * Remove the help dialog window tab containing the specified component.
+	 * @param c
+	 */
+	public void removeHelpComponent(Component c);
 	
 	/**
 	 * Opens a new {@link Workspace}.

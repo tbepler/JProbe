@@ -23,7 +23,7 @@ public class PluginServiceView implements JProbeWindow{
 	private final Collection<PreferencesPanel> m_PrefsPanels = new ArrayList<PreferencesPanel>();
 	private final Collection<Component> m_HelpComps = new ArrayList<Component>();
 	private final Collection<Disposable> m_Disposables = new ArrayList<Disposable>();
-	private final JProbeGUIFrame m_Frame;
+	private final JProbeFrame m_Frame;
 	private final Bundle m_Bundle;
 	
 	public PluginServiceView(JProbeGUIFrame frame, Bundle bundle){
