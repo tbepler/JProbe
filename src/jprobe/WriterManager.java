@@ -22,8 +22,8 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 
 	private final Collection<CoreListener> m_Listeners = new HashSet<CoreListener>();
 	
-	private final Collection<DataWriter> m_Writer = new HashSet<DataWriter>();
-	private final Map<Class<? extends Data>, Collection<DataWriter>> m_ClassWriters = new HashMap<Class<? extends Data>, Collection<DataWriter>>();
+	private final Collection<DataWriter<?>> m_Writer = new HashSet<DataWriter<?>>();
+	private final Map<Class<? extends Data>, Collection<DataWriter<?>>> m_ClassWriters = new HashMap<Class<? extends Data>, Collection<DataWriter<?>>>();
 	
 	private final JProbeCore m_Core;
 	
@@ -46,15 +46,15 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 		}
 	}
 	
-	public Collection<DataWriter> getDataWriters() {
+	public Collection<DataWriter<? extends Data>> getDataWriters() {
 		return Collections.unmodifiableCollection(m_Writer);
 	}
 
-	public Collection<DataWriter> getDataWriters(Class<? extends Data> writeClass) {
+	public Collection<DataWriter<? extends Data>> getDataWriters(Class<? extends Data> writeClass) {
 		if(m_ClassWriters.containsKey(writeClass)){
 			return Collections.unmodifiableCollection(m_ClassWriters.get(writeClass));
 		}
-		Collection<DataWriter> empty = new HashSet<DataWriter>();
+		Collection<DataWriter<?>> empty = new HashSet<DataWriter<?>>();
 		m_ClassWriters.put(writeClass, empty);
 		return Collections.unmodifiableCollection(empty);
 	}

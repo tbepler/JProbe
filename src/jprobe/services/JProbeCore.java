@@ -1,11 +1,18 @@
 package jprobe.services;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
+import jprobe.services.data.ReadException;
+import jprobe.services.data.WriteException;
 import jprobe.services.function.Function;
 
 /**
@@ -163,20 +170,30 @@ public interface JProbeCore {
 	public Collection<Function<?>> getFunctions();
 	
 	/**
-	 * Returns an unmodifiable collection containing the currently registers {@link DataReader}s. DataReaders can be
+	 * Returns a collection containing the currently readable Data classes. Data is read using the {@link DataReader} class. DataReaders can be
 	 * registered by submitting a DataReader service through the BundleContext received in a plugin's BundleActivator.start()
 	 * method.
-	 * @return unmodifiable collection of the registered DataReaders
+	 * @return collection containing the readable Data classes
 	 */
-	public Collection<DataReader> getDataReaders();
+	public Collection<Class<? extends Data>> getReadableDataClasses();
 	
 	/**
-	 * Returns an unmodifiable collection containing the currently registered {@link DataReader}s capable of reading
-	 * the specified Data class.
+	 * Returns a list of FileFilters representing the readable formats for the given Data class.
 	 * @param readClass
 	 * @return
 	 */
-	public Collection<DataReader> getDataReaders(Class<? extends Data> readClass);
+	public List<FileFilter> getReadFormats(Class<? extends Data> readClass);
+	
+	/**
+	 * Reads a Data object of the specified class from the given InputStream using the format passed.
+	 * @param readClass - Data class that will be read
+	 * @param format - format to read
+	 * @param in - InputStream from which Data is read
+	 * @return {@link Data} object read from the InputStream
+	 * @throws ReadException thrown if an error occurs while reading the InputStream, if the Data class is not readable,
+	 * or if the format is not valid for the Data class.
+	 */
+	public <D extends Data> D readData(Class<D> readClass, FileFilter format, InputStream in) throws ReadException;
 	
 	/**
 	 * Returns true if there exists at least one {@link DataReader} for the given Data class. Otherwise, returns false.
@@ -186,20 +203,29 @@ public interface JProbeCore {
 	public boolean isReadable(Class<? extends Data> dataClass);
 	
 	/**
-	 * Returns an unmodifiable collection containing the currently registers {@link DataWriter}s. DataWriters can be
+	 * Returns a collection containing the currently writable Data classes. Data is written using the {@link DataWriter} class. DataWriters can be
 	 * registered by submitting a DataWriter service through the BundleContext received in a plugin's BundleActivator.start()
 	 * method.
 	 * @return unmodifiable collection of the registered DataWriters
 	 */
-	public Collection<DataWriter> getDataWriters();
+	public Collection<Class<? extends Data>> getWritableDataClasses();
 	
 	/**
-	 * Returns an unmodifiable collection containing the currently registered {@link DataWriter}s capable of writing
-	 * the specified Data class.
+	 * Returns a list of FileNameExtensionFilters representing the writable formats for the given Data class.
 	 * @param writeClass
 	 * @return
 	 */
-	public Collection<DataWriter> getDataWriters(Class<? extends Data> writeClass);
+	public List<FileNameExtensionFilter> getWriteFormats(Class<? extends Data> writeClass);
+	
+	/**
+	 * Writes the given Data object to the specified OutputStream using the format passed.
+	 * @param d - Data object to write
+	 * @param format - format in which the Data object should be written
+	 * @param out - OutputStreamthe Data object will be written to
+	 * @throws WriteException - thrown if an error occurs while writing the Data object to the OutputStream, if the Data object is
+	 * not writable, or if the format is not valid for the given Data object.
+	 */
+	public void writeData(Data d, FileNameExtensionFilter format, OutputStream out) throws WriteException;
 	
 	/**
 	 * Returns true if there exists at least one (@link DataWriter} for the given Data class. Otherwise, returns false.

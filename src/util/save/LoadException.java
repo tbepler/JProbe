@@ -1,4 +1,4 @@
-package jprobe.save;
+package util.save;
 
 public class LoadException extends Exception{
 	public LoadException() {

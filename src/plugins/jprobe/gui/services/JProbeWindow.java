@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 
 import jprobe.services.Workspace;

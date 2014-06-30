@@ -1,4 +1,4 @@
-package jprobe.save;
+package util.save;
 
 public class ImportException extends Exception{
 	public ImportException() {

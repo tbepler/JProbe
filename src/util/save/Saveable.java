@@ -24,19 +24,19 @@ public interface Saveable {
 	 * @param out - OutputStream to write to
 	 * @return - number of bytes written to the stream
 	 */
-	public long saveTo(OutputStream out, String outName);
+	public long saveTo(OutputStream out, String outName) throws SaveException;
 	
 	/**
 	 * Load this saveable objects data from the given InputStream. 
 	 * @param in
 	 */
-	public void loadFrom(InputStream in, String sourceName);
+	public void loadFrom(InputStream in, String sourceName) throws LoadException;
 	
 	/**
 	 * Import data from the given InputStream into this saveable object.
 	 * @param in
 	 */
-	public void importFrom(InputStream in, String sourceName);
+	public void importFrom(InputStream in, String sourceName) throws ImportException;
 	
 	/**
 	 * Registers the given listener on this Saveable to receive events.

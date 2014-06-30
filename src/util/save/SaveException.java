@@ -1,4 +1,4 @@
-package jprobe.save;
+package util.save;
 
 public class SaveException extends Exception{
 	private static final long serialVersionUID = 1L;
