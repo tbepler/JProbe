@@ -50,9 +50,9 @@ public class ParsingEngine {
 			}
 		}
 		//organize argument flags
-		Map<String, Argument<? super T>> flags = new HashMap<String, Argument<? super T>>();
-		Collection<Argument<? super T>> requiredArgs = new HashSet<Argument<? super T>>();
-		for(Argument<? super T> arg : func.getArguments()){
+		Map<String, Argument<? super T, ?>> flags = new HashMap<String, Argument<? super T, ?>>();
+		Collection<Argument<? super T, ?>> requiredArgs = new HashSet<Argument<? super T, ?>>();
+		for(Argument<? super T, ?> arg : func.getArguments()){
 			if(!arg.isOptional()){
 				requiredArgs.add(arg);
 			}
@@ -87,8 +87,8 @@ public class ParsingEngine {
 	private static <T> Data execute(
 			Function<T> func,
 			ProgressListener l,
-			Map<String, Argument<? super T>> flags,
-			Collection<Argument<? super T>> required,
+			Map<String, Argument<? super T, ?>> flags,
+			Collection<Argument<? super T, ?>> required,
 			String[] args
 			) throws Exception{
 		
@@ -96,13 +96,13 @@ public class ParsingEngine {
 		return func.execute(l, params);
 	}
 	
-	private static <T> T parse(ProgressListener l, T params, Map<String, Argument<? super T>> flags, Collection<Argument<? super T>> required, String[] args){
+	private static <T> T parse(ProgressListener l, T params, Map<String, Argument<? super T, ?>> flags, Collection<Argument<? super T, ?>> required, String[] args){
 		for(int i=0; i<args.length; i++){
 			String s = args[i];
 			if(!flags.containsKey(s)){
 				throw new RuntimeException("unknown flag \""+s+"\".");
 			}
-			Argument<? super T> arg = flags.get(s);
+			Argument<? super T, ?> arg = flags.get(s);
 			//find next flag
 			int nextFlag = i;
 			while(++nextFlag < args.length){
@@ -127,7 +127,7 @@ public class ParsingEngine {
 		//ensure all required args have been parsed
 		if(!required.isEmpty()){
 			String message = "missing required args:";
-			for(Argument<? super T> arg : required){
+			for(Argument<? super T, ?> arg : required){
 				message += " " + Constants.LONG_FLAG_PREFIX + arg.getName();
 			}
 			throw new RuntimeException(message);
@@ -140,15 +140,15 @@ public class ParsingEngine {
 		String usage = func.getName() + " --- " + func.getDescription() + "\n";
 		//append general usage statement
 		usage += "Usage: " + func.getName() + " [" + Constants.SHORT_FLAG_PREFIX + Constants.HELP_SHORT_FLAG+"]";
-		Collection<Argument<? super T>> args = func.getArguments();
+		Collection<Argument<? super T, ?>> args = func.getArguments();
 		//required args first
-		for(Argument<? super T> arg : args){
+		for(Argument<? super T, ?> arg : args){
 			if(!arg.isOptional()){
 				usage += " " + shortUsage(arg);
 			}
 		}
 		//now optional args
-		for(Argument<? super T> arg : args){
+		for(Argument<? super T, ?> arg : args){
 			if(arg.isOptional()){
 				usage += " [" + shortUsage(arg) + "]";
 			}
@@ -156,13 +156,13 @@ public class ParsingEngine {
 		usage += "\n\n";
 		//append detailed arg usage, required first
 		usage += "Required:\n";
-		for(Argument<? super T> arg : args){
+		for(Argument<? super T, ?> arg : args){
 			if(!arg.isOptional()){
 				usage += detailedUsage(arg) + "\n";
 			}
 		}
 		usage += "\n" + "Optional:\n";
-		for(Argument<? super T> arg : args){
+		for(Argument<? super T, ?> arg : args){
 			if(arg.isOptional()){
 				usage += detailedUsage(arg) + "\n";
 			}
@@ -176,7 +176,7 @@ public class ParsingEngine {
 		return usage;
 	}
 	
-	private static String detailedUsage(Argument<?> arg){
+	private static String detailedUsage(Argument<?, ?> arg){
 		String usage = "";
 		String prototype = arg.getPrototypeValue();
 		Character shortFlag = arg.shortFlag();
@@ -199,7 +199,7 @@ public class ParsingEngine {
 		return usage;
 	}
 	
-	private static String shortUsage(Argument<?> arg){
+	private static String shortUsage(Argument<?, ?> arg){
 		String usage = "";
 		if(arg.shortFlag() != null){
 			usage += Constants.SHORT_FLAG_PREFIX + arg.shortFlag();

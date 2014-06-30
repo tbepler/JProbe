@@ -5,38 +5,15 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import jprobe.services.function.components.ValidListener;
-import jprobe.services.function.components.ValidNotifier;
+import util.gui.ChangeNotifier;
 import util.progress.ProgressListener;
 
-public abstract class ListArgument<P, E, C extends JComponent & ValidNotifier> extends AbstractArgument<P> implements ValidListener {
-
-	private C m_Comp = null;
+public abstract class ListArgument<P, E, C extends JComponent & ChangeNotifier> extends AbstractArgument<P,C> {
 	
 	protected ListArgument(String name, String tooltip, String category,
 			Character shortFlag, String prototypeValue, boolean optional) {
 		super(name, tooltip, category, shortFlag, prototypeValue, optional);
 	}
-	
-	private void initComponent(){
-		m_Comp = this.generateComponent();
-		m_Comp.addListener(this);
-	}
-	
-	/**
-	 * This method should create and return the JComponent used by this Argument to accept
-	 * input from the user. This method is called lazily the first time the component
-	 * is needed.
-	 * @return JComponent for accepting input from the user
-	 */
-	protected abstract C generateComponent();
-	
-	/**
-	 * This method should check whether the user's input is valid or not.
-	 * @param m_Comp - this Argument's JComponent
-	 * @return - true if the user's input is valid, false otherwise
-	 */
-	protected abstract boolean isValid(C comp);
 	
 	/**
 	 * This method should extract the user's input from this Argument's component.
@@ -63,18 +40,6 @@ public abstract class ListArgument<P, E, C extends JComponent & ValidNotifier> e
 	 * @return entry object that is the result of parsing this string
 	 */
 	protected abstract E parse(ProgressListener l, String arg);
-
-	@Override
-	public boolean isValid() {
-		if(m_Comp == null) this.initComponent();
-		return this.isValid(m_Comp);
-	}
-
-	@Override
-	public JComponent getComponent() {
-		if(m_Comp == null) this.initComponent();
-		return m_Comp;
-	}
 	
 	/**
 	 * Parses the strings passed by the user into a list of entries for processing
@@ -91,8 +56,8 @@ public abstract class ListArgument<P, E, C extends JComponent & ValidNotifier> e
 	}
 
 	@Override
-	public void process(P params) {
-		this.process(params, this.getUserInput(m_Comp));
+	public void process(P params, C comp) {
+		this.process(params, this.getUserInput(comp));
 	}
 
 	@Override
@@ -100,10 +65,6 @@ public abstract class ListArgument<P, E, C extends JComponent & ValidNotifier> e
 		List<E> entries = this.parse(l, args);
 		this.process(params, entries);
 	}
-	
-	@Override
-	public void update(ValidNotifier notifier, boolean valid){
-		this.notifyListeners();
-	}
+
 
 }
