@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileFilter;
 
+import util.save.LoadException;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
@@ -121,6 +122,14 @@ public interface JProbeCore {
 	 * @return
 	 */
 	public Workspace newWorkspace();
+	
+	/**
+	 * Opens a new {@link Workspace} loaded from the given InputStream.
+	 * @param in - InputStream from which to load the Workspace
+	 * @return - the opened Workspace
+	 * @throws LoadException - thrown if an error occurs while loading the Workspace from the InputStream
+	 */
+	public Workspace openWorkspace(InputStream in) throws LoadException;
 	
 	/**
 	 * Returns the {@link Workspace} at the given index, if it exists. If index < 0 or index >= {@link #numWorkspaces()},

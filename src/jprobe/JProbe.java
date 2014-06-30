@@ -32,6 +32,8 @@ import org.apache.felix.main.Main;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 
+import util.save.LoadException;
+
 public class JProbe implements JProbeCore{
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -208,6 +210,11 @@ public class JProbe implements JProbeCore{
 	@Override
 	public Workspace newWorkspace() {
 		return m_WorkspaceManager.newWorkspace();
+	}
+	
+	@Override
+	public Workspace openWorkspace(InputStream in) throws LoadException{
+		return m_WorkspaceManager.openWorkspace(in);
 	}
 
 	@Override

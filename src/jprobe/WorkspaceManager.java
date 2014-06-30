@@ -1,5 +1,6 @@
 package jprobe;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
+import util.save.LoadException;
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
@@ -64,6 +66,14 @@ public class WorkspaceManager extends AbstractServiceListener<Object> {
 	
 	public Workspace newWorkspace() {
 		Workspace w = new JProbeWorkspace(m_Context, this.defaultName());
+		m_Workspaces.add(w);
+		this.notifyListeners(new CoreEvent(Type.WORKSPACE_NEW, w));
+		return w;
+	}
+	
+	public Workspace openWorkspace(InputStream in) throws LoadException{
+		Workspace w = new JProbeWorkspace(m_Context, "");
+		w.loadFrom(in, "");
 		m_Workspaces.add(w);
 		this.notifyListeners(new CoreEvent(Type.WORKSPACE_NEW, w));
 		return w;
