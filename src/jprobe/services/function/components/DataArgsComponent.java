@@ -17,9 +17,6 @@ import javax.swing.event.ChangeListener;
 import util.Observer;
 import util.Subject;
 import util.gui.ChangeNotifier;
-import jprobe.services.CoreEvent;
-import jprobe.services.CoreListener;
-import jprobe.services.JProbeCore;
 import jprobe.services.Workspace;
 import jprobe.services.WorkspaceEvent;
 import jprobe.services.WorkspaceListener;
@@ -43,8 +40,6 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 	private final boolean m_AllowDuplicates;
 	private final Class<D> m_DataClass;
 	private final DataValidFunction m_ValidFunction;
-	
-	private boolean m_Valid;
 	
 	public DataArgsComponent(Workspace w, int minArgs, int maxArgs, boolean allowDuplicates, Class<D> dataClass, DataValidFunction validFunction){
 		super(new GridBagLayout());
@@ -98,10 +93,6 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 		return m_MinArgs <= index;
 	}
 	
-	private boolean isRequired(int index){
-		return index < m_MinArgs;
-	}
-	
 	private void allocateComponents(){
 		while(m_DataComps.size() < m_MinArgs){
 			this.addDataComponent();
@@ -113,7 +104,8 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 			}
 			this.addDataComponent();
 		}
-		this.revalidate();
+		this.invalidate();
+		this.validate();
 		this.resizeWindow();
 	}
 	
@@ -125,11 +117,10 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 		m_DataComps.clear();
 		m_SelectedData.clear();
 		this.allocateComponents();
-		this.updateValidity();
 	}
 	
-	protected DataSelectionPanel<D> newDataSelectionPanel(JProbeCore core, boolean optional){
-		return new DataSelectionPanel<D>( core, optional );
+	protected DataSelectionPanel<D> newDataSelectionPanel(boolean optional){
+		return new DataSelectionPanel<D>( optional );
 	}
 	
 	protected void initSelectionPanel(final DataSelectionPanel<D> comp){
@@ -142,9 +133,9 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 		
 		comp.register(this);
 		
-		for(Data d : m_Core.getDataManager().getAllData()){
+		for(Data d : m_Workspace.getAllData()){
 			if(m_DataClass.isAssignableFrom(d.getClass()) && shouldAddData(d)){
-				comp.addData(m_DataClass.cast(d));
+				comp.addData(m_DataClass.cast(d), m_Workspace.getDataName(d));
 			}
 		}
 		
@@ -156,15 +147,13 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 		if(!this.canAddComponent(index)){
 			return;
 		}
-		DataSelectionPanel<D> comp = this.newDataSelectionPanel(m_Core, this.componentIsOptional(index));
+		DataSelectionPanel<D> comp = this.newDataSelectionPanel(this.componentIsOptional(index));
 		this.initSelectionPanel(comp);
 		
 		m_DataComps.add(index, comp);
 		m_SelectedData.add(index, comp.getSelectedData());
 	
 		this.add(comp, this.constraints());
-
-		this.updateValidity();
 	}
 	
 	private void removeDataComponent(DataSelectionPanel<D> comp){
@@ -193,8 +182,9 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 	private void addData(D d){
 		for(int i=0; i<m_DataComps.size(); i++){
 			DataSelectionPanel<D> sel = m_DataComps.get(i);
-			if(this.shouldAddData(d))
-				sel.addData(d);
+			if(this.shouldAddData(d)){
+				sel.addData(d, m_Workspace.getDataName(d));
+			}
 		}
 	}
 	
@@ -205,10 +195,10 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 		}
 	}
 	
-	private void renameData(String oldName, String newName){
+	private void renameData(D data, String newName){
 		for(int i=0; i<m_DataComps.size(); i++){
 			DataSelectionPanel<D> sel = m_DataComps.get(i);
-			sel.renameData(oldName, newName);
+			sel.renameData(data, newName);
 		}
 	}
 	
@@ -218,40 +208,49 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 		if(!m_AllowDuplicates){
 			if(data != null){
 				for(int i=0; i<m_DataComps.size(); i++){
-					if(i != index)
+					if(i != index){
 						m_DataComps.get(i).removeData(data);
+					}
 				}
 			}	
-			if(cur != null)
+			if(cur != null){
 				this.addData(cur);
+			}
 		}
 		this.allocateComponents();
+		this.fireChanged();
 	}
 	
 	protected void process(WorkspaceEvent event){
-		Data d;
+		D data;
+		if(event.data != null && this.isValid(event.data) && m_DataClass.isAssignableFrom(event.data.getClass())){
+			data = m_DataClass.cast(event.data);
+		}else{
+			data = null;
+		}
 		switch(event.type){
 		case DATA_ADDED:
-			d = event.data;
-			if(isValid(d) && m_DataClass.isAssignableFrom(d.getClass()))
-				addData(m_DataClass.cast(d));
+			if(data != null){
+				this.addData(m_DataClass.cast(data));
+			}
 			break;
 		case DATA_RENAMED:
-			renameData(event.getOldName(), event.getNewName());
+			if(data != null){
+				this.renameData(data, m_Workspace.getDataName(data));
+			}
 			break;
 		case DATA_REMOVED:
-			d = event.getData();
-			if(isValid(d) && m_DataClass.isAssignableFrom(d.getClass())){
-				removeData(m_DataClass.cast(d));
+			if(data != null){
+				this.removeData(data);
 			}
 			break;
 		case WORKSPACE_CLEARED:
-			clear();
+			this.clear();
 			break;
 		case WORKSPACE_LOADED:
-			for(Data data : m_Core.getDataManager().getAllData()){
-				if(isValid(data) && m_DataClass.isAssignableFrom(data.getClass())){
-					addData(m_DataClass.cast(data));
+			for(Data d : m_Workspace.getAllData()){
+				if(isValid(d) && m_DataClass.isAssignableFrom(d.getClass())){
+					this.addData(m_DataClass.cast(d));
 				}
 			}
 		default:
@@ -260,22 +259,22 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 	}
 	
 	@Override
-	public void update(final CoreEvent event) {
-		SwingUtilities.invokeLater(new Runnable(){
+	public void update(Workspace source, final WorkspaceEvent event) {
+		if(source == m_Workspace){
+			SwingUtilities.invokeLater(new Runnable(){
 
-			@Override
-			public void run() {
-				process(event);
-			}
-			
-		});
+				@Override
+				public void run() {
+					process(event);
+				}
 
+			});
+		}
 	}
 
 	@Override
 	public void update(Subject<D> observed, D notification) {
 		int index = m_DataComps.indexOf(observed);
-		//System.out.println("Selection changed at index="+index);
 		if(index >= 0){
 			this.setData(index, notification);
 		}
@@ -300,12 +299,6 @@ public class DataArgsComponent<D extends Data> extends JPanel implements ChangeN
 	@Override
 	public void removeChangeListener(ChangeListener l) {
 		m_Listeners.remove(l);
-	}
-
-	@Override
-	public void update(Workspace source, WorkspaceEvent event) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	

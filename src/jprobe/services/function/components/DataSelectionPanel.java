@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import util.Observer;
 import util.Subject;
 import jprobe.Constants;
-import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
 public class DataSelectionPanel<D extends Data> extends JPanel implements ItemListener, ActionListener, Subject<D>{
@@ -40,10 +39,10 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 		
 	};
 	
-	public DataSelectionPanel(JProbeCore core, boolean optional){
+	public DataSelectionPanel(boolean optional){
 		super(new GridBagLayout());
 		m_Optional = optional;
-		m_DataBox = this.createdDataComboBox(core);
+		m_DataBox = this.createdDataComboBox();
 		m_DataBox.addItemListener(this);
 		this.add(m_DataBox, this.createDataComboBoxConstraints());
 		m_CloseButton = this.createCloseButton();
@@ -51,12 +50,12 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 		m_CloseButton.setEnabled(optional);
 		this.add(m_CloseButton, this.createCloseButtonConstraints());
 		if(optional){
-			m_DataBox.addData(null);
+			m_DataBox.addData(null, "");
 		}
 	}
 	
-	protected DataComboBox<D> createdDataComboBox(JProbeCore core){
-		return new DataComboBox<D>(core);
+	protected DataComboBox<D> createdDataComboBox(){
+		return new DataComboBox<D>();
 	}
 	
 	protected GridBagConstraints createDataComboBoxConstraints(){
@@ -81,10 +80,6 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 		return gbc;
 	}
 	
-	public JProbeCore getCore(){
-		return m_DataBox.getCore();
-	}
-	
 	@Override
 	public void setEnabled(boolean enabled){
 		m_DataBox.setEnabled(enabled);
@@ -92,21 +87,20 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 		super.setEnabled(enabled);
 	}
 	
-	
 	public void setCloseAction(OnClose closeAction){
 		m_CloseAction = closeAction;
 	}
 	
-	public void addData(D d){
-		m_DataBox.addData(d);
+	public void addData(D d, String name){
+		m_DataBox.addData(d, name);
 	}
 	
 	public void removeData(D d){
 		m_DataBox.removeData(d);
 	}
 	
-	public void renameData(String oldName, String newName){
-		m_DataBox.rename(oldName, newName);
+	public void renameData(D data, String newName){
+		m_DataBox.rename(data, newName);
 	}
 	
 	public boolean isOptional(){
@@ -116,7 +110,7 @@ public class DataSelectionPanel<D extends Data> extends JPanel implements ItemLi
 	public void setOptional(boolean optional){
 		if(this.isOptional() != optional){
 			if(optional){
-				m_DataBox.addData(null);
+				m_DataBox.addData(null, "");
 			}else{
 				m_DataBox.removeData(null);
 			}

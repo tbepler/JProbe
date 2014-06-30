@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JComponent;
 import javax.swing.filechooser.FileFilter;
 
 import util.progress.ProgressEvent;
@@ -17,10 +16,8 @@ import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
 import jprobe.services.function.components.DataArgsComponent;
 import jprobe.services.function.components.DataArgsComponent.DataValidFunction;
-import jprobe.services.function.components.ValidListener;
-import jprobe.services.function.components.ValidNotifier;
 
-public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P> implements ValidListener {
+public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P, DataArgsComponent<D>>{
 	
 	public static final String DEFAULT_TAG = "FILE";
 	
@@ -38,8 +35,6 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 	private final int m_Min;
 	private final int m_Max;
 	private final boolean m_AllowDuplicates;
-	//lazily instantiate the component
-	private DataArgsComponent<D> m_Component = null;
 	private final Class<D> m_DataClass;
 	
 	protected DataArgument(
@@ -89,34 +84,9 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 	 * @param validFunction - a function that indicates whether a data object is valid or not
 	 * @return the DataArgsComponent that will be displayed for this argument
 	 */
-	protected DataArgsComponent<D> createDataArgsComponent(
-			JProbeCore core,
-			int minArgs,
-			int maxArgs,
-			boolean allowDuplicates,
-			Class<D> dataClass,
-			DataValidFunction validFunction
-			){
+	public DataArgsComponent<D> createComponent( Workspace w ){
 		return new DataArgsComponent<D>(
-				core,
-				minArgs,
-				maxArgs,
-				allowDuplicates,
-				dataClass,
-				validFunction
-				);
-	}
-	
-	/**
-	 * Process the data passed to this data argument and fill the given parameter object accordingly.
-	 * @param params
-	 * @param data
-	 */
-	protected abstract void process(P params, List<D> data);
-
-	private void initComponent(){
-		m_Component = this.createDataArgsComponent(
-				m_Core,
+				w,
 				m_Min,
 				m_Max,
 				m_AllowDuplicates,
@@ -130,28 +100,37 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 
 				}
 				);
-		m_Component.addListener(this);
-	}
-
-	@Override
-	public boolean isValid() {
-		if(m_Component == null) this.initComponent();
-		return m_Component.isStateValid();
 	}
 	
+	/**
+	 * Process the data passed to this data argument and fill the given parameter object accordingly.
+	 * @param params
+	 * @param data
+	 */
+	protected abstract void process(P params, List<D> data);
+
+	@Override
+	public boolean isValid(DataArgsComponent<D> component) {
+		for(D data : component.getDataArgs()){
+			if(!this.isValid(data)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * This determines whether the given Data object is valid or not for this argument.
+	 * @param d
+	 * @return True if the given Data object is valid, False otherwise
+	 */
 	protected boolean isValid(Data d){
-		return m_DataClass.isAssignableFrom(d.getClass());
+		return true;
 	}
 
 	@Override
-	public JComponent getComponent() {
-		if(m_Component == null) this.initComponent();
-		return m_Component;
-	}
-
-	@Override
-	public void process(P params) {
-		process(params, m_Component.getDataArgs());
+	public void process(P params, DataArgsComponent<D> component) {
+		this.process(params, component.getDataArgs());
 	}
 	
 	@Override
@@ -238,11 +217,6 @@ public abstract class DataArgument<P,D extends Data> extends AbstractArgument<P>
 			++filter;
 		}
 		return d;
-	}
-
-	@Override
-	public void update(ValidNotifier notifier, boolean valid) {
-		this.notifyListeners();
 	}
 
 

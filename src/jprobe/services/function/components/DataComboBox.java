@@ -8,7 +8,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 
-import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
 
 public class DataComboBox<D extends Data> extends JComboBox<String>{
@@ -32,31 +31,19 @@ public class DataComboBox<D extends Data> extends JComboBox<String>{
 
 	public static final String DATACOMBOBOX_PROTOTYPE_DISPLAY = "SomeDataHere";
 	
-	private final JProbeCore m_Core;
 	private final Map<String, D> m_Displayed = new HashMap<String, D>();
 	private final Map<D, String> m_Data = new HashMap<D, String>();
 	
-	public DataComboBox(JProbeCore core){
+	public DataComboBox(){
 		super(new SortedModel());
 		this.setPrototypeDisplayValue(DATACOMBOBOX_PROTOTYPE_DISPLAY);
-		m_Core = core;
 	}
 	
-	public JProbeCore getCore(){
-		return m_Core;
-	}
-	
-	public void addData(D d){
+	public void addData(D d, String name){
 		if(m_Data.containsKey(d)){
+			this.rename(d, name);
 			return;
 		}
-		String name;
-		if(d == null){
-			name = "";
-		}else{
-			name = m_Core.getDataManager().getDataName(d);
-		}
-		if(name == null) return;
 		m_Displayed.put(name, d);
 		m_Data.put(d, name);
 		this.addItem(name);
@@ -85,20 +72,17 @@ public class DataComboBox<D extends Data> extends JComboBox<String>{
 		}
 	}
 	
-	public void rename(String oldName, String newName){
-		if(m_Displayed.containsKey(oldName)){
-			D changed = m_Displayed.get(oldName);
-			m_Data.put(changed, newName);
+	public void rename(D data, String newName){
+		if(m_Data.containsKey(data)){
+			String oldName = m_Data.get(data);
 			m_Displayed.remove(oldName);
-			if(this.getSelectedItem().equals(oldName)){
-				this.removeItem(oldName);
-				m_Displayed.put(newName, changed);
-				this.addItem(newName);
+			m_Displayed.put(newName, data);
+			m_Data.put(data, newName);
+			boolean selected = this.getSelectedItem().equals(oldName);
+			this.removeItem(oldName);
+			this.addItem(newName);
+			if(selected){
 				this.setSelectedItem(newName);
-			}else{
-				this.removeItem(oldName);
-				m_Displayed.put(newName, changed);
-				this.addItem(newName);
 			}
 		}
 	}
