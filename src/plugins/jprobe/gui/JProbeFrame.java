@@ -17,6 +17,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -39,6 +40,7 @@ import plugins.jprobe.gui.services.JProbeGUI;
 import plugins.jprobe.gui.services.PreferencesPanel;
 import plugins.jprobe.gui.utils.DialogueMenu;
 import plugins.jprobe.gui.utils.TabDialogueWindow;
+import util.gui.SortedJMenuBar;
 import util.gui.SwingUtils;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
@@ -49,44 +51,80 @@ import jprobe.services.LoadListener;
 import jprobe.services.JProbeLog;
 import jprobe.services.SaveEvent;
 import jprobe.services.SaveListener;
+import jprobe.services.Workspace;
 import jprobe.services.data.Data;
 
-public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, SaveListener, LoadListener{
+public class JProbeFrame extends JFrame{
 	private static final long serialVersionUID = 1L;
 	
-	private JProbeCore m_Core;
-	private JPanel m_ContentPane;
-	private JMenuBar m_MenuBar;
-	private Queue<JMenu> m_PluginMenuItems;
-	private PreferencesWindow m_PreferencesWindow;
-	private TabDialogueWindow m_HelpWindow;
-	private DialogueMenu m_PreferencesMenu;
-	private DialogueMenu m_HelpMenu;
-	private FileMenu m_FileMenu;
-	private JFileChooser m_ImportChooser;
-	private JFileChooser m_ExportChooser;
-	private NotificationPanel m_NotePanel;
-	private Collection<GUIListener> m_Listeners;
-	private final String m_Name;
+	protected class MenuComparator implements Comparator<JMenu>{
+
+		@Override
+		public int compare(JMenu m1, JMenu m2) {
+			if(m1 == m2) return 0;
+			if(m1 == null) return 1;
+			if(m2 == null) return -1;
+			if(m1 == m_FileMenu) return -1;
+			if(m2 == m_FileMenu) return 1;
+			if(m1 == m_HelpMenu) return 1;
+			if(m2 == m_HelpMenu) return -1;
+			if(m1 == m_PreferencesMenu) return 1;
+			if(m2 == m_PreferencesMenu) return -1;
+			return m1.getText().compareTo(m2.getText());
+		}
+		
+	}
 	
-	public JProbeGUIFrame(JProbeCore core, String name, GUIConfig config){
-		super();
-		m_Name = name;
-		m_ImportChooser = new JFileChooser();
-		m_ExportChooser = new JFileChooser();
-		m_Core = core;
-		m_Core.registerSave(this);
-		m_Core.registerLoad(this);
-		m_Core.getDataManager().addListener(this);
-		m_PluginMenuItems = new PriorityQueue<JMenu>(10, new Comparator<JMenu>(){
+	private static JMenu createPreferencesMenu(String name, final JDialog dialog) {
+		if(!Platform.getInstance().setPreferencesHandler(new PreferencesHandler(){
+
 			@Override
-			public int compare(JMenu arg0, JMenu arg1){
-				return arg0.getText().compareTo(arg1.getText());
+			public void preferences() {
+				dialog.setVisible(true);
 			}
-		});
-		m_Listeners = new HashSet<GUIListener>();
-		m_MenuBar = new JMenuBar();
-		m_ContentPane = new JPanel(new GridBagLayout());
+			
+		})){
+			//Platform does not support a system preferences event, so add a custom preferences menu to the menu bar
+			JMenu prefsMenu = new DialogueMenu(name, dialog);
+			prefsMenu.setMnemonic(KeyEvent.VK_P);
+			prefsMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			return prefsMenu;
+		}else{
+			//the platform supports the preferences event, so set the preferences menu to null
+			return null;
+		}
+		
+	}
+	
+	private static JMenu createHelpMenu(String name, final JDialog dialog){
+		JMenu helpMenu = new DialogueMenu(name, dialog);
+		helpMenu.setMnemonic(KeyEvent.VK_H);
+		helpMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		return helpMenu;
+	}
+	
+	private final JFileChooser m_ImportChooser = new JFileChooser();
+	private final JFileChooser m_ExportChooser = new JFileChooser();
+	
+	private final JPanel m_ContentPane = new JPanel(new GridBagLayout());
+	private final JMenuBar m_MenuBar = new SortedJMenuBar(new MenuComparator());
+
+	private final PreferencesWindow m_PreferencesWindow = new PreferencesWindow(this, Constants.PREFERENCES_NAME, true);
+	private final JMenu m_PreferencesMenu = createPreferencesMenu(Constants.PREFERENCES_NAME, m_PreferencesWindow);
+	
+	private final TabDialogueWindow m_HelpWindow = new TabDialogueWindow(this, Constants.HELP_NAME, true);
+	private final JMenu m_HelpMenu = createHelpMenu(Constants.HELP_NAME, m_HelpWindow);
+	
+	private final JProbeCore m_Core;
+	private final FileMenu m_FileMenu;
+	
+	
+	private NotificationPanel m_NotePanel;
+	
+	public JProbeFrame(JProbeCore core, Workspace w, GUIConfig config){
+		super();
+		m_Core = core;
+		
 		m_ContentPane.setOpaque(true);
 		this.setJMenuBar(m_MenuBar);
 		this.setContentPane(m_ContentPane);
@@ -114,26 +152,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 		initSizeAndLocation(config);
 	}
 
-	private void initPreferencesMenu() {
-		if(!Platform.getInstance().setPreferencesHandler(new PreferencesHandler(){
 
-			@Override
-			public void preferences() {
-				m_PreferencesWindow.setVisible(true);
-			}
-			
-		})){
-			//Platform does not support a system preferences event, so add a custom preferences menu to the menu bar
-			m_PreferencesMenu = new DialogueMenu("Preferences", m_PreferencesWindow);
-			m_PreferencesMenu.setMnemonic(KeyEvent.VK_P);
-			m_PreferencesMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-			m_MenuBar.add(m_PreferencesMenu);
-		}else{
-			//the platform supports the preferences event, so set the preferences menu to null
-			m_PreferencesMenu = null;
-		}
-		
-	}
 
 	private void initSizeAndLocation(GUIConfig config) {
 		this.setSize(config.getDimension());
@@ -160,7 +179,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 		this.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent event){
-				JProbeGUIFrame.this.quit();
+				JProbeFrame.this.quit();
 			}
 		});
 		//set Platform QuitHandler to call this.quit()
@@ -168,7 +187,7 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 
 			@Override
 			public boolean quit() {
-				JProbeGUIFrame.this.quit();
+				JProbeFrame.this.quit();
 				//always return false to guarantee that the core has time to close all the plugins
 				return false;
 			}
@@ -189,9 +208,9 @@ public class JProbeGUIFrame extends JFrame implements JProbeGUI, CoreListener, S
 	}
 	
 	public boolean quit(){
-		if(JOptionPane.showConfirmDialog(JProbeGUIFrame.this, "Exit JProbe?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION){
+		if(JOptionPane.showConfirmDialog(JProbeFrame.this, "Exit JProbe?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION){
 			if(SaveLoadUtil.unsavedWorkspaceCheck(m_Core, this) == SaveLoadUtil.PROCEED){
-				JProbeGUIFrame.this.m_Core.shutdown();
+				JProbeFrame.this.m_Core.shutdown();
 				return true;
 			}
 		}

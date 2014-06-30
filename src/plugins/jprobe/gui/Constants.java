@@ -30,4 +30,7 @@ public class Constants {
 	
 	public static final Dimension PREF_HELP_DEFAULT_DIM = new Dimension(600, 600);
 	
+	public static final String HELP_NAME = "Help";
+	public static final String PREFERENCES_NAME = "Preferences";
+	
 }

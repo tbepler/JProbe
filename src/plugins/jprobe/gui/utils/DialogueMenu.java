@@ -11,32 +11,32 @@ import javax.swing.KeyStroke;
 public class DialogueMenu extends JMenu implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	
-	private JDialog dialog;
-	private JMenuItem button;
+	private JDialog m_Dialog;
+	private JMenuItem m_Button;
 	
 	public DialogueMenu(String name, JDialog dialog){
 		super(name);
-		this.dialog = dialog;
-		button = new JMenuItem(name);
-		button.addActionListener(this);
-		button.setEnabled(true);
-		button.setVisible(true);
-		this.add(button);
+		this.m_Dialog = dialog;
+		m_Button = new JMenuItem(name);
+		m_Button.addActionListener(this);
+		m_Button.setEnabled(true);
+		m_Button.setVisible(true);
+		this.add(m_Button);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		dialog.setVisible(true);
+		m_Dialog.setVisible(true);
 	}
 	
 	@Override
 	public void setAccelerator(KeyStroke stroke){
-		button.setAccelerator(stroke);
+		m_Button.setAccelerator(stroke);
 	}
 	
 	@Override
 	public void setMnemonic(int keycode){
-		button.setMnemonic(keycode);
+		m_Button.setMnemonic(keycode);
 		super.setMnemonic(keycode);
 	}
 	

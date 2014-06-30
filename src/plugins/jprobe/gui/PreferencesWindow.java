@@ -20,10 +20,10 @@ import util.gui.SwingUtils;
 public class PreferencesWindow extends JDialog implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	
-	private JPanel m_ContentPanel;
-	private JTabbedPane m_TabPane;
-	private JButton m_Apply;
-	private JButton m_Cancel;
+	private final JPanel m_ContentPanel;
+	private final JTabbedPane m_TabPane;
+	private final JButton m_Apply;
+	private final JButton m_Cancel;
 	private final Frame m_Owner;
 	
 	public PreferencesWindow(Frame owner, String title, boolean modal){

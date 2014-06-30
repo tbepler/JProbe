@@ -13,6 +13,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import jprobe.services.AbstractServiceListener;
+import jprobe.services.CoreEvent;
+import jprobe.services.CoreListener;
 import jprobe.services.Workspace;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
@@ -28,7 +30,7 @@ import bepler.crossplatform.Platform;
 import plugins.jprobe.gui.services.GUIErrorManager;
 import plugins.jprobe.gui.services.PluginGUIService;
 
-public class GUIActivator implements BundleActivator{
+public class GUIActivator implements BundleActivator, CoreListener{
 
 	private static Bundle m_Bundle = null;
 
@@ -68,6 +70,7 @@ public class GUIActivator implements BundleActivator{
 		if(m_Core.getMode() != Mode.GUI){
 			return;
 		}
+		m_Core.addCoreListener(this);
 		
 		//initialize data structures lazily
 		m_Frames = new ArrayList<JProbeGUIFrame>();
@@ -75,7 +78,7 @@ public class GUIActivator implements BundleActivator{
 		
 		initPlatformSettings(context.getBundle());
 		m_GuiConfig = readConfig(m_Core);
-		this.startGUI(m_Core, m_GuiConfig);
+		this.startGUI(context, m_Core, m_GuiConfig);
 		m_ErrorManager = this.startErrorHandler();
 	
 		
@@ -94,30 +97,61 @@ public class GUIActivator implements BundleActivator{
 			}
 		}
 	}
+	
+
+	@Override
+	public void update(JProbeCore source, CoreEvent event) {
+		if(source == m_Core){
+			switch(event.type){
+			case WORKSPACE_CLOSED:
+				this.removeWorkspace(event.workspace);
+				break;
+			case WORKSPACE_NEW:
+				this.addWorkspace(event.workspace);
+				break;
+			default:
+				break;
+			}
+		}
+	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		if(m_Core != null){
+			m_Core.removeCoreListener(this);
+		}
 		if(m_ErrorManager != null){
 			ErrorHandler.getInstance().removeErrorManager(m_ErrorManager);
 			m_ErrorManager = null;
 		}
-		this.stopGUI(m_GuiConfig);
+		this.stopGUI(context, m_GuiConfig);
 		if(m_GuiConfig != null){
 			m_GuiConfig.save();
 			m_GuiConfig = null;
 		}
 		BackgroundThread.getInstance().terminate();
 		BackgroundThread.getInstance().join();
+		m_Core = null;
+		m_Context = null;
+		m_Frames = null;
+		m_ServiceListeners = null;
 		m_Bundle = null;
 	}
 	
+	protected void addWorkspace(Workspace w){
+		//TODO
+	}
+	
+	protected void removeWorkspace(Workspace w){
+		//TODO
+	}
 
-	private void startGUI(JProbeCore core, GUIConfig config){
-		JProbeGUIFrame gui = newJProbeFrame(core, core.getDataManager(), config);
+	private void startGUI(BundleContext context, JProbeCore core, GUIConfig config){
+		JProbeGUIFrame gui = newJProbeFrame(context, core, core.getDataManager(), config);
 		gui.setVisible(true);
 	}
 
-	private void stopGUI(GUIConfig config){
+	private void stopGUI(BundleContext context, GUIConfig config){
 		int size = m_Frames.size();
 		List<Dimension> dims = new ArrayList<Dimension>(size);
 		List<Integer> extendedStates = new ArrayList<Integer>(size);
@@ -132,7 +166,7 @@ public class GUIActivator implements BundleActivator{
 			xs.add(0, frame.getX());
 			ys.add(0, frame.getY());
 			workspaces.add(0, frame.getWorkspace.getPath());
-			this.disposeJProbeFrame(i, false);
+			this.disposeJProbeFrame(context, i, false);
 		}
 		if(config != null){
 			config.setDimensions(dims);
@@ -149,19 +183,19 @@ public class GUIActivator implements BundleActivator{
 		return err;
 	}
 	
-	private JProbeGUIFrame newJProbeFrame(JProbeCore core, Workspace workspace, GUIConfig config){
+	private JProbeGUIFrame newJProbeFrame(BundleContext context, JProbeCore core, Workspace workspace, GUIConfig config){
 		JProbeGUIFrame frame = new JProbeGUIFrame(core, core.getName() + "-" + core.getVersion(), config);
 		m_Frames.add(frame);
-		this.newGUIServiceListener(frame);
+		this.newGUIServiceListener(frame, context);
 		return frame;
 	}
 	
-	private void disposeJProbeFrame(JProbeGUIFrame frame, boolean saveConfig){
+	private void disposeJProbeFrame(BundleContext context, JProbeGUIFrame frame, boolean saveConfig){
 		int index = m_Frames.indexOf(frame);
-		this.disposeJProbeFrame(index, saveConfig);
+		this.disposeJProbeFrame(context, index, saveConfig);
 	}
 	
-	private void disposeJProbeFrame(int index, boolean saveConfig){
+	private void disposeJProbeFrame(BundleContext context, int index, boolean saveConfig){
 		if(index < m_Frames.size() && index >= 0){
 			JProbeGUIFrame frame = m_Frames.get(index);
 			if(saveConfig && m_GuiConfig != null){
@@ -171,26 +205,27 @@ public class GUIActivator implements BundleActivator{
 				m_GuiConfig.setY(index, frame.getY());
 				m_GuiConfig.setPrevWorkspace(index, frame.getWorkspace().getPath());
 			}
-			this.removeGUIServiceListener(frame);
+			this.removeGUIServiceListener(frame, context);
 			m_Frames.remove(index);
 			frame.dispose();
 		}
 	}
 	
-	private AbstractServiceListener<PluginGUIService> newGUIServiceListener(JProbeGUIFrame frame){
+	private AbstractServiceListener<PluginGUIService> newGUIServiceListener(JProbeGUIFrame frame, BundleContext context){
 		AbstractServiceListener<PluginGUIService> listener = new PluginGUIServiceListener(frame, m_Context);
 		m_ServiceListeners.put(frame, listener);
-		listener.load();
+		listener.load(context);
 		return listener;
 	}
 	
-	private void removeGUIServiceListener(JProbeGUIFrame frame){
+	private void removeGUIServiceListener(JProbeGUIFrame frame, BundleContext context){
 		if(m_ServiceListeners.containsKey(frame)){
 			AbstractServiceListener<?> listener = m_ServiceListeners.get(frame);
-			listener.unload();
+			listener.unload(context);
 			listener.unregisterAll();
 			m_ServiceListeners.remove(frame);
 		}
 	}
+
 
 }
