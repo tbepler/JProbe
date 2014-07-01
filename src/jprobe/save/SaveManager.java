@@ -115,7 +115,8 @@ public class SaveManager implements Saveable, SaveableListener{
 
 	@Override
 	public long saveTo(OutputStream out, String outName) {
-		this.notifyListeners(new SaveableEvent(Type.SAVING, outName));
+		SaveableEvent start = new SaveableEvent(Type.SAVING, outName);
+		this.notifyListeners(start);
 		long bytes = 0;
 		m_SaveablesLock.readLock().lock();
 		try{
@@ -123,58 +124,60 @@ public class SaveManager implements Saveable, SaveableListener{
 			bytes += SaveUtil.save(oout, outName, m_Saveables);
 			m_SaveablesLock.readLock().unlock();
 			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Saved workspace "+m_Parent.getWorkspaceName()+" to "+outName);
-			this.notifyListeners(new SaveableEvent(Type.SAVED, outName));
+			this.notifyListeners(new SaveableEvent(Type.SAVED, outName, start));
 		} catch (SaveException e){
 			m_SaveablesLock.readLock().unlock();
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
-			this.notifyListeners(new SaveableEvent(Type.FAILED, outName));
+			this.notifyListeners(new SaveableEvent(Type.FAILED, outName, start));
 		} catch (Throwable t){
 			m_SaveablesLock.readLock().unlock();
 			ErrorHandler.getInstance().handleException(new RuntimeException(t), JProbeActivator.getBundle());
-			this.notifyListeners(new SaveableEvent(Type.FAILED, outName));
+			this.notifyListeners(new SaveableEvent(Type.FAILED, outName, start));
 		}
 		return bytes;
 	}
 
 	@Override
 	public void loadFrom(InputStream in, String sourceName) {
-		this.notifyListeners(new SaveableEvent(Type.LOADING, sourceName));
+		SaveableEvent start = new SaveableEvent(Type.LOADING, sourceName);
+		this.notifyListeners(start);
 		m_SaveablesLock.readLock().lock();
 		try {
 			ObjectInputStream oin = new ObjectInputStream(new BufferedInputStream(in));
 			SaveUtil.load(oin, sourceName, m_Saveables);
 			m_SaveablesLock.readLock().unlock();
 			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Opened workspace "+m_Parent.getWorkspaceName() + " from source "+sourceName);
-			this.notifyListeners(new SaveableEvent(Type.LOADED, sourceName));
+			this.notifyListeners(new SaveableEvent(Type.LOADED, sourceName, start));
 		} catch (LoadException e) {
 			m_SaveablesLock.readLock().unlock();
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
-			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName));
+			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 		} catch (Throwable t){
 			m_SaveablesLock.readLock().unlock();
 			ErrorHandler.getInstance().handleException(new RuntimeException(t), JProbeActivator.getBundle());
-			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName));
+			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 		}
 	}
 
 	@Override
 	public void importFrom(InputStream in, String sourceName) {
-		this.notifyListeners(new SaveableEvent(Type.IMPORTING, sourceName));
+		SaveableEvent start = new SaveableEvent(Type.IMPORTING, sourceName);
+		this.notifyListeners(start);
 		m_SaveablesLock.readLock().lock();
 		try {
 			ObjectInputStream oin = new ObjectInputStream(new BufferedInputStream(in));
 			SaveUtil.importFrom(oin, sourceName, m_Saveables);
 			m_SaveablesLock.readLock().unlock();
 			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Imported workspace from "+sourceName);
-			this.notifyListeners(new SaveableEvent(Type.IMPORTED, sourceName));
+			this.notifyListeners(new SaveableEvent(Type.IMPORTED, sourceName, start));
 		} catch (ImportException e) {
 			m_SaveablesLock.readLock().unlock();
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
-			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName));
+			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 		} catch (Throwable t){
 			m_SaveablesLock.readLock().unlock();
 			ErrorHandler.getInstance().handleException(new RuntimeException(t), JProbeActivator.getBundle());
-			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName));
+			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 		}
 	}
 

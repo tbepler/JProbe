@@ -14,11 +14,17 @@ public class SaveableEvent {
 	}
 	
 	public final Type type;
-	public final String source;
+	public final String target;
+	public final SaveableEvent start;
 	
-	public SaveableEvent(Type type, String source){
+	public SaveableEvent(Type type, String target, SaveableEvent start){
 		this.type = type;
-		this.source = source;
+		this.target = target;
+		this.start = start;
+	}
+	
+	public SaveableEvent(Type type, String target){
+		this(type, target, null);
 	}
 	
 	public SaveableEvent(Type type){

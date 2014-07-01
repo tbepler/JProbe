@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.concurrent.ExecutorService;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -42,6 +43,8 @@ import plugins.jprobe.gui.services.Notification;
 import plugins.jprobe.gui.services.PreferencesPanel;
 import plugins.jprobe.gui.utils.DialogueMenu;
 import plugins.jprobe.gui.utils.TabDialogueWindow;
+import util.Observer;
+import util.Subject;
 import util.gui.SortedJMenuBar;
 import util.gui.SwingUtils;
 import util.save.ImportException;
@@ -62,12 +65,11 @@ import jprobe.services.data.Data;
 import jprobe.services.data.ReadException;
 import jprobe.services.data.WriteException;
 
-public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListener, SaveableListener{
+public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListener, SaveableListener, Observer<Notification>{
 	private static final long serialVersionUID = 1L;
 	
-	private final JFileChooser m_ImportChooser = new JFileChooser();
-	private final JFileChooser m_ExportChooser = new JFileChooser();
-
+	private final NotificationProducer m_NoteProducer = new NotificationProducer();
+	
 	private final PreferencesWindow m_PreferencesWindow = new PreferencesWindow(this, Constants.PREFERENCES_NAME, true);
 	private final TabDialogueWindow m_HelpWindow = new TabDialogueWindow(this, Constants.HELP_NAME, true);
 	
@@ -76,21 +78,19 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 	private final JPanel m_ContentPane;
 	private final JMenuBar m_MenuBar;
 	private final String m_Name;
-	
-	private final BackgroundThread m_BackgroundThread;
+	private final BackgroundTaskManager m_TaskManager;
 	
 	private final NotificationPanel m_NotePanel;
 	
-	public JProbeFrame(String frameName, JProbeCore core, Workspace w, GUIConfig config){
+	public JProbeFrame(String frameName, JProbeCore core, Workspace w, ExecutorService threadPool, GUIConfig config){
 		super();
 		m_Name = frameName;
 		m_Core = core;
 		m_Workspace = w;
 		m_Workspace.addSaveableListener(this);
 		m_Workspace.addWorkspaceListener(this);
-		m_BackgroundThread = new BackgroundThread(m_Workspace.getWorkspaceName());
-		m_BackgroundThread.start();
-		
+		m_TaskManager = new BackgroundTaskManager(this, threadPool);
+		m_TaskManager.register(this);
 		
 		m_ContentPane = this.createContentPane();
 		this.setContentPane(m_ContentPane);
@@ -275,57 +275,56 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 
 	@Override
 	public void newWorkspace() {
-		//TODO
-		m_Core.newWorkspace();
+		m_TaskManager.newWorkspace(m_Core);
+	}
+	
+
+	@Override
+	public void saveWorkspaceAs() throws SaveException {
+		m_TaskManager.saveWorkspace(m_Workspace);
 	}
 
 	@Override
 	public void saveWorkspace() throws SaveException {
-		// TODO Auto-generated method stub
-		
+		m_TaskManager.saveWorkspaceAs(m_Workspace);
 	}
 
 	@Override
 	public void saveWorkspace(OutputStream out, String name) throws SaveException {
-		// TODO Auto-generated method stub
-		
+		m_TaskManager.saveWorkspace(m_Workspace, out, name);
 	}
 
 	@Override
 	public void openWorkspace() throws LoadException {
-		// TODO Auto-generated method stub
-		
+		m_TaskManager.openWorkspace(m_Core);
 	}
 
 	@Override
 	public void openWorkspace(InputStream in, String name) throws LoadException {
-		// TODO Auto-generated method stub
-		
+		m_TaskManager.openWorkspace(m_Core, in, name);
 	}
 
 	@Override
 	public void importWorkspace() throws ImportException {
-		// TODO Auto-generated method stub
-		
+		m_TaskManager.importWorkspace(m_Workspace);
 	}
 
 	@Override
 	public void importWorkspace(InputStream in, String name)
 			throws ImportException {
-		// TODO Auto-generated method stub
-		
+		m_TaskManager.importWorkspace(m_Workspace, in, name);
 	}
 
 	@Override
 	public void importData(Class<? extends Data> dataClass) throws ReadException {
-		// TODO Auto-generated method stub
-		
+		m_TaskManager.importData(m_Workspace, m_Core, dataClass);
 	}
 
 	@Override
 	public void exportData(Data d) throws WriteException {
-		// TODO Auto-generated method stub
-		
+		String name = m_Workspace.getDataName(d);
+		if(name == null) name = d.getClass().getSimpleName();
+		m_TaskManager.exportData(m_Core, d, name);
 	}
 
 	@Override
@@ -336,38 +335,61 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 
 	@Override
 	public void pushNotification(Notification note) {
-		// TODO Auto-generated method stub
-		
+		m_NotePanel.pushNotification(note);
 	}
 
 	@Override
 	public Frame getParentFrame() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override
 	public Workspace getWorkspace() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_Workspace;
 	}
 
 	@Override
 	public JProbeCore getCore() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_Core;
 	}
 
 	@Override
 	public void update(Saveable s, SaveableEvent event) {
-		// TODO Auto-generated method stub
-		
+		if(s == m_Workspace){
+			switch(event.type){
+			case CHANGED:
+				this.setModified(m_Workspace.unsavedChanges());
+				break;
+			default:
+				Notification note = m_NoteProducer.toNotification(event);
+				if(note != null){
+					this.pushNotification(note);
+				}
+				break;
+			}
+		}
 	}
 
 	@Override
 	public void update(Workspace source, WorkspaceEvent event) {
-		// TODO Auto-generated method stub
-		
+		if(source == m_Workspace){
+			switch(event.type){
+			case WORKSPACE_RENAMED:
+				this.setModified(m_Workspace.unsavedChanges());
+				break;
+			default:
+				//DO NOTHING
+				break;
+			}
+		}
 	}
+
+	@Override
+	public void update(Subject<Notification> observed, Notification notification) {
+		if(observed == m_TaskManager){
+			this.pushNotification(notification);
+		}
+	}
+
 	
 }
