@@ -42,6 +42,9 @@ public class Constants {
 		return workspaceName + " - unsaved changes";
 	}
 	
+	public static final String CONFIRM_EXIT_MESSAGE = "Exit JProbe?";
+	public static final String CONFIRM_EXIT_TITLE = "Confirm Exit";
+	
 	public static final String SAVE_APPROVE_TEXT = "Save";
 	public static final String OPEN_APPROVE_TEXT = "Open";
 	public static final String IMPORT_APPROVE_TEXT = "Import";

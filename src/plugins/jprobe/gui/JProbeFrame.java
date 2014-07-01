@@ -36,6 +36,7 @@ import org.osgi.framework.Bundle;
 import bepler.crossplatform.Platform;
 import bepler.crossplatform.PreferencesHandler;
 import bepler.crossplatform.QuitHandler;
+import plugins.jprobe.gui.close.CloseAction;
 import plugins.jprobe.gui.filemenu.FileMenu;
 import plugins.jprobe.gui.notification.NotificationPanel;
 import plugins.jprobe.gui.services.Disposable;
@@ -80,10 +81,18 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 	private final JMenuBar m_MenuBar;
 	private final String m_Name;
 	private final BackgroundTaskManager m_TaskManager;
+	private final CloseAction m_CloseAction;
 	
 	private final NotificationPanel m_NotePanel;
 	
-	public JProbeFrame(String frameName, JProbeCore core, Workspace w, ExecutorService threadPool, GUIConfig config){
+	public JProbeFrame(
+			String frameName,
+			JProbeCore core,
+			Workspace w,
+			ExecutorService threadPool,
+			CloseAction closeAction,
+			GUIConfig config){
+		
 		super();
 		m_Name = frameName;
 		m_Core = core;
@@ -92,6 +101,7 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 		m_Workspace.addWorkspaceListener(this);
 		m_TaskManager = new BackgroundTaskManager(this, threadPool);
 		m_TaskManager.register(this);
+		m_CloseAction = closeAction;
 		
 		m_ContentPane = this.createContentPane();
 		this.setContentPane(m_ContentPane);
@@ -171,25 +181,15 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 	}
 
 	private void initCloseOperation() {
-		//override window closing event to make sure Felix is shutdown correctly
+		//override window closing event to call the close() method
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent event){
-				JProbeFrame.this.quit();
+				JProbeFrame.this.close();
 			}
 		});
-		//set Platform QuitHandler to call this.quit()
-		Platform.getInstance().setQuitHandler(new QuitHandler(){
-
-			@Override
-			public boolean quit() {
-				JProbeFrame.this.quit();
-				//always return false to guarantee that the core has time to close all the plugins
-				return false;
-			}
-			
-		});
+		
 	}
 	
 	protected NotificationPanel initNotificationPanel(){
@@ -202,16 +202,6 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 		gbc.gridy = 100;
 		this.add(panel, gbc);
 		return panel;
-	}
-	
-	public boolean quit(){
-		if(JOptionPane.showConfirmDialog(JProbeFrame.this, "Exit JProbe?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION){
-			if(SaveLoadUtil.unsavedWorkspaceCheck(m_Core, this) == SaveLoadUtil.PROCEED){
-				JProbeFrame.this.m_Core.shutdown();
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	@Override
@@ -330,9 +320,7 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 
 	@Override
 	public boolean close() {
-		
-		// TODO Auto-generated method stub
-		return false;
+		return m_CloseAction.close(this);
 	}
 
 	@Override

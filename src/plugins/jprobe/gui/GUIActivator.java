@@ -1,6 +1,7 @@
 package plugins.jprobe.gui;
 
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -27,6 +29,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 import bepler.crossplatform.Platform;
+import bepler.crossplatform.QuitHandler;
 import plugins.jprobe.gui.services.GUIErrorManager;
 import plugins.jprobe.gui.services.PluginGUIService;
 
@@ -38,15 +41,6 @@ public class GUIActivator implements BundleActivator, CoreListener{
 		return m_Bundle;
 	}
 	
-	private static void initPlatformSettings(Bundle b){
-		Platform.getInstance().initPlatformSpecificSettings();
-		try {
-			Platform.getInstance().usePlatformLookAndFeel();
-		} catch (UnsupportedLookAndFeelException e) {
-			ErrorHandler.getInstance().handleException(e, b);
-		}
-	}
-	
 	private static GUIConfig readConfig(JProbeCore core){
 		File prefFile = new File(core.getPreferencesDir() + File.separator + Constants.CONFIG_FILE_NAME);
 		return new GUIConfig(prefFile);
@@ -56,8 +50,8 @@ public class GUIActivator implements BundleActivator, CoreListener{
 	private JProbeCore m_Core;
 	
 	//lazily instantiate data structures, so that they are only instantiated if needed
-	private List<JProbeGUIFrame> m_Frames;
-	private Map<JProbeGUIFrame, AbstractServiceListener<?>> m_ServiceListeners;
+	private List<JProbeFrame> m_Frames;
+	private Map<JProbeFrame, AbstractServiceListener<?>> m_ServiceListeners;
 	private GUIConfig m_GuiConfig;
 	private GUIErrorManager m_ErrorManager = null;
 	
@@ -73,8 +67,8 @@ public class GUIActivator implements BundleActivator, CoreListener{
 		m_Core.addCoreListener(this);
 		
 		//initialize data structures lazily
-		m_Frames = new ArrayList<JProbeGUIFrame>();
-		m_ServiceListeners = new HashMap<JProbeGUIFrame, AbstractServiceListener<?>>();
+		m_Frames = new ArrayList<JProbeFrame>();
+		m_ServiceListeners = new HashMap<JProbeFrame, AbstractServiceListener<?>>();
 		
 		initPlatformSettings(context.getBundle());
 		m_GuiConfig = readConfig(m_Core);
@@ -82,8 +76,11 @@ public class GUIActivator implements BundleActivator, CoreListener{
 		m_ErrorManager = this.startErrorHandler();
 	
 		
-		//check load workspace config and load the last workspace
+		//check load workspace config and load the last workspaces
 		if(m_GuiConfig.getLoadWorkspace()){
+			for(String path : m_GuiConfig.getPrevWorkspace()){
+				
+			}
 			final File last = new File(m_GuiConfig.getLastWorkspace());
 			if(last != null && last.exists() && last.canRead()){
 				SwingUtilities.invokeLater(new Runnable(){
@@ -98,6 +95,35 @@ public class GUIActivator implements BundleActivator, CoreListener{
 		}
 	}
 	
+	public int numFrames(){
+		return m_Frames.size();
+	}
+	
+	public boolean frameOpen(JProbeFrame frame){
+		return m_Frames.contains(frame);
+	}
+	
+	private JProbeFrame getActiveFrame(){
+		for(JProbeFrame frame : m_Frames){
+			if(frame.isActive()){
+				return frame;
+			}
+		}
+		return null;
+	}
+	
+	public boolean confirmExit(){
+		return JOptionPane.showConfirmDialog(
+				this.getActiveFrame(),
+				Constants.CONFIRM_EXIT_MESSAGE,
+				Constants.CONFIRM_EXIT_TITLE,
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION;
+	}
+	
+	public void exit(){
+		m_Core.shutdown();
+	}
 
 	@Override
 	public void update(JProbeCore source, CoreEvent event) {
@@ -144,6 +170,28 @@ public class GUIActivator implements BundleActivator, CoreListener{
 	
 	protected void removeWorkspace(Workspace w){
 		//TODO
+	}
+	
+	protected void initPlatformSettings(Bundle b){
+		Platform.getInstance().initPlatformSpecificSettings();
+		try {
+			Platform.getInstance().usePlatformLookAndFeel();
+		} catch (UnsupportedLookAndFeelException e) {
+			ErrorHandler.getInstance().handleException(e, b);
+		}
+		//set Platform QuitHandler to call this.exit()
+		Platform.getInstance().setQuitHandler(new QuitHandler(){
+
+			@Override
+			public boolean quit() {
+				if(confirmExit()){
+					exit();
+				}
+				//always return false to guarantee that the core has time to close all the plugins
+				return false;
+			}
+
+		});
 	}
 
 	private void startGUI(BundleContext context, JProbeCore core, GUIConfig config){
