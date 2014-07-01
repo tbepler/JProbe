@@ -82,6 +82,12 @@ public interface JProbeWindow {
 	public void saveWorkspace() throws SaveException;
 	
 	/**
+	 * Saves the {@link Workspace} open in this window, prompting the user to select a save destination.
+	 * @throws SaveException
+	 */
+	public void saveWorkspaceAs() throws SaveException;
+	
+	/**
 	 * Saves the {@link Workspace} open in this window to the given OutputStream using the 
 	 * specified name.
 	 * @param out

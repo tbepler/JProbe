@@ -5,6 +5,8 @@ import java.awt.Frame;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import jprobe.services.data.Data;
+
 public class Constants {
 	
 	public static final String CONFIG_FILE_NAME = "jprobe-gui.pref";
@@ -32,5 +34,34 @@ public class Constants {
 	
 	public static final String HELP_NAME = "Help";
 	public static final String PREFERENCES_NAME = "Preferences";
+	
+	public static final String SAVE_APPROVE_TEXT = "Save";
+	public static final String OPEN_APPROVE_TEXT = "Open";
+	public static final String IMPORT_APPROVE_TEXT = "Import";
+	public static final String EXPORT_APPROVE_TEXT = "Export";
+	
+	public static String getImportDataStart(Class<? extends Data> dataClass, String source){
+		return "Importing "+dataClass.getSimpleName()+" from "+source;
+	}
+	public static String getImportDataError(Class<? extends Data> dataClass, String source){
+		return "Error importing "+dataClass.getSimpleName()+" from "+source;
+	}
+	public static String getImportDataSuccess(Class<? extends Data> dataClass, String source){
+		return "Imported "+dataClass.getSimpleName()+" from "+source;
+	}
+	
+	public static String getExportDataStart(String dataName, String source){
+		return "Exporting "+dataName+" to "+source;
+	}
+	public static String getExportDataError(String dataName, String source){
+		return "Error exporting "+dataName+" to "+source;
+	}
+	public static String getExportDataSuccess(String dataName, String source){
+		return "Exported "+dataName+" to "+source;
+	}
+
+	public static final String OPEN_WORKSPACE_START = "Opening workspace: ";
+	public static final String OPEN_WORKSPACE_ERROR = "Error opening workspace: ";
+	public static final String OPEN_WORKSPACE_SUCCESS = "Opened workspace: ";
 	
 }

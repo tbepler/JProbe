@@ -275,6 +275,7 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 
 	@Override
 	public void newWorkspace() {
+		//TODO
 		m_Core.newWorkspace();
 	}
 
@@ -316,8 +317,7 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 	}
 
 	@Override
-	public void importData(Class<? extends Data> dataClass)
-			throws ReadException {
+	public void importData(Class<? extends Data> dataClass) throws ReadException {
 		// TODO Auto-generated method stub
 		
 	}
