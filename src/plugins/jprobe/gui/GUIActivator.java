@@ -2,7 +2,10 @@ package plugins.jprobe.gui;
 
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +35,7 @@ import bepler.crossplatform.Platform;
 import bepler.crossplatform.QuitHandler;
 import plugins.jprobe.gui.services.GUIErrorManager;
 import plugins.jprobe.gui.services.PluginGUIService;
+import util.save.LoadException;
 
 public class GUIActivator implements BundleActivator, CoreListener{
 
@@ -75,23 +79,28 @@ public class GUIActivator implements BundleActivator, CoreListener{
 		this.startGUI(context, m_Core, m_GuiConfig);
 		m_ErrorManager = this.startErrorHandler();
 	
-		
+		this.initWorkspaces();
+	}
+
+	private void initWorkspaces() {
 		//check load workspace config and load the last workspaces
 		if(m_GuiConfig.getLoadWorkspace()){
 			for(String path : m_GuiConfig.getPrevWorkspace()){
-				
-			}
-			final File last = new File(m_GuiConfig.getLastWorkspace());
-			if(last != null && last.exists() && last.canRead()){
-				SwingUtilities.invokeLater(new Runnable(){
-
-					@Override
-					public void run() {
-						SaveLoadUtil.load(m_Core, last);
+				File f = new File(path);
+				if(f.exists() && f.canRead()){
+					try {
+						m_Core.openWorkspace(new BufferedInputStream(new FileInputStream(f)));
+					} catch (Exception e){
+						ErrorHandler.getInstance().handleException(e, m_Context.getBundle());
 					}
-					
-				});
+				}else{
+					ErrorHandler.getInstance().handleError("Unable to open last workspace: "+path, m_Context.getBundle());
+				}
 			}
+		}else if(m_Core.numWorkspaces() > 0){
+			//TODO
+		}else{
+			m_Core.newWorkspace();
 		}
 	}
 	
@@ -194,11 +203,6 @@ public class GUIActivator implements BundleActivator, CoreListener{
 		});
 	}
 
-	private void startGUI(BundleContext context, JProbeCore core, GUIConfig config){
-		JProbeGUIFrame gui = newJProbeFrame(context, core, core.getDataManager(), config);
-		gui.setVisible(true);
-	}
-
 	private void stopGUI(BundleContext context, GUIConfig config){
 		int size = m_Frames.size();
 		List<Dimension> dims = new ArrayList<Dimension>(size);
@@ -208,7 +212,7 @@ public class GUIActivator implements BundleActivator, CoreListener{
 		List<String> workspaces = new ArrayList<String>(size);
 		//iterate through frames from the back so that removal does not cause problems
 		for(int i=m_Frames.size()-1; i>=0; --i){
-			JProbeGUIFrame frame = m_Frames.get(i);
+			JProbeFrame frame = m_Frames.get(i);
 			dims.add(0, frame.getSize());
 			extendedStates.add(0, frame.getExtendedState());
 			xs.add(0, frame.getX());

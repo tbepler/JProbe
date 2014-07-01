@@ -11,7 +11,7 @@ public class MacPlatformCloseAction extends CloseAction{
 	}
 
 	@Override
-	protected void closeWorkspace(JProbeFrame frame, GUIActivator activator) {
+	protected void closeWorkspace(JProbeFrame frame) {
 		frame.getCore().closeWorkspace(frame.getWorkspace());
 	}
 	

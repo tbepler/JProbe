@@ -50,6 +50,10 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		m_WorkspaceChooser.setFileFilter(Constants.SAVE_FILE_FILTER);
 	}
 	
+	public File getLastSaveFile(){
+		return m_SaveFile;
+	}
+	
 	public Future<?> submit(Runnable r){
 		return m_Threads.submit(r);
 	}

@@ -175,6 +175,24 @@ public interface JProbeWindow {
 	public void pushNotification(Notification note);
 	
 	/**
+	 * Reports the given exception to the user.
+	 * @param e
+	 */
+	public void reportException(Exception e);
+	
+	/**
+	 * Reports the given error message to the user.
+	 * @param message
+	 */
+	public void reportError(String message);
+	
+	/**
+	 * Reports the given warning message to the user.
+	 * @param message
+	 */
+	public void reportWarning(String message);
+	
+	/**
 	 * Returns the ancestor Frame of this window.
 	 * @return
 	 */

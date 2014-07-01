@@ -71,6 +71,24 @@ public class ErrorHandler {
 		}
 	}
 	
+	public synchronized void handleError(String errorMessage, Bundle thrower){
+		System.err.println("Error: "+errorMessage);
+		if(m_ErrorLog != null){
+			StringBuilder builder = new StringBuilder();
+			builder.append("<");
+			if(thrower != null){
+				builder.append(thrower.getSymbolicName());
+			}else{
+				builder.append("UnknownBundle");
+			}
+			builder.append(">").append(" Error: ").append(errorMessage);
+			m_ErrorLog.write(builder.toString());
+		}
+		for(ErrorManager em : m_ErrorManagers){
+			em.handleError(errorMessage, thrower);
+		}
+	}
+	
 	public synchronized void addErrorManager(ErrorManager manager){
 		m_ErrorManagers.add(manager);
 	}

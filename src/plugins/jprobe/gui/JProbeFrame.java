@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -178,6 +179,10 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 		}
 		this.setLocation(x,y);
 		this.setExtendedState(config.getExtendedState());
+	}
+	
+	public File getLastSaveFile(){
+		return m_TaskManager.getLastSaveFile();
 	}
 
 	private void initCloseOperation() {
