@@ -12,11 +12,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import plugins.jprobe.gui.services.Notification;
 import util.Observer;
@@ -27,13 +27,11 @@ import util.save.SaveException;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.Workspace;
-import jprobe.services.WorkspaceEvent;
-import jprobe.services.WorkspaceEvent.Type;
-import jprobe.services.WorkspaceListener;
 import jprobe.services.data.Data;
 import jprobe.services.data.ReadException;
+import jprobe.services.data.WriteException;
 
-public class BackgroundTaskManager implements WorkspaceListener, Subject<Notification>{
+public class BackgroundTaskManager implements Subject<Notification>{
 	
 	private final Collection<Observer<Notification>> m_Obs = new HashSet<Observer<Notification>>();
 	
@@ -41,18 +39,13 @@ public class BackgroundTaskManager implements WorkspaceListener, Subject<Notific
 	private final JFileChooser m_WorkspaceChooser = new JFileChooser();
 	
 	private final Frame m_Parent;
-	private final Workspace m_Workspace;
-	private  ExecutorService m_Threads;
-	private final BackgroundThread m_BackgroundThread;
+	private final ExecutorService m_Threads;
 	
 	private File m_SaveFile = null;
 	
-	public BackgroundTaskManager(Frame parent, Workspace w){
+	public BackgroundTaskManager(Frame parent, ExecutorService threadPool){
 		m_Parent = parent;
-		m_Workspace = w;
-		m_BackgroundThread = new BackgroundThread(Constants.BACKGROUND_THREAD_NAME + "-" + m_Workspace.getWorkspaceName());
-		m_BackgroundThread.start();
-		m_Workspace.addWorkspaceListener(this);
+		m_Threads = threadPool;
 		m_WorkspaceChooser.setFileFilter(Constants.SAVE_FILE_FILTER);
 	}
 	
@@ -85,12 +78,7 @@ public class BackgroundTaskManager implements WorkspaceListener, Subject<Notific
 				fileName += "." + Constants.SAVE_FILE_EXTENSIONS[0];
 				saveTo = new File(fileName);
 			}
-			String target;
-			try {
-				target = saveTo.getCanonicalPath();
-			} catch (IOException e) {
-				target = saveTo.getAbsolutePath();
-			}
+			String target = getFilePath(saveTo);
 			//don't save if the selected file has been saved previously, and there are no unsaved changes in the workspace
 			if(!saveTo.equals(m_SaveFile) || w.unsavedChanges()){
 				String prevName = w.getWorkspaceName();
@@ -149,12 +137,7 @@ public class BackgroundTaskManager implements WorkspaceListener, Subject<Notific
 		int returnVal = m_WorkspaceChooser.showDialog(m_Parent, Constants.OPEN_APPROVE_TEXT);
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File open = m_WorkspaceChooser.getSelectedFile();
-			String target;
-			try {
-				target = open.getCanonicalPath();
-			} catch (IOException e) {
-				target = open.getAbsolutePath();
-			}
+			String target = getFilePath(open);
 			try {
 				this.openWorkspace(core, new BufferedInputStream(new FileInputStream(open)), target);
 			} catch (FileNotFoundException e) {
@@ -187,12 +170,7 @@ public class BackgroundTaskManager implements WorkspaceListener, Subject<Notific
 		int returnVal = m_WorkspaceChooser.showDialog(m_Parent, Constants.IMPORT_APPROVE_TEXT);
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File open = m_WorkspaceChooser.getSelectedFile();
-			String target;
-			try {
-				target = open.getCanonicalPath();
-			} catch (IOException e) {
-				target = open.getAbsolutePath();
-			}
+			String target = getFilePath(open);
 			try {
 				this.importWorkspace(w, new BufferedInputStream(new FileInputStream(open)), target);
 			} catch (FileNotFoundException e) {
@@ -216,29 +194,24 @@ public class BackgroundTaskManager implements WorkspaceListener, Subject<Notific
 		});
 	}
 	
-	public void importData(final Workspace w, final JProbeCore core, final Class<? extends Data> dataClass) throws ImportException{
+	public void importData(final Workspace w, final JProbeCore core, final Class<? extends Data> dataClass) throws ReadException{
 		if(!core.isReadable(dataClass)){
-			throw new ImportException("Data class "+dataClass+" not readable.");
+			throw new ReadException("Data class "+dataClass+" not readable.");
 		}
-		List<FileFilter> filters = core.getReadFormats(dataClass);
+		m_DataChooser.resetChoosableFileFilters();
 		m_DataChooser.setAcceptAllFileFilterUsed(false);
-		for(FileFilter filter : filters){
+		for(FileFilter filter : core.getReadFormats(dataClass)){
 			m_DataChooser.addChoosableFileFilter(filter);
 		}
 		int returnVal = m_DataChooser.showDialog(m_Parent, Constants.IMPORT_APPROVE_TEXT);
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File open = m_DataChooser.getSelectedFile();
 			FileFilter format = m_DataChooser.getFileFilter();
-			String source;
-			try {
-				source = open.getCanonicalPath();
-			} catch (IOException e) {
-				source = open.getAbsolutePath();
-			}
+			String source = getFilePath(open);
 			try {
 				this.importData(w, core, dataClass, format, new BufferedInputStream(new FileInputStream(open)), source);
 			} catch (FileNotFoundException e) {
-				throw new ImportException(e);
+				throw new ReadException(e);
 			}
 		}
 	}
@@ -259,15 +232,7 @@ public class BackgroundTaskManager implements WorkspaceListener, Subject<Notific
 				fireNotification(start);
 				try {
 					Data imported = core.readData(dataClass, format, in);
-					//name the imported data after the source it was imported from and make sure there is not a name collision
-					String dataName = source;
-					int count = 0;
-					synchronized(w){ //synchronize on the workspace to ensure that multiple import threads don't have a race on the addData function
-						while(w.contains(dataName)){
-							dataName = source + "(" + (++count) + ")";
-						}
-						w.addData(imported, dataName);
-					}
+					addDataToWorkspace(w, source, imported);
 					fireNotification(Notification.endEvent(Constants.getImportDataSuccess(dataClass, source), start));
 				} catch (ReadException e) {
 					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
@@ -278,13 +243,75 @@ public class BackgroundTaskManager implements WorkspaceListener, Subject<Notific
 		});
 	}
 	
-	
-
-	@Override
-	public void update(Workspace source, WorkspaceEvent event) {
-		if(m_Workspace == source && event.type == Type.WORKSPACE_RENAMED){
-			m_BackgroundThread.setName(Constants.BACKGROUND_THREAD_NAME + "-" + m_Workspace.getWorkspaceName());
+	protected static void addDataToWorkspace(final Workspace w, final String source, final Data imported) {
+		//name the imported data after the source it was imported from and make sure there is not a name collision
+		String dataName = source;
+		int count = 0;
+		synchronized(w){ //synchronize on the workspace to ensure that multiple import threads don't have a race on the addData function
+			while(w.contains(dataName)){
+				dataName = source + "(" + (++count) + ")";
+			}
+			w.addData(imported, dataName);
 		}
+	}
+	
+	public void exportData(final JProbeCore core, final Data d, final String dataName) throws WriteException{
+		if(!core.isWritable(d.getClass())){
+			throw new WriteException("Data class "+d.getClass()+" not writable.");
+		}
+		m_DataChooser.resetChoosableFileFilters();
+		m_DataChooser.setAcceptAllFileFilterUsed(false);
+		for(FileNameExtensionFilter filter : core.getWriteFormats(d.getClass())){
+			m_DataChooser.addChoosableFileFilter(filter);
+		}
+		int returnVal = m_DataChooser.showDialog(m_Parent, Constants.EXPORT_APPROVE_TEXT);
+		if(returnVal == JFileChooser.APPROVE_OPTION){
+			File export = m_DataChooser.getSelectedFile();
+			FileNameExtensionFilter format = (FileNameExtensionFilter) m_DataChooser.getFileFilter();
+			String source = getFilePath(export);
+			try {
+				this.exportData(core, d, dataName, format, new BufferedOutputStream(new FileOutputStream(export)), source);
+			} catch (FileNotFoundException e) {
+				throw new WriteException(e);
+			}
+		}
+	}
+
+	protected static String getFilePath(File export) {
+		String source;
+		try {
+			source = export.getCanonicalPath();
+		} catch (IOException e) {
+			source = export.getAbsolutePath();
+		}
+		return source;
+	}
+	
+	public void exportData(
+			final JProbeCore core,
+			final Data d,
+			final String dataName,
+			final FileNameExtensionFilter format,
+			final OutputStream out,
+			final String target){
+		
+		m_Threads.submit(new Runnable(){
+
+			@Override
+			public void run() {
+				Notification start = Notification.startEvent(Constants.getExportDataStart(dataName, target));
+				fireNotification(start);
+				try {
+					core.writeData(d, format, out);
+					fireNotification(Notification.endEvent(Constants.getExportDataSuccess(dataName, target), start));
+				} catch (WriteException e) {
+					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
+					fireNotification(Notification.endEvent(Constants.getExportDataError(dataName, target), start));
+				}
+			}
+			
+		});
+		
 	}
 	
 	protected void fireNotification(Notification n){
