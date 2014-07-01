@@ -5,6 +5,7 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.Future;
 
 import javax.swing.JMenu;
 
@@ -71,73 +72,94 @@ public interface JProbeWindow {
 	public void removeHelpComponent(Component c);
 	
 	/**
-	 * Opens a new {@link Workspace}.
+	 * Opens a new {@link Workspace}. This task is executed on a background thread.
+	 * @return a {@link Future} object that can be used to track the execution of this task
 	 */
-	public void newWorkspace();
+	public Future<?> newWorkspace();
 	
 	/**
-	 * Saves the {@link Workspace} open in this window.
+	 * Saves the {@link Workspace} open in this window. Saves the Workspace to the most recent saved file
+	 * or queries the user for a file to save to, if there is none. This task is executed on a background thread.
+	 * @return a {@link Future} object that can be used to track the execution of this task, or null
+	 * if the save was cancelled
 	 * @throws SaveException
 	 */
-	public void saveWorkspace() throws SaveException;
+	public Future<?> saveWorkspace() throws SaveException;
 	
 	/**
 	 * Saves the {@link Workspace} open in this window, prompting the user to select a save destination.
+	 * This task is executed on a background thread.
+	 * @return a {@link Future} object that can be used to track the execution of this task, or null
+	 * if the save was cancelled
 	 * @throws SaveException
 	 */
-	public void saveWorkspaceAs() throws SaveException;
+	public Future<?> saveWorkspaceAs() throws SaveException;
 	
 	/**
 	 * Saves the {@link Workspace} open in this window to the given OutputStream using the 
-	 * specified name.
+	 * specified name. This task is executed on a background thread.
 	 * @param out
 	 * @param name
+	 * @return a {@link Future} object that can be used to track the execution of this task
 	 * @throws SaveException
 	 */
-	public void saveWorkspace(OutputStream out, String name) throws SaveException;
+	public Future<?> saveWorkspace(OutputStream out, String name) throws SaveException;
 	
 	/**
-	 * Opens a saved {@link Workspace}.
+	 * Opens a saved {@link Workspace}. Queries the user for the Workspace to open.
+	 * This task is executed in a background thread.
+	 * @return a {@link Future} object that can be used to track the execution of this task,
+	 * or null if this task was cancelled
 	 * @throws LoadException
 	 */
-	public void openWorkspace() throws LoadException;
+	public Future<?> openWorkspace() throws LoadException;
 	
 	/**
 	 * Opens a save {@link Workspace} from the given InputStream using the specified name.
+	 * This task is executed in a background thread.
 	 * @param in
 	 * @param name
+	 * @return a {@link Future} object that can be used to track the execution of this task
 	 * @throws LoadException
 	 */
-	public void openWorkspace(InputStream in, String name) throws LoadException;
+	public Future<?> openWorkspace(InputStream in, String name) throws LoadException;
 	
 	/**
-	 * Imports another {@link Workspace} into this window's Workspace.
+	 * Imports another {@link Workspace} into this window's Workspace. Queries the user for the Workspace
+	 * to import. This task is executed in a background thread.
+	 * @return a {@link Future} object that can be used to track the execution of this task,
+	 * or null if this task was cancelled
 	 * @throws ImportException
 	 */
-	public void importWorkspace() throws ImportException;
+	public Future<?> importWorkspace() throws ImportException;
 	
 	/**
 	 * Imports another {@link Workspace} from the given InputStream using the specified name
-	 * into this window's Workspace.
+	 * into this window's Workspace. This task is executed on a background thread.
 	 * @param in
 	 * @param name
+	 * @return a {@link Future} object that can be used to track the execution of this task
 	 * @throws ImportException
 	 */
-	public void importWorkspace(InputStream in, String name) throws ImportException;
+	public Future<?> importWorkspace(InputStream in, String name) throws ImportException;
 	
 	/**
-	 * Imports Data of the specified class into this window's {@link Workspace}.
+	 * Imports Data of the specified class into this window's {@link Workspace}. Prompts the user
+	 * to select the import file. This task is executed on a background thread.
 	 * @param dataClass
+	 * @return a {@link Future} object that can be used to track the execution of this task
 	 * @throws ReadException
 	 */
-	public void importData(Class<? extends Data> dataClass) throws ReadException;
+	public Future<?> importData(Class<? extends Data> dataClass) throws ReadException;
 	
 	/**
-	 * Exports the specified Data.
+	 * Exports the specified Data. Prompts the user to select a file the data should be exorted to.
+	 * This task is executed on a background thread.
 	 * @param d
+	 * @return a {@link Future} object that can be used to track the execution of this task
 	 * @throws WriteException
 	 */
-	public void exportData(Data d) throws WriteException;
+	public Future<?> exportData(Data d) throws WriteException;
 	
 	/**
 	 * Attempts to close this window and its {@link Workspace}. Returns True if closing

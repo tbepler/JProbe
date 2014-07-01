@@ -35,6 +35,13 @@ public class Constants {
 	public static final String HELP_NAME = "Help";
 	public static final String PREFERENCES_NAME = "Preferences";
 	
+	public static String getUnsavedChangesMessage(String workspaceName){
+		return "The workspace "+workspaceName+" has unsaved changes.\nWould you like to save before closing it?";
+	}
+	public static String getUnsavedChangesTitle(String workspaceName){
+		return workspaceName + " - unsaved changes";
+	}
+	
 	public static final String SAVE_APPROVE_TEXT = "Save";
 	public static final String OPEN_APPROVE_TEXT = "Open";
 	public static final String IMPORT_APPROVE_TEXT = "Import";

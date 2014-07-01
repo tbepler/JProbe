@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -274,61 +275,62 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 	}
 
 	@Override
-	public void newWorkspace() {
-		m_TaskManager.newWorkspace(m_Core);
+	public Future<?> newWorkspace() {
+		return m_TaskManager.newWorkspace(m_Core);
 	}
 	
 
 	@Override
-	public void saveWorkspaceAs() throws SaveException {
-		m_TaskManager.saveWorkspace(m_Workspace);
+	public Future<?> saveWorkspaceAs() throws SaveException {
+		return m_TaskManager.saveWorkspace(m_Workspace);
 	}
 
 	@Override
-	public void saveWorkspace() throws SaveException {
-		m_TaskManager.saveWorkspaceAs(m_Workspace);
+	public Future<?> saveWorkspace() throws SaveException {
+		return m_TaskManager.saveWorkspaceAs(m_Workspace);
 	}
 
 	@Override
-	public void saveWorkspace(OutputStream out, String name) throws SaveException {
-		m_TaskManager.saveWorkspace(m_Workspace, out, name);
+	public Future<?> saveWorkspace(OutputStream out, String name) throws SaveException {
+		return m_TaskManager.saveWorkspace(m_Workspace, out, name);
 	}
 
 	@Override
-	public void openWorkspace() throws LoadException {
-		m_TaskManager.openWorkspace(m_Core);
+	public Future<?> openWorkspace() throws LoadException {
+		return m_TaskManager.openWorkspace(m_Core);
 	}
 
 	@Override
-	public void openWorkspace(InputStream in, String name) throws LoadException {
-		m_TaskManager.openWorkspace(m_Core, in, name);
+	public Future<?> openWorkspace(InputStream in, String name) throws LoadException {
+		return m_TaskManager.openWorkspace(m_Core, in, name);
 	}
 
 	@Override
-	public void importWorkspace() throws ImportException {
-		m_TaskManager.importWorkspace(m_Workspace);
+	public Future<?> importWorkspace() throws ImportException {
+		return m_TaskManager.importWorkspace(m_Workspace);
 	}
 
 	@Override
-	public void importWorkspace(InputStream in, String name)
+	public Future<?> importWorkspace(InputStream in, String name)
 			throws ImportException {
-		m_TaskManager.importWorkspace(m_Workspace, in, name);
+		return m_TaskManager.importWorkspace(m_Workspace, in, name);
 	}
 
 	@Override
-	public void importData(Class<? extends Data> dataClass) throws ReadException {
-		m_TaskManager.importData(m_Workspace, m_Core, dataClass);
+	public Future<?> importData(Class<? extends Data> dataClass) throws ReadException {
+		return m_TaskManager.importData(m_Workspace, m_Core, dataClass);
 	}
 
 	@Override
-	public void exportData(Data d) throws WriteException {
+	public Future<?> exportData(Data d) throws WriteException {
 		String name = m_Workspace.getDataName(d);
 		if(name == null) name = d.getClass().getSimpleName();
-		m_TaskManager.exportData(m_Core, d, name);
+		return m_TaskManager.exportData(m_Core, d, name);
 	}
 
 	@Override
 	public boolean close() {
+		
 		// TODO Auto-generated method stub
 		return false;
 	}

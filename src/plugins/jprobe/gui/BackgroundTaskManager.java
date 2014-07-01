@@ -49,6 +49,10 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		m_WorkspaceChooser.setFileFilter(Constants.SAVE_FILE_FILTER);
 	}
 	
+	public void submit(Runnable r){
+		m_Threads.submit(r);
+	}
+	
 	public void newWorkspace(final JProbeCore core){
 		m_Threads.submit(new Runnable(){
 
