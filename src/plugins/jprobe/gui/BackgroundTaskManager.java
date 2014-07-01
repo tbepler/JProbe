@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -49,12 +50,12 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		m_WorkspaceChooser.setFileFilter(Constants.SAVE_FILE_FILTER);
 	}
 	
-	public void submit(Runnable r){
-		m_Threads.submit(r);
+	public Future<?> submit(Runnable r){
+		return m_Threads.submit(r);
 	}
 	
-	public void newWorkspace(final JProbeCore core){
-		m_Threads.submit(new Runnable(){
+	public Future<?> newWorkspace(final JProbeCore core){
+		return m_Threads.submit(new Runnable(){
 
 			@Override
 			public void run() {
@@ -73,7 +74,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		return false;
 	}
 	
-	public void saveWorkspaceAs(final Workspace w) throws SaveException{
+	public Future<?> saveWorkspaceAs(final Workspace w) throws SaveException{
 		int returnVal = m_WorkspaceChooser.showDialog(m_Parent, Constants.SAVE_APPROVE_TEXT);
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File saveTo = m_WorkspaceChooser.getSelectedFile();
@@ -86,44 +87,44 @@ public class BackgroundTaskManager implements Subject<Notification>{
 			//don't save if the selected file has been saved previously, and there are no unsaved changes in the workspace
 			if(!saveTo.equals(m_SaveFile) || w.unsavedChanges()){
 				String prevName = w.getWorkspaceName();
+				File prevSave = m_SaveFile;
 				try {
 					//name the workspace after the save target file
 					w.setWorkspaceName(m_SaveFile.getName());
-					this.saveWorkspace(w, new BufferedOutputStream(new FileOutputStream(saveTo)), target);
 					m_SaveFile = saveTo;
+					return this.saveWorkspace(w, new BufferedOutputStream(new FileOutputStream(saveTo)), target);
+					
 				} catch (FileNotFoundException e) {
-					//revert the workspace name
+					//revert the workspace name and save file
 					w.setWorkspaceName(prevName);
+					m_SaveFile = prevSave;
 					throw new SaveException(e);
 				}
 			}
 		}
+		return null;
 	}
 	
-	public void saveWorkspace(final Workspace w) throws SaveException{
+	public Future<?> saveWorkspace(final Workspace w) throws SaveException{
 		if(m_SaveFile == null){
-			this.saveWorkspaceAs(w);
+			return this.saveWorkspaceAs(w);
 		}else{
 			if(w.unsavedChanges()){ //only save again if there are unsaved changes to save
-				String target;
+				String target = getFilePath(m_SaveFile);
 				try {
-					target = m_SaveFile.getCanonicalPath();
-				} catch (IOException e) {
-					target = m_SaveFile.getAbsolutePath();
-				}
-				try {
-					this.saveWorkspace(w, new BufferedOutputStream(new FileOutputStream(m_SaveFile)), target);
+					return this.saveWorkspace(w, new BufferedOutputStream(new FileOutputStream(m_SaveFile)), target);
 				} catch (FileNotFoundException e) {
 					throw new SaveException(e);
 				}
 			}
 		}
+		return null;
 
 	}
 	
-	public void saveWorkspace(final Workspace w, final OutputStream out, final String target){
+	public Future<?> saveWorkspace(final Workspace w, final OutputStream out, final String target){
 		
-		m_Threads.submit(new Runnable(){
+		return m_Threads.submit(new Runnable(){
 
 			@Override
 			public void run() {
@@ -137,21 +138,23 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		});
 	}
 	
-	public void openWorkspace(final JProbeCore core) throws LoadException{
+	public Future<?> openWorkspace(final JProbeCore core) throws LoadException{
 		int returnVal = m_WorkspaceChooser.showDialog(m_Parent, Constants.OPEN_APPROVE_TEXT);
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File open = m_WorkspaceChooser.getSelectedFile();
 			String target = getFilePath(open);
 			try {
-				this.openWorkspace(core, new BufferedInputStream(new FileInputStream(open)), target);
+				return this.openWorkspace(core, new BufferedInputStream(new FileInputStream(open)), target);
 			} catch (FileNotFoundException e) {
 				throw new LoadException(e);
 			}
 		}
+		return null;
 	}
 	
-	public void openWorkspace(final JProbeCore core, final InputStream in, final String target){
-		m_Threads.submit(new Runnable(){
+	public Future<?> openWorkspace(final JProbeCore core, final InputStream in, final String target){
+		
+		return m_Threads.submit(new Runnable(){
 
 			@Override
 			public void run() {
@@ -170,21 +173,23 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		});
 	}
 	
-	public void importWorkspace(final Workspace w) throws ImportException{
+	public Future<?> importWorkspace(final Workspace w) throws ImportException{
 		int returnVal = m_WorkspaceChooser.showDialog(m_Parent, Constants.IMPORT_APPROVE_TEXT);
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File open = m_WorkspaceChooser.getSelectedFile();
 			String target = getFilePath(open);
 			try {
-				this.importWorkspace(w, new BufferedInputStream(new FileInputStream(open)), target);
+				return this.importWorkspace(w, new BufferedInputStream(new FileInputStream(open)), target);
 			} catch (FileNotFoundException e) {
 				throw new ImportException(e);
 			}
 		}
+		return null;
 	}
 	
-	public void importWorkspace(final Workspace w, final InputStream in, final String target){
-		m_Threads.submit(new Runnable(){
+	public Future<?> importWorkspace(final Workspace w, final InputStream in, final String target){
+		
+		return m_Threads.submit(new Runnable(){
 
 			@Override
 			public void run() {
@@ -198,7 +203,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		});
 	}
 	
-	public void importData(final Workspace w, final JProbeCore core, final Class<? extends Data> dataClass) throws ReadException{
+	public Future<?> importData(final Workspace w, final JProbeCore core, final Class<? extends Data> dataClass) throws ReadException{
 		if(!core.isReadable(dataClass)){
 			throw new ReadException("Data class "+dataClass+" not readable.");
 		}
@@ -213,14 +218,15 @@ public class BackgroundTaskManager implements Subject<Notification>{
 			FileFilter format = m_DataChooser.getFileFilter();
 			String source = getFilePath(open);
 			try {
-				this.importData(w, core, dataClass, format, new BufferedInputStream(new FileInputStream(open)), source);
+				return this.importData(w, core, dataClass, format, new BufferedInputStream(new FileInputStream(open)), source);
 			} catch (FileNotFoundException e) {
 				throw new ReadException(e);
 			}
 		}
+		return null;
 	}
 	
-	public void importData(
+	public Future<?> importData(
 			final Workspace w,
 			final JProbeCore core,
 			final Class<? extends Data> dataClass,
@@ -228,7 +234,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 			final InputStream in,
 			final String source){
 		
-		m_Threads.submit(new Runnable(){
+		return m_Threads.submit(new Runnable(){
 
 			@Override
 			public void run() {
@@ -259,7 +265,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		}
 	}
 	
-	public void exportData(final JProbeCore core, final Data d, final String dataName) throws WriteException{
+	public Future<?> exportData(final JProbeCore core, final Data d, final String dataName) throws WriteException{
 		if(!core.isWritable(d.getClass())){
 			throw new WriteException("Data class "+d.getClass()+" not writable.");
 		}
@@ -274,11 +280,12 @@ public class BackgroundTaskManager implements Subject<Notification>{
 			FileNameExtensionFilter format = (FileNameExtensionFilter) m_DataChooser.getFileFilter();
 			String source = getFilePath(export);
 			try {
-				this.exportData(core, d, dataName, format, new BufferedOutputStream(new FileOutputStream(export)), source);
+				return this.exportData(core, d, dataName, format, new BufferedOutputStream(new FileOutputStream(export)), source);
 			} catch (FileNotFoundException e) {
 				throw new WriteException(e);
 			}
 		}
+		return null;
 	}
 
 	protected static String getFilePath(File export) {
@@ -291,7 +298,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		return source;
 	}
 	
-	public void exportData(
+	public Future<?> exportData(
 			final JProbeCore core,
 			final Data d,
 			final String dataName,
@@ -299,7 +306,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 			final OutputStream out,
 			final String target){
 		
-		m_Threads.submit(new Runnable(){
+		return m_Threads.submit(new Runnable(){
 
 			@Override
 			public void run() {
