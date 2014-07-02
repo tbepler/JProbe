@@ -65,67 +65,92 @@ public class WorkspaceManager extends AbstractServiceListener<Object> {
 	}
 	
 	public Workspace newWorkspace() {
-		Workspace w = new JProbeWorkspace(m_Context, this.defaultName());
-		m_Workspaces.add(w);
+		Workspace w;
+		synchronized(this){
+			w = new JProbeWorkspace(m_Context, this.defaultName());
+			m_Workspaces.add(w);
+		}
 		this.notifyListeners(new CoreEvent(Type.WORKSPACE_NEW, w));
 		return w;
 	}
 	
-	public Workspace openWorkspace(InputStream in) throws LoadException{
-		Workspace w = new JProbeWorkspace(m_Context, "");
-		w.loadFrom(in, "");
-		m_Workspaces.add(w);
+	public Workspace openWorkspace(InputStream in, String source) throws LoadException{
+		Workspace w = new JProbeWorkspace(m_Context, source);
+		w.loadFrom(in, source);
+		synchronized(this){
+			m_Workspaces.add(w);
+		}
 		this.notifyListeners(new CoreEvent(Type.WORKSPACE_NEW, w));
 		return w;
 	}
 	
-	public Workspace getWorkspace(int index) {
+	public synchronized Workspace getWorkspace(int index) {
 		if(index >= 0 && index < m_Workspaces.size()){
 			return m_Workspaces.get(index);
 		}
 		return null;
 	}
 
-	public int indexOf(Workspace w) {
+	public synchronized int indexOf(Workspace w) {
 		return m_Workspaces.indexOf(w);
 	}
 
-	public List<Workspace> getWorkspaces() {
-		return Collections.unmodifiableList(m_Workspaces);
+	public synchronized List<Workspace> getWorkspaces() {
+		List<Workspace> copy = new ArrayList<Workspace>(m_Workspaces);
+		return Collections.unmodifiableList(copy);
 	}
 
 	public void closeWorkspace(int index) {
-		if(index >= 0 && index < m_Workspaces.size()){
-			Workspace closing = m_Workspaces.get(index);
-			m_Workspaces.remove(index);
+		Workspace closing;
+		synchronized(this){
+			if(index >= 0 && index < m_Workspaces.size()){
+				closing = m_Workspaces.get(index);
+				m_Workspaces.remove(index);
+			}else{
+				closing = null;
+			}
+		}
+		if(closing != null){
 			this.notifyListeners(new CoreEvent(Type.WORKSPACE_CLOSED, closing));
 		}
 	}
 
 	public void closeWorkspace(Workspace w) {
-		int index = this.indexOf(w);
-		if(index >= 0 && index < m_Workspaces.size()){
-			m_Workspaces.remove(index);
-			this.notifyListeners(new CoreEvent(Type.WORKSPACE_CLOSED, w));
+		Workspace removed = null;
+		synchronized(this){
+			int index = this.indexOf(w);
+			if(index >= 0 && index < m_Workspaces.size()){
+				removed = m_Workspaces.remove(index);
+			}
 		}
+		if(removed != null){
+			this.notifyListeners(new CoreEvent(Type.WORKSPACE_CLOSED, removed));
+		}
+		
 	}
 
-	public int numWorkspaces() {
+	public synchronized int numWorkspaces() {
 		return m_Workspaces.size();
 	}
 	
 	protected void notifyListeners(CoreEvent event){
-		for(CoreListener l : m_Listeners){
-			l.update(m_Core, event);
+		synchronized(m_Listeners){
+			for(CoreListener l : m_Listeners){
+				l.update(m_Core, event);
+			}
 		}
 	}
 	
 	public void addCoreListener(CoreListener l){
-		m_Listeners.add(l);
+		synchronized(m_Listeners){
+			m_Listeners.add(l);
+		}
 	}
 	
 	public void removeCoreListener(CoreListener l){
-		m_Listeners.remove(l);
+		synchronized(m_Listeners){
+			m_Listeners.remove(l);
+		}
 	}
 
 	@Override

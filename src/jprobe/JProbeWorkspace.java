@@ -152,4 +152,9 @@ public class JProbeWorkspace implements Workspace{
 		return m_Data.contains(data);
 	}
 
+	@Override
+	public boolean isEmpty() {
+		return m_Data.isEmpty();
+	}
+
 }

@@ -49,6 +49,10 @@ public class DataManager implements Saveable{
 		m_Parent = parent;
 		m_Name = name;
 	}
+	
+	public synchronized boolean isEmpty(){
+		return m_Data.isEmpty();
+	}
 
 	protected synchronized void notifyListeners(WorkspaceEvent event){
 		for(WorkspaceListener l : m_WorkspaceListeners){

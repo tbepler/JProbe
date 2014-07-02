@@ -126,10 +126,11 @@ public interface JProbeCore {
 	/**
 	 * Opens a new {@link Workspace} loaded from the given InputStream.
 	 * @param in - InputStream from which to load the Workspace
+	 * @param source - String naming the source of the InputStream
 	 * @return - the opened Workspace
 	 * @throws LoadException - thrown if an error occurs while loading the Workspace from the InputStream
 	 */
-	public Workspace openWorkspace(InputStream in) throws LoadException;
+	public Workspace openWorkspace(InputStream in, String source) throws LoadException;
 	
 	/**
 	 * Returns the {@link Workspace} at the given index, if it exists. If index < 0 or index >= {@link #numWorkspaces()},

@@ -213,8 +213,8 @@ public class JProbe implements JProbeCore{
 	}
 	
 	@Override
-	public Workspace openWorkspace(InputStream in) throws LoadException{
-		return m_WorkspaceManager.openWorkspace(in);
+	public Workspace openWorkspace(InputStream in, String source) throws LoadException{
+		return m_WorkspaceManager.openWorkspace(in, source);
 	}
 
 	@Override
