@@ -90,7 +90,6 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 			String frameName,
 			JProbeCore core,
 			Workspace w,
-			ExecutorService threadPool,
 			CloseAction closeAction,
 			GUIConfig config){
 		
@@ -100,7 +99,7 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 		m_Workspace = w;
 		m_Workspace.addSaveableListener(this);
 		m_Workspace.addWorkspaceListener(this);
-		m_TaskManager = new BackgroundTaskManager(this, threadPool);
+		m_TaskManager = new BackgroundTaskManager(this);
 		m_TaskManager.register(this);
 		m_CloseAction = closeAction;
 		
@@ -211,6 +210,8 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 	
 	@Override
 	public void dispose(){
+		m_TaskManager.shutdownAndWait();
+		this.setVisible(false);
 		super.dispose();
 	}
 	
