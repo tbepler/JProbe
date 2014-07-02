@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.osgi.framework.BundleContext;
 
+import util.WorkerThread;
 import util.save.ImportException;
 import util.save.LoadException;
 import util.save.SaveException;
@@ -21,13 +22,21 @@ public class JProbeWorkspace implements Workspace{
 	
 	private static final String DATABASE_TAG = "xXxDatabase9000";
 	
+	private final WorkerThread m_EventThread;
 	private final DataManager m_Data;
 	private final SaveManager m_Save;
 	
 	public JProbeWorkspace(BundleContext context, String name){
-		m_Data = new DataManager(context, this, name);
-		m_Save = new SaveManager(this);
+		m_EventThread = new WorkspaceEventThread();
+		m_EventThread.start();
+		m_Data = new DataManager(context, this, name, m_EventThread);
+		m_Save = new SaveManager(this, m_EventThread);
 		m_Save.addSaveable(m_Data, DATABASE_TAG);
+	}
+	
+	public void close() throws InterruptedException{
+		m_EventThread.shutdown();
+		m_EventThread.waitForShutdown();
 	}
 	
 	@Override

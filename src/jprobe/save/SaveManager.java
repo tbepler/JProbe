@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import util.WorkerThread;
 import util.save.ImportException;
 import util.save.LoadException;
 import util.save.SaveException;
@@ -26,18 +27,22 @@ import jprobe.services.Workspace;
 
 public class SaveManager implements Saveable, SaveableListener{
 	
-	private final ReadWriteLock m_SaveablesLock = new ReentrantReadWriteLock(false);
-	private final ReadWriteLock m_ListenersLock = new ReentrantReadWriteLock(false);
+	private final ReadWriteLock m_SaveablesLock = new ReentrantReadWriteLock(true);
+	private final ReadWriteLock m_ListenersLock = new ReentrantReadWriteLock(true);
+	private final ReadWriteLock m_ChangeLock = new ReentrantReadWriteLock(true);
 	
 	private final Map<String, Saveable> m_Saveables = new HashMap<String, Saveable>();
 	private final Collection<SaveableListener> m_Listeners = new HashSet<SaveableListener>();
+	
+	private final WorkerThread m_EventThread;
 	
 	private volatile boolean m_Changes = false;
 	
 	private final Workspace m_Parent;
 	
-	public SaveManager(Workspace parent){
+	public SaveManager(Workspace parent, WorkerThread eventThread){
 		m_Parent = parent;
+		m_EventThread = eventThread;
 	}
 	
 	public void addSaveable(Saveable s, String tag){
@@ -49,11 +54,11 @@ public class SaveManager implements Saveable, SaveableListener{
 			}
 			m_Saveables.put(tag, s);
 			changed = changed || s.unsavedChanges();
+			this.setChanged(changed);
 			s.addSaveableListener(this);
 		}finally{
 			m_SaveablesLock.writeLock().unlock();
 		}
-		this.setChanged(changed);
 	}
 	
 	public void removeSaveable(Saveable s, String tag){
@@ -64,30 +69,44 @@ public class SaveManager implements Saveable, SaveableListener{
 			if(removed){
 				Saveable remove = m_Saveables.remove(tag);
 				remove.removeSaveableListener(this);
+				this.updateChanges();
 			}
 		}finally{
 			m_SaveablesLock.writeLock().unlock();
 		}
-		if(removed){
-			this.updateChanges();
-		}
 	}
 	
-	private void notifyListeners(SaveableEvent event){
-		m_ListenersLock.readLock().lock();
-		try{
-			for(SaveableListener l : m_Listeners){
-				l.update(m_Parent, event);
+	private void notifyListeners(final SaveableEvent event){
+		m_EventThread.execute(new Runnable(){
+
+			@Override
+			public void run() {
+				m_ListenersLock.readLock().lock();
+				try{
+					for(SaveableListener l : m_Listeners){
+						l.update(m_Parent, event);
+					}
+				}finally{
+					m_ListenersLock.readLock().unlock();
+				}
 			}
-		}finally{
-			m_ListenersLock.readLock().unlock();
-		}
+			
+		});
+		
 	}
 	
 	private void setChanged(boolean changed){
-		if(changed != m_Changes){
-			m_Changes = changed;
-			this.notifyListeners(new SaveableEvent(Type.CHANGED));
+		if(changed == this.unsavedChanges()){
+			return;
+		}
+		m_ChangeLock.writeLock().lock();
+		try{
+			if(changed != m_Changes){
+				m_Changes = changed;
+				this.notifyListeners(new SaveableEvent(Type.CHANGED));
+			}
+		}finally{
+			m_ChangeLock.writeLock().unlock();
 		}
 	}
 	
@@ -101,15 +120,22 @@ public class SaveManager implements Saveable, SaveableListener{
 					break;
 				}
 			}
+			this.setChanged(changed);
 		}finally{
 			m_SaveablesLock.readLock().unlock();
 		}
-		this.setChanged(changed);
 	}
 	
 	@Override
 	public boolean unsavedChanges(){
-		return m_Changes;
+		boolean changes;
+		m_ChangeLock.readLock().lock();
+		try{
+			changes = m_Changes;
+		}finally{
+			m_ChangeLock.readLock().unlock();
+		}
+		return changes;
 	}
 
 	@Override
@@ -121,17 +147,16 @@ public class SaveManager implements Saveable, SaveableListener{
 		try{
 			ObjectOutputStream oout = new ObjectOutputStream(new BufferedOutputStream(out));
 			bytes += SaveUtil.save(oout, outName, m_Saveables);
-			m_SaveablesLock.readLock().unlock();
 			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Saved workspace "+m_Parent.getWorkspaceName()+" to "+outName);
 			this.notifyListeners(new SaveableEvent(Type.SAVED, outName, start));
 		} catch (SaveException e){
-			m_SaveablesLock.readLock().unlock();
 			this.notifyListeners(new SaveableEvent(Type.FAILED, outName, start));
 			throw e;
 		} catch (Throwable t){
-			m_SaveablesLock.readLock().unlock();
 			this.notifyListeners(new SaveableEvent(Type.FAILED, outName, start));
 			throw new SaveException(t);
+		}finally{
+			m_SaveablesLock.readLock().unlock();
 		}
 		return bytes;
 	}
@@ -144,17 +169,16 @@ public class SaveManager implements Saveable, SaveableListener{
 		try {
 			ObjectInputStream oin = new ObjectInputStream(new BufferedInputStream(in));
 			SaveUtil.load(oin, sourceName, m_Saveables);
-			m_SaveablesLock.readLock().unlock();
 			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Opened workspace "+m_Parent.getWorkspaceName() + " from source "+sourceName);
 			this.notifyListeners(new SaveableEvent(Type.LOADED, sourceName, start));
 		} catch (LoadException e) {
-			m_SaveablesLock.readLock().unlock();
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 			throw e;
 		} catch (Throwable t){
-			m_SaveablesLock.readLock().unlock();
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 			throw new LoadException(t);
+		}finally{
+			m_SaveablesLock.readLock().unlock();
 		}
 	}
 
@@ -166,17 +190,16 @@ public class SaveManager implements Saveable, SaveableListener{
 		try {
 			ObjectInputStream oin = new ObjectInputStream(new BufferedInputStream(in));
 			SaveUtil.importFrom(oin, sourceName, m_Saveables);
-			m_SaveablesLock.readLock().unlock();
 			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Imported workspace from "+sourceName);
 			this.notifyListeners(new SaveableEvent(Type.IMPORTED, sourceName, start));
 		} catch (ImportException e) {
-			m_SaveablesLock.readLock().unlock();
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 			throw e;
 		} catch (Throwable t){
-			m_SaveablesLock.readLock().unlock();
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 			throw new ImportException(t);
+		}finally{
+			m_SaveablesLock.readLock().unlock();
 		}
 	}
 

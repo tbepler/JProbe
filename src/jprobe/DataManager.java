@@ -11,9 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -24,6 +21,7 @@ import org.osgi.framework.FrameworkUtil;
 import util.ByteCounterOutputStream;
 import util.ClassLoaderObjectInputStream;
 import util.OSGIUtils;
+import util.WorkerThread;
 import util.save.ImportException;
 import util.save.LoadException;
 import util.save.SaveException;
@@ -44,8 +42,6 @@ public class DataManager implements Saveable{
 	private final ReadWriteLock m_NameLock = new ReentrantReadWriteLock(true);
 	private final ReadWriteLock m_DataLock = new ReentrantReadWriteLock(true);
 	
-	private final ExecutorService m_EventThread = Executors.newSingleThreadExecutor();
-	
 	private final Collection<WorkspaceListener> m_WorkspaceListeners = new HashSet<WorkspaceListener>();
 	private final Collection<SaveableListener> m_SaveableListeners = new HashSet<SaveableListener>();
 	
@@ -55,14 +51,17 @@ public class DataManager implements Saveable{
 	
 	private final BundleContext m_Context;
 	private final Workspace m_Parent;
+
+	private final WorkerThread m_EventThread;
 	
 	private boolean m_ChangesSinceLastSave = false;
 	private String m_Name;
 	
-	public DataManager(BundleContext context, Workspace parent, String name){
+	public DataManager(BundleContext context, Workspace parent, String name, WorkerThread eventThread){
 		m_Context = context;
 		m_Parent = parent;
 		m_Name = name;
+		m_EventThread = eventThread;
 	}
 	
 	public boolean isEmpty(){
@@ -78,47 +77,43 @@ public class DataManager implements Saveable{
 	
 	public void shutdownAndWait() throws InterruptedException{
 		m_EventThread.shutdown();
-		m_EventThread.awaitTermination(-1, TimeUnit.SECONDS);
+		m_EventThread.waitForShutdown();
 	}
 
 	protected void notifyListeners(final WorkspaceEvent event){
-		synchronized(m_EventThread){
-			m_EventThread.execute(new Runnable(){
+		m_EventThread.execute(new Runnable(){
 
-				@Override
-				public void run() {
-					m_WorkspaceListenersLock.readLock().lock();
-					try{
-						for(WorkspaceListener l : m_WorkspaceListeners){
-							l.update(m_Parent, event);
-						}
-					}finally{
-						m_WorkspaceListenersLock.readLock().unlock();
+			@Override
+			public void run() {
+				m_WorkspaceListenersLock.readLock().lock();
+				try{
+					for(WorkspaceListener l : m_WorkspaceListeners){
+						l.update(m_Parent, event);
 					}
+				}finally{
+					m_WorkspaceListenersLock.readLock().unlock();
 				}
+			}
 
-			});
-		}
+		});
 	}
 	
 	protected void notifyListeners(final SaveableEvent event){
-		synchronized(m_EventThread){
-			m_EventThread.execute(new Runnable(){
+		m_EventThread.execute(new Runnable(){
 
-				@Override
-				public void run() {
-					m_SaveableListenersLock.readLock().lock();
-					try{
-						for(SaveableListener l : m_SaveableListeners){
-							l.update(m_Parent, event);
-						}
-					}finally{
-						m_SaveableListenersLock.readLock().unlock();
+			@Override
+			public void run() {
+				m_SaveableListenersLock.readLock().lock();
+				try{
+					for(SaveableListener l : m_SaveableListeners){
+						l.update(m_Parent, event);
 					}
+				}finally{
+					m_SaveableListenersLock.readLock().unlock();
 				}
+			}
 
-			});
-		}
+		});
 	}
 	
 	private String assignName(Data d){
