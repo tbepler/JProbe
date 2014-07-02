@@ -73,14 +73,14 @@ public class Constants {
 	public static final String SAVE_WORKSPACE_START = "Saving workspace: ";
 	public static final String SAVE_WORKSPACE_ERROR = "Error saving workspace: ";
 	public static final String SAVE_WORKSPACE_SUCCESS = "Saved workspace: ";
-	
-	public static final String LOAD_WORKSPACE_START = "Loading workspace: ";
-	public static final String LOAD_WORKSPACE_ERROR = "Error loading workspace: ";
-	public static final String LOAD_WORKSPACE_SUCCESS = "Loaded workspace: ";
 
 	public static final String OPEN_WORKSPACE_START = "Opening workspace: ";
 	public static final String OPEN_WORKSPACE_ERROR = "Error opening workspace: ";
 	public static final String OPEN_WORKSPACE_SUCCESS = "Opened workspace: ";
+	
+	public static final String LOAD_WORKSPACE_START = OPEN_WORKSPACE_START;
+	public static final String LOAD_WORKSPACE_ERROR = OPEN_WORKSPACE_ERROR;
+	public static final String LOAD_WORKSPACE_SUCCESS = OPEN_WORKSPACE_SUCCESS;
 	
 	public static final String IMPORT_WORKSPACE_START = "Importing workspace: ";
 	public static final String IMPORT_WORKSPACE_ERROR = "Error importing workspace: ";

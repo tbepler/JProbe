@@ -292,12 +292,12 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 
 	@Override
 	public Future<?> openWorkspace() throws LoadException {
-		return m_TaskManager.openWorkspace(m_Core);
+		return m_TaskManager.openWorkspace(m_Core, m_Workspace);
 	}
 
 	@Override
 	public Future<?> openWorkspace(InputStream in, String name) throws LoadException {
-		return m_TaskManager.openWorkspace(m_Core, in, name);
+		return m_TaskManager.openWorkspace(m_Core, m_Workspace, in, name);
 	}
 
 	@Override
@@ -384,6 +384,24 @@ public class JProbeFrame extends JFrame implements JProbeWindow, WorkspaceListen
 		if(observed == m_TaskManager){
 			this.pushNotification(notification);
 		}
+	}
+
+	@Override
+	public void reportException(Exception e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reportError(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reportWarning(String message) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

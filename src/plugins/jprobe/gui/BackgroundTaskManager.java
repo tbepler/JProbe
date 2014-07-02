@@ -1,6 +1,5 @@
 package plugins.jprobe.gui;
 
-import java.awt.Frame;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -13,6 +12,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.swing.JFileChooser;
@@ -25,7 +25,6 @@ import util.Subject;
 import util.save.ImportException;
 import util.save.LoadException;
 import util.save.SaveException;
-import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.Workspace;
 import jprobe.services.data.Data;
@@ -39,15 +38,20 @@ public class BackgroundTaskManager implements Subject<Notification>{
 	private final JFileChooser m_DataChooser = new JFileChooser();
 	private final JFileChooser m_WorkspaceChooser = new JFileChooser();
 	
-	private final Frame m_Parent;
+	private final JProbeFrame m_Parent;
 	private final ExecutorService m_Threads;
+	private final ExecutorService m_Save = Executors.newSingleThreadExecutor();
 	
-	private File m_SaveFile = null;
+	private volatile File m_SaveFile = null;
 	
-	public BackgroundTaskManager(Frame parent, ExecutorService threadPool){
+	public BackgroundTaskManager(JProbeFrame parent, ExecutorService threadPool){
 		m_Parent = parent;
 		m_Threads = threadPool;
 		m_WorkspaceChooser.setFileFilter(Constants.SAVE_FILE_FILTER);
+	}
+	
+	public void shutdown(){
+		m_Save.shutdown();
 	}
 	
 	public File getLastSaveFile(){
@@ -128,27 +132,27 @@ public class BackgroundTaskManager implements Subject<Notification>{
 	
 	public Future<?> saveWorkspace(final Workspace w, final OutputStream out, final String target){
 		
-		return m_Threads.submit(new Runnable(){
+		return m_Save.submit(new Runnable(){
 
 			@Override
 			public void run() {
 				try {
 					w.saveTo(out, target);
 				} catch (SaveException e) {
-					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
+					m_Parent.reportException(e);
 				}
 			}
 			
 		});
 	}
 	
-	public Future<?> openWorkspace(final JProbeCore core) throws LoadException{
+	public Future<?> openWorkspace(final JProbeCore core, final Workspace cur) throws LoadException{
 		int returnVal = m_WorkspaceChooser.showDialog(m_Parent, Constants.OPEN_APPROVE_TEXT);
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File open = m_WorkspaceChooser.getSelectedFile();
 			String target = getFilePath(open);
 			try {
-				return this.openWorkspace(core, new BufferedInputStream(new FileInputStream(open)), target);
+				return this.openWorkspace(core, cur, new BufferedInputStream(new FileInputStream(open)), target);
 			} catch (FileNotFoundException e) {
 				throw new LoadException(e);
 			}
@@ -156,19 +160,26 @@ public class BackgroundTaskManager implements Subject<Notification>{
 		return null;
 	}
 	
-	public Future<?> openWorkspace(final JProbeCore core, final InputStream in, final String target){
+	public Future<?> openWorkspace(final JProbeCore core, final Workspace cur, final InputStream in, final String target){
 		
 		return m_Threads.submit(new Runnable(){
 
 			@Override
 			public void run() {
+				if(cur.isEmpty() && !cur.unsavedChanges() && m_SaveFile == null){
+					try {
+						cur.loadFrom(in, target);
+					} catch (LoadException e) {
+						m_Parent.reportException(e);
+					}
+				}
 				Notification start = Notification.startEvent(Constants.OPEN_WORKSPACE_START + target);
 				fireNotification(start);
 				try {
 					core.openWorkspace(in);
 					fireNotification(Notification.endEvent(Constants.OPEN_WORKSPACE_SUCCESS + target, start));
 				} catch (LoadException e) {
-					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
+					m_Parent.reportException(e);
 					fireNotification(Notification.endEvent(Constants.OPEN_WORKSPACE_ERROR + target, start));
 				}
 				
@@ -200,7 +211,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 				try {
 					w.importFrom(in, target);
 				} catch (ImportException e) {
-					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
+					m_Parent.reportException(e);
 				}
 			}
 			
@@ -249,7 +260,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 					addDataToWorkspace(w, source, imported);
 					fireNotification(Notification.endEvent(Constants.getImportDataSuccess(dataClass, source), start));
 				} catch (ReadException e) {
-					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
+					m_Parent.reportException(e);
 					fireNotification(Notification.endEvent(Constants.getImportDataError(dataClass, source), start));
 				}
 			}
@@ -320,7 +331,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 					core.writeData(d, format, out);
 					fireNotification(Notification.endEvent(Constants.getExportDataSuccess(dataName, target), start));
 				} catch (WriteException e) {
-					ErrorHandler.getInstance().handleException(e, GUIActivator.getBundle());
+					m_Parent.reportException(e);
 					fireNotification(Notification.endEvent(Constants.getExportDataError(dataName, target), start));
 				}
 			}

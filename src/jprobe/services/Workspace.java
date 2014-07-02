@@ -48,6 +48,12 @@ public interface Workspace extends Saveable{
 	public void setWorkspaceName(String name);
 	
 	/**
+	 * Returns true if there is no data currently stored in this workspace, false otherwise.
+	 * @return
+	 */
+	public boolean isEmpty();
+	
+	/**
 	 * Adds the given {@link Data} object to this Workspace using the given name for the data.
 	 * If this Workspace already contains a Data object with the specified name, then that
 	 * Data object will be removed from the Workspace.
