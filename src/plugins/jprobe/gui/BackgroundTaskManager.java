@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -39,19 +40,22 @@ public class BackgroundTaskManager implements Subject<Notification>{
 	private final JFileChooser m_WorkspaceChooser = new JFileChooser();
 	
 	private final JProbeFrame m_Parent;
-	private final ExecutorService m_Threads;
-	private final ExecutorService m_Save = Executors.newSingleThreadExecutor();
+	private final ExecutorService m_Threads = Executors.newCachedThreadPool();
 	
 	private volatile File m_SaveFile = null;
 	
-	public BackgroundTaskManager(JProbeFrame parent, ExecutorService threadPool){
+	public BackgroundTaskManager(JProbeFrame parent){
 		m_Parent = parent;
-		m_Threads = threadPool;
 		m_WorkspaceChooser.setFileFilter(Constants.SAVE_FILE_FILTER);
 	}
 	
-	public void shutdown(){
-		m_Save.shutdown();
+	public void shutdownAndWait(){
+		m_Threads.shutdown();
+		try {
+			m_Threads.awaitTermination(-1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			m_Parent.reportException(e);
+		}
 	}
 	
 	public File getLastSaveFile(){
@@ -132,7 +136,7 @@ public class BackgroundTaskManager implements Subject<Notification>{
 	
 	public Future<?> saveWorkspace(final Workspace w, final OutputStream out, final String target){
 		
-		return m_Save.submit(new Runnable(){
+		return m_Threads.submit(new Runnable(){
 
 			@Override
 			public void run() {
