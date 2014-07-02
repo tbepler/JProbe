@@ -3,6 +3,7 @@ package jprobe.services;
 import org.osgi.framework.Bundle;
 
 import util.logging.Log;
+import util.logging.Log.Level;
 
 public class JProbeLog {
 	
@@ -25,18 +26,21 @@ public class JProbeLog {
 		}
 	}
 	
-	public synchronized void write(Bundle writer, String message){
+	public synchronized void write(Level level, Bundle writer, String message){
+		if(Debug.getLevel() == Debug.OFF && level == Level.DEBUG){
+			return;
+		}
 		if(m_Log != null){
 			StringBuilder builder = new StringBuilder();
-			builder.append("<");
+			builder.append("(");
 			if(writer != null){
 				builder.append(writer.getSymbolicName());
 			}else{
 				builder.append("UnknownBundle");
 			}
-			builder.append("> ");
+			builder.append(") ");
 			builder.append(message);
-			m_Log.write(builder.toString());
+			m_Log.write(level, builder.toString());
 		}
 	}
 	

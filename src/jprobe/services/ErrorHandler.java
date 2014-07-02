@@ -6,12 +6,11 @@ import java.util.HashSet;
 import org.osgi.framework.Bundle;
 
 import util.logging.Log;
+import util.logging.Log.Level;
 
 public class ErrorHandler {
 	
 	private static ErrorHandler m_Instance = new ErrorHandler();
-	
-	private Log m_ErrorLog = null;
 	private Collection<ErrorManager> m_ErrorManagers = new HashSet<ErrorManager>();
 	
 	private ErrorHandler(){
@@ -22,26 +21,9 @@ public class ErrorHandler {
 		return m_Instance;
 	}
 	
-	public void init(Log errorLog){
-		//only init if the Log is still null
-		if(m_ErrorLog == null){
-			m_ErrorLog = errorLog;
-		}
-	}
-	
 	public synchronized void handleWarning(String warning, Bundle thrower){
 		System.err.println("Warning: "+warning);
-		if(m_ErrorLog != null){
-			StringBuilder builder = new StringBuilder();
-			builder.append("<");
-			if(thrower != null){
-				builder.append(thrower.getSymbolicName());
-			}else{
-				builder.append("UnknownBundle");
-			}
-			builder.append(">").append(" Warning: ").append(warning);
-			m_ErrorLog.write(builder.toString());
-		}
+		JProbeLog.getInstance().write(Level.WARNING, thrower, warning);
 		for(ErrorManager em : m_ErrorManagers){
 			em.handleWarning(warning, thrower);
 		}
@@ -49,6 +31,10 @@ public class ErrorHandler {
 	
 	public synchronized void handleException(Exception e, Bundle thrower){
 		System.err.println("Error: "+e.getMessage());
+
+		JProbeLog.getInstance().write(Level.WARNING, thrower, warning);
+		StringBuilder builder = new StringBuilder(e.getMessage());
+		
 		if(m_ErrorLog != null){
 			StringBuilder builder = new StringBuilder();
 			builder.append("<");
