@@ -23,18 +23,23 @@ public interface Saveable {
 	 * behavior cannot be guaranteed.
 	 * @param out - OutputStream to write to
 	 * @return - number of bytes written to the stream
+	 * @throws SaveException - thrown if an error occurred while saving
 	 */
 	public long saveTo(OutputStream out, String outName) throws SaveException;
 	
 	/**
-	 * Load this saveable objects data from the given InputStream. 
+	 * Load this saveable objects data from the given InputStream using the sourceName. 
 	 * @param in
+	 * @param sourceName
+	 * @throws LoadException - thrown if an error occurred while loading
 	 */
 	public void loadFrom(InputStream in, String sourceName) throws LoadException;
 	
 	/**
-	 * Import data from the given InputStream into this saveable object.
+	 * Import data from the given InputStream into this saveable object using the sourceName.
 	 * @param in
+	 * @param sourceName
+	 * @throws ImportException - thrown if an error occurred while importing
 	 */
 	public void importFrom(InputStream in, String sourceName) throws ImportException;
 	

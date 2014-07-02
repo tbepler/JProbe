@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.osgi.framework.BundleContext;
 
+import util.save.ImportException;
+import util.save.LoadException;
+import util.save.SaveException;
 import util.save.Saveable;
 import util.save.SaveableListener;
 import jprobe.save.SaveManager;
@@ -33,17 +36,17 @@ public class JProbeWorkspace implements Workspace{
 	}
 
 	@Override
-	public long saveTo(OutputStream out, String outName) {
+	public long saveTo(OutputStream out, String outName) throws SaveException{
 		return m_Save.saveTo(out, outName);
 	}
 
 	@Override
-	public void loadFrom(InputStream in, String sourceName) {
+	public void loadFrom(InputStream in, String sourceName) throws LoadException{
 		m_Save.loadFrom(in, sourceName);
 	}
 
 	@Override
-	public void importFrom(InputStream in, String sourceName) {
+	public void importFrom(InputStream in, String sourceName) throws ImportException{
 		m_Save.importFrom(in, sourceName);
 	}
 

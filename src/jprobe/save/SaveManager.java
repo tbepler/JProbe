@@ -21,7 +21,6 @@ import util.save.SaveableEvent;
 import util.save.SaveableEvent.Type;
 import util.save.SaveableListener;
 import jprobe.JProbeActivator;
-import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeLog;
 import jprobe.services.Workspace;
 
@@ -114,7 +113,7 @@ public class SaveManager implements Saveable, SaveableListener{
 	}
 
 	@Override
-	public long saveTo(OutputStream out, String outName) {
+	public long saveTo(OutputStream out, String outName) throws SaveException{
 		SaveableEvent start = new SaveableEvent(Type.SAVING, outName);
 		this.notifyListeners(start);
 		long bytes = 0;
@@ -127,18 +126,18 @@ public class SaveManager implements Saveable, SaveableListener{
 			this.notifyListeners(new SaveableEvent(Type.SAVED, outName, start));
 		} catch (SaveException e){
 			m_SaveablesLock.readLock().unlock();
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			this.notifyListeners(new SaveableEvent(Type.FAILED, outName, start));
+			throw e;
 		} catch (Throwable t){
 			m_SaveablesLock.readLock().unlock();
-			ErrorHandler.getInstance().handleException(new RuntimeException(t), JProbeActivator.getBundle());
 			this.notifyListeners(new SaveableEvent(Type.FAILED, outName, start));
+			throw new SaveException(t);
 		}
 		return bytes;
 	}
 
 	@Override
-	public void loadFrom(InputStream in, String sourceName) {
+	public void loadFrom(InputStream in, String sourceName) throws LoadException{
 		SaveableEvent start = new SaveableEvent(Type.LOADING, sourceName);
 		this.notifyListeners(start);
 		m_SaveablesLock.readLock().lock();
@@ -150,17 +149,17 @@ public class SaveManager implements Saveable, SaveableListener{
 			this.notifyListeners(new SaveableEvent(Type.LOADED, sourceName, start));
 		} catch (LoadException e) {
 			m_SaveablesLock.readLock().unlock();
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
+			throw e;
 		} catch (Throwable t){
 			m_SaveablesLock.readLock().unlock();
-			ErrorHandler.getInstance().handleException(new RuntimeException(t), JProbeActivator.getBundle());
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
+			throw new LoadException(t);
 		}
 	}
 
 	@Override
-	public void importFrom(InputStream in, String sourceName) {
+	public void importFrom(InputStream in, String sourceName) throws ImportException{
 		SaveableEvent start = new SaveableEvent(Type.IMPORTING, sourceName);
 		this.notifyListeners(start);
 		m_SaveablesLock.readLock().lock();
@@ -172,12 +171,12 @@ public class SaveManager implements Saveable, SaveableListener{
 			this.notifyListeners(new SaveableEvent(Type.IMPORTED, sourceName, start));
 		} catch (ImportException e) {
 			m_SaveablesLock.readLock().unlock();
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
+			throw e;
 		} catch (Throwable t){
 			m_SaveablesLock.readLock().unlock();
-			ErrorHandler.getInstance().handleException(new RuntimeException(t), JProbeActivator.getBundle());
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
+			throw new ImportException(t);
 		}
 	}
 
