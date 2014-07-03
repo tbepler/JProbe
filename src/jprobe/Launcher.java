@@ -8,11 +8,13 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.FixedWindowRollingPolicy;
 import ch.qos.logback.core.rolling.RollingFileAppender;
+import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 
 public class Launcher {
+	
+	private static org.slf4j.Logger LOG;
 	
 	public static void main(String[] args){
 		
@@ -20,11 +22,14 @@ public class Launcher {
 		initUserDirectory();
 		//init the log
 		initLog();
+		LOG = LoggerFactory.getLogger(Launcher.class);
+		LOG.info("Launching {} - {}", Constants.NAME, Constants.VERSION);
 		
 		//init the user subdirectories
 		initDir(Constants.USER_PLUGINS_DIR);
 		initDir(Constants.FELIX_CACHE_DIR);
 		initDir(Constants.PREFERENCES_DIR);
+		
 		
 		Configuration config = new Configuration(new File(Constants.CONFIG_FILE), args);
 		//System.out.println(JAR_URL);
@@ -43,12 +48,25 @@ public class Launcher {
 		rfAppender.setContext(context);
 		rfAppender.setFile(Constants.LOG_DIR + Constants.LOG_NAME);
 		
+		//might want to change this policy in the future.
 		FixedWindowRollingPolicy fwrPolicy = new FixedWindowRollingPolicy();
 		fwrPolicy.setContext(context);
 		fwrPolicy.setFileNamePattern(Constants.LOG_DIR + Constants.LOG_NAME_PATTERN);
 		fwrPolicy.setMinIndex(1);
 		fwrPolicy.setMaxIndex(Constants.MAX_LOGS);
+		fwrPolicy.setParent(rfAppender);
+		fwrPolicy.start();
 		
+		SizeBasedTriggeringPolicy<ILoggingEvent> triggeringPolicy = new SizeBasedTriggeringPolicy<ILoggingEvent>();
+		triggeringPolicy.setMaxFileSize(Constants.MAX_LOG_FILE_SIZE);
+		triggeringPolicy.start();
+		
+		rfAppender.setRollingPolicy(fwrPolicy);
+		rfAppender.setTriggeringPolicy(triggeringPolicy);
+		
+		rootLogger.addAppender(rfAppender);
+		
+		rootLogger.debug("Root log initialized.");
 		
 	}
 
@@ -82,7 +100,7 @@ public class Launcher {
 	private static File initDir(String path){
 		File f= new File(path);
 		if(!f.exists()){
-			System.err.println("Initializing directory "+f);
+			LOG.info("Initializing directory {}", f);
 			f.mkdirs();
 		}
 		return f;

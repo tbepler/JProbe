@@ -59,6 +59,7 @@ public class Constants {
 	public static final String LOG_NAME = "jprobe.log";
 	public static final String LOG_NAME_PATTERN = "jprobe%i.log.zip";
 	public static final int MAX_LOGS = 5;
+	public static final String MAX_LOG_FILE_SIZE = "10MB";
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	
