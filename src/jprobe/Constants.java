@@ -20,12 +20,35 @@ public class Constants {
 	public static final String JAR_DIR = JAR_URL.substring(0, JAR_URL.lastIndexOf(URL_PATH_SEPARATOR));
 	
 	public static final String PLUGIN_AUTODEPLOY = JAR_DIR + File.separator + "plugins";
+
+	public static final String USER_HOME_DIR = System.getProperty("user.home");
+	
+	public static final String USER_DIR_NAME = "jprobe";
+	public static final String USER_PLUGINS_DIR_NAME = "plugins";
+	public static final String FELIX_CACHE_DIR_NAME = ".felix-plugin-cache";
+	public static final String PROPERTIES_DIR_NAME= "properties";
+	public static final String LOG_DIR_NAME = "logs";
+	
+	public static final String LOG_NAME = "jprobe.log";
+	public static final String LOG_NAME_PATTERN = "jprobe%i.log.zip";
+	public static final int MAX_LOGS = 5;
+	public static final String MAX_LOG_FILE_SIZE = "10MB";
+	public static final String LOG_PATTERN = "%d %-5level [%thread] %logger: %msg%n";
+
+	public static final String PROPS_FILE_NAME = "jprobe.core.properties";
+	public static final String PROPS_LOG_LEVEL = "rootLogLevel";
+	public static final String DEFAULT_LOG_LEVEL = "INFO";
+	public static final String PROPS_FELIX_STORAGE_CLEAN = "cleanFelixCache";
+	public static final String DEFAULT_FELIX_STORAGE_CLEAN = "onFirstInit";
 	
 	public static final String FELIX_EXPORT_PACKAGES = "jprobe.services;version=1.0.0," +
 			"jprobe.services.data;version=1.0.0," +
 			"jprobe.services.function;version=1.0.0,"
 			+ "jprobe.services.function.components;version=1.0.0,"
+			//export the crossplatform library
 			+ "bepler.crossplatform;version=1.0.0,"
+			//export the slf4j library
+			+ "org.slf4j;version=1.7.7,"
 			+ "util.progress;version=1.0.0,"
 			+ "util.gui;version=1.0.0,"
 			+ "util;version=1.0.0,"
@@ -40,26 +63,10 @@ public class Constants {
 			+ "util.genome.pwm;version=1.0.0,"
 			+ "util.xmlserializer;version=1.0.0";
 	
-	public static final String USER_HOME_DIR = System.getProperty("user.home");
-	public static String USER_JPROBE_DIR = USER_HOME_DIR + File.separator + "jprobe";
-	
-	public static String USER_PLUGINS_DIR = USER_JPROBE_DIR + File.separator + "plugins";
-	
-	public static String FELIX_CACHE_DIR = USER_JPROBE_DIR + File.separator + "cache";
-	
 	public static final String FELIX_FILE_INSTALL_DIR_PROP = "felix.fileinstall.dir";
-	public static final String FELIX_WATCH_DIRS = USER_PLUGINS_DIR;
+	public static final String FELIX_WATCH_DIRS = USER_PLUGINS_DIR_NAME;
 	public static final String FELIX_FILE_INSTALL_INITIALDELAY_PROP = "felix.fileinstall.noInitialDelay";
 	public static final String FELIX_INITIALDELAY = "true";
-	
-	public static String PREFERENCES_DIR = USER_JPROBE_DIR + File.separator + "preferences";
-	public static String CONFIG_FILE = PREFERENCES_DIR + File.separator + "jprobe.pref";
-	
-	public static String LOG_DIR = USER_JPROBE_DIR + File.separator + "logs";
-	public static final String LOG_NAME = "jprobe.log";
-	public static final String LOG_NAME_PATTERN = "jprobe%i.log.zip";
-	public static final int MAX_LOGS = 5;
-	public static final String MAX_LOG_FILE_SIZE = "10MB";
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	
