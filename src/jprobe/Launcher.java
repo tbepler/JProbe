@@ -3,9 +3,14 @@ package jprobe;
 import java.io.File;
 import java.io.IOException;
 
-import util.logging.TimeStampLog;
-import jprobe.services.ErrorHandler;
-import jprobe.services.JProbeLog;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.FileAppender;
+import ch.qos.logback.core.rolling.FixedWindowRollingPolicy;
+import ch.qos.logback.core.rolling.RollingFileAppender;
 
 public class Launcher {
 	
@@ -13,8 +18,8 @@ public class Launcher {
 		
 		//init the user's jprobe directory
 		initUserDirectory();
-		//init the logs
-		initLogs();
+		//init the log
+		initLog();
 		
 		//init the user subdirectories
 		initDir(Constants.USER_PLUGINS_DIR);
@@ -28,11 +33,23 @@ public class Launcher {
 	}
 
 
-	private static void initLogs() {
-		File log = initFile(Constants.JPROBE_LOG);
-		JProbeLog.getInstance().init(new TimeStampLog(log));
-		File errorLog = initFile(Constants.JPROBE_ERROR_LOG);
-		ErrorHandler.getInstance().init(new TimeStampLog(errorLog));
+	private static void initLog() {
+		Logger rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		
+		LoggerContext context = rootLogger.getLoggerContext();
+		context.reset();
+		
+		RollingFileAppender<ILoggingEvent> rfAppender = new RollingFileAppender<ILoggingEvent>();
+		rfAppender.setContext(context);
+		rfAppender.setFile(Constants.LOG_DIR + Constants.LOG_NAME);
+		
+		FixedWindowRollingPolicy fwrPolicy = new FixedWindowRollingPolicy();
+		fwrPolicy.setContext(context);
+		fwrPolicy.setFileNamePattern(Constants.LOG_DIR + Constants.LOG_NAME_PATTERN);
+		fwrPolicy.setMinIndex(1);
+		fwrPolicy.setMaxIndex(Constants.MAX_LOGS);
+		
+		
 	}
 
 
@@ -52,9 +69,7 @@ public class Launcher {
 				System.exit(-1);
 			}
 			//update all files and dirs to use new user dir
-			Constants.LOG_DIR = Constants.USER_JPROBE_DIR + File.separator + "logs";
-			Constants.JPROBE_LOG = Constants.LOG_DIR + File.separator + "jprobe.log";
-			Constants.JPROBE_ERROR_LOG = Constants.LOG_DIR + File.separator + "jprobe-error.log";
+			Constants.LOG_DIR = Constants.USER_JPROBE_DIR + File.separator + "logs" + File.separator;
 			Constants.USER_PLUGINS_DIR = Constants.USER_JPROBE_DIR + File.separator + "plugins";
 			Constants.FELIX_CACHE_DIR = Constants.USER_JPROBE_DIR + File.separator + "cache";
 			Constants.PREFERENCES_DIR = Constants.USER_JPROBE_DIR + File.separator + "preferences";

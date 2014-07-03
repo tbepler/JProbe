@@ -4,6 +4,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/felix-framework-4.4.0/"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-lang3-3.2.1/"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.4/"/>
+	<classpathentry kind="lib" path="lib/logback-1.1.2/logback-core-1.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/logback-1.1.2/logback-classic-1.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-1.7.7/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
 		<accessrules>
 			<accessrule kind="accessible" pattern="**"/>

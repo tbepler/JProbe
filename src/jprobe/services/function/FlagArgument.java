@@ -1,8 +1,6 @@
 package jprobe.services.function;
 
 import util.progress.ProgressListener;
-import jprobe.JProbeActivator;
-import jprobe.services.ErrorHandler;
 import jprobe.services.Workspace;
 import jprobe.services.function.components.NullComponent;
 
@@ -50,11 +48,11 @@ public abstract class FlagArgument<P> extends AbstractArgument<P, NullComponent>
 	@Override
 	public void parse(ProgressListener l, P params, String[] args) {
 		if(args.length > 0){
-			String warning = "Argument \"" + this.getName() + "\" takes no arguments, but received arguments:";
+			String error = "Argument \"" + this.getName() + "\" takes no arguments, but received arguments:";
 			for(String arg : args){
-				warning += " " + arg;
+				error += " " + arg;
 			}
-			ErrorHandler.getInstance().handleWarning(warning, JProbeActivator.getBundle());
+			throw new RuntimeException(error);
 		}
 		this.process(params, true);
 	}

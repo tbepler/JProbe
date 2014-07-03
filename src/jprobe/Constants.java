@@ -56,8 +56,9 @@ public class Constants {
 	public static String CONFIG_FILE = PREFERENCES_DIR + File.separator + "jprobe.pref";
 	
 	public static String LOG_DIR = USER_JPROBE_DIR + File.separator + "logs";
-	public static String JPROBE_LOG = LOG_DIR + File.separator + "jprobe.log";
-	public static String JPROBE_ERROR_LOG = LOG_DIR + File.separator + "jprobe-error.log";
+	public static final String LOG_NAME = "jprobe.log";
+	public static final String LOG_NAME_PATTERN = "jprobe%i.log.zip";
+	public static final int MAX_LOGS = 5;
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	

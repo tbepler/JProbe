@@ -6,7 +6,8 @@
 			 basedir="bin">
 			<manifest>
 				<attribute name="Main-Class" value="jprobe.Launcher"/>
-				<attribute name="Class-Path" value="lib/commons-io-2.4/commons-io-2.4.jar lib/commons-lang3-3.2.1/commons-lang3-3.2.1.jar lib/felix-framework-4.4.0/felix.jar lib/Quaqua/quaqua.jar lib/crossplatform-util.jar"/>
+				<attribute name="Class-Path" 
+					       value="lib/commons-io-2.4/commons-io-2.4.jar lib/commons-lang3-3.2.1/commons-lang3-3.2.1.jar lib/felix-framework-4.4.0/felix.jar lib/Quaqua/quaqua.jar lib/crossplatform-util.jar lib/logback-1.1.2/logback-classic-1.1.2.jar lib/logback-1.1.2/logback-core-1.1.2.jar lib/slf4j-1.7.7/slf4j-api-1.7.7.jar"/>
 			</manifest>
 		</jar>	
 	</target>

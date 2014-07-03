@@ -10,8 +10,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import jprobe.Constants;
-import jprobe.JProbeActivator;
-import jprobe.services.ErrorHandler;
 import util.gui.TableFormatter;
 
 public abstract class AbstractFinalData implements Data{
@@ -60,7 +58,7 @@ public abstract class AbstractFinalData implements Data{
 		try{
 			((DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 		}catch(Exception e){
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+			//derp
 		}
 		TableFormatter.formatTable(table, Constants.DATA_TABLE_MAX_COL_WIDTH, Constants.DATA_TABLE_ROW_SAMPLE);
 		table.setShowGrid(true);
