@@ -1,6 +1,7 @@
 package jprobe;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -15,10 +16,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import jprobe.services.CoreListener;
 import jprobe.services.Workspace;
-import jprobe.services.Debug;
-import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
-import jprobe.services.JProbeLog;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataWriter;
 import jprobe.services.data.ReadException;
@@ -37,13 +35,13 @@ import util.save.LoadException;
 public class JProbe implements JProbeCore{
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static Map createFelixConfig(Configuration config, BundleActivator systemActivator) {
+	private static Map createFelixConfig(String felixCache, String felixStorageClean, BundleActivator systemActivator) {
 		Map felixConfig = new HashMap();
 		//export the core service package
 		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, jprobe.Constants.FELIX_EXPORT_PACKAGES);
-		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, "javax.swing,javax.swing.*");
-		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, config.getFelixStorageClean());
-		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE, jprobe.Constants.FELIX_CACHE_DIR);
+		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, jprobe.Constants.FELIX_BOOTDELEGATION_PACKAGES);
+		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, felixStorageClean);
+		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE, felixCache);
 		
 		List<BundleActivator> l = new ArrayList<BundleActivator>();
 		l.add(systemActivator);
@@ -51,13 +49,13 @@ public class JProbe implements JProbeCore{
 		return felixConfig;
 	}
 	
-	private static Properties initSystemProperties() {
+	private static Properties initSystemProperties(File userPluginDir) {
 		Properties props = new Properties();
 		Main.copySystemProperties(props);
 		props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, jprobe.Constants.PLUGIN_AUTODEPLOY);
-		props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, "install,start");
+		props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, jprobe.Constants.FELIX_AUTODEPLOY_ACTION);
 		//set properties for the FileInstall bundle
-		System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_DIR_PROP, jprobe.Constants.FELIX_WATCH_DIRS);
+		System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_DIR_PROP, userPluginDir.getAbsolutePath());
 		System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_INITIALDELAY_PROP, jprobe.Constants.FELIX_INITIALDELAY);
 		return props;
 	}
@@ -72,8 +70,7 @@ public class JProbe implements JProbeCore{
 	private final WorkspaceManager m_WorkspaceManager;
 	
 	@SuppressWarnings({ "rawtypes" })
-	public JProbe(Configuration config){
-		String[] args = config.getArgs();
+	public JProbe(Properties coreProperties, File userDir, File logsDir, File propsDir, File userPluginsDir, File cacheDir, String[] args){
 		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
 			m_Mode = Mode.GUI;
 		}else{
@@ -148,6 +145,11 @@ public class JProbe implements JProbeCore{
 	}
 	
 	@Override
+	public String getUserDir() {
+		return jprobe.Constants.USER_JPROBE_DIR;
+	}
+	
+	@Override
 	public String getPreferencesDir(){
 		return jprobe.Constants.PREFERENCES_DIR;
 	}
@@ -200,11 +202,6 @@ public class JProbe implements JProbeCore{
 	@Override
 	public String getVersion() {
 		return jprobe.Constants.VERSION;
-	}
-
-	@Override
-	public String getUserDir() {
-		return jprobe.Constants.USER_JPROBE_DIR;
 	}
 
 	@Override

@@ -35,10 +35,10 @@ public class Constants {
 	public static final String MAX_LOG_FILE_SIZE = "10MB";
 	public static final String LOG_PATTERN = "%d %-5level [%thread] %logger: %msg%n";
 
-	public static final String PROPS_FILE_NAME = "jprobe.core.properties";
-	public static final String PROPS_LOG_LEVEL = "rootLogLevel";
+	public static final String PROPERTIES_FILE_NAME = "jprobe.core.properties";
+	public static final String PROPERTY_KEY_LOG_LEVEL = "rootLogLevel";
 	public static final String DEFAULT_LOG_LEVEL = "INFO";
-	public static final String PROPS_FELIX_STORAGE_CLEAN = "cleanFelixCache";
+	public static final String PROPERTY_KEY_FELIX_STORAGE_CLEAN = "cleanFelixCache";
 	public static final String DEFAULT_FELIX_STORAGE_CLEAN = "onFirstInit";
 	
 	public static final String FELIX_EXPORT_PACKAGES = "jprobe.services;version=1.0.0," +
@@ -63,8 +63,11 @@ public class Constants {
 			+ "util.genome.pwm;version=1.0.0,"
 			+ "util.xmlserializer;version=1.0.0";
 	
+	public static final String FELIX_BOOTDELEGATION_PACKAGES = "javax.swing,javax.swing.*";
+	
+	public static final String FELIX_AUTODEPLOY_ACTION = "install,start";
+	
 	public static final String FELIX_FILE_INSTALL_DIR_PROP = "felix.fileinstall.dir";
-	public static final String FELIX_WATCH_DIRS = USER_PLUGINS_DIR_NAME;
 	public static final String FELIX_FILE_INSTALL_INITIALDELAY_PROP = "felix.fileinstall.noInitialDelay";
 	public static final String FELIX_INITIALDELAY = "true";
 	

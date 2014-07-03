@@ -1,7 +1,11 @@
 package jprobe;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import org.slf4j.LoggerFactory;
 
@@ -32,18 +36,27 @@ public class Launcher {
 		File userPluginsDir = initializeUserPluginDirectory(jprobeDir);
 		File propertiesDir = initializePropertiesDirectory(jprobeDir);
 		
-		LOG.info("Launching {} - {}", Constants.NAME, Constants.VERSION);
+		Properties props = readProperties(propertiesDir);
 		
-		//init the user subdirectories
-		initDir(Constants.USER_PLUGINS_DIR);
-		initDir(Constants.FELIX_CACHE_DIR);
-		initDir(Constants.PREFERENCES_DIR);
+		LOG.info("Building {}", JProbe.class);
 		
-		
-		Configuration config = new Configuration(new File(Constants.CONFIG_FILE), args);
 		//System.out.println(JAR_URL);
 		//System.out.println(JAR_DIR);
-		new JProbe(config);
+		new JProbe(props, jprobeDir, logDir, propertiesDir, userPluginsDir, cacheDir, args);
+	}
+
+	private static Properties readProperties(File propertiesDir){
+		Properties props = new Properties();
+		File corePropsFile = new File(propertiesDir, Constants.PROPERTIES_FILE_NAME);
+		LOG.info("Attempting to read core properties from {}", corePropsFile);
+		try{
+			InputStream in = new BufferedInputStream(new FileInputStream(corePropsFile));
+			props.load(in);
+			LOG.info("Read properties from {}", corePropsFile);
+		}catch(Exception e){
+			LOG.info("Unable to read properties from {}", corePropsFile);
+		}
+		return props;
 	}
 	
 	private static File initializeUserPluginDirectory(File userDir){
