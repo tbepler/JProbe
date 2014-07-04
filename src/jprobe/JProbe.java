@@ -35,13 +35,14 @@ import util.save.LoadException;
 public class JProbe implements JProbeCore{
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static Map createFelixConfig(String felixCache, String felixStorageClean, BundleActivator systemActivator) {
+	private static Map createFelixConfig(File felixCache, BundleActivator systemActivator) {
 		Map felixConfig = new HashMap();
 		//export the core service package
 		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, jprobe.Constants.FELIX_EXPORT_PACKAGES);
 		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, jprobe.Constants.FELIX_BOOTDELEGATION_PACKAGES);
-		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, felixStorageClean);
-		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE, felixCache);
+		//no need to set storage clean, cache is deleted when program quits anyway
+		//felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, felixStorageClean);
+		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE, felixCache.getAbsoluteFile());
 		
 		List<BundleActivator> l = new ArrayList<BundleActivator>();
 		l.add(systemActivator);
@@ -60,36 +61,51 @@ public class JProbe implements JProbeCore{
 		return props;
 	}
 	
-	
-	private final Mode m_Mode;
 	private final JProbeActivator m_Activator;
-	private final Felix m_Felix;
 	private final FunctionManager m_FunctionManager;
 	private final ReaderManager m_ReaderManager;
 	private final WriterManager m_WriterManager;
 	private final WorkspaceManager m_WorkspaceManager;
 	
+	private final String m_UserDir;
+	private final String m_LogsDir;
+	private final String m_PropertiesDir;
+	
+	private Felix m_Felix = null;
+	private Mode m_Mode = Mode.COMMAND;
+	
 	@SuppressWarnings({ "rawtypes" })
-	public JProbe(Properties coreProperties, File userDir, File logsDir, File propsDir, File userPluginsDir, File cacheDir, String[] args){
-		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
-			m_Mode = Mode.GUI;
-		}else{
-			m_Mode = Mode.COMMAND;
-		}
+	public JProbe(String userDir, String logsDir, String propsDir){
+		
+		m_UserDir = userDir;
+		m_LogsDir = logsDir;
+		m_PropertiesDir = propsDir;
+		
 		m_FunctionManager = new FunctionManager(this);
 		m_ReaderManager = new ReaderManager(this);
 		m_WriterManager = new WriterManager(this);
 		m_WorkspaceManager = new WorkspaceManager(this);
 		//create system bundle activator
 		m_Activator = new JProbeActivator(this, m_FunctionManager, m_ReaderManager, m_WriterManager, m_WorkspaceManager);
+
+	}
+	
+	public void start(File userPluginsDir, File cacheDir, String[] args){
+		//check to make sure this hasn't already been started
+		if(m_Felix != null){
+			return;
+		}
+		//set the mode to GUI according to the passed arguments, command is default
+		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
+			m_Mode = Mode.GUI;
+		}
 		//create felix config map
-		Map felixConfig = createFelixConfig(config, m_Activator);
-		
+		Map felixConfig = createFelixConfig(cacheDir, m_Activator);
 		try{
 			//create an instance of the felix framework using the config map
 			m_Felix = new Felix(felixConfig);
 			//get properties to pass the felix
-			Properties props = initSystemProperties();
+			Properties props = initSystemProperties(userPluginsDir);
 			m_Felix.init();
 			AutoProcessor.process(props, m_Felix.getBundleContext());
 			//start the felix instance
@@ -106,15 +122,10 @@ public class JProbe implements JProbeCore{
 			this.parseAndExecute(args);
 			this.shutdown();
 		}
-		
-		//wait for felix to stop
-		try {
-			m_Felix.waitForStop(0);
-		} catch (InterruptedException e) {
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
-		}
-		//now exit the program
-		System.exit(0);
+	}
+	
+	public void waitForShutdown() throws InterruptedException{
+		m_Felix.waitForStop(0);
 	}
 
 	private void parseAndExecute(String[] args) {
@@ -146,17 +157,17 @@ public class JProbe implements JProbeCore{
 	
 	@Override
 	public String getUserDir() {
-		return jprobe.Constants.USER_JPROBE_DIR;
+		return m_UserDir;
 	}
 	
 	@Override
 	public String getPreferencesDir(){
-		return jprobe.Constants.PREFERENCES_DIR;
+		return m_PropertiesDir;
 	}
 	
 	@Override
 	public String getLogsDir(){
-		return jprobe.Constants.LOG_DIR;
+		return m_LogsDir;
 	}
 	
 	@Override

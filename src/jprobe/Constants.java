@@ -3,7 +3,11 @@ package jprobe;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.util.Properties;
+
 import javax.swing.ImageIcon;
+
+import ch.qos.logback.classic.Level;
 
 public class Constants {
 	
@@ -40,6 +44,26 @@ public class Constants {
 	public static final String DEFAULT_LOG_LEVEL = "INFO";
 	public static final String PROPERTY_KEY_FELIX_STORAGE_CLEAN = "cleanFelixCache";
 	public static final String DEFAULT_FELIX_STORAGE_CLEAN = "onFirstInit";
+	
+	public static final Properties DEFAULT_PROPERTIES = createDefaultProperties();
+			
+	private static Properties createDefaultProperties(){
+		Properties props = new Properties();
+		props.setProperty(PROPERTY_KEY_LOG_LEVEL, DEFAULT_LOG_LEVEL);
+		props.setProperty(PROPERTY_KEY_FELIX_STORAGE_CLEAN, DEFAULT_FELIX_STORAGE_CLEAN);
+		return props;
+	}
+	
+	public static String getDefaultPropertiesComment(){
+		StringBuilder builder = new StringBuilder();
+		builder.append(NAME).append(" core properties.\n");
+		builder.append("Valid log levels: ");
+		builder.append(Level.OFF).append(", ").append(Level.ERROR).append(", ");
+		builder.append(Level.WARN).append(", ").append(Level.INFO).append(", ");
+		builder.append(Level.DEBUG).append(", ").append(Level.TRACE).append(", ");
+		builder.append(Level.ALL);
+		return builder.toString();
+	}
 	
 	public static final String FELIX_EXPORT_PACKAGES = "jprobe.services;version=1.0.0," +
 			"jprobe.services.data;version=1.0.0," +
