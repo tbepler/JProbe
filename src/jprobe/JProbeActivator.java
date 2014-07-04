@@ -1,17 +1,17 @@
 package jprobe;
 
 import jprobe.services.AbstractServiceListener;
-import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.JProbeLog;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JProbeActivator implements BundleActivator{
 	
+	private static Logger LOG = LoggerFactory.getLogger(JProbeActivator.class);
 	private static Bundle m_Bundle = null;
 	
 	public static Bundle getBundle(){
@@ -31,6 +31,7 @@ public class JProbeActivator implements BundleActivator{
 
 	@Override
 	public void start(BundleContext context) throws Exception {
+		LOG.info("Starting core bundle: {}", context.getBundle());
 		m_Context = context;
 		m_Bundle = m_Context.getBundle();
 		
@@ -38,13 +39,12 @@ public class JProbeActivator implements BundleActivator{
 		for(AbstractServiceListener<?> l : m_Listeners){
 			l.load(m_Context);
 		}
-		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "JProbe bundle started.");
-		}
+		LOG.info("Started core bundle: {}", context.getBundle());
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		LOG.info("Stopping core bundle: {}", context.getBundle());
 		if(m_Registration!=null){
 			m_Registration.unregister();
 		}
@@ -52,13 +52,9 @@ public class JProbeActivator implements BundleActivator{
 			l.unload(context);
 		}
 		
-		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "JProbe bundle stopped.");
-		}
-		
 		m_Bundle = null;
 		m_Context = null;
-		
+		LOG.info("Stopped core bundle: {}", context.getBundle());
 	}
 	
 	public BundleContext getBundleContext(){

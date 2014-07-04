@@ -34,6 +34,11 @@ public class JProbeWorkspace implements Workspace{
 		m_Save.addSaveable(m_Data, DATABASE_TAG);
 	}
 	
+	@Override
+	public String toString(){
+		return m_Data.getWorkspaceName();
+	}
+	
 	public void close() throws InterruptedException{
 		m_EventThread.shutdown();
 		m_EventThread.waitForShutdown();
@@ -101,11 +106,17 @@ public class JProbeWorkspace implements Workspace{
 
 	@Override
 	public void addData(Data data, String name) {
+		if(data == null){
+			throw new NullPointerException();
+		}
 		m_Data.addData(data, name);
 	}
 
 	@Override
 	public void addData(Data data) {
+		if(data == null){
+			throw new NullPointerException();
+		}
 		m_Data.addData(data);
 	}
 
