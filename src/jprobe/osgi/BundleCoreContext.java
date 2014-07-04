@@ -2,12 +2,15 @@ package jprobe.osgi;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.WeakHashMap;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -29,9 +32,11 @@ import jprobe.services.function.Function;
 public class BundleCoreContext implements JProbeCore, CoreListener{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(BundleCoreContext.class);
+	private static final int CACHE_CLEAN_RATE = 100;
 	
 	private final Collection<CoreListener> m_Listeners = new ArrayList<CoreListener>();
-	private final Map<Workspace, Workspace> m_Cache = new HashMap<Workspace, Workspace>();
+	private final Map<Workspace, WeakReference<BundleWorkspaceContext>> m_Cache = new WeakHashMap<Workspace, WeakReference<BundleWorkspaceContext>>();
+	private int m_Queries = 0;
 	
 	private final Bundle m_Bundle;
 	private final JProbeCore m_Parent;
@@ -44,11 +49,26 @@ public class BundleCoreContext implements JProbeCore, CoreListener{
 	protected Workspace getBundleWorkspace(Workspace w){
 		//first check the cache to see if a bundle workspace context has already been created for this workspace
 		if(m_Cache.containsKey(w)){
-			return m_Cache.get(w);
+			WeakReference<BundleWorkspaceContext> ref = m_Cache.get(w);
+			Workspace cached = ref.get();
+			if(cached != null){
+				return cached;
+			}
+		}
+		if(++m_Queries >= CACHE_CLEAN_RATE){
+			//clean the cache and reset the counter
+			Iterator<Entry<Workspace, WeakReference<BundleWorkspaceContext>>> iter = m_Cache.entrySet().iterator();
+			while(iter.hasNext()){
+				Entry<Workspace, WeakReference<BundleWorkspaceContext>> cur = iter.next();
+				if(cur.getValue().get() == null){
+					iter.remove();
+				}
+			}
+			m_Queries = 0;
 		}
 		//otherwise, create a new bundle workspace context, cache it, and return it
-		Workspace context = new BundleWorkspaceContext(m_Bundle, w);
-		m_Cache.put(w, context);
+		BundleWorkspaceContext context = new BundleWorkspaceContext(m_Bundle, w);
+		m_Cache.put(w, new WeakReference<BundleWorkspaceContext>(context));
 		return context;
 	}
 	
@@ -173,59 +193,75 @@ public class BundleCoreContext implements JProbeCore, CoreListener{
 
 	@Override
 	public Collection<Class<? extends Data>> getReadableDataClasses() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_Parent.getReadableDataClasses();
 	}
 
 	@Override
 	public List<FileFilter> getReadFormats(Class<? extends Data> readClass) {
-		// TODO Auto-generated method stub
-		return null;
+		return m_Parent.getReadFormats(readClass);
 	}
 
 	@Override
-	public <D extends Data> D readData(Class<D> readClass, FileFilter format,
-			InputStream in) throws ReadException {
-		// TODO Auto-generated method stub
-		return null;
+	public <D extends Data> D readData(Class<D> readClass, FileFilter format, InputStream in) throws ReadException {
+		LOG.info("Read {} using format: {} from stream: {} called by bundle: {}", readClass, format, in, m_Bundle);
+		return m_Parent.readData(readClass, format, in);
 	}
 
 	@Override
 	public boolean isReadable(Class<? extends Data> dataClass) {
-		// TODO Auto-generated method stub
-		return false;
+		return m_Parent.isReadable(dataClass);
 	}
 
 	@Override
 	public Collection<Class<? extends Data>> getWritableDataClasses() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_Parent.getWritableDataClasses();
 	}
 
 	@Override
 	public List<FileNameExtensionFilter> getWriteFormats(
 			Class<? extends Data> writeClass) {
-		// TODO Auto-generated method stub
-		return null;
+		return m_Parent.getWriteFormats(writeClass);
 	}
 
 	@Override
 	public void writeData(Data d, FileNameExtensionFilter format,
 			OutputStream out) throws WriteException {
-		// TODO Auto-generated method stub
-		
+		LOG.info("Write {} using format: {} to stream: {} called by bundle: {}", d != null ? d.getClass() : null, format, out, m_Bundle);
+		m_Parent.writeData(d, format, out);
 	}
 
 	@Override
 	public boolean isWritable(Class<? extends Data> dataClass) {
-		// TODO Auto-generated method stub
-		return false;
+		return m_Parent.isWritable(dataClass);
 	}
 
 	@Override
 	public void update(JProbeCore source, CoreEvent event) {
-		// TODO Auto-generated method stub
-		
+		if(source == m_Parent){
+			switch(event.type){
+			
+			//TODO
+			case DATA_READABLE:
+				break;
+			case DATA_UNREADABLE:
+				break;
+			case DATA_UNWRITABLE:
+				break;
+			case DATA_WRITABLE:
+				break;
+			case FUNCTION_ADDED:
+				break;
+			case FUNCTION_REMOVED:
+				break;
+			case WORKSPACE_CLOSED:
+				break;
+			case WORKSPACE_NEW:
+				break;
+			default:
+				break;
+			
+			}
+		}
 	}
 
 }
