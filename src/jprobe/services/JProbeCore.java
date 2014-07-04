@@ -174,14 +174,16 @@ public interface JProbeCore {
 	/**
 	 * Adds the specified {@link Function} to this core.
 	 * @param f
+	 * @return True if the function was successfully added, False if the function was already contained by this core.
 	 */
-	public void addFunction(Function<?> f);
+	public boolean addFunction(Function<?> f);
 	
 	/**
 	 * Removes the specified {@link Function} from this core.
 	 * @param f
+	 * @return True if the function was successfully removed, False if the function was not contained by this core.
 	 */
-	public void removeFunction(Function<?> f);
+	public boolean removeFunction(Function<?> f);
 	
 	/**
 	 * Returns an unmodifiable collection containing the currently registered {@link Function}s. Functions can be
@@ -194,14 +196,18 @@ public interface JProbeCore {
 	/**
 	 * Adds the specified {@link DataReader} to this core.
 	 * @param reader
+	 * @return True if the DataReader was successfully added to this core, False if the DataReader was already contained
+	 * by this core.
 	 */
-	public void addDataReader(DataReader<?> reader);
+	public boolean addDataReader(DataReader<?> reader);
 	
 	/**
 	 * Removes the specified {@link DataReader} from this core.
 	 * @param reader
+	 * @return True if the DataReader was successfully removed from this core, False if the DataReader was not contained
+	 * by this core.
 	 */
-	public void removeDataReader(DataReader<?> reader);
+	public boolean removeDataReader(DataReader<?> reader);
 	
 	/**
 	 * Returns a collection containing the currently readable Data classes. Data is read using the {@link DataReader} class. DataReaders can be
@@ -239,14 +245,17 @@ public interface JProbeCore {
 	/**
 	 * Adds the specified {@link DataWriter} to this core.
 	 * @param writer
+	 * @return True if the DataWriter was successfully added to this core, False if the DataWriter was already contained
+	 * by this core.
 	 */
-	public void addDataWriter(DataWriter<?> writer);
+	public boolean addDataWriter(DataWriter<?> writer);
 	
 	/**
 	 * Removes the specified {@link DataWriter} from this core.
 	 * @param writer
+	 * @return True if the DataWriter was removed, False if the DataWriter was not contained by this core.
 	 */
-	public void removeDataWriter(DataWriter<?> writer);
+	public boolean removeDataWriter(DataWriter<?> writer);
 	
 	/**
 	 * Returns a collection containing the currently writable Data classes. Data is written using the {@link DataWriter} class. DataWriters can be

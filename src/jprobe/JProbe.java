@@ -317,33 +317,33 @@ public class JProbe implements JProbeCore{
 	}
 
 	@Override
-	public void addFunction(Function<?> f) {
-		m_FunctionManager.addFunction(f);
+	public boolean addFunction(Function<?> f) {
+		return m_FunctionManager.addFunction(f);
 	}
 
 	@Override
-	public void removeFunction(Function<?> f) {
-		m_FunctionManager.removeFunction(f);
+	public boolean removeFunction(Function<?> f) {
+		return m_FunctionManager.removeFunction(f);
 	}
 
 	@Override
-	public void addDataReader(DataReader<?> reader) {
-		m_ReaderManager.addDataReader(reader);
+	public boolean addDataReader(DataReader<?> reader) {
+		return m_ReaderManager.addDataReader(reader);
 	}
 
 	@Override
-	public void removeDataReader(DataReader<?> reader) {
-		m_ReaderManager.removeDataReader(reader);
+	public boolean removeDataReader(DataReader<?> reader) {
+		return m_ReaderManager.removeDataReader(reader);
 	}
 
 	@Override
-	public void addDataWriter(DataWriter<?> writer) {
-		m_WriterManager.addDataWriter(writer);
+	public boolean addDataWriter(DataWriter<?> writer) {
+		return m_WriterManager.addDataWriter(writer);
 	}
 
 	@Override
-	public void removeDataWriter(DataWriter<?> writer) {
-		m_WriterManager.removeDataWriter(writer);
+	public boolean removeDataWriter(DataWriter<?> writer) {
+		return m_WriterManager.removeDataWriter(writer);
 	}
 
 

@@ -261,51 +261,69 @@ public class BundleCoreContext implements JProbeCore, CoreListener{
 	}
 
 	@Override
-	public void addFunction(Function<?> f) {
-		LOG.info("Function: {} ({}) added by bundle: {}", f != null ? f.getName() : null, f != null ? f.getClass() : null, m_Bundle );
-		m_Parent.addFunction(f);
+	public boolean addFunction(Function<?> f) {
+		if(m_Parent.addFunction(f)){
+			LOG.info("Function: {} ({}) added by bundle: {}", f != null ? f.getName() : null, f != null ? f.getClass() : null, m_Bundle );
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public void removeFunction(Function<?> f) {
-		LOG.info("Function: {} ({}) removed by bundle: {}", f != null ? f.getName() : null, f != null ? f.getClass() : null, m_Bundle );
-		m_Parent.removeFunction(f);
+	public boolean removeFunction(Function<?> f) {
+		if(m_Parent.removeFunction(f)){
+			LOG.info("Function: {} ({}) removed by bundle: {}", f != null ? f.getName() : null, f != null ? f.getClass() : null, m_Bundle );
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public void addDataReader(DataReader<?> reader) {
-		LOG.info("Reader: {} for data: {} added by bundle: {}",
-				reader != null ? reader.getClass() : null,
-				reader != null ? reader.getReadClass() : null,
-				m_Bundle);
-		m_Parent.addDataReader(reader);
+	public boolean addDataReader(DataReader<?> reader) {
+		if(m_Parent.addDataReader(reader)){
+			LOG.info("Reader: {} for data: {} added by bundle: {}",
+					reader != null ? reader.getClass() : null,
+					reader != null ? reader.getReadClass() : null,
+					m_Bundle);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public void removeDataReader(DataReader<?> reader) {
-		LOG.info("Reader: {} for data: {} removed by bundle: {}",
-				reader != null ? reader.getClass() : null,
-				reader != null ? reader.getReadClass() : null,
-				m_Bundle);
-		m_Parent.removeDataReader(reader);
+	public boolean removeDataReader(DataReader<?> reader) {
+		if(m_Parent.removeDataReader(reader)){
+			LOG.info("Reader: {} for data: {} removed by bundle: {}",
+					reader != null ? reader.getClass() : null,
+					reader != null ? reader.getReadClass() : null,
+					m_Bundle);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public void addDataWriter(DataWriter<?> writer) {
-		LOG.info("Writer: {} for data: {} added by bundle: {}",
-				writer != null ? writer.getClass() : null,
-				writer != null ? writer.getWriteClass() : null,
-				m_Bundle);
-		m_Parent.addDataWriter(writer);
+	public boolean addDataWriter(DataWriter<?> writer) {
+		if(m_Parent.addDataWriter(writer)){
+			LOG.info("Writer: {} for data: {} added by bundle: {}",
+					writer != null ? writer.getClass() : null,
+					writer != null ? writer.getWriteClass() : null,
+					m_Bundle);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public void removeDataWriter(DataWriter<?> writer) {
-		LOG.info("Writer: {} for data: {} removed by bundle: {}",
-				writer != null ? writer.getClass() : null,
-				writer != null ? writer.getWriteClass() : null,
-				m_Bundle);
-		m_Parent.removeDataWriter(writer);
+	public boolean removeDataWriter(DataWriter<?> writer) {
+		if(m_Parent.removeDataWriter(writer)){
+			LOG.info("Writer: {} for data: {} removed by bundle: {}",
+					writer != null ? writer.getClass() : null,
+					writer != null ? writer.getWriteClass() : null,
+					m_Bundle);
+			return true;
+		}
+		return false;
 	}
 
 }
