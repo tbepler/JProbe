@@ -29,10 +29,14 @@ import org.apache.felix.main.AutoProcessor;
 import org.apache.felix.main.Main;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.save.LoadException;
 
 public class JProbe implements JProbeCore{
+	
+	Logger LOG = LoggerFactory.getLogger(JProbe.class);
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static Map createFelixConfig(File felixCache, BundleActivator systemActivator) {
@@ -99,6 +103,7 @@ public class JProbe implements JProbeCore{
 		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
 			m_Mode = Mode.GUI;
 		}
+		LOG.info("Running in mode: {}", m_Mode);
 		//create felix config map
 		Map felixConfig = createFelixConfig(cacheDir, m_Activator);
 		try{
@@ -106,17 +111,18 @@ public class JProbe implements JProbeCore{
 			m_Felix = new Felix(felixConfig);
 			//get properties to pass the felix
 			Properties props = initSystemProperties(userPluginsDir);
+			LOG.info("Initializing Apache Felix framework...");
 			m_Felix.init();
+			LOG.info("Apace Felix framework initialized.");
 			AutoProcessor.process(props, m_Felix.getBundleContext());
 			//start the felix instance
+			LOG.info("Starting Apache Felix framework...");
 			m_Felix.start();
+			LOG.info("Apache Felix framework started.");
 		} catch (Exception e){
-			System.err.println("Error creating Felix framework: "+e);
-			e.printStackTrace();
-			System.exit(1);
-			//this should never happen... but the compiler needs this to allow later
-			//references to m_Felix without "Field may not have been initialized"
-			throw new Error();
+			LOG.error("Error creating Apache Felix framework: {}", e);
+			//throw a runtime exception if the framework could not be properly initialized
+			throw new RuntimeException(e);
 		}
 		if(m_Mode == Mode.COMMAND){ //parse args, execute, and quit
 			this.parseAndExecute(args);
@@ -134,18 +140,23 @@ public class JProbe implements JProbeCore{
 			Collection<DataWriter<?>> writers = m_WriterManager.getDataWriters(d.getClass());
 			boolean writeSuccesful = false;
 			for(DataWriter<?> writer : writers){
-				try {
-					OutputStream out = new BufferedOutputStream(System.out);
-					this.writeData(writer, d, writer.getWriteFormats().get(0), out);
-					out.close();
-					writeSuccesful = true;
-					break;
-				} catch (Exception e) {
-					//try next one
+				for(FileNameExtensionFilter format : writer.getWriteFormats()){
+					try {
+						LOG.info("Attempting to write Data: {} using Writer: {} and Format: {}", d.getClass(), writer.getClass(), format);
+						OutputStream out = new BufferedOutputStream(System.out);
+						this.writeData(writer, d, format, out);
+						out.close();
+						writeSuccesful = true;
+						LOG.info("Wrote Data: {} using Writer: {} and Format {}", d.getClass(), writer.getClass(), format);
+						return;
+					} catch (Exception e) {
+						LOG.info("Failed to write Data: {} using Writer: {} and Format {}. {}", d.getClass(), writer.getClass(), format, e);
+					}
 				}
 			}
 			if(!writeSuccesful){
-				ErrorHandler.getInstance().handleException(new RuntimeException("Unable to write "+d.getClass()+"."), JProbeActivator.getBundle());
+				System.err.println("Unable to write "+d.getClass() + ".");
+				LOG.error("Unable to write {}.", d.getClass());
 			}
 		}
 	}
@@ -172,14 +183,12 @@ public class JProbe implements JProbeCore{
 	
 	@Override
 	public void shutdown(){
+		LOG.info("Core shutting down...");
 		try{
-			if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-				JProbeLog.getInstance().write(JProbeActivator.getBundle(), "JProbe shutting down.");
-			}
+			LOG.info("Stopping Apache Felix framework...");
 			m_Felix.stop();
 		} catch (Exception e){
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
-			e.printStackTrace();
+			LOG.error("Error stopping Apache Felix framework: {}",e);
 		}
 	}
 
