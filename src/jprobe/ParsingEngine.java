@@ -11,16 +11,19 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import util.progress.PrintStreamProgressBar;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
-import jprobe.osgi.JProbeActivator;
-import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 import jprobe.services.function.Function;
 
 public class ParsingEngine {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ParsingEngine.class);
 	
 	public static Data parseAndExecute(PrintStream report, FunctionManager funcManager, String[] args){
 		if(args.length == 0 || args[0].matches(Constants.HELP_REGEX)){
@@ -30,6 +33,7 @@ public class ParsingEngine {
 		String name = args[0];
 		Function<?> func = getFunction(funcManager, name);
 		if(func == null){
+			LOG.info("No function {} found.", name);
 			report.println("No function "+name+" found.");
 			printHelpStatement(report, funcManager);
 			return null;
@@ -79,7 +83,11 @@ public class ParsingEngine {
 		try {
 			return execute(func, l, flags, requiredArgs, args);
 		} catch (Exception e) {
-			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
+			LOG.error("Error executing function: {} ({}) with args: {}. {}",
+					func != null ? func.getName() : null,
+					func != null ? func.getClass() : null,
+					args,
+					e); 
 			report.println(getFunctionUsage(func));
 			return null;
 		}

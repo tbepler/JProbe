@@ -11,22 +11,15 @@ import java.util.Map;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.osgi.framework.Bundle;
-
-import jprobe.osgi.JProbeActivator;
-import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.CoreListener;
-import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.JProbeLog;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataWriter;
 import jprobe.services.data.WriteException;
 
-@SuppressWarnings("rawtypes")
-public class WriterManager extends AbstractServiceListener<DataWriter>{
+public class WriterManager{
 
 	private final Collection<CoreListener> m_Listeners = new HashSet<CoreListener>();
 	
@@ -36,7 +29,6 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 	private final JProbeCore m_Core;
 	
 	public WriterManager(JProbeCore core) {
-		super(DataWriter.class);
 		m_Core = core;
 	}
 	
@@ -106,7 +98,15 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 		return m_ClassWriters.containsKey(dataClass) && !m_ClassWriters.get(dataClass).isEmpty();
 	}
 	
-	public void addDataWriter(DataWriter<?> writer){
+	/**
+	 * Returns True if {@link DataWriter} was added, False if it was already contained.
+	 * @param writer
+	 * @return
+	 */
+	public boolean addDataWriter(DataWriter<?> writer){
+		if(m_Writer.contains(writer)){
+			return false;
+		}
 		m_Writer.add(writer);
 		Class<? extends Data> clazz = writer.getWriteClass();
 		if(m_ClassWriters.containsKey(clazz)){
@@ -118,11 +118,18 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 			m_ClassWriters.put(clazz, classReaders);
 			this.notifyListeners(new CoreEvent(Type.DATA_WRITABLE, clazz));
 		}
+		return true;
 	}
 	
-	public void removeDataWriter(DataWriter<?> writer){
+	/**
+	 * Returns True if specified {@link DataWriter} was removed, False otherwise.
+	 * @param writer
+	 * @return
+	 */
+	public boolean removeDataWriter(DataWriter<?> writer){
+		boolean removed = false;
 		if(m_Writer.contains(writer)){
-			m_Writer.remove(writer);
+			removed = m_Writer.remove(writer);
 		}
 		Class<? extends Data> clazz = writer.getWriteClass();
 		if(m_ClassWriters.containsKey(clazz)){
@@ -133,22 +140,7 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 				this.notifyListeners(new CoreEvent(Type.DATA_UNWRITABLE, clazz));
 			}
 		}
-	}
-
-	@Override
-	public void register(DataWriter service, Bundle provider) {
-		this.addDataWriter(service);
-		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "DataWriter for class "+service.getWriteClass()+" added by bundle: "+provider.getSymbolicName());
-		}
-	}
-
-	@Override
-	public void unregister(DataWriter service, Bundle provider) {
-		this.removeDataWriter(service);
-		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "DataWriter for class "+service.getWriteClass()+" removed by bundle: "+provider.getSymbolicName());
-		}
+		return removed;
 	}
 
 }

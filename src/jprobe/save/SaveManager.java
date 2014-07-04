@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import util.WorkerThread;
 import util.save.ImportException;
 import util.save.LoadException;
@@ -21,11 +24,11 @@ import util.save.Saveable;
 import util.save.SaveableEvent;
 import util.save.SaveableEvent.Type;
 import util.save.SaveableListener;
-import jprobe.osgi.JProbeActivator;
-import jprobe.services.JProbeLog;
 import jprobe.services.Workspace;
 
 public class SaveManager implements Saveable, SaveableListener{
+	
+	private static final Logger LOG = LoggerFactory.getLogger(SaveManager.class);
 	
 	private final ReadWriteLock m_SaveablesLock = new ReentrantReadWriteLock(true);
 	private final ReadWriteLock m_ListenersLock = new ReentrantReadWriteLock(true);
@@ -140,6 +143,7 @@ public class SaveManager implements Saveable, SaveableListener{
 
 	@Override
 	public long saveTo(OutputStream out, String outName) throws SaveException{
+		LOG.info("Workspace {} saving to {}", m_Parent, outName);
 		SaveableEvent start = new SaveableEvent(Type.SAVING, outName);
 		this.notifyListeners(start);
 		long bytes = 0;
@@ -147,12 +151,14 @@ public class SaveManager implements Saveable, SaveableListener{
 		try{
 			ObjectOutputStream oout = new ObjectOutputStream(new BufferedOutputStream(out));
 			bytes += SaveUtil.save(oout, outName, m_Saveables);
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Saved workspace "+m_Parent.getWorkspaceName()+" to "+outName);
+			LOG.info("Saved workspace {} to {}", m_Parent, outName);
 			this.notifyListeners(new SaveableEvent(Type.SAVED, outName, start));
 		} catch (SaveException e){
+			LOG.error("Error saving workspace {} to {}: {}", m_Parent, outName, e);
 			this.notifyListeners(new SaveableEvent(Type.FAILED, outName, start));
 			throw e;
 		} catch (Throwable t){
+			LOG.error("Error saving workspace {} to {}: {}", m_Parent, outName, t);
 			this.notifyListeners(new SaveableEvent(Type.FAILED, outName, start));
 			throw new SaveException(t);
 		}finally{
@@ -163,18 +169,21 @@ public class SaveManager implements Saveable, SaveableListener{
 
 	@Override
 	public void loadFrom(InputStream in, String sourceName) throws LoadException{
+		LOG.info("Workspace {} loading from {}", m_Parent, sourceName);
 		SaveableEvent start = new SaveableEvent(Type.LOADING, sourceName);
 		this.notifyListeners(start);
 		m_SaveablesLock.readLock().lock();
 		try {
 			ObjectInputStream oin = new ObjectInputStream(new BufferedInputStream(in));
 			SaveUtil.load(oin, sourceName, m_Saveables);
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Opened workspace "+m_Parent.getWorkspaceName() + " from source "+sourceName);
+			LOG.info("Loaded workspace {} from source {}", m_Parent, sourceName);
 			this.notifyListeners(new SaveableEvent(Type.LOADED, sourceName, start));
 		} catch (LoadException e) {
+			LOG.error("Error loading workspace {} from source {}: {}", m_Parent, sourceName, e);
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 			throw e;
 		} catch (Throwable t){
+			LOG.error("Error loading workspace {} from source {}: {}", m_Parent, sourceName, t);
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 			throw new LoadException(t);
 		}finally{
@@ -184,18 +193,21 @@ public class SaveManager implements Saveable, SaveableListener{
 
 	@Override
 	public void importFrom(InputStream in, String sourceName) throws ImportException{
+		LOG.info("Workspace {} importing from {}", m_Parent, sourceName);
 		SaveableEvent start = new SaveableEvent(Type.IMPORTING, sourceName);
 		this.notifyListeners(start);
 		m_SaveablesLock.readLock().lock();
 		try {
 			ObjectInputStream oin = new ObjectInputStream(new BufferedInputStream(in));
 			SaveUtil.importFrom(oin, sourceName, m_Saveables);
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "Imported workspace from "+sourceName);
+			LOG.info("Imported into workspace {} from source {}", m_Parent, sourceName);
 			this.notifyListeners(new SaveableEvent(Type.IMPORTED, sourceName, start));
 		} catch (ImportException e) {
+			LOG.error("Error importing into workspace {} from source {}: {}", m_Parent, sourceName, e);
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 			throw e;
 		} catch (Throwable t){
+			LOG.error("Error importing into workspace {} from source {}: {}", m_Parent, sourceName, t);
 			this.notifyListeners(new SaveableEvent(Type.FAILED, sourceName, start));
 			throw new ImportException(t);
 		}finally{

@@ -6,17 +6,13 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
-import org.osgi.framework.Bundle;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.function.Function;
-import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
-import jprobe.services.JProbeLog;
 
-@SuppressWarnings("rawtypes")
-public class FunctionManager extends AbstractServiceListener<Function>{
+public class FunctionManager{
 	
 	private final Collection<CoreListener> m_Listeners = new HashSet<CoreListener>();
 	private final Collection<Function<?>> m_Functions = new PriorityQueue<Function<?>>(10, new Comparator<Function<?>>(){
@@ -29,27 +25,28 @@ public class FunctionManager extends AbstractServiceListener<Function>{
 	private final JProbeCore m_Core;
 	
 	public FunctionManager(JProbeCore core){
-		super(Function.class);
-		this.m_Core = core;
+		m_Core = core;
 	}
 	
 	public Collection<Function<?>> getFunctions(){
 		return Collections.unmodifiableCollection(m_Functions);
 	}
 	
-	public void addFunction(Function<?> f, Bundle responsible){
+	public boolean addFunction(Function<?> f){
 		if(!m_Functions.contains(f)){
 			m_Functions.add(f);
-			JProbeLog.getInstance().write(responsible, "Function "+f.getName()+" added.");
 			this.notifyListeners(new CoreEvent(Type.FUNCTION_ADDED, f));
+			return true;
 		}
+		return false;
 	}
 	
-	public void removeFunction(Function<?> f, Bundle responsible){
+	public boolean removeFunction(Function<?> f){
 		if(m_Functions.remove(f)){
-			JProbeLog.getInstance().write(responsible, "Function "+f.getName()+" removed.");
 			this.notifyListeners(new CoreEvent(Type.FUNCTION_REMOVED, f));
+			return true;
 		}
+		return false;
 	}
 	
 	private void notifyListeners(CoreEvent event){
@@ -64,16 +61,6 @@ public class FunctionManager extends AbstractServiceListener<Function>{
 	
 	public void removeListener(CoreListener listener){
 		this.m_Listeners.remove(listener);
-	}
-
-	@Override
-	public void register(Function service, Bundle provider) {
-		this.addFunction(service, provider);
-	}
-
-	@Override
-	public void unregister(Function service, Bundle provider) {
-		this.removeFunction(service, provider);
 	}
 	
 	

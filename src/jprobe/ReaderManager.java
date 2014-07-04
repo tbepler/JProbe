@@ -11,22 +11,15 @@ import java.util.Map;
 
 import javax.swing.filechooser.FileFilter;
 
-import org.osgi.framework.Bundle;
-
-import jprobe.osgi.JProbeActivator;
-import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.CoreListener;
-import jprobe.services.Debug;
 import jprobe.services.JProbeCore;
-import jprobe.services.JProbeLog;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;
 import jprobe.services.data.ReadException;
 
-@SuppressWarnings("rawtypes")
-public class ReaderManager extends AbstractServiceListener<DataReader>{
+public class ReaderManager{
 
 	private final Collection<CoreListener> m_Listeners = new HashSet<CoreListener>();
 	
@@ -36,7 +29,6 @@ public class ReaderManager extends AbstractServiceListener<DataReader>{
 	private final JProbeCore m_Core;
 	
 	public ReaderManager(JProbeCore core) {
-		super(DataReader.class);
 		m_Core = core;
 	}
 	
@@ -102,7 +94,16 @@ public class ReaderManager extends AbstractServiceListener<DataReader>{
 		return m_ClassReaders.containsKey(dataClass) && !m_ClassReaders.get(dataClass).isEmpty();
 	}
 	
-	public void addDataReader(DataReader<?> reader){
+	/**
+	 * Returns True if the reader was successfully added to this manager. In other words, returns True
+	 * if this manager did not already contain the specified reader, False otherwise.
+	 * @param reader
+	 * @return
+	 */
+	public boolean addDataReader(DataReader<?> reader){
+		if(m_Readers.contains(reader)){
+			return false;
+		}
 		m_Readers.add(reader);
 		Class<? extends Data> clazz = reader.getReadClass();
 		if(m_ClassReaders.containsKey(clazz)){
@@ -114,11 +115,18 @@ public class ReaderManager extends AbstractServiceListener<DataReader>{
 			m_ClassReaders.put(clazz, classReaders);
 			this.notifyListeners(new CoreEvent(Type.DATA_READABLE, clazz));
 		}
+		return true;
 	}
 	
-	public void removeDataReader(DataReader<?> reader){
+	/**
+	 * Returns True if the specified {@link DataReader} was removed from this manager, false otherwise.
+	 * @param reader
+	 * @return
+	 */
+	public boolean removeDataReader(DataReader<?> reader){
+		boolean removed = false;
 		if(m_Readers.contains(reader)){
-			m_Readers.remove(reader);
+			removed = m_Readers.remove(reader);
 		}
 		Class<? extends Data> clazz = reader.getReadClass();
 		if(m_ClassReaders.containsKey(clazz)){
@@ -129,22 +137,7 @@ public class ReaderManager extends AbstractServiceListener<DataReader>{
 				this.notifyListeners(new CoreEvent(Type.DATA_UNREADABLE, clazz));
 			}
 		}
-	}
-
-	@Override
-	public void register(DataReader service, Bundle provider) {
-		this.addDataReader(service);
-		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "DataReader for class "+service.getReadClass()+" added by bundle: "+provider.getSymbolicName());
-		}
-	}
-
-	@Override
-	public void unregister(DataReader service, Bundle provider) {
-		this.removeDataReader(service);
-		if(Debug.getLevel() == Debug.FULL || Debug.getLevel() == Debug.LOG){
-			JProbeLog.getInstance().write(JProbeActivator.getBundle(), "DataReader for class "+service.getReadClass()+" removed by bundle: "+provider.getSymbolicName());
-		}
+		return removed;
 	}
 
 }

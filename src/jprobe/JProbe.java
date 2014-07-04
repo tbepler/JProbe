@@ -91,7 +91,7 @@ public class JProbe implements JProbeCore{
 		m_WriterManager = new WriterManager(this);
 		m_WorkspaceManager = new WorkspaceManager(this);
 		//create system bundle activator
-		m_Activator = new JProbeActivator(this, m_FunctionManager, m_ReaderManager, m_WriterManager, m_WorkspaceManager);
+		m_Activator = new JProbeActivator(this);
 
 	}
 	
@@ -137,6 +137,7 @@ public class JProbe implements JProbeCore{
 	}
 
 	private void parseAndExecute(String[] args) {
+		LOG.info("Parsing args: {}", (Object) args);
 		Data d = ParsingEngine.parseAndExecute(System.err, m_FunctionManager, args);
 		if(d != null){
 			Collection<DataWriter<?>> writers = m_WriterManager.getDataWriters(d.getClass());
