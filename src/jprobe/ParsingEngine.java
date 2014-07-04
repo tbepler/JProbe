@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import util.progress.PrintStreamProgressBar;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
+import jprobe.osgi.JProbeActivator;
 import jprobe.services.ErrorHandler;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;

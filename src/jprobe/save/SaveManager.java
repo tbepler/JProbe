@@ -21,7 +21,7 @@ import util.save.Saveable;
 import util.save.SaveableEvent;
 import util.save.SaveableEvent.Type;
 import util.save.SaveableListener;
-import jprobe.JProbeActivator;
+import jprobe.osgi.JProbeActivator;
 import jprobe.services.JProbeLog;
 import jprobe.services.Workspace;
 

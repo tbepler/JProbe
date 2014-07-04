@@ -172,12 +172,36 @@ public interface JProbeCore {
 	public int numWorkspaces();
 	
 	/**
+	 * Adds the specified {@link Function} to this core.
+	 * @param f
+	 */
+	public void addFunction(Function<?> f);
+	
+	/**
+	 * Removes the specified {@link Function} from this core.
+	 * @param f
+	 */
+	public void removeFunction(Function<?> f);
+	
+	/**
 	 * Returns an unmodifiable collection containing the currently registered {@link Function}s. Functions can be
 	 * registered by submitting a Function service through BundleContext received in a plugin's BundleActivator.start()
 	 * method.
 	 * @return unmodifiable collection of the registered Functions
 	 */
 	public Collection<Function<?>> getFunctions();
+	
+	/**
+	 * Adds the specified {@link DataReader} to this core.
+	 * @param reader
+	 */
+	public void addDataReader(DataReader<?> reader);
+	
+	/**
+	 * Removes the specified {@link DataReader} from this core.
+	 * @param reader
+	 */
+	public void removeDataReader(DataReader<?> reader);
 	
 	/**
 	 * Returns a collection containing the currently readable Data classes. Data is read using the {@link DataReader} class. DataReaders can be
@@ -211,6 +235,18 @@ public interface JProbeCore {
 	 * @return
 	 */
 	public boolean isReadable(Class<? extends Data> dataClass);
+	
+	/**
+	 * Adds the specified {@link DataWriter} to this core.
+	 * @param writer
+	 */
+	public void addDataWriter(DataWriter<?> writer);
+	
+	/**
+	 * Removes the specified {@link DataWriter} from this core.
+	 * @param writer
+	 */
+	public void removeDataWriter(DataWriter<?> writer);
 	
 	/**
 	 * Returns a collection containing the currently writable Data classes. Data is written using the {@link DataWriter} class. DataWriters can be

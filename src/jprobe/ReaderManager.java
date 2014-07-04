@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.osgi.framework.Bundle;
 
+import jprobe.osgi.JProbeActivator;
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
@@ -101,7 +102,7 @@ public class ReaderManager extends AbstractServiceListener<DataReader>{
 		return m_ClassReaders.containsKey(dataClass) && !m_ClassReaders.get(dataClass).isEmpty();
 	}
 	
-	protected void addDataReader(DataReader<?> reader){
+	public void addDataReader(DataReader<?> reader){
 		m_Readers.add(reader);
 		Class<? extends Data> clazz = reader.getReadClass();
 		if(m_ClassReaders.containsKey(clazz)){
@@ -115,7 +116,7 @@ public class ReaderManager extends AbstractServiceListener<DataReader>{
 		}
 	}
 	
-	protected void removeDataReader(DataReader<?> reader){
+	public void removeDataReader(DataReader<?> reader){
 		if(m_Readers.contains(reader)){
 			m_Readers.remove(reader);
 		}

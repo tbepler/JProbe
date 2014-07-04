@@ -25,6 +25,8 @@ import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
 import jprobe.services.Workspace;
 import jprobe.services.data.Data;
+import jprobe.services.data.DataReader;
+import jprobe.services.data.DataWriter;
 import jprobe.services.data.ReadException;
 import jprobe.services.data.WriteException;
 import jprobe.services.function.Function;
@@ -256,6 +258,54 @@ public class BundleCoreContext implements JProbeCore, CoreListener{
 				break;
 			}
 		}
+	}
+
+	@Override
+	public void addFunction(Function<?> f) {
+		LOG.info("Function: {} ({}) added by bundle: {}", f != null ? f.getName() : null, f != null ? f.getClass() : null, m_Bundle );
+		m_Parent.addFunction(f);
+	}
+
+	@Override
+	public void removeFunction(Function<?> f) {
+		LOG.info("Function: {} ({}) removed by bundle: {}", f != null ? f.getName() : null, f != null ? f.getClass() : null, m_Bundle );
+		m_Parent.removeFunction(f);
+	}
+
+	@Override
+	public void addDataReader(DataReader<?> reader) {
+		LOG.info("Reader: {} for data: {} added by bundle: {}",
+				reader != null ? reader.getClass() : null,
+				reader != null ? reader.getReadClass() : null,
+				m_Bundle);
+		m_Parent.addDataReader(reader);
+	}
+
+	@Override
+	public void removeDataReader(DataReader<?> reader) {
+		LOG.info("Reader: {} for data: {} removed by bundle: {}",
+				reader != null ? reader.getClass() : null,
+				reader != null ? reader.getReadClass() : null,
+				m_Bundle);
+		m_Parent.removeDataReader(reader);
+	}
+
+	@Override
+	public void addDataWriter(DataWriter<?> writer) {
+		LOG.info("Writer: {} for data: {} added by bundle: {}",
+				writer != null ? writer.getClass() : null,
+				writer != null ? writer.getWriteClass() : null,
+				m_Bundle);
+		m_Parent.addDataWriter(writer);
+	}
+
+	@Override
+	public void removeDataWriter(DataWriter<?> writer) {
+		LOG.info("Writer: {} for data: {} removed by bundle: {}",
+				writer != null ? writer.getClass() : null,
+				writer != null ? writer.getWriteClass() : null,
+				m_Bundle);
+		m_Parent.removeDataWriter(writer);
 	}
 
 }

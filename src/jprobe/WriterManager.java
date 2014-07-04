@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.osgi.framework.Bundle;
 
+import jprobe.osgi.JProbeActivator;
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
@@ -105,7 +106,7 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 		return m_ClassWriters.containsKey(dataClass) && !m_ClassWriters.get(dataClass).isEmpty();
 	}
 	
-	protected void addDataWriter(DataWriter<?> writer){
+	public void addDataWriter(DataWriter<?> writer){
 		m_Writer.add(writer);
 		Class<? extends Data> clazz = writer.getWriteClass();
 		if(m_ClassWriters.containsKey(clazz)){
@@ -119,7 +120,7 @@ public class WriterManager extends AbstractServiceListener<DataWriter>{
 		}
 	}
 	
-	protected void removeDataWriter(DataWriter<?> writer){
+	public void removeDataWriter(DataWriter<?> writer){
 		if(m_Writer.contains(writer)){
 			m_Writer.remove(writer);
 		}

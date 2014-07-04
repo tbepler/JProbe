@@ -14,10 +14,12 @@ import java.util.Properties;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import jprobe.osgi.JProbeActivator;
 import jprobe.services.CoreListener;
 import jprobe.services.Workspace;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;
+import jprobe.services.data.DataReader;
 import jprobe.services.data.DataWriter;
 import jprobe.services.data.ReadException;
 import jprobe.services.data.WriteException;
@@ -311,6 +313,36 @@ public class JProbe implements JProbeCore{
 	public void writeData(Data d, FileNameExtensionFilter format,
 			OutputStream out) throws WriteException {
 		m_WriterManager.writeData(d, format, out);
+	}
+
+	@Override
+	public void addFunction(Function<?> f) {
+		m_FunctionManager.addFunction(f);
+	}
+
+	@Override
+	public void removeFunction(Function<?> f) {
+		m_FunctionManager.removeFunction(f);
+	}
+
+	@Override
+	public void addDataReader(DataReader<?> reader) {
+		m_ReaderManager.addDataReader(reader);
+	}
+
+	@Override
+	public void removeDataReader(DataReader<?> reader) {
+		m_ReaderManager.removeDataReader(reader);
+	}
+
+	@Override
+	public void addDataWriter(DataWriter<?> writer) {
+		m_WriterManager.addDataWriter(writer);
+	}
+
+	@Override
+	public void removeDataWriter(DataWriter<?> writer) {
+		m_WriterManager.removeDataWriter(writer);
 	}
 
 
