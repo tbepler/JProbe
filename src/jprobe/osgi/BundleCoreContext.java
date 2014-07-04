@@ -234,32 +234,26 @@ public class BundleCoreContext implements JProbeCore, CoreListener{
 	public boolean isWritable(Class<? extends Data> dataClass) {
 		return m_Parent.isWritable(dataClass);
 	}
+	
+	protected void fireCoreEvent(CoreEvent event){
+		for(CoreListener l : m_Listeners){
+			l.update(this, event);
+		}
+	}
 
 	@Override
 	public void update(JProbeCore source, CoreEvent event) {
 		if(source == m_Parent){
 			switch(event.type){
-			
-			//TODO
-			case DATA_READABLE:
-				break;
-			case DATA_UNREADABLE:
-				break;
-			case DATA_UNWRITABLE:
-				break;
-			case DATA_WRITABLE:
-				break;
-			case FUNCTION_ADDED:
-				break;
-			case FUNCTION_REMOVED:
-				break;
 			case WORKSPACE_CLOSED:
+				this.fireCoreEvent(new CoreEvent(event.type, this.getBundleWorkspace(event.workspace)));
 				break;
 			case WORKSPACE_NEW:
+				this.fireCoreEvent(new CoreEvent(event.type, this.getBundleWorkspace(event.workspace)));
 				break;
 			default:
+				this.fireCoreEvent(event);
 				break;
-			
 			}
 		}
 	}
