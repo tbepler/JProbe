@@ -2,8 +2,12 @@ package jprobe.osgi;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -13,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import util.save.LoadException;
+import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
 import jprobe.services.Workspace;
@@ -21,9 +26,12 @@ import jprobe.services.data.ReadException;
 import jprobe.services.data.WriteException;
 import jprobe.services.function.Function;
 
-public class BundleCoreContext implements JProbeCore{
+public class BundleCoreContext implements JProbeCore, CoreListener{
 	
-	private static Logger LOG = LoggerFactory.getLogger(BundleCoreContext.class);
+	private static final Logger LOG = LoggerFactory.getLogger(BundleCoreContext.class);
+	
+	private final Collection<CoreListener> m_Listeners = new ArrayList<CoreListener>();
+	private final Map<Workspace, Workspace> m_Cache = new HashMap<Workspace, Workspace>();
 	
 	private final Bundle m_Bundle;
 	private final JProbeCore m_Parent;
@@ -31,6 +39,22 @@ public class BundleCoreContext implements JProbeCore{
 	public BundleCoreContext(Bundle bundle, JProbeCore parent){
 		m_Bundle = bundle;
 		m_Parent = parent;
+	}
+	
+	protected Workspace getBundleWorkspace(Workspace w){
+		//first check the cache to see if a bundle workspace context has already been created for this workspace
+		if(m_Cache.containsKey(w)){
+			return m_Cache.get(w);
+		}
+		//otherwise, create a new bundle workspace context, cache it, and return it
+		Workspace context = new BundleWorkspaceContext(m_Bundle, w);
+		m_Cache.put(w, context);
+		return context;
+	}
+	
+	@Override
+	public String toString(){
+		return m_Parent.toString();
 	}
 	
 	@Override
@@ -65,12 +89,18 @@ public class BundleCoreContext implements JProbeCore{
 
 	@Override
 	public void addCoreListener(CoreListener listener) {
-		m_Parent.addCoreListener(listener);
+		if(m_Listeners.isEmpty()){
+			m_Parent.addCoreListener(this);
+		}
+		m_Listeners.add(listener);
 	}
 
 	@Override
 	public void removeCoreListener(CoreListener listener) {
-		m_Parent.removeCoreListener(listener);
+		m_Listeners.remove(listener);
+		if(m_Listeners.isEmpty()){
+			m_Parent.removeCoreListener(this);
+		}
 	}
 
 	@Override
@@ -82,55 +112,63 @@ public class BundleCoreContext implements JProbeCore{
 	@Override
 	public Workspace newWorkspace() {
 		LOG.info("New workspace called by bundle: {}", m_Bundle);
-		//return m_Parent.newWorkspace();
+		return this.getBundleWorkspace(m_Parent.newWorkspace());
 	}
 
 	@Override
 	public Workspace openWorkspace(InputStream in, String source) throws LoadException {
 		LOG.info("Open workspace from source: {} called by bundle: {}", source, m_Bundle );
-		return m_Parent.openWorkspace(in, source);
+		return this.getBundleWorkspace(m_Parent.openWorkspace(in, source));
 	}
 
 	@Override
 	public Workspace getWorkspace(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getBundleWorkspace(m_Parent.getWorkspace(index));
 	}
 
 	@Override
 	public int indexOf(Workspace w) {
-		// TODO Auto-generated method stub
-		return 0;
+		if(w instanceof BundleWorkspaceContext){
+			BundleWorkspaceContext context = (BundleWorkspaceContext) w;
+			return m_Parent.indexOf(context.getParentWorkspace());
+		}
+		return m_Parent.indexOf(w);
 	}
 
 	@Override
 	public List<Workspace> getWorkspaces() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Workspace> contexts = new ArrayList<Workspace>();
+		for(Workspace w : m_Parent.getWorkspaces()){
+			contexts.add(this.getBundleWorkspace(w));
+		}
+		return Collections.unmodifiableList(contexts);
 	}
 
 	@Override
 	public void closeWorkspace(int index) {
-		// TODO Auto-generated method stub
-		
+		LOG.info("Close workspace with index: {} called by bundle: {}", index, m_Bundle);
+		m_Parent.closeWorkspace(index);
 	}
 
 	@Override
 	public void closeWorkspace(Workspace w) {
-		// TODO Auto-generated method stub
-		
+		LOG.info("Close workspace: {} called by bundle: {}", w, m_Bundle);
+		if(w instanceof BundleWorkspaceContext){
+			BundleWorkspaceContext context = (BundleWorkspaceContext) w;
+			m_Parent.closeWorkspace(context.getParentWorkspace());
+		}else{
+			m_Parent.closeWorkspace(w);
+		}
 	}
 
 	@Override
 	public int numWorkspaces() {
-		// TODO Auto-generated method stub
-		return 0;
+		return m_Parent.numWorkspaces();
 	}
 
 	@Override
 	public Collection<Function<?>> getFunctions() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_Parent.getFunctions();
 	}
 
 	@Override
@@ -182,6 +220,12 @@ public class BundleCoreContext implements JProbeCore{
 	public boolean isWritable(Class<? extends Data> dataClass) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void update(JProbeCore source, CoreEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -36,6 +36,10 @@ public class BundleWorkspaceContext implements Workspace, WorkspaceListener, Sav
 		m_Parent = parent;
 	}
 	
+	Workspace getParentWorkspace(){
+		return m_Parent;
+	}
+	
 	@Override
 	public boolean unsavedChanges() {
 		return m_Parent.unsavedChanges();
