@@ -28,7 +28,7 @@ public class Launcher {
 		
 		//first set the log to write to std.err instead of std.out
 		directLogToStdErr();
-		
+		//initialize a directory for user specific files
 		File jprobeDir = initializeUserDirectory();
 		File propertiesDir = initializePropertiesDirectory(jprobeDir);
 		File logDir = initializeLogDirectory(jprobeDir);

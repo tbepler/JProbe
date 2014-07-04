@@ -74,7 +74,6 @@ public class JProbe implements JProbeCore{
 	private Felix m_Felix = null;
 	private Mode m_Mode = Mode.COMMAND;
 	
-	@SuppressWarnings({ "rawtypes" })
 	public JProbe(String userDir, String logsDir, String propsDir){
 		
 		m_UserDir = userDir;
@@ -90,6 +89,7 @@ public class JProbe implements JProbeCore{
 
 	}
 	
+	@SuppressWarnings({ "rawtypes" })
 	public void start(File userPluginsDir, File cacheDir, String[] args){
 		//check to make sure this hasn't already been started
 		if(m_Felix != null){
