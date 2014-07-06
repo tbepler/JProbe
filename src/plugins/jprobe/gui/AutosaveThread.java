@@ -3,7 +3,7 @@ package plugins.jprobe.gui;
 import java.io.File;
 import java.io.FileFilter;
 
-import util.FileUtil;
+import util.file.FileUtil;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.JProbeLog;

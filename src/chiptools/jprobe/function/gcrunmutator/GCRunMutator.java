@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
-import util.DNAUtils;
+import util.genome.DNAUtils;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicSequence;
 import util.genome.Strand;

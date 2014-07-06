@@ -7,9 +7,9 @@ import java.io.ObjectOutput;
 import java.util.*;
 import java.util.Map.Entry;
 
-import util.DNAUtils;
 import util.Dictionary;
 import util.ArrayUtils;
+import util.genome.DNAUtils;
 
 public class GappedKmer implements Kmer, Externalizable{
 	private static final long serialVersionUID = 1L;

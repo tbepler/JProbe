@@ -9,8 +9,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import util.DNAUtils;
-
 public class GenomicSequence implements Serializable, Comparable<GenomicSequence>, Iterable<GenomicCoordinate>{
 	private static final long serialVersionUID = 1L;
 	

@@ -6,7 +6,7 @@ import java.util.List;
 
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
-import util.DNAUtils;
+import util.genome.DNAUtils;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
 import util.progress.ProgressEvent;

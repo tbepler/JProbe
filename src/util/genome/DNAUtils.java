@@ -1,4 +1,4 @@
-package util;
+package util.genome;
 
 import java.util.*;
 

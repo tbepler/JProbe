@@ -9,7 +9,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import jprobe.Constants;
+import jprobe.system.Constants;
 import util.gui.TableFormatter;
 
 public abstract class AbstractFinalData implements Data{

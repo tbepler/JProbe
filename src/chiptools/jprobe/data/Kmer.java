@@ -1,6 +1,6 @@
 package chiptools.jprobe.data;
 
-import util.DNAUtils;
+import util.genome.DNAUtils;
 import util.genome.kmer.Kmer.Score;
 import jprobe.services.data.AbstractFinalData;
 

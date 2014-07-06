@@ -9,8 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import util.Observer;
-import util.Subject;
+import util.observer.Observer;
+import util.observer.Subject;
 
 public class HTMLEditorPanel extends JPanel implements ActionListener, Subject<HTMLEditorPanel.Event>{
 	private static final long serialVersionUID = 1L;

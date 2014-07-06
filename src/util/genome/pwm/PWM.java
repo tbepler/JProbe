@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.*;
 
-import util.DNAUtils;
+import util.genome.DNAUtils;
 import util.genome.NoSuchBaseException;
 
 public class PWM implements Serializable{

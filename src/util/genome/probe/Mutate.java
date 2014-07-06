@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import util.DNAUtils;
+import util.genome.DNAUtils;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;

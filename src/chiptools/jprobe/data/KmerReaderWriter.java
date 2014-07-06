@@ -7,10 +7,11 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import util.DNAUtils;
+import util.genome.DNAUtils;
 import util.genome.kmer.Kmer.Score;
 import jprobe.services.data.Data;
 import jprobe.services.data.DataReader;

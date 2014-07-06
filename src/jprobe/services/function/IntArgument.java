@@ -2,7 +2,7 @@ package jprobe.services.function;
 
 import javax.swing.JTextField;
 
-import util.MathUtils;
+import util.math.MathUtils;
 
 public abstract class IntArgument<P> extends SpinnerArgument<P,Integer>{
 	

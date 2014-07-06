@@ -1,4 +1,4 @@
-package jprobe;
+package jprobe.system;
 
 public interface Model {
 

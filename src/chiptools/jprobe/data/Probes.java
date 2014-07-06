@@ -7,14 +7,14 @@ import javax.swing.event.TableModelEvent;
 
 import chiptools.jprobe.Preferences;
 import chiptools.jprobe.Preferences.Update;
-import util.Observer;
-import util.Subject;
 import util.genome.GenomicCoordinate;
 import util.genome.GenomicRegion;
 import util.genome.GenomicSequence;
 import util.genome.Strand;
 import util.genome.probe.Probe;
 import util.genome.probe.ProbeGroup;
+import util.observer.Observer;
+import util.observer.Subject;
 import jprobe.services.data.AbstractFinalData;
 
 public class Probes extends AbstractFinalData implements Observer<Preferences.Update>{

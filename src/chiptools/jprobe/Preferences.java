@@ -14,8 +14,8 @@ import javax.swing.SwingUtilities;
 
 import plugins.jprobe.gui.services.PreferencesPanel;
 import jprobe.services.ErrorHandler;
-import util.Observer;
-import util.Subject;
+import util.observer.Observer;
+import util.observer.Subject;
 
 public class Preferences extends PreferencesPanel implements Subject<Preferences.Update>{
 	private static final long serialVersionUID = 1L;

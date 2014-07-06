@@ -13,7 +13,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-import jprobe.Constants;
+import jprobe.system.Constants;
 
 import org.apache.commons.io.input.BoundedInputStream;
 

@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
@@ -18,8 +19,8 @@ import org.osgi.framework.Bundle;
 
 import plugins.functions.gui.Constants;
 import plugins.functions.gui.SwingFunctionExecutor;
-import util.Observer;
-import util.Subject;
+import util.observer.Observer;
+import util.observer.Subject;
 import jprobe.services.JProbeCore;
 import jprobe.services.function.Argument;
 import jprobe.services.function.Function;

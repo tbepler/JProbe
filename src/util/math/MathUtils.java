@@ -1,4 +1,4 @@
-package util;
+package util.math;
 
 /**
  * This class provides math utility functions.

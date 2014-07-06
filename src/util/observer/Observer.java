@@ -1,4 +1,5 @@
-package util;
+package util.observer;
+
 
 public interface Observer<T> {
 	

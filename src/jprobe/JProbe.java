@@ -48,8 +48,8 @@ public class JProbe implements JProbeCore{
 	private static Map createFelixConfig(File felixCache, BundleActivator systemActivator) {
 		Map felixConfig = new HashMap();
 		//export the core service package
-		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, jprobe.Constants.FELIX_EXPORT_PACKAGES);
-		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, jprobe.Constants.FELIX_BOOTDELEGATION_PACKAGES);
+		felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, jprobe.system.Constants.FELIX_EXPORT_PACKAGES);
+		felixConfig.put(Constants.FRAMEWORK_BOOTDELEGATION, jprobe.system.Constants.FELIX_BOOTDELEGATION_PACKAGES);
 		//no need to set storage clean, cache is deleted when program quits anyway
 		//felixConfig.put(FelixConstants.FRAMEWORK_STORAGE_CLEAN, felixStorageClean);
 		felixConfig.put(FelixConstants.FRAMEWORK_STORAGE, felixCache.getAbsoluteFile());
@@ -63,11 +63,11 @@ public class JProbe implements JProbeCore{
 	private static Properties initSystemProperties(File userPluginDir) {
 		Properties props = new Properties();
 		Main.copySystemProperties(props);
-		props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, jprobe.Constants.PLUGIN_AUTODEPLOY);
-		props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, jprobe.Constants.FELIX_AUTODEPLOY_ACTION);
+		props.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, jprobe.system.Constants.PLUGIN_AUTODEPLOY);
+		props.setProperty(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERY, jprobe.system.Constants.FELIX_AUTODEPLOY_ACTION);
 		//set properties for the FileInstall bundle
-		System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_DIR_PROP, userPluginDir.getAbsolutePath());
-		System.setProperty(jprobe.Constants.FELIX_FILE_INSTALL_INITIALDELAY_PROP, jprobe.Constants.FELIX_INITIALDELAY);
+		System.setProperty(jprobe.system.Constants.FELIX_FILE_INSTALL_DIR_PROP, userPluginDir.getAbsolutePath());
+		System.setProperty(jprobe.system.Constants.FELIX_FILE_INSTALL_INITIALDELAY_PROP, jprobe.system.Constants.FELIX_INITIALDELAY);
 		return props;
 	}
 	
@@ -106,7 +106,7 @@ public class JProbe implements JProbeCore{
 			return;
 		}
 		//set the mode to GUI according to the passed arguments, command is default
-		if(args.length > 0 && args[0].matches(jprobe.Constants.GUI_REGEX)){
+		if(args.length > 0 && args[0].matches(jprobe.system.Constants.GUI_REGEX)){
 			m_Mode = Mode.GUI;
 		}
 		LOG.info("Running in mode: {}", m_Mode);
@@ -223,12 +223,12 @@ public class JProbe implements JProbeCore{
 
 	@Override
 	public String getName() {
-		return jprobe.Constants.NAME;
+		return jprobe.system.Constants.NAME;
 	}
 
 	@Override
 	public String getVersion() {
-		return jprobe.Constants.VERSION;
+		return jprobe.system.Constants.VERSION;
 	}
 
 	@Override

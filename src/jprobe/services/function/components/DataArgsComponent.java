@@ -14,9 +14,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import util.Observer;
-import util.Subject;
 import util.gui.ChangeNotifier;
+import util.observer.Observer;
+import util.observer.Subject;
 import jprobe.services.Workspace;
 import jprobe.services.WorkspaceEvent;
 import jprobe.services.WorkspaceListener;

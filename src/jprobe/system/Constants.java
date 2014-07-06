@@ -1,12 +1,12 @@
-package jprobe;
+package jprobe.system;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
 import javax.swing.ImageIcon;
 
+import jprobe.system.launcher.Launcher;
 import ch.qos.logback.classic.Level;
 
 public class Constants {
@@ -17,13 +17,6 @@ public class Constants {
 	
 	public static final String WORKSPACE_FILE_EXTENSION = "sav";
 	public static final String WORKSPACE_DEFAULT_NAME = "Untitled Workspace";
-
-	public static final String URL_PATH_SEPARATOR = "/";
-	
-	public static final String JAR_URL = Launcher.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-	public static final String JAR_DIR = JAR_URL.substring(0, JAR_URL.lastIndexOf(URL_PATH_SEPARATOR));
-	
-	public static final String PLUGIN_AUTODEPLOY = JAR_DIR + File.separator + "plugins";
 
 	public static final String USER_HOME_DIR = System.getProperty("user.home");
 	
@@ -42,15 +35,13 @@ public class Constants {
 	public static final String PROPERTIES_FILE_NAME = "jprobe.core.properties";
 	public static final String PROPERTY_KEY_LOG_LEVEL = "rootLogLevel";
 	public static final String DEFAULT_LOG_LEVEL = "INFO";
-	public static final String PROPERTY_KEY_FELIX_STORAGE_CLEAN = "cleanFelixCache";
-	public static final String DEFAULT_FELIX_STORAGE_CLEAN = "onFirstInit";
+	public static final String PROPERTY_USER_DIR = Launcher.class + ".userDir";
 	
 	public static final Properties DEFAULT_PROPERTIES = createDefaultProperties();
 			
 	private static Properties createDefaultProperties(){
 		Properties props = new Properties();
 		props.setProperty(PROPERTY_KEY_LOG_LEVEL, DEFAULT_LOG_LEVEL);
-		props.setProperty(PROPERTY_KEY_FELIX_STORAGE_CLEAN, DEFAULT_FELIX_STORAGE_CLEAN);
 		return props;
 	}
 	
@@ -64,36 +55,6 @@ public class Constants {
 		builder.append(Level.ALL);
 		return builder.toString();
 	}
-	
-	public static final String FELIX_EXPORT_PACKAGES = "jprobe.services;version=1.0.0," +
-			"jprobe.services.data;version=1.0.0," +
-			"jprobe.services.function;version=1.0.0,"
-			+ "jprobe.services.function.components;version=1.0.0,"
-			//export the crossplatform library
-			+ "bepler.crossplatform;version=1.0.0,"
-			//export the slf4j library
-			+ "org.slf4j;version=1.7.7,"
-			+ "util.progress;version=1.0.0,"
-			+ "util.gui;version=1.0.0,"
-			+ "util;version=1.0.0,"
-			+ "util.logging;version=1.0.0,"
-			+ "util.genome;version=1.0.0,"
-			+ "util.genome.reader;version=1.0.0,"
-			+ "util.genome.reader.query;version=1.0.0,"
-			+ "util.genome.reader.threaded;version=1.0.0,"
-			+ "util.genome.peak;version=1.0.0,"
-			+ "util.genome.kmer;version=1.0.0,"
-			+ "util.genome.probe;version=1.0.0,"
-			+ "util.genome.pwm;version=1.0.0,"
-			+ "util.xmlserializer;version=1.0.0";
-	
-	public static final String FELIX_BOOTDELEGATION_PACKAGES = "javax.swing,javax.swing.*";
-	
-	public static final String FELIX_AUTODEPLOY_ACTION = "install,start";
-	
-	public static final String FELIX_FILE_INSTALL_DIR_PROP = "felix.fileinstall.dir";
-	public static final String FELIX_FILE_INSTALL_INITIALDELAY_PROP = "felix.fileinstall.noInitialDelay";
-	public static final String FELIX_INITIALDELAY = "true";
 	
 	public static final String RESOURCES_PATH = "/jprobe/resources";
 	

@@ -6,7 +6,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.*;
 
-import util.DNAUtils;
+import util.genome.DNAUtils;
 
 public class UngappedKmer implements Kmer, Externalizable{
 	private static final long serialVersionUID = 1L;

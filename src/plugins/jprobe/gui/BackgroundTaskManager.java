@@ -21,8 +21,8 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import plugins.jprobe.gui.services.Notification;
-import util.Observer;
-import util.Subject;
+import util.observer.Observer;
+import util.observer.Subject;
 import util.save.ImportException;
 import util.save.LoadException;
 import util.save.SaveException;

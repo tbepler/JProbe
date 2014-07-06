@@ -17,7 +17,7 @@ import org.osgi.framework.Bundle;
 import plugins.jprobe.gui.notification.ExportEvent;
 import plugins.jprobe.gui.notification.ImportEvent;
 import plugins.jprobe.gui.notification.ImportEvent.Type;
-import util.Observer;
+import util.observer.Observer;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.data.Data;

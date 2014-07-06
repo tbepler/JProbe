@@ -1,4 +1,4 @@
-package jprobe;
+package jprobe.system.launcher;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -8,8 +8,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
+import jprobe.JProbe;
+import jprobe.system.Constants;
+
 import org.slf4j.LoggerFactory;
 
+import util.file.FileUtil;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -34,6 +38,7 @@ public class Launcher {
 		File logDir = initializeLogDirectory(jprobeDir);
 		//read the properties
 		Properties props = readProperties(propertiesDir);
+		props.setProperty(Constants.PROPERTY_USER_DIR, jprobeDir.getAbsolutePath());
 		//get the log level from the properties
 		Level logLevel = Level.valueOf(props.getProperty(Constants.PROPERTY_KEY_LOG_LEVEL));
 		//init the log using the logDir
@@ -82,39 +87,12 @@ public class Launcher {
 		return props;
 	}
 	
-	private static File initializeUserPluginDirectory(File userDir){
-		File logDir = new File(userDir, Constants.USER_PLUGINS_DIR_NAME);
-		if(!logDir.exists() && !logDir.mkdir()){
-			LOG.warn("Unable to initialize user plugins directory {}", logDir);
-		}
-		return logDir;
-	}
-	
 	private static File initializePropertiesDirectory(File userDir){
 		File logDir = new File(userDir, Constants.PROPERTIES_DIR_NAME);
 		if(!logDir.exists() && !logDir.mkdir()){
 			LOG.warn("Unable to initialize properties directory {}", logDir);
 		}
 		return logDir;
-	}
-	
-	private static File initializeFelixCacheDirectory(File userDir){
-		//assign the cache directory a unique name, because it will be deleted when the program exits
-		File cacheDir = createUniqueFile(userDir, Constants.FELIX_CACHE_DIR_NAME);
-		if(!cacheDir.mkdir()){
-			LOG.warn("Unable to initialize temporary felix bundle-cache {}, trying in working directory...", cacheDir);
-			cacheDir = createUniqueFile(Constants.FELIX_CACHE_DIR_NAME);
-			if(!cacheDir.mkdir()){
-				LOG.error("Unable to initialize felix bundle-cache in {} or working directory. Exiting.", userDir);
-				System.exit(1);
-			}else{
-				LOG.info("Created temporary felix bundle-cache {}", cacheDir);
-			}
-		}else{
-			LOG.info("Created temporary felix bundle-cache {}", cacheDir);
-		}
-		cacheDir.deleteOnExit();
-		return cacheDir;
 	}
 	
 	private static File initializeLogDirectory(File userDir){
@@ -164,42 +142,6 @@ public class Launcher {
 		
 		rootLogger.addAppender(appender);
 	}
-	
-	private static File createUniqueFile(String name){
-		File f = new File(name);
-		if(f.exists()){
-			int count = 0;
-			f = new File(name + count);
-			while(f.exists()){
-				f = new File(name + (++count));
-			}
-		}
-		return f;
-	}
-	
-	private static File createUniqueFile(File parent, String name){
-		File f = new File(parent, name);
-		if(f.exists()){
-			int count = 0;
-			f = new File(name + count);
-			while(f.exists()){
-				f = new File(parent, name + (++count));
-			}
-		}
-		return f;
-	}
-	
-	private static boolean canWriteDirectory(File dir){
-		String testName = ".testFile";
-		File test = createUniqueFile(dir, testName);
-		try{
-			test.createNewFile();
-			test.delete();
-			return true;
-		}catch(Exception e){
-			return false;
-		}
-	}
 
 	private static void initializeLog(File logDir, Level level) {
 		
@@ -210,7 +152,7 @@ public class Launcher {
 			LOG.warn("Log directory {} does not exist. Logs will be written to std.err instead.", logDir);
 			return;
 		}
-		if(!canWriteDirectory(logDir)){
+		if(!FileUtil.canWriteDirectory(logDir)){
 			LOG.warn("Unable to write to log directory {}. Logs will be written to std.err instead.", logDir);
 			return;
 		}

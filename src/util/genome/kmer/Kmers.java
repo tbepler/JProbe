@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import util.DNAUtils;
+import util.genome.DNAUtils;
 import util.genome.kmer.Kmer.Score;
 
 public class Kmers {

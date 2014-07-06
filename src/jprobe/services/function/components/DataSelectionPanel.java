@@ -13,10 +13,10 @@ import java.util.HashSet;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import util.Observer;
-import util.Subject;
-import jprobe.Constants;
+import util.observer.Observer;
+import util.observer.Subject;
 import jprobe.services.data.Data;
+import jprobe.system.Constants;
 
 public class DataSelectionPanel<D extends Data> extends JPanel implements ItemListener, ActionListener, Subject<D>{
 	private static final long serialVersionUID = 1L;

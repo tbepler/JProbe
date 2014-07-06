@@ -1,9 +1,45 @@
-package util;
+package util.file;
 
 import java.io.File;
 import java.io.FileFilter;
 
 public class FileUtil {
+	
+	public static File createUniqueFile(String name){
+		File f = new File(name);
+		if(f.exists()){
+			int count = 0;
+			f = new File(name + count);
+			while(f.exists()){
+				f = new File(name + (++count));
+			}
+		}
+		return f;
+	}
+	
+	public static File createUniqueFile(File parent, String name){
+		File f = new File(parent, name);
+		if(f.exists()){
+			int count = 0;
+			f = new File(name + count);
+			while(f.exists()){
+				f = new File(parent, name + (++count));
+			}
+		}
+		return f;
+	}
+	
+	public static boolean canWriteDirectory(File dir){
+		String testName = ".testFile";
+		File test = createUniqueFile(dir, testName);
+		try{
+			test.createNewFile();
+			test.delete();
+			return true;
+		}catch(Exception e){
+			return false;
+		}
+	}
 	
 	public static File getOldestFile(String dir, FileFilter filter){
 		return getOldestFile(new File(dir), filter);

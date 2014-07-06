@@ -19,9 +19,9 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 import plugins.functions.gui.Constants;
-import util.Observer;
-import util.Subject;
 import util.gui.ValidLabel;
+import util.observer.Observer;
+import util.observer.Subject;
 import jprobe.services.function.Argument;
 import jprobe.services.function.ArgumentListener;
 
