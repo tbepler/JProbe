@@ -17,6 +17,8 @@ import jprobe.save.SaveManager;
 import jprobe.services.Workspace;
 import jprobe.services.WorkspaceListener;
 import jprobe.services.data.Data;
+import jprobe.system.model.DataManager;
+import jprobe.system.model.WorkspaceEventThread;
 
 public class JProbeWorkspace implements Workspace{
 	

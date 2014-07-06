@@ -1,4 +1,4 @@
-package jprobe;
+package jprobe.system.model;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package jprobe;
+package jprobe.system.model;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,6 +11,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import util.save.LoadException;
+import jprobe.Constants;
+import jprobe.JProbeWorkspace;
 import jprobe.services.AbstractServiceListener;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
