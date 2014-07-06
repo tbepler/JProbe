@@ -5,11 +5,12 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import jprobe.system.osgi.services.AbstractServiceListener;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import plugins.jprobe.gui.services.PluginGUIService;
-import jprobe.services.AbstractServiceListener;
 
 public class PluginGUIServiceListener extends AbstractServiceListener<PluginGUIService>{
 	

@@ -20,8 +20,8 @@ import org.osgi.framework.FrameworkUtil;
 
 import util.ByteCounterOutputStream;
 import util.ClassLoaderObjectInputStream;
-import util.OSGIUtils;
 import util.WorkerThread;
+import util.osgi.OSGIUtils;
 import util.save.ImportException;
 import util.save.LoadException;
 import util.save.SaveException;

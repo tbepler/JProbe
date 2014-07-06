@@ -11,6 +11,7 @@ import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.main.AutoProcessor;
 import org.apache.felix.main.Main;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
@@ -21,6 +22,10 @@ import jprobe.system.Controller;
 import jprobe.system.MVCFactory;
 import jprobe.system.Model;
 import jprobe.system.View;
+import jprobe.system.osgi.services.AbstractServiceListener;
+import jprobe.system.osgi.services.ControllerResource;
+import jprobe.system.osgi.services.ModelResource;
+import jprobe.system.osgi.services.ViewResource;
 
 public class FelixMVCFactory implements MVCFactory{
 	
@@ -79,10 +84,17 @@ public class FelixMVCFactory implements MVCFactory{
 		}
 		return logDir;
 	}
-
-	private final BundleActivator m_Activator = new SystemActivator();
+	
+	private final AbstractServiceListener<ModelResource> m_ModelList = createModelResourceListener();
+	private final AbstractServiceListener<ControllerResource> m_ControllerList = createControllerResourceListener();
+	private final AbstractServiceListener<ViewResource> m_ViewList = createViewResourceListener();
+	
+	private final BundleActivator m_Activator = new SystemActivator(m_ModelList, m_ControllerList, m_ViewList);
 	
 	private Felix m_Felix = null;
+	private ModelResource m_ModelCons = null;
+	private ControllerResource m_ControllerCons = null;
+	private ViewResource m_ViewCons = null;
 	
 	@Override
 	public void start(Properties props) {
@@ -137,22 +149,90 @@ public class FelixMVCFactory implements MVCFactory{
 
 	@Override
 	public Model newModel() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_ModelCons.newModel();
 	}
 
 	@Override
 	public Controller newController() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_ControllerCons.newController();
 	}
 
 	@Override
 	public View newView() {
-		// TODO Auto-generated method stub
-		return null;
+		return m_ViewCons.newView();
 	}
 	
+
+	private AbstractServiceListener<ModelResource> createModelResourceListener() {
+		return new AbstractServiceListener<ModelResource>(ModelResource.class){
+
+			@Override
+			public void register(ModelResource service, Bundle provider) {
+				if(m_ModelCons == null){
+					LOG.info("{}: {} registered by bundle: {}", ModelResource.class, service, provider);
+					m_ModelCons = service;
+				}else{
+					LOG.warn("Multiple models detected. {}: {} registered by bundle: {}. Current {}: {}", ModelResource.class, service, provider, ModelResource.class, m_ModelCons);
+				}
+			}
+
+			@Override
+			public void unregister(ModelResource service, Bundle provider) {
+				if(m_ModelCons == service){
+					LOG.info("{}: {} unregistered by bundle: {}", ModelResource.class, service, provider);
+					m_ModelCons = null;
+				}
+			}
+			
+		};
+	}
 	
+	private AbstractServiceListener<ControllerResource> createControllerResourceListener() {
+		return new AbstractServiceListener<ControllerResource>(ControllerResource.class){
+
+			@Override
+			public void register(ControllerResource service, Bundle provider) {
+				if(m_ControllerCons == null){
+					LOG.info("{}: {} registered by bundle: {}", ControllerResource.class, service, provider);
+					m_ControllerCons = service;
+				}else{
+					LOG.warn("Multiple controllers detected. {}: {} registered by bundle: {}. Current {}: {}", ControllerResource.class, service, provider, ControllerResource.class, m_ControllerCons);
+				}
+			}
+
+			@Override
+			public void unregister(ControllerResource service, Bundle provider) {
+				if(m_ControllerCons == service){
+					LOG.info("{}: {} unregistered by bundle: {}", ControllerResource.class, service, provider);
+					m_ControllerCons = null;
+				}
+			}
+			
+		};
+	}
+	
+	private AbstractServiceListener<ViewResource> createViewResourceListener() {
+		return new AbstractServiceListener<ViewResource>(ViewResource.class){
+
+			@Override
+			public void register(ViewResource service, Bundle provider) {
+				if(m_ViewCons == null){
+					LOG.info("{}: {} registered by bundle: {}", ViewResource.class, service, provider);
+					m_ViewCons = service;
+				}else{
+					LOG.warn("Multiple views detected. {}: {} registered by bundle: {}. Current {}: {}", ViewResource.class, service, provider, ViewResource.class, m_ViewCons);
+				}
+			}
+
+			@Override
+			public void unregister(ViewResource service, Bundle provider) {
+				if(m_ViewCons == service){
+					LOG.info("{}: {} unregistered by bundle: {}", ViewResource.class, service, provider);
+					m_ViewCons = null;
+				}
+			}
+			
+		};
+	}
 	
 }

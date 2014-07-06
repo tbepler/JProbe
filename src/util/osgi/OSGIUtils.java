@@ -1,4 +1,4 @@
-package util;
+package util.osgi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +7,8 @@ import java.io.ObjectInputStream;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWiring;
+
+import util.ClassLoaderObjectInputStream;
 
 public class OSGIUtils {
 	

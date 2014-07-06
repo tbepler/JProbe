@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jprobe.JProbe;
-import jprobe.services.AbstractServiceListener;
 import jprobe.services.CorePluginService;
 import jprobe.services.JProbeCore;
+import jprobe.system.osgi.services.AbstractServiceListener;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;

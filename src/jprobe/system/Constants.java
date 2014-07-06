@@ -21,8 +21,6 @@ public class Constants {
 	public static final String USER_HOME_DIR = System.getProperty("user.home");
 	
 	public static final String USER_DIR_NAME = "jprobe";
-	public static final String USER_PLUGINS_DIR_NAME = "plugins";
-	public static final String FELIX_CACHE_DIR_NAME = ".felix-plugin-cache";
 	public static final String PROPERTIES_DIR_NAME= "properties";
 	public static final String LOG_DIR_NAME = "logs";
 	

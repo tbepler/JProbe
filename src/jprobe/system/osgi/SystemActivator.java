@@ -1,6 +1,6 @@
 package jprobe.system.osgi;
 
-import jprobe.services.AbstractServiceListener;
+import jprobe.system.osgi.services.AbstractServiceListener;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
