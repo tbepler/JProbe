@@ -34,6 +34,7 @@ public class Constants {
 	public static final String PROPERTY_KEY_LOG_LEVEL = "rootLogLevel";
 	public static final String DEFAULT_LOG_LEVEL = "INFO";
 	public static final String PROPERTY_USER_DIR = Launcher.class + ".userDir";
+	public static final String PROPERTY_SYSTEM_HELP = Controller.class + ".systemHelp";
 	
 	public static final Properties DEFAULT_PROPERTIES = createDefaultProperties();
 			

@@ -3,8 +3,35 @@ package util.progress;
 
 public class ProgressEvent {
 	
+	public static ProgressEvent newProgressUpdate(Object source, int progress, int maxProgress){
+		return new ProgressEvent(source, Type.PROGRESS_UPDATE, progress, maxProgress, null, null, null);
+	}
+	
+	public static ProgressEvent newMessageUpdate(Object source, String message){
+		return new ProgressEvent(source, Type.MESSAGE_UPDATE, -1, -1, message, null, null);
+	}
+	
+	public static ProgressEvent newIndeterminantUpdate(Object source, boolean indeterminant){
+		return new ProgressEvent(source, Type.INDETERMINANT_UPDATE, -1, -1, null, indeterminant, null);
+	}
+	
+	public static ProgressEvent newErrorEvent(Object source, Throwable t){
+		return new ProgressEvent(source, Type.ERROR, -1, -1, null, null, t);
+	}
+	
+	public static ProgressEvent newCanceledEvent(Object source){
+		return new ProgressEvent(source, Type.CANCELED, -1, -1, null, null, null);
+	}
+	
+	public static ProgressEvent newCompletedEvent(Object source){
+		return new ProgressEvent(source, Type.COMPLETED, -1, -1, null, null, null);
+	}
+	
 	public enum Type{
-		UPDATE,
+		PROGRESS_UPDATE,
+		MESSAGE_UPDATE,
+		INDETERMINANT_UPDATE,
+		ERROR,
 		CANCELED, 
 		COMPLETED;
 	}
@@ -14,50 +41,24 @@ public class ProgressEvent {
 	private final int m_Progress;
 	private final int m_MaxProgress;
 	private final String m_Message;
-	private final boolean m_Indeterminant;
+	private final Boolean m_Indeterminant;
+	private final Throwable m_Throwable;
 	
-	public ProgressEvent(Object source, Type type){
-		this(source, type, -1);
-	}
-	
-	public ProgressEvent(Object source, Type type, String message){
-		this(source, type, message, true);
-	}
-	
-	public ProgressEvent(Object source, Type type, int progress){
-		this(source, type, progress, null);
-	}
-	
-	public ProgressEvent(Object source, Type type, int progress, int maxProgress){
-		this(source, type, progress, maxProgress, null);
-	}
-	
-	public ProgressEvent(Object source, Type type, int progress, String message){
-		this(source, type, progress, message, false);
-	}
-	
-	public ProgressEvent(Object source, Type type, int progress, int maxProgress, String message){
-		this(source, type, progress, maxProgress, message, false);
-	}
-	
-	public ProgressEvent(Object source, Type type, String message, boolean indeterminant){
-		this(source, type, 0, 0, message, indeterminant);
-	}
-	
-	public ProgressEvent(Object source, Type type, int progress, String message, boolean indeterminant){
-		this(source, type, progress, -1, message, indeterminant);
-	}
-	
-	public ProgressEvent(Object source, Type type, int progress, int maxProgress, String message, boolean indeterminant){
+	private ProgressEvent(Object source, Type type, int progress, int maxProgress, String message, Boolean indeterminant, Throwable t){
 		m_Type = type;
 		m_Source = source;
 		m_Progress = progress;
 		m_MaxProgress = maxProgress;
 		m_Message = message;
 		m_Indeterminant = indeterminant;
+		m_Throwable = t;
 	}
 	
-	public boolean isIndeterminant(){
+	public Throwable getThrowable(){
+		return m_Throwable;
+	}
+	
+	public Boolean isIndeterminant(){
 		return m_Indeterminant;
 	}
 	

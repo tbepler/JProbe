@@ -10,6 +10,9 @@ import java.util.Properties;
 
 import jprobe.JProbe;
 import jprobe.system.Constants;
+import jprobe.system.MVCFactory;
+import jprobe.system.Model;
+import jprobe.system.osgi.FelixMVCFactory;
 
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +47,10 @@ public class Launcher {
 		//init the log using the logDir
 		initializeLog(logDir, logLevel);
 		
-		File cacheDir = initializeFelixCacheDirectory(jprobeDir);
-		File userPluginsDir = initializeUserPluginDirectory(jprobeDir);
+		MVCFactory factory = new FelixMVCFactory();
+		factory.start(props);
+		
+		Model model = factory.newModel();
 		
 		LOG.info("Building {}", JProbe.class);
 		JProbe core = new JProbe(jprobeDir.getAbsolutePath(), logDir.getAbsolutePath(), propertiesDir.getAbsolutePath());
