@@ -1,6 +1,6 @@
-package jprobe.system.osgi.services;
+package jprobe.osgi.services;
 
-import jprobe.system.Controller;
+import jprobe.framework.Controller;
 
 public interface ControllerResource {
 	

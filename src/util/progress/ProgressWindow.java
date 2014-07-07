@@ -133,12 +133,10 @@ public class ProgressWindow extends JFrame implements ProgressListener, ActionLi
 
 			@Override
 			public void run() {
-				if(event.getType() == ProgressEvent.Type.UPDATE){
-					if(m_Timer == null){
-						m_Timer = new Timer(m_MiliSecsBeforeVisible, ProgressWindow.this);
-						m_Timer.setRepeats(false);
-						m_Timer.start();
-					}
+				if(m_Timer == null){
+					m_Timer = new Timer(m_MiliSecsBeforeVisible, ProgressWindow.this);
+					m_Timer.setRepeats(false);
+					m_Timer.start();
 				}
 				m_Panel.update(event);
 			}

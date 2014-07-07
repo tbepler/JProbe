@@ -11,6 +11,10 @@ public class ProgressEvent {
 		return new ProgressEvent(source, Type.MESSAGE_UPDATE, -1, -1, message, null, null);
 	}
 	
+	public static ProgressEvent newMessageAndProgressUpdate(Object source, int progress, int maxProgress, String message){
+		return new ProgressEvent(source, Type.MESSAGE_AND_PROGRESS_UPDATE, progress, maxProgress, message, null, null);
+	}
+	
 	public static ProgressEvent newIndeterminantUpdate(Object source, boolean indeterminant){
 		return new ProgressEvent(source, Type.INDETERMINANT_UPDATE, -1, -1, null, indeterminant, null);
 	}
@@ -19,18 +23,24 @@ public class ProgressEvent {
 		return new ProgressEvent(source, Type.ERROR, -1, -1, null, null, t);
 	}
 	
-	public static ProgressEvent newCanceledEvent(Object source){
-		return new ProgressEvent(source, Type.CANCELED, -1, -1, null, null, null);
+	public static ProgressEvent newInfoEvent(Object source, String message){
+		return new ProgressEvent(source, Type.INFO, -1, -1, message, null, null);
 	}
 	
-	public static ProgressEvent newCompletedEvent(Object source){
-		return new ProgressEvent(source, Type.COMPLETED, -1, -1, null, null, null);
+	public static ProgressEvent newCanceledEvent(Object source, String message){
+		return new ProgressEvent(source, Type.CANCELED, -1, -1, message, null, null);
+	}
+	
+	public static ProgressEvent newCompletedEvent(Object source, String message){
+		return new ProgressEvent(source, Type.COMPLETED, -1, -1, message, null, null);
 	}
 	
 	public enum Type{
 		PROGRESS_UPDATE,
 		MESSAGE_UPDATE,
+		MESSAGE_AND_PROGRESS_UPDATE,
 		INDETERMINANT_UPDATE,
+		INFO,
 		ERROR,
 		CANCELED, 
 		COMPLETED;

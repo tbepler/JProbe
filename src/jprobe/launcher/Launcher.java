@@ -1,4 +1,4 @@
-package jprobe.system.launcher;
+package jprobe.launcher;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -8,11 +8,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
+import jprobe.Constants;
 import jprobe.JProbe;
-import jprobe.system.Constants;
-import jprobe.system.MVCFactory;
-import jprobe.system.Model;
-import jprobe.system.osgi.FelixMVCFactory;
+import jprobe.framework.MVCFactory;
+import jprobe.framework.Model;
+import jprobe.osgi.FelixMVCFactory;
 
 import org.slf4j.LoggerFactory;
 

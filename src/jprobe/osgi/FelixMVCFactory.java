@@ -1,4 +1,4 @@
-package jprobe.system.osgi;
+package jprobe.osgi;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,14 +18,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import util.file.FileUtil;
-import jprobe.system.Controller;
-import jprobe.system.MVCFactory;
-import jprobe.system.Model;
-import jprobe.system.View;
-import jprobe.system.osgi.services.AbstractServiceListener;
-import jprobe.system.osgi.services.ControllerResource;
-import jprobe.system.osgi.services.ModelResource;
-import jprobe.system.osgi.services.ViewResource;
+import jprobe.framework.Controller;
+import jprobe.framework.MVCFactory;
+import jprobe.framework.Model;
+import jprobe.framework.View;
+import jprobe.osgi.services.AbstractServiceListener;
+import jprobe.osgi.services.ControllerResource;
+import jprobe.osgi.services.ModelResource;
+import jprobe.osgi.services.ViewResource;
 
 public class FelixMVCFactory implements MVCFactory{
 	
@@ -99,7 +99,7 @@ public class FelixMVCFactory implements MVCFactory{
 	@Override
 	public void start(Properties props) {
 		//read the user directory from properties and init the felix cache directory and the user's plugin directory
-		File userDir = new File(props.getProperty(jprobe.system.Constants.PROPERTY_USER_DIR));
+		File userDir = new File(props.getProperty(jprobe.Constants.PROPERTY_USER_DIR));
 		File cacheDir = initializeFelixCacheDirectory(userDir);
 		File pluginDir = initializeUserPluginDirectory(userDir);
 		//create felix config map

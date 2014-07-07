@@ -14,13 +14,12 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import util.progress.PrintStreamProgressBar;
+import util.progress.PrintStreamProgressListener;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 import jprobe.services.function.Function;
-import jprobe.system.Constants;
 import jprobe.system.model.FunctionManager;
 
 public class ParsingEngine {
@@ -74,7 +73,7 @@ public class ParsingEngine {
 		}
 		
 		//wrap a PrintStreamProgressBar around the PrintStream and use it to report progress
-		final PrintStreamProgressBar progressBar = new PrintStreamProgressBar(report);
+		final PrintStreamProgressListener progressBar = new PrintStreamProgressListener(report);
 		ProgressListener l = new ProgressListener(){
 			@Override
 			public void update(ProgressEvent event) {

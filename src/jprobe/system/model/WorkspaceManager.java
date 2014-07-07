@@ -11,14 +11,14 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import util.save.LoadException;
+import jprobe.Constants;
 import jprobe.JProbeWorkspace;
+import jprobe.osgi.services.AbstractServiceListener;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreEvent.Type;
 import jprobe.services.CoreListener;
 import jprobe.services.JProbeCore;
 import jprobe.services.Workspace;
-import jprobe.system.Constants;
-import jprobe.system.osgi.services.AbstractServiceListener;
 
 //extends AbstractServiceListener just for the BundleContext on load and unload methods
 //makes things easy for getting the BundleContext from the JProbeActivator

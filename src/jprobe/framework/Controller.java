@@ -1,8 +1,9 @@
-package jprobe.system;
+package jprobe.framework;
 
 import java.util.Properties;
 import java.util.concurrent.Future;
 
+import jprobe.Constants;
 import util.progress.ProgressListener;
 
 public interface Controller {
@@ -15,6 +16,8 @@ public interface Controller {
 	
 	public void waitForStop(long timeout) throws InterruptedException;
 	
-	public Future<?> parse(String[] args, ProgressListener l);
+	public Future<?> execute(String[] args, ProgressListener l);
+	
+	//TODO
 	
 }

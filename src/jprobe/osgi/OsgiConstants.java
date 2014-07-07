@@ -1,8 +1,8 @@
-package jprobe.system.osgi;
+package jprobe.osgi;
 
 import java.io.File;
 
-import jprobe.system.launcher.Launcher;
+import jprobe.launcher.Launcher;
 
 public class OsgiConstants {
 	

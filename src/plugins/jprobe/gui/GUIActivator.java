@@ -17,13 +17,13 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import jprobe.osgi.services.AbstractServiceListener;
 import jprobe.services.CoreEvent;
 import jprobe.services.CoreListener;
 import jprobe.services.Workspace;
 import jprobe.services.ErrorHandler;
 import jprobe.services.JProbeCore;
 import jprobe.services.JProbeCore.Mode;
-import jprobe.system.osgi.services.AbstractServiceListener;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;

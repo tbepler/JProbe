@@ -1,6 +1,6 @@
-package jprobe.system.osgi.services;
+package jprobe.osgi.services;
 
-import jprobe.system.Model;
+import jprobe.framework.Model;
 
 public interface ModelResource {
 	

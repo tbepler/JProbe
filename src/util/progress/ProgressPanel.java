@@ -5,10 +5,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
+import javax.swing.JTextArea;
 
 public abstract class ProgressPanel extends JPanel implements ProgressListener{
 	private static final long serialVersionUID = 1L;
@@ -20,23 +19,26 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 	private static final int MIN_BAR_WIDTH = 200;
 	
 	private JProgressBar m_ProgressBar;
-	private JLabel m_Label;
+	private JTextArea m_TextArea;
 	
 	public ProgressPanel(){
 		super(new GridBagLayout());
 		m_ProgressBar = this.createProgressBar();
-		m_Label = this.createLabel();
-		this.layout(m_ProgressBar, m_Label);
+		m_TextArea = this.createTextArea();
+		this.layout(m_ProgressBar, m_TextArea);
 		this.revalidate();
 	}
 	
-	protected void layout(JProgressBar progressBar, JLabel label){
+	protected void layout(JProgressBar progressBar, JTextArea textArea){
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.insets = LABEL_INSETS;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		this.add(label, gbc);
+		Dimension max = textArea.getMaximumSize();
+		max.width = progressBar.getPreferredSize().width;
+		textArea.setMaximumSize(max);
+		this.add(textArea, gbc);
 		gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.insets = BAR_INSETS;
@@ -51,46 +53,61 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 	@Override
 	public void update(ProgressEvent e){
 		switch(e.getType()){
-		case UPDATE:
-			if(e.getProgress() >= 0){
-				this.setValue(e.getProgress());
-				this.setProgressText(String.valueOf(e.getProgress())+"//"+String.valueOf(this.getMax()));
-			}
-			if(e.getMaxProgress() >= 0){
-				this.setMax(e.getMaxProgress());
-			}
-			this.setIndeterminant(e.isIndeterminant());
-			this.setProgressTextPainted(!this.isIndeterminant());
-			if(e.getMessage() != null){
-				this.setLabelText(e.getMessage());
-			}
-			this.onUpdate(e.getSource(), e.getProgress(), e.getMaxProgress(), e.getMessage(), e.isIndeterminant());
-			m_ProgressBar.revalidate();
-			m_Label.setMinimumSize(m_Label.getPreferredSize());
-			m_Label.revalidate();
-			break;
 		case CANCELED:
 			this.onCanceled(e.getSource());
 			break;
 		case COMPLETED:
 			this.onCompleted(e.getSource());
 			break;
+		case ERROR:
+			this.setText("Error: "+e.getThrowable().getMessage());
+			break;
+		case INDETERMINANT_UPDATE:
+			this.setIndeterminant(e.isIndeterminant());
+			break;
+		case INFO:
+			this.setText(e.getMessage());
+			break;
+		case MESSAGE_UPDATE:
+			this.setText(e.getMessage());
+			break;
+		case PROGRESS_UPDATE:
+			this.setValue(e.getProgress());
+			this.setMax(e.getMaxProgress());
+			this.setIndeterminant(false);
+			m_ProgressBar.invalidate();
+			m_ProgressBar.revalidate();
+			break;
+		case MESSAGE_AND_PROGRESS_UPDATE:
+			this.setText(e.getMessage());
+			this.setValue(e.getProgress());
+			this.setMax(e.getMaxProgress());
+			this.setIndeterminant(false);
+			m_ProgressBar.invalidate();
+			m_ProgressBar.revalidate();
+			break;
+		default:
+			break;
 		}
 	}
 	
 	protected JProgressBar createProgressBar(){
 		JProgressBar bar = new JProgressBar();
-		bar.setStringPainted(true);
-		Dimension min = bar.getMinimumSize();
-		min.setSize(MIN_BAR_WIDTH, bar.getMinimumSize().getHeight());
+		Dimension min = bar.getPreferredSize();
+		min.width = MIN_BAR_WIDTH;
 		bar.setMinimumSize(min);
 		return bar;
 	}
 	
-	protected JLabel createLabel(){
-		JLabel l = new JLabel();
-		l.setHorizontalAlignment(SwingConstants.LEFT);
+	protected JTextArea createTextArea(){
+		JTextArea l = new JTextArea();
 		l.setMinimumSize(LABEL_DEFAULT_MIN);
+		l.setLineWrap(true);
+		l.setWrapStyleWord(true);
+		l.setEditable(false);
+		l.setOpaque(false);
+		l.setBorder(null);
+		l.setFocusable(false);
 		return l;
 	}
 	
@@ -98,16 +115,18 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 		return m_ProgressBar;
 	}
 	
-	protected JLabel getLabel(){
-		return m_Label;
+	protected JTextArea getTextArea(){
+		return m_TextArea;
 	}
 	
-	protected void setLabelText(String text){
-		m_Label.setText(text);
+	protected void setText(String text){
+		m_TextArea.setText(text);
+		m_TextArea.invalidate();
+		m_TextArea.revalidate();
 	}
 	
-	protected String getLabelText(){
-		return m_Label.getText();
+	protected String getText(){
+		return m_TextArea.getText();
 	}
 	
 	protected void setProgressText(String text){
@@ -127,9 +146,10 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 	}
 	
 	protected void setIndeterminant(boolean indeterminant){
+		this.setProgressTextPainted(!indeterminant);
 		m_ProgressBar.setIndeterminate(indeterminant);
 	}
-	
+
 	protected boolean isIndeterminant(){
 		return m_ProgressBar.isIndeterminate();
 	}

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
-import jprobe.system.osgi.services.AbstractServiceListener;
+import jprobe.osgi.services.AbstractServiceListener;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

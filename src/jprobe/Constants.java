@@ -1,4 +1,4 @@
-package jprobe.system;
+package jprobe;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -6,7 +6,8 @@ import java.util.Properties;
 
 import javax.swing.ImageIcon;
 
-import jprobe.system.launcher.Launcher;
+import jprobe.framework.Controller;
+import jprobe.launcher.Launcher;
 import ch.qos.logback.classic.Level;
 
 public class Constants {

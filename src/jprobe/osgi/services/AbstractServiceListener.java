@@ -1,4 +1,4 @@
-package jprobe.system.osgi.services;
+package jprobe.osgi.services;
 
 import java.util.HashMap;
 import java.util.Map;
