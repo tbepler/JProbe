@@ -1,9 +1,9 @@
 package jprobe.osgi.services;
 
-import jprobe.framework.View;
+import jprobe.framework.view.PersistentView;
 
 public interface ViewResource {
 	
-	public View newView();
+	public PersistentView newView();
 	
 }

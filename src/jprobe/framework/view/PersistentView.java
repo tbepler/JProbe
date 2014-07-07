@@ -1,8 +1,10 @@
-package jprobe.framework;
+package jprobe.framework.view;
 
 import java.util.Properties;
 
-public interface View {
+import jprobe.framework.controller.Controller;
+
+public interface PersistentView {
 	
 	public void start(Controller controller, Properties props);
 	

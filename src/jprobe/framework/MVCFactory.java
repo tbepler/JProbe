@@ -2,8 +2,12 @@ package jprobe.framework;
 
 import java.util.Properties;
 
+import jprobe.framework.controller.Controller;
+import jprobe.framework.model.Model;
+import jprobe.framework.view.PersistentView;
+
 /**
- * This interface defines a factory that can be used to create {@link Model}, {@link View}, and {@link Controller} objects.
+ * This interface defines a factory that can be used to create {@link Model}, {@link PersistentView}, and {@link Controller} objects.
  * 
  * @author Tristan Bepler
  *
@@ -44,10 +48,10 @@ public interface MVCFactory {
 	public Controller newController();
 	
 	/**
-	 * Returns a new {@link View} constructed according to this {@link MVCFactory}'s implementation.
+	 * Returns a new {@link PersistentView} constructed according to this {@link MVCFactory}'s implementation.
 	 * @return
 	 */
-	public View newView();
+	public PersistentView newView();
 	
 
 }

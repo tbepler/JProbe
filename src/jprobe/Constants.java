@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import javax.swing.ImageIcon;
 
-import jprobe.framework.Controller;
+import jprobe.framework.controller.Controller;
 import jprobe.launcher.Launcher;
 import ch.qos.logback.classic.Level;
 

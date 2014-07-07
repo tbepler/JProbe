@@ -1,4 +1,4 @@
-package jprobe.framework;
+package jprobe.framework.model;
 
 import java.util.Properties;
 

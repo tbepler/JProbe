@@ -94,19 +94,23 @@ public class PrintStreamProgressListener {
 			m_Out.print("\r");
 			m_Out.print(message);
 			this.printOverRemaining(message.length());
+			m_Out.println();
+		}else if(m_PrevLen > 0){
+			m_Out.println();
 		}
-		m_Out.println();
 		this.reset();
 	}
 	
 	protected void error(Throwable t){
 		m_Out.print("\rError: ");
 		m_Out.println(t.getMessage());
+		m_PrevLen = 0;
 	}
 	
 	protected void info(String message){
 		m_Out.print("\r");
 		m_Out.println(message);
+		m_PrevLen = 0;
 	}
 	
 	public void update(ProgressEvent e){

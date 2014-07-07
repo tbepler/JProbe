@@ -11,7 +11,7 @@ import java.util.Properties;
 import jprobe.Constants;
 import jprobe.JProbe;
 import jprobe.framework.MVCFactory;
-import jprobe.framework.Model;
+import jprobe.framework.model.Model;
 import jprobe.osgi.FelixMVCFactory;
 
 import org.slf4j.LoggerFactory;

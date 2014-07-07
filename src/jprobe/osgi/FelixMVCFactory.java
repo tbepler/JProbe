@@ -18,10 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import util.file.FileUtil;
-import jprobe.framework.Controller;
 import jprobe.framework.MVCFactory;
-import jprobe.framework.Model;
-import jprobe.framework.View;
+import jprobe.framework.controller.Controller;
+import jprobe.framework.model.Model;
+import jprobe.framework.view.PersistentView;
 import jprobe.osgi.services.AbstractServiceListener;
 import jprobe.osgi.services.ControllerResource;
 import jprobe.osgi.services.ModelResource;
@@ -158,7 +158,7 @@ public class FelixMVCFactory implements MVCFactory{
 	}
 
 	@Override
-	public View newView() {
+	public PersistentView newView() {
 		return m_ViewCons.newView();
 	}
 	
