@@ -11,8 +11,6 @@ import util.genome.kmer.NoSuchWordException;
 import util.genome.pwm.PWM;
 import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
-import util.progress.ProgressEvent.Type;
-
 import java.util.*;
 
 public class ProbeUtils {
@@ -58,19 +56,22 @@ public class ProbeUtils {
 			}
 			percentComplete = fireJoinProbesProgress(l, i+1, probes.size(), percentComplete);
 		}
-		if(l != null){
-			l.update(new ProgressEvent(null, Type.COMPLETED, "Done joining probes."));
-		}
-	
+		fireJoinProbesCompleted(l);
 		
 		return new ProbeGroup(joinedProbes);
+	}
+	
+	protected static void fireJoinProbesCompleted(ProgressListener l){
+		if(l != null){
+			l.update(ProgressEvent.newCompletedEvent(null, "Done joining probes."));
+		}
 	}
 	
 	protected static int fireJoinProbesProgress(ProgressListener l, int progress, int maxProgress, int prevPercent){
 		if(l == null) return 0;
 		int percent = progress*100/maxProgress;
 		if(percent != prevPercent){
-			l.update(new ProgressEvent(null, Type.UPDATE, progress, maxProgress, "Joining probes..."));
+			l.update(ProgressEvent.newMessageAndProgressUpdate(null, progress, maxProgress, "Joining probes..."));
 		}
 		return percent;
 	}
@@ -91,9 +92,7 @@ public class ProbeUtils {
 			}
 			percentComplete = fireJoinProbesProgress(l, i+1, probes.size(), percentComplete);
 		}
-		if(l != null){
-			l.update(new ProgressEvent(null, Type.COMPLETED, "Done joining probes."));
-		}
+		fireJoinProbesCompleted(l);
 		
 		return new ProbeGroup(joinedProbes);
 		

@@ -64,17 +64,20 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 			break;
 		case INDETERMINANT_UPDATE:
 			this.setIndeterminant(e.isIndeterminant());
+			this.onUpdate(e.getSource(), this.getValue(), this.getMax(), this.getText(), e.isIndeterminant());
 			break;
 		case INFO:
 			this.setText(e.getMessage());
 			break;
 		case MESSAGE_UPDATE:
 			this.setText(e.getMessage());
+			this.onUpdate(e.getSource(), this.getValue(), this.getMax(), e.getMessage(), this.isIndeterminant());
 			break;
 		case PROGRESS_UPDATE:
 			this.setValue(e.getProgress());
 			this.setMax(e.getMaxProgress());
 			this.setIndeterminant(false);
+			this.onUpdate(e.getSource(), e.getProgress(), e.getMaxProgress(), this.getText(), this.isIndeterminant());
 			m_ProgressBar.invalidate();
 			m_ProgressBar.revalidate();
 			break;
@@ -83,6 +86,7 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 			this.setValue(e.getProgress());
 			this.setMax(e.getMaxProgress());
 			this.setIndeterminant(false);
+			this.onUpdate(e.getSource(), e.getProgress(), e.getMaxProgress(), e.getMessage(), this.isIndeterminant());
 			m_ProgressBar.invalidate();
 			m_ProgressBar.revalidate();
 			break;
