@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import util.file.FileUtil;
+import jprobe.framework.ConstructionException;
 import jprobe.framework.MVCFactory;
 import jprobe.framework.controller.Controller;
 import jprobe.framework.model.Model;
@@ -154,75 +155,75 @@ public class FelixMVCFactory implements MVCFactory{
 	}
 
 	@Override
-	public Model newModel() {
+	public Model newModel() throws ConstructionException{
 		if(m_ModelCons.isEmpty()){
-			return null;
+			throw new ConstructionException("No registered Model resources.");
 		}
 		return m_ModelCons.peek().newModel();
 	}
 
 	@Override
-	public Model newModel(String id) {
+	public Model newModel(String id) throws ConstructionException{
 		for(ModelResource cons : m_ModelCons){
 			if(cons.uniqueId().equals(id)){
 				return cons.newModel();
 			}
 		}
-		return null;
+		throw new ConstructionException("No Model resource registered with the id: "+id);
 	}
 
 	@Override
-	public Controller newController() {
+	public Controller newController() throws ConstructionException{
 		if(m_ControllerCons.isEmpty()){
-			return null;
+			throw new ConstructionException("No registered Controller resources.");
 		}
 		return m_ControllerCons.peek().newController();
 	}
 
 	@Override
-	public Controller newController(String id) {
+	public Controller newController(String id) throws ConstructionException{
 		for(ControllerResource cons : m_ControllerCons){
 			if(cons.uniqueId().equals(id)){
 				return cons.newController();
 			}
 		}
-		return null;
+		throw new ConstructionException("No Controller resource registered with the id: "+id);
 	}
 	
 	@Override
-	public PersistentView newPersistentView() {
+	public PersistentView newPersistentView() throws ConstructionException{
 		if(m_PersistentViewCons.isEmpty()){
-			return null;
+			throw new ConstructionException("No registered PersistentView resources.");
 		}
 		return m_PersistentViewCons.peek().newPersistentView();
 	}
 
 	@Override
-	public PersistentView newPersistentView(String id) {
+	public PersistentView newPersistentView(String id) throws ConstructionException{
 		for(PersistentViewResource cons : m_PersistentViewCons){
 			if(cons.uniqueId().equals(id)){
 				return cons.newPersistentView();
 			}
 		}
-		return null;
+		throw new ConstructionException("No PersistentView resource registered with the id: "+id);
 	}
 
 	@Override
-	public BatchView newBatchView() {
+	public BatchView newBatchView() throws ConstructionException{
 		if(m_BatchViewCons.isEmpty()){
-			return null;
+			throw new ConstructionException("No registered BatchView resources.");
 		}
 		return m_BatchViewCons.peek().newBatchtView();
 	}
 
 	@Override
-	public BatchView newBatchView(String id) {
+	public BatchView newBatchView(String id) throws ConstructionException{
 		for(BatchViewResource cons : m_BatchViewCons){
 			if(cons.uniqueId().equals(id)){
 				return cons.newBatchtView();
 			}
 		}
-		return null;
+		throw new ConstructionException("No BatchView resource registered with the id: "+id);
 	}
 	
 

@@ -5,13 +5,17 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 import jprobe.Constants;
-import jprobe.JProbe;
+import jprobe.framework.ConstructionException;
 import jprobe.framework.MVCFactory;
+import jprobe.framework.controller.Controller;
 import jprobe.framework.model.Model;
+import jprobe.framework.view.BatchView;
+import jprobe.framework.view.PersistentView;
 import jprobe.osgi.FelixMVCFactory;
 
 import org.slf4j.LoggerFactory;
@@ -29,7 +33,7 @@ import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 
 public class Launcher {
 	
-	private static org.slf4j.Logger LOG = LoggerFactory.getLogger(Launcher.class);;
+	private static org.slf4j.Logger LOG = LoggerFactory.getLogger(Launcher.class);
 	
 	public static void main(String[] args){
 		
@@ -50,20 +54,141 @@ public class Launcher {
 		MVCFactory factory = new FelixMVCFactory();
 		factory.start(props);
 		
-		Model model = factory.newModel();
+		Model model = buildModel(factory);
+		Properties modelProps = readProperties(propertiesDir, model.getClass());
+		LOG.info("Starting model: {}...", model.getClass());
+		model.start(modelProps);
+		LOG.info("Model: {} started.", model.getClass());
+
+		Controller controller = buildController(factory);
+		Properties controllerProps = readProperties(propertiesDir, controller.getClass());
+		//TODO
+		controllerProps.setProperty(Controller.PROPERTY_SYSTEM_HELP, "Help statement");
+		LOG.info("Starting controller: {}...", controller.getClass());
+		controller.start(model, controllerProps);
+		LOG.info("Controller: {} started.", controller.getClass());
 		
-		LOG.info("Building {}", JProbe.class);
-		JProbe core = new JProbe(jprobeDir.getAbsolutePath(), logDir.getAbsolutePath(), propertiesDir.getAbsolutePath());
-		LOG.info("Starting core...");
-		core.start(userPluginsDir, cacheDir, args);
-		LOG.info("Core started.");
+		//TODO
+		if(args.length > 0){
+			//start batch view
+			BatchView view = buildBatchView(factory);
+			LOG.info("Starting batch view: {}...", view.getClass());
+			Properties viewProps = readProperties(propertiesDir, view.getClass());
+			view.start(controller, viewProps, args);
+			LOG.info("Batch view: {} started.", view.getClass());
+			try {
+				view.waitForStop(0);
+			} catch (InterruptedException e) {
+				LOG.error("{}", e);
+				throw new Error(e);
+			}
+		}else{
+			//start persistent view
+			PersistentView view = buildPersistentView(factory);
+			LOG.info("Starting persistent view: {}...", view.getClass());
+			Properties viewProps = readProperties(propertiesDir, view.getClass());
+			view.start(controller, viewProps);
+			LOG.info("Persistent view: {} started.", view.getClass());
+			try {
+				view.waitForStop(0);
+			} catch (InterruptedException e) {
+				LOG.error("{}", e);
+				throw new Error(e);
+			}
+		}
+		LOG.info("View stopped.");
+		LOG.info("Stopping controller...");
+		controller.stop(model, controllerProps);
 		try {
-			core.waitForShutdown();
+			controller.waitForStop(0);
 		} catch (InterruptedException e) {
-			LOG.error("{}",e);
+			LOG.error("{}", e);
 			throw new Error(e);
 		}
+		LOG.info("Controller stopped.");
+		
+		LOG.info("Stopping model...");
+		model.stop(modelProps);
+		try {
+			model.waitForStop(0);
+		} catch (InterruptedException e) {
+			LOG.error("{}", e);
+			throw new Error(e);
+		}
+		LOG.info("Model stopped.");
+		
+		//TODO write properties
+		/
+		
 		LOG.info("Exiting.");
+	}
+	
+	private static PersistentView buildPersistentView(MVCFactory factory){
+		PersistentView view;
+		try {
+			view = factory.newPersistentView();
+		} catch (ConstructionException e) {
+			LOG.error("{}", e);
+			throw new Error(e);
+		}
+		return view;
+	}
+
+	
+	private static BatchView buildBatchView(MVCFactory factory){
+		BatchView view;
+		try {
+			view = factory.newBatchView();
+		} catch (ConstructionException e) {
+			LOG.error("{}", e);
+			throw new Error(e);
+		}
+		return view;
+	}
+
+	private static Controller buildController(MVCFactory factory){
+		Controller controller;
+		try {
+			controller = factory.newController();
+		} catch (ConstructionException e) {
+			LOG.error("{}", e);
+			throw new Error(e);
+		}
+		return controller;
+	}
+	
+	private static Model buildModel(MVCFactory factory){
+		Model model;
+		try {
+			model = factory.newModel();
+		} catch (ConstructionException e) {
+			LOG.error("{}", e);
+			throw new Error(e);
+		}
+		return model;
+	}
+	
+	private static Properties readProperties(File propertiesDir, Class<?> clazz){
+		Properties props = new Properties();
+		File propsFile = new File(propertiesDir, clazz.getName() + ".properties");
+		if(propsFile.exists()){
+			InputStream in = null;
+			try {
+				in = new BufferedInputStream(new FileInputStream(propsFile));
+				props.load(in);
+			} catch (Exception e){
+				//
+			}finally{
+				if(in != null){
+					try {
+						in.close();
+					} catch (IOException e) {
+						//derp
+					}
+				}
+			}
+		}
+		return props;
 	}
 
 	private static Properties readProperties(File propertiesDir){
@@ -73,12 +198,21 @@ public class Launcher {
 		if(corePropsFile.exists()){
 			//don't log info, because this happens before the log file is initialized
 			//LOG.info("Attempting to read core properties from {}", corePropsFile);
+			InputStream in = null;
 			try{
-				InputStream in = new BufferedInputStream(new FileInputStream(corePropsFile));
+				in = new BufferedInputStream(new FileInputStream(corePropsFile));
 				props.load(in);
 				//LOG.info("Read properties from {}", corePropsFile);
 			}catch(Exception e){
 				//LOG.info("Unable to read properties from {}", corePropsFile);
+			}finally{
+				if(in != null){
+					try {
+						in.close();
+					} catch (IOException e) {
+						//derp
+					}
+				}
 			}
 		}else{
 			//the file doesn't exist, so try writing it

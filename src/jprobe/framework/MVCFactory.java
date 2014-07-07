@@ -39,54 +39,62 @@ public interface MVCFactory {
 	/**
 	 * Returns a new {@link Model} constructed according to this {@link MVCFactory}'s implementation.
 	 * @return
+	 * @throws ConstructionException - thrown if an error occurred creating the object
 	 */
-	public Model newModel();
+	public Model newModel() throws ConstructionException;
 	
 	/**
 	 * Returns a new {@link Model}, identified by the given string, and constructed according to this {@link MVCFactory}'s implementation.
 	 * @param id - String identifying which Model implementation should be constructed
 	 * @return
+	 * @throws ConstructionException - thrown if an error occurred creating the object
 	 */
-	public Model newModel(String id);
+	public Model newModel(String id) throws ConstructionException;
 	
 	/**
 	 * Returns a new {@link Controller} constructed according to this {@link MVCFactory}'s implementation.
 	 * @return
+	 * @throws ConstructionException - thrown if an error occurred creating the object
 	 */
-	public Controller newController();
+	public Controller newController() throws ConstructionException;
 	
 	/**
 	 * Returns a new {@link Controller}, identified by the given string, and constructed according to this {@link MVCFactory}'s implementation.
 	 * @param id - String identifying which Controller implementation should be constructed
 	 * @return
+	 * @throws ConstructionException - thrown if an error occurred creating the object
 	 */
-	public Controller newController(String id);
+	public Controller newController(String id) throws ConstructionException;
 	
 	/**
 	 * Returns a new {@link PersistentView} constructed according to this {@link MVCFactory}'s implementation.
 	 * @return
+	 * @throws ConstructionException - thrown if an error occurred creating the object
 	 */
-	public PersistentView newPersistentView();
+	public PersistentView newPersistentView() throws ConstructionException;
 	
 	/**
 	 * Returns a new {@link PersistentView}, identified by the given string, and constructed according to this {@link MVCFactory}'s implementation.
 	 * @param id - String identifying which PersistentView implementation should be constructed
 	 * @return
+	 * @throws ConstructionException - thrown if an error occurred creating the object
 	 */
-	public PersistentView newPersistentView(String id);
+	public PersistentView newPersistentView(String id) throws ConstructionException;
 	
 	/**
 	 * Returns a new {@link BatchView} constructed according to this {@link MVCFactory}'s implementation.
 	 * @return
+	 * @throws ConstructionException - thrown if an error occurred creating the object
 	 */
-	public BatchView newBatchView();
+	public BatchView newBatchView() throws ConstructionException;
 	
 	/**
 	 * Returns a new {@link BatchView}, identified by the given string, and constructed according to this {@link MVCFactory}'s implementation.
 	 * @param id - String identifying which BatchView implementation should be constructed
 	 * @return
+	 * @throws ConstructionException - thrown if an error occurred creating the object
 	 */
-	public BatchView newBatchView(String id);
+	public BatchView newBatchView(String id) throws ConstructionException;
 	
 
 }
