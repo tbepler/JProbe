@@ -4,6 +4,7 @@ import jprobe.framework.controller.Controller;
 
 public interface ControllerResource {
 	
+	public String uniqueId();
 	public Controller newController();
 	
 }

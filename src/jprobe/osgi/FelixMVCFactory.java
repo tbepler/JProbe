@@ -3,6 +3,7 @@ package jprobe.osgi;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -21,11 +22,13 @@ import util.file.FileUtil;
 import jprobe.framework.MVCFactory;
 import jprobe.framework.controller.Controller;
 import jprobe.framework.model.Model;
+import jprobe.framework.view.BatchView;
 import jprobe.framework.view.PersistentView;
 import jprobe.osgi.services.AbstractServiceListener;
+import jprobe.osgi.services.BatchViewResource;
 import jprobe.osgi.services.ControllerResource;
 import jprobe.osgi.services.ModelResource;
-import jprobe.osgi.services.ViewResource;
+import jprobe.osgi.services.PersistentViewResource;
 
 public class FelixMVCFactory implements MVCFactory{
 	
@@ -87,14 +90,17 @@ public class FelixMVCFactory implements MVCFactory{
 	
 	private final AbstractServiceListener<ModelResource> m_ModelList = createModelResourceListener();
 	private final AbstractServiceListener<ControllerResource> m_ControllerList = createControllerResourceListener();
-	private final AbstractServiceListener<ViewResource> m_ViewList = createViewResourceListener();
+	private final AbstractServiceListener<PersistentViewResource> m_PersistentViewList = createPersistentViewResourceListener();
+	private final AbstractServiceListener<BatchViewResource> m_BatchViewList = createBatchViewResourceListener();
 	
-	private final BundleActivator m_Activator = new SystemActivator(m_ModelList, m_ControllerList, m_ViewList);
+	private final BundleActivator m_Activator = new SystemActivator(m_ModelList, m_ControllerList, m_PersistentViewList, m_BatchViewList);
+	
+	private final LinkedList<ModelResource> m_ModelCons = new LinkedList<ModelResource>();
+	private final LinkedList<ControllerResource> m_ControllerCons = new LinkedList<ControllerResource>();
+	private final LinkedList<PersistentViewResource> m_PersistentViewCons = new LinkedList<PersistentViewResource>();
+	private final LinkedList<BatchViewResource> m_BatchViewCons = new LinkedList<BatchViewResource>();
 	
 	private Felix m_Felix = null;
-	private ModelResource m_ModelCons = null;
-	private ControllerResource m_ControllerCons = null;
-	private ViewResource m_ViewCons = null;
 	
 	@Override
 	public void start(Properties props) {
@@ -149,17 +155,74 @@ public class FelixMVCFactory implements MVCFactory{
 
 	@Override
 	public Model newModel() {
-		return m_ModelCons.newModel();
+		if(m_ModelCons.isEmpty()){
+			return null;
+		}
+		return m_ModelCons.peek().newModel();
+	}
+
+	@Override
+	public Model newModel(String id) {
+		for(ModelResource cons : m_ModelCons){
+			if(cons.uniqueId().equals(id)){
+				return cons.newModel();
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public Controller newController() {
-		return m_ControllerCons.newController();
+		if(m_ControllerCons.isEmpty()){
+			return null;
+		}
+		return m_ControllerCons.peek().newController();
 	}
 
 	@Override
-	public PersistentView newView() {
-		return m_ViewCons.newView();
+	public Controller newController(String id) {
+		for(ControllerResource cons : m_ControllerCons){
+			if(cons.uniqueId().equals(id)){
+				return cons.newController();
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public PersistentView newPersistentView() {
+		if(m_PersistentViewCons.isEmpty()){
+			return null;
+		}
+		return m_PersistentViewCons.peek().newPersistentView();
+	}
+
+	@Override
+	public PersistentView newPersistentView(String id) {
+		for(PersistentViewResource cons : m_PersistentViewCons){
+			if(cons.uniqueId().equals(id)){
+				return cons.newPersistentView();
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public BatchView newBatchView() {
+		if(m_BatchViewCons.isEmpty()){
+			return null;
+		}
+		return m_BatchViewCons.peek().newBatchtView();
+	}
+
+	@Override
+	public BatchView newBatchView(String id) {
+		for(BatchViewResource cons : m_BatchViewCons){
+			if(cons.uniqueId().equals(id)){
+				return cons.newBatchtView();
+			}
+		}
+		return null;
 	}
 	
 
@@ -168,19 +231,15 @@ public class FelixMVCFactory implements MVCFactory{
 
 			@Override
 			public void register(ModelResource service, Bundle provider) {
-				if(m_ModelCons == null){
+				if(m_ModelCons.add(service)){
 					LOG.info("{}: {} registered by bundle: {}", ModelResource.class, service, provider);
-					m_ModelCons = service;
-				}else{
-					LOG.warn("Multiple models detected. {}: {} registered by bundle: {}. Current {}: {}", ModelResource.class, service, provider, ModelResource.class, m_ModelCons);
 				}
 			}
 
 			@Override
 			public void unregister(ModelResource service, Bundle provider) {
-				if(m_ModelCons == service){
+				if(m_ModelCons.remove(service)){
 					LOG.info("{}: {} unregistered by bundle: {}", ModelResource.class, service, provider);
-					m_ModelCons = null;
 				}
 			}
 			
@@ -192,47 +251,60 @@ public class FelixMVCFactory implements MVCFactory{
 
 			@Override
 			public void register(ControllerResource service, Bundle provider) {
-				if(m_ControllerCons == null){
+				if(m_ControllerCons.add(service)){
 					LOG.info("{}: {} registered by bundle: {}", ControllerResource.class, service, provider);
-					m_ControllerCons = service;
-				}else{
-					LOG.warn("Multiple controllers detected. {}: {} registered by bundle: {}. Current {}: {}", ControllerResource.class, service, provider, ControllerResource.class, m_ControllerCons);
 				}
 			}
 
 			@Override
 			public void unregister(ControllerResource service, Bundle provider) {
-				if(m_ControllerCons == service){
+				if(m_ControllerCons.remove(service)){
 					LOG.info("{}: {} unregistered by bundle: {}", ControllerResource.class, service, provider);
-					m_ControllerCons = null;
 				}
 			}
 			
 		};
 	}
 	
-	private AbstractServiceListener<ViewResource> createViewResourceListener() {
-		return new AbstractServiceListener<ViewResource>(ViewResource.class){
+	private AbstractServiceListener<PersistentViewResource> createPersistentViewResourceListener() {
+		return new AbstractServiceListener<PersistentViewResource>(PersistentViewResource.class){
 
 			@Override
-			public void register(ViewResource service, Bundle provider) {
-				if(m_ViewCons == null){
-					LOG.info("{}: {} registered by bundle: {}", ViewResource.class, service, provider);
-					m_ViewCons = service;
-				}else{
-					LOG.warn("Multiple views detected. {}: {} registered by bundle: {}. Current {}: {}", ViewResource.class, service, provider, ViewResource.class, m_ViewCons);
+			public void register(PersistentViewResource service, Bundle provider) {
+				if(m_PersistentViewCons.add(service)){
+					LOG.info("{}: {} registered by bundle: {}", PersistentViewResource.class, service, provider);
 				}
 			}
 
 			@Override
-			public void unregister(ViewResource service, Bundle provider) {
-				if(m_ViewCons == service){
-					LOG.info("{}: {} unregistered by bundle: {}", ViewResource.class, service, provider);
-					m_ViewCons = null;
+			public void unregister(PersistentViewResource service, Bundle provider) {
+				if(m_PersistentViewCons.remove(service)){
+					LOG.info("{}: {} unregistered by bundle: {}", PersistentViewResource.class, service, provider);
 				}
 			}
 			
 		};
 	}
+	
+	private AbstractServiceListener<BatchViewResource> createBatchViewResourceListener() {
+		return new AbstractServiceListener<BatchViewResource>(BatchViewResource.class){
+
+			@Override
+			public void register(BatchViewResource service, Bundle provider) {
+				if(m_BatchViewCons.add(service)){
+					LOG.info("{}: {} registered by bundle: {}", BatchViewResource.class, service, provider);
+				}
+			}
+
+			@Override
+			public void unregister(BatchViewResource service, Bundle provider) {
+				if(m_BatchViewCons.remove(service)){
+					LOG.info("{}: {} unregistered by bundle: {}", BatchViewResource.class, service, provider);
+				}
+			}
+			
+		};
+	}
+
 	
 }

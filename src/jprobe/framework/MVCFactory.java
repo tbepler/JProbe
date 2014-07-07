@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import jprobe.framework.controller.Controller;
 import jprobe.framework.model.Model;
+import jprobe.framework.view.BatchView;
 import jprobe.framework.view.PersistentView;
 
 /**
@@ -42,16 +43,50 @@ public interface MVCFactory {
 	public Model newModel();
 	
 	/**
+	 * Returns a new {@link Model}, identified by the given string, and constructed according to this {@link MVCFactory}'s implementation.
+	 * @param id - String identifying which Model implementation should be constructed
+	 * @return
+	 */
+	public Model newModel(String id);
+	
+	/**
 	 * Returns a new {@link Controller} constructed according to this {@link MVCFactory}'s implementation.
 	 * @return
 	 */
 	public Controller newController();
 	
 	/**
+	 * Returns a new {@link Controller}, identified by the given string, and constructed according to this {@link MVCFactory}'s implementation.
+	 * @param id - String identifying which Controller implementation should be constructed
+	 * @return
+	 */
+	public Controller newController(String id);
+	
+	/**
 	 * Returns a new {@link PersistentView} constructed according to this {@link MVCFactory}'s implementation.
 	 * @return
 	 */
-	public PersistentView newView();
+	public PersistentView newPersistentView();
+	
+	/**
+	 * Returns a new {@link PersistentView}, identified by the given string, and constructed according to this {@link MVCFactory}'s implementation.
+	 * @param id - String identifying which PersistentView implementation should be constructed
+	 * @return
+	 */
+	public PersistentView newPersistentView(String id);
+	
+	/**
+	 * Returns a new {@link BatchView} constructed according to this {@link MVCFactory}'s implementation.
+	 * @return
+	 */
+	public BatchView newBatchView();
+	
+	/**
+	 * Returns a new {@link BatchView}, identified by the given string, and constructed according to this {@link MVCFactory}'s implementation.
+	 * @param id - String identifying which BatchView implementation should be constructed
+	 * @return
+	 */
+	public BatchView newBatchView(String id);
 	
 
 }
