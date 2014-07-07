@@ -1,5 +1,7 @@
 package jprobe.framework.controller;
 
-public interface Writable {
-
+public interface Writable<T> {
+	
+	
+	
 }
