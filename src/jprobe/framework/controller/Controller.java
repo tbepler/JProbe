@@ -1,24 +1,25 @@
 package jprobe.framework.controller;
 
+import java.util.Collection;
 import java.util.Properties;
+
 import jprobe.Constants;
+import jprobe.framework.Stoppable;
 import jprobe.framework.model.Model;
-import jprobe.services.data.Data;
-import util.concurrent.Collector;
-import util.concurrent.Result;
 import util.progress.ProgressListener;
 
-public interface Controller {
+public interface Controller extends Stoppable{
 	
 	public static final String PROPERTY_SYSTEM_HELP = Constants.PROPERTY_SYSTEM_HELP;
 	
 	public void start(Model model, Properties props);
 	
-	public void stop(Model model, Properties props);
+	public void newWorkspace();
 	
-	public void waitForStop(long timeout) throws InterruptedException;
+	public void openWorkspace(Source s, ProgressListener l);
 	
-	public void execute(String[] args, Collector<Result<Data>> collector,  ProgressListener l);
+	public Collection<WorkspaceController> getWorkspaces();
+	
 	
 	//TODO
 	
