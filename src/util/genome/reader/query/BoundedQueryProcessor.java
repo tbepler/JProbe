@@ -12,11 +12,13 @@ public class BoundedQueryProcessor implements QueryProcessor{
 	private final Map<Chromosome, Queue<LocationBoundedSequenceQuery>> m_Remaining = new HashMap<Chromosome, Queue<LocationBoundedSequenceQuery>>();
 	private final Queue<LocationBoundedSequenceQuery> m_Active;
 	private final Map<LocationBoundedSequenceQuery, GenomicCoordinate> m_ProcessedTo; 
+	private final int m_Size;
 	private GenomicSequence m_Seq;
 	private Chromosome m_CurChrom;
 	private Queue<LocationBoundedSequenceQuery> m_CurQueries;
 	
 	public BoundedQueryProcessor(List<LocationBoundedSequenceQuery> queries){
+		m_Size = queries.size();
 		for(LocationBoundedSequenceQuery q : queries){
 			Chromosome chrom = q.getChromosome();
 			if(m_Remaining.containsKey(chrom)){
@@ -128,6 +130,11 @@ public class BoundedQueryProcessor implements QueryProcessor{
 	@Override
 	public boolean done() {
 		return m_Remaining.isEmpty() && m_Active.isEmpty() && (m_CurQueries == null || m_CurQueries.isEmpty());
+	}
+
+	@Override
+	public int totalQueries() {
+		return m_Size;
 	}
 
 }

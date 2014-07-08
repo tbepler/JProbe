@@ -16,11 +16,14 @@ public class LocationQueryProcessor implements QueryProcessor{
 	private final Map<Chromosome, Queue<LocationQuery>> m_Remaining = new HashMap<Chromosome, Queue<LocationQuery>>();
 	private final Queue<LocationQuery> m_Active;
 	private final TreeSet<LocationQuery> m_ActiveStarts;
+	private final int m_Size;
+	
 	private GenomicSequence m_Seq;
 	private Chromosome m_CurChrom = null;
 	private Queue<LocationQuery> m_CurQueries = null;
 	
 	public LocationQueryProcessor(List<LocationQuery> queries){
+		m_Size = queries.size();
 		for(LocationQuery q : queries){
 			Chromosome chrom = q.getChromosome();
 			if(m_Remaining.containsKey(chrom)){
@@ -95,6 +98,11 @@ public class LocationQueryProcessor implements QueryProcessor{
 	@Override
 	public boolean done() {
 		return m_Remaining.isEmpty() && m_Active.isEmpty() && (m_CurQueries == null || m_CurQueries.isEmpty());
+	}
+
+	@Override
+	public int totalQueries() {
+		return m_Size;
 	}
 
 }

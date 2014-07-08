@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import util.genome.reader.AbstractGenomeReader;
+import util.genome.reader.GenomeReader;
 import util.genome.reader.query.LocationBoundedSequenceQuery;
 import util.genome.reader.query.LocationQuery;
 import util.genome.reader.query.SequenceQuery;
+import util.progress.ProgressListener;
 
-public class ThreadedGenomeReader extends AbstractGenomeReader{
+public class ThreadedGenomeReader implements GenomeReader{
 	
 	private final int PROCESSORS = Runtime.getRuntime().availableProcessors();
 	
@@ -21,13 +22,7 @@ public class ThreadedGenomeReader extends AbstractGenomeReader{
 	}
 
 	@Override
-	public void read(List<LocationQuery> locationQueries, List<SequenceQuery> sequenceQueries, List<LocationBoundedSequenceQuery> boundedQueries) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setUpdateMode(UpdateMode mode) {
+	public void read(List<LocationQuery> locationQueries, List<SequenceQuery> sequenceQueries, List<LocationBoundedSequenceQuery> boundedQueries, ProgressListener l) {
 		// TODO Auto-generated method stub
 		
 	}

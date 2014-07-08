@@ -10,6 +10,13 @@ public interface QueryProcessor {
 	 * @return
 	 */
 	public int process(GenomicSequence next);
+	
+	/**
+	 * Returns the original number of queries in this QueryProcessor.
+	 * @return
+	 */
+	public int totalQueries();
+	
 	public boolean done();
 	
 }

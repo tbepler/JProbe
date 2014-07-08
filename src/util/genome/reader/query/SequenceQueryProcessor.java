@@ -88,4 +88,9 @@ public class SequenceQueryProcessor implements QueryProcessor{
 		return m_Queries.isEmpty();
 	}
 
+	@Override
+	public int totalQueries() {
+		return m_Queries.size();
+	}
+
 }

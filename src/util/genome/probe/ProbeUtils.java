@@ -9,7 +9,6 @@ import util.genome.Strand;
 import util.genome.kmer.Kmer;
 import util.genome.kmer.NoSuchWordException;
 import util.genome.pwm.PWM;
-import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 import java.util.*;
 
@@ -63,7 +62,13 @@ public class ProbeUtils {
 	
 	protected static void fireJoinProbesCompleted(ProgressListener l){
 		if(l != null){
-			l.update(ProgressEvent.newCompletedEvent(null, "Done joining probes."));
+			l.onCompletion("Done joining probes.");
+		}
+	}
+	
+	protected static void fireJoinProbesStart(ProgressListener l){
+		if(l != null){
+			l.onStart(null);
 		}
 	}
 	
@@ -71,7 +76,7 @@ public class ProbeUtils {
 		if(l == null) return 0;
 		int percent = progress*100/maxProgress;
 		if(percent != prevPercent){
-			l.update(ProgressEvent.newMessageAndProgressUpdate(null, progress, maxProgress, "Joining probes..."));
+			l.progressUpdate(percent, "Joining probes...");
 		}
 		return percent;
 	}
@@ -81,6 +86,7 @@ public class ProbeUtils {
 		for(Probe p : givenProbes){
 			probes.add(p);
 		}
+		fireJoinProbesStart(l);
 		Collections.sort(probes);
 		Queue<Probe> joinedProbes = new PriorityQueue<Probe>();
 		int percentComplete = fireJoinProbesProgress(l, 0, probes.size(), -1);

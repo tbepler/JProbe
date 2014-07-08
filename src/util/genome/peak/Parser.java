@@ -18,6 +18,7 @@ import util.genome.reader.GenomeReader;
 import util.genome.reader.query.LocationBoundedSequenceQuery;
 import util.genome.reader.query.LocationQuery;
 import util.genome.reader.query.SequenceQuery;
+import util.progress.ProgressListener;
 
 public class Parser {
 	
@@ -33,17 +34,18 @@ public class Parser {
 	/**
 	 * This method uses the specified GenomeReader to extract the genomic DNA sequence of each peak in the 
 	 * peak group and returns a new PeakSequenceGroup containing those peak sequences.
+	 * @param l - {@link ProgressListener} object with which to report read progress, or null
 	 * @param reader - genome from which to extract sequences
 	 * @param peaks - peaks for which sequences should be extracted
 	 * @return a PeakSequenceGroup object containing all the PeakSequence objects generated
 	 */
-	public static PeakSequenceGroup readFromGenome(GenomeReader reader, Iterable<Peak> peaks){
+	public static PeakSequenceGroup readFromGenome(ProgressListener l, GenomeReader reader, Iterable<Peak> peaks){
 		List<PeakSequence> peakSeqs = new ArrayList<PeakSequence>();
 		List<LocationQuery> queries = new ArrayList<LocationQuery>();
 		for(Peak p : peaks){
 			queries.add(new PeakQuery(p, peakSeqs));
 		}
-		reader.read(queries, new ArrayList<SequenceQuery>(), new ArrayList<LocationBoundedSequenceQuery>());
+		reader.read(queries, new ArrayList<SequenceQuery>(), new ArrayList<LocationBoundedSequenceQuery>(), l);
 		Collections.sort(peakSeqs);
 		return new PeakSequenceGroup(peakSeqs);
 	}
@@ -55,12 +57,13 @@ public class Parser {
 	 * The resulting peak sequences will be of size summitRegion*2 + 1 as a result. The peak summit values will
 	 * be used if they are specified by the peak object, otherwise the summit will be considered the center
 	 * of the peak region.
+	 * @param l - {@link ProgressListener} to which read progress will be reported, or null if none desired
 	 * @param reader - genome from which to extract sequences
 	 * @param peaks - peaks for which sequences should be extracted
 	 * @param summitRegion - int specifying how far on either side of the summit to look
 	 * @return a PeakSequenceGroup object containing the PeakSequence objects generated
 	 */
-	public static PeakSequenceGroup readFromGenome(GenomeReader reader, Iterable<Peak> peaks, int summitRegion){
+	public static PeakSequenceGroup readFromGenome(ProgressListener l, GenomeReader reader, Iterable<Peak> peaks, int summitRegion){
 		List<Peak> peakSummits = new ArrayList<Peak>();
 		//for every peak make a new peak object for the summit
 		for(Peak p : peaks){
@@ -68,7 +71,7 @@ public class Parser {
 			peakSummits.add(summitPeak);
 		}
 		//read the summit peaks from the genome
-		return readFromGenome(reader, peakSummits);
+		return readFromGenome(l, reader, peakSummits);
 	}
 	
 	public static PeakSequence parsePeakSequence(String s) throws ParsingException{

@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.List;
 
 import util.genome.Chromosome;
@@ -20,12 +19,9 @@ import util.genome.reader.query.LocationQueryProcessor;
 import util.genome.reader.query.QueryProcessor;
 import util.genome.reader.query.SequenceQuery;
 import util.genome.reader.query.SequenceQueryProcessor;
-import util.progress.ProgressEvent;
 import util.progress.ProgressListener;
 
-public class BasicGenomeReader extends AbstractGenomeReader{
-	
-	public static final int LINES_PER_NOTIFY = 10;
+public class BasicGenomeReader implements GenomeReader{
 	
 	private final File m_GenomeFile;
 	
@@ -33,54 +29,74 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 		m_GenomeFile = genomeFile;
 	}
 	
-	public BasicGenomeReader(File genomeFile, Collection<ProgressListener> listeners){
-		super(listeners);
-		m_GenomeFile = genomeFile;
-	}
-	
-	protected int notifyReadProgress(int progress, int maxProgress, int prevPercent){
+	protected int notifyReadProgress(ProgressListener l, int progress, int maxProgress, int prevPercent, String message){
 		int percent = 100*progress/maxProgress;
 		if(percent != prevPercent){
-			this.notifyListeners(ProgressEvent.newProgressUpdate(this, progress, maxProgress));
+			l.progressUpdate(percent, message);
 		}
 		return percent;
 	}
 	
-	protected void notifyNewChromosome(Chromosome chr){
-		this.notifyListeners(ProgressEvent.newMessageUpdate(this, "Reading "+m_GenomeFile.getName()+": "+chr));
+	protected String notifyNewChromosome(ProgressListener l, Chromosome chr, int percent){
+		String message = "Reading "+m_GenomeFile.getName()+": "+chr;
+		l.progressUpdate(percent, message);
+		return message;
 	}
 	
-	protected void notifyCompleted(){
-		this.notifyListeners(ProgressEvent.newCompletedEvent(this, "Done reading "+m_GenomeFile.getName()));
+	protected void notifyCompleted(ProgressListener l){
+		l.onCompletion("Done reading "+m_GenomeFile.getName());
+	}
+	
+	protected void notifyStart(ProgressListener l){
+		l.onStart(null);
 	}
 	
 	@Override
-	public void read(List<LocationQuery> locationQueries, List<SequenceQuery> sequenceQueries, List<LocationBoundedSequenceQuery> boundedQueries) {
+	public void read(
+			List<LocationQuery> locationQueries,
+			List<SequenceQuery> sequenceQueries,
+			List<LocationBoundedSequenceQuery> boundedQueries,
+			ProgressListener l
+			) {
 		LocationQueryProcessor locationProcessor = new LocationQueryProcessor(locationQueries);
 		SequenceQueryProcessor sequenceProcessor = new SequenceQueryProcessor(sequenceQueries);
 		BoundedQueryProcessor boundedProcessor = new BoundedQueryProcessor(boundedQueries);
 		
-		int totalQueries = locationQueries.size() + sequenceQueries.size() + boundedQueries.size();
+		if(l != null){
+			read(l, locationProcessor, sequenceProcessor, boundedProcessor);
+		}else{
+			read(locationProcessor, sequenceProcessor, boundedProcessor);
+		}
+		
+	}
+
+	private void read(ProgressListener l, QueryProcessor ... processors) {
+		int totalQueries = 0;
+		for(QueryProcessor processor : processors){
+			totalQueries += processor.totalQueries();
+		}
 		int queriesProcessed = 0;
-		int percentProcessed = -1;
+		int percentProcessed = 0;
+		String message = null;
 		
 		try {
+			this.notifyStart(l);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(m_GenomeFile)));
 			GenomicCoordinate seqStart = null;
 			String line;
 			try {
-				while((line = reader.readLine()) != null && !done(locationProcessor, sequenceProcessor, boundedProcessor)){
+				while((line = reader.readLine()) != null && !done(processors)){
 					if(line.startsWith(">")){
 						//new chromosome reached
 						Chromosome chrom = Chromosome.getInstance(line);
 						seqStart = new GenomicCoordinate(chrom, 1);
-						this.notifyNewChromosome(chrom);
+						message = this.notifyNewChromosome(l, chrom, percentProcessed);
 					}else{
 						GenomicSequence seq = new GenomicSequence(line, new GenomicRegion(seqStart, seqStart.increment(line.length()-1)));
-						queriesProcessed += locationProcessor.process(seq);
-						queriesProcessed += sequenceProcessor.process(seq);
-						queriesProcessed += boundedProcessor.process(seq);
-						percentProcessed = notifyReadProgress(queriesProcessed, totalQueries, percentProcessed);
+						for(QueryProcessor processor : processors){
+							queriesProcessed += processor.process(seq);
+						}
+						percentProcessed = this.notifyReadProgress(l, queriesProcessed, totalQueries, percentProcessed, message);
 						seqStart = seq.getEnd().increment(1);
 					}
 				}
@@ -88,11 +104,40 @@ public class BasicGenomeReader extends AbstractGenomeReader{
 			} catch (IOException e) {
 				//do nothing
 			}
-			this.notifyCompleted();
+			this.notifyCompleted(l);
+		} catch (FileNotFoundException e) {
+			l.onError(e);
+			l.onCompletion(null);
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void read(QueryProcessor ... processors){
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(m_GenomeFile)));
+			GenomicCoordinate seqStart = null;
+			String line;
+			try {
+				while((line = reader.readLine()) != null && !done(processors)){
+					if(line.startsWith(">")){
+						//new chromosome reached
+						Chromosome chrom = Chromosome.getInstance(line);
+						seqStart = new GenomicCoordinate(chrom, 1);
+					}else{
+						GenomicSequence seq = new GenomicSequence(line, new GenomicRegion(seqStart, seqStart.increment(line.length()-1)));
+						for(QueryProcessor processor : processors){
+							processor.process(seq);
+						}
+						seqStart = seq.getEnd().increment(1);
+					}
+				}
+				reader.close();
+			} catch (IOException e) {
+				//do nothing
+			}
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-		
 	}
 
 	private static boolean done(QueryProcessor ... processors){

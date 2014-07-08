@@ -8,8 +8,9 @@ import java.util.List;
 import util.genome.reader.query.LocationBoundedSequenceQuery;
 import util.genome.reader.query.LocationQuery;
 import util.genome.reader.query.SequenceQuery;
+import util.progress.ProgressListener;
 
-public class TwoBitReader extends AbstractGenomeReader{
+public class TwoBitReader implements GenomeReader{
 	
 	private class HeaderException extends Exception{
 		private static final long serialVersionUID = 1L;
@@ -89,7 +90,7 @@ public class TwoBitReader extends AbstractGenomeReader{
 	}
 
 	@Override
-	public void read(List<LocationQuery> locationQueries, List<SequenceQuery> sequenceQueries, List<LocationBoundedSequenceQuery> boundedQueries) {
+	public void read(List<LocationQuery> locationQueries, List<SequenceQuery> sequenceQueries, List<LocationBoundedSequenceQuery> boundedQueries, ProgressListener l) {
 		// TODO Auto-generated method stub
 		
 	}
