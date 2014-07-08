@@ -15,8 +15,9 @@ public interface ProgressListener {
 	
 	/**
 	 * This method is called by the observed class or routine to indicate
-	 * that an error has occurred. This method should only be called for
-	 * unrecoverable errors.
+	 * that an error has occurred. If this method is called for an unrecoverable
+	 * error, then the {@link #onCompletion(String)} method must still be called
+	 * after this method.
 	 * @param t - {@link Throwable} indicating the error
 	 */
 	public void onError(Throwable t);
@@ -35,7 +36,8 @@ public interface ProgressListener {
 	 * the percentage completion. Any other value indicates that the observed
 	 * progress is indeterminate. This can be checked using the {@link
 	 * Progress#isIndeterminate(int)} method.
-	 * @param message - a progress message, can be null
+	 * @param message - a progress message, can be null. A value of null
+	 * indicates not to change the previous message, if any.
 	 */
 	public void progressUpdate(int percent, String message);
 	

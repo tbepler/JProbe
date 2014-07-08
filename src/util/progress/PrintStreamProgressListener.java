@@ -2,7 +2,7 @@ package util.progress;
 
 import java.io.PrintStream;
 
-public class PrintStreamProgressListener {
+public class PrintStreamProgressListener implements ProgressListener{
 	
 	protected final PrintStream m_Out;
 	private final int m_CharLength;
@@ -10,8 +10,7 @@ public class PrintStreamProgressListener {
 	
 	private int m_PrevLen = 0;
 	private String m_Message = null;
-	private int m_Progress = 0;
-	private int m_MaxProgress = 0;
+	private int m_Percent = -1;
 	
 	public PrintStreamProgressListener(PrintStream out, int charLength){
 		m_Out = out;
@@ -26,12 +25,10 @@ public class PrintStreamProgressListener {
 	public void reset(){
 		m_PrevLen = 0;
 		m_Message = null;
-		m_Progress = 0;
-		m_MaxProgress = 0;
+		m_Percent = -1;
 	}
 	
-	protected int printProgressBar(int progress, int maxProgress){
-		int percent = progress * 100 / maxProgress;
+	protected int printProgressBar(int percent){
 		m_Out.format("%4s%%", percent);
 		m_Out.print(" [");
 		int barLen = Math.min(percent / m_PercentPerChar, m_CharLength);
@@ -60,9 +57,11 @@ public class PrintStreamProgressListener {
 	
 	protected void printProgress(){
 		int printLen = 0;
-		m_Out.print("\r");
-		if(m_MaxProgress > 0 && m_Progress >= 0){
-			printLen += this.printProgressBar(m_Progress, m_MaxProgress);
+		if(m_PrevLen > 0){
+			m_Out.print("\r");
+		}
+		if(!Progress.isIndeterminate(m_Percent)){
+			printLen += this.printProgressBar(m_Percent);
 		}
 		if(m_Message != null){
 			printLen += this.printMessage(m_Message);
@@ -71,20 +70,8 @@ public class PrintStreamProgressListener {
 		m_PrevLen = printLen;
 	}
 	
-	protected void messageAndProgressUpdate(int progress, int maxProgress, String message){
-		m_Progress = progress;
-		m_MaxProgress = maxProgress;
-		m_Message = message;
-		this.printProgress();
-	}
-	
-	protected void progressUpdate(int progress, int maxProgress){
-		m_Progress = progress;
-		m_MaxProgress = maxProgress;
-		this.printProgress();
-	}
-	
-	protected void messageUpdate(String message){
+	protected void update(int percent, String message){
+		m_Percent = percent;
 		m_Message = message;
 		this.printProgress();
 	}
@@ -102,47 +89,44 @@ public class PrintStreamProgressListener {
 	}
 	
 	protected void error(Throwable t){
-		m_Out.print("\rError: ");
+		if(m_PrevLen > 0){
+			m_Out.print("\r");
+		}
+		m_Out.print("Error: ");
 		m_Out.println(t.getMessage());
 		m_PrevLen = 0;
 	}
 	
 	protected void info(String message){
-		m_Out.print("\r");
+		if(m_PrevLen > 0){
+			m_Out.print("\r");
+		}
 		m_Out.println(message);
 		m_PrevLen = 0;
 	}
-	
-	public void update(ProgressEvent e){
-		switch(e.getType()){
-		case CANCELED:
-			this.finished(e.getMessage());
-			break;
-		case COMPLETED:
-			this.finished(e.getMessage());
-			break;
-		case ERROR:
-			this.error(e.getThrowable());
-			break;
-		case INDETERMINANT_UPDATE:
-			this.progressUpdate(0, 0);
-			break;
-		case INFO:
-			this.info(e.getMessage());
-			break;
-		case MESSAGE_UPDATE:
-			this.messageUpdate(e.getMessage());
-			break;
-		case PROGRESS_UPDATE:
-			this.progressUpdate(e.getProgress(), e.getMaxProgress());
-			break;
-		case MESSAGE_AND_PROGRESS_UPDATE:
-			this.messageAndProgressUpdate(e.getProgress(), e.getMaxProgress(), e.getMessage());
-			break;
-		default:
-			break;
-		
+
+	@Override
+	public void onStart(String message) {
+		if(message != null){
+			this.info(message);
 		}
+	}
+
+	@Override
+	public void onError(Throwable t) {
+		if(t != null){
+			this.error(t);
+		}
+	}
+
+	@Override
+	public void onCompletion(String message) {
+		this.finished(message);
+	}
+
+	@Override
+	public void progressUpdate(int percent, String message) {
+		this.update(percent, message);
 	}
 	
 }

@@ -13,7 +13,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class ProgressWindow extends JFrame implements ProgressListener, ActionListener{
@@ -57,26 +56,7 @@ public class ProgressWindow extends JFrame implements ProgressListener, ActionLi
 	}
 	
 	protected ProgressPanel createProgressPanel(){
-		return new ProgressPanel(){
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void onUpdate(Object source, int progress,
-					int maxProgress, String message, boolean indeterminant) {
-				//do nothing
-			}
-
-			@Override
-			protected void onCanceled(Object source) {
-				ProgressWindow.this.onCancel();
-			}
-
-			@Override
-			protected void onCompleted(Object source) {
-				ProgressWindow.this.onComplete();
-			}
-			
-		};
+		return new ProgressPanel();
 	}
 	
 	protected void onClose(){
@@ -127,21 +107,12 @@ public class ProgressWindow extends JFrame implements ProgressListener, ActionLi
 	private Timer m_Timer = null;
 	private boolean m_ShouldDisplay = true;
 	
-	@Override
-	public void update(final ProgressEvent event) {
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run() {
-				if(m_Timer == null){
-					m_Timer = new Timer(m_MiliSecsBeforeVisible, ProgressWindow.this);
-					m_Timer.setRepeats(false);
-					m_Timer.start();
-				}
-				m_Panel.update(event);
-			}
-			
-		});
+	private void startTimer(){
+		if(m_Timer == null){
+			m_Timer = new Timer(m_MiliSecsBeforeVisible, ProgressWindow.this);
+			m_Timer.setRepeats(false);
+			m_Timer.start();
+		}
 	}
 
 	@Override
@@ -154,6 +125,28 @@ public class ProgressWindow extends JFrame implements ProgressListener, ActionLi
 				this.setVisible(true);
 			}
 		}
+	}
+
+	@Override
+	public void onStart(String message) {
+		m_Panel.onStart(message);
+		startTimer();
+	}
+	
+	@Override
+	public void onError(Throwable t){
+		m_Panel.onError(t);
+	}
+
+	@Override
+	public void onCompletion(String message) {
+		m_Panel.onCompletion(message);
+		this.onComplete();
+	}
+
+	@Override
+	public void progressUpdate(int percent, String message) {
+		m_Panel.progressUpdate(percent, message);
 	}
 	
 	

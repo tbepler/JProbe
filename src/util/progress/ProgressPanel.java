@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
-public abstract class ProgressPanel extends JPanel implements ProgressListener{
+public class ProgressPanel extends JPanel implements ProgressListener{
 	private static final long serialVersionUID = 1L;
 	
 	private static final Insets LABEL_INSETS = new Insets(25, 50, 5, 50);
@@ -26,6 +26,7 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 		m_ProgressBar = this.createProgressBar();
 		m_TextArea = this.createTextArea();
 		this.layout(m_ProgressBar, m_TextArea);
+		this.invalidate();
 		this.revalidate();
 	}
 	
@@ -46,10 +47,7 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 		this.add(progressBar, gbc);
 	}
 	
-	protected abstract void onUpdate(Object source, int progress, int maxProgress, String message, boolean indeterminant);
-	protected abstract void onCanceled(Object source);
-	protected abstract void onCompleted(Object source);
-	
+	/*
 	@Override
 	public void update(ProgressEvent e){
 		switch(e.getType()){
@@ -95,11 +93,16 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 		}
 	}
 	
+	*/
+	
 	protected JProgressBar createProgressBar(){
 		JProgressBar bar = new JProgressBar();
 		Dimension min = bar.getPreferredSize();
 		min.width = MIN_BAR_WIDTH;
 		bar.setMinimumSize(min);
+		bar.setMaximum(Progress.MAX_PERCENT);
+		bar.setMinimum(Progress.MIN_PERCENT);
+		bar.setIndeterminate(true);
 		return bar;
 	}
 	
@@ -149,12 +152,12 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 		return m_ProgressBar.isStringPainted();
 	}
 	
-	protected void setIndeterminant(boolean indeterminant){
+	protected void setIndeterminate(boolean indeterminant){
 		this.setProgressTextPainted(!indeterminant);
 		m_ProgressBar.setIndeterminate(indeterminant);
 	}
 
-	protected boolean isIndeterminant(){
+	protected boolean isIndeterminate(){
 		return m_ProgressBar.isIndeterminate();
 	}
 	
@@ -166,20 +169,48 @@ public abstract class ProgressPanel extends JPanel implements ProgressListener{
 		return m_ProgressBar.getValue();
 	}
 	
-	protected void setMax(int max){
-		m_ProgressBar.setMaximum(max);
-	}
-	
-	protected int getMax(){
-		return m_ProgressBar.getMaximum();
-	}
-	
 	protected void setMin(int min){
 		m_ProgressBar.setMinimum(min);
 	}
 	
 	protected int getMin(){
 		return m_ProgressBar.getMinimum();
+	}
+
+	@Override
+	public void onStart(String message) {
+		if(message != null){
+			this.setText(message);
+		}
+	}
+
+	@Override
+	public void onCompletion(String message) {
+		if(message != null){
+			this.setText(message);
+		}
+	}
+	
+	@Override
+	public void onError(Throwable t){
+		if(t != null){
+			this.setText("Error: "+t.getMessage());
+		}
+	}
+
+	@Override
+	public void progressUpdate(int percent, String message) {
+		if(Progress.isIndeterminate(percent)){
+			this.setIndeterminate(true);
+		}else{
+			this.setIndeterminate(false);
+			this.setValue(percent);
+		}
+		if(message != null){
+			this.setText(message);
+		}
+		m_ProgressBar.invalidate();
+		m_ProgressBar.revalidate();
 	}
 	
 	
