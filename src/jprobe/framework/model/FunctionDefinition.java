@@ -1,5 +1,5 @@
 package jprobe.framework.model;
 
-public interface FunctionDefinition {
+public interface FunctionDefinition<P,D> {
 
 }
