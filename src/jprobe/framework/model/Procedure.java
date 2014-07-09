@@ -9,5 +9,5 @@ public interface Procedure<R> {
 	
 	public Class<R> returnType();
 
-	public R call(Map<Parameter<?>, Value<?>> args);
+	public R call(Map<Parameter<?>, Value<?>> args) throws Exception;
 }

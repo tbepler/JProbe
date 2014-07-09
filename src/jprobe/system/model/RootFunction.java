@@ -13,7 +13,7 @@ import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Procedure;
 import jprobe.framework.model.Value;
 
-public class RootFunction<R> implements TreeFunction<R> {
+public class RootFunction<R> implements Function<R> {
 	
 	private final Procedure<R> m_Procedure;
 	
@@ -33,8 +33,7 @@ public class RootFunction<R> implements TreeFunction<R> {
 
 	@Override
 	public <T> Function<R> putArgument(Parameter<T> param, Function<T> arg) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ChildFunction<R,T>(this, param, arg);
 	}
 
 	@Override
@@ -47,6 +46,8 @@ public class RootFunction<R> implements TreeFunction<R> {
 		args = this.processArgs(args);
 		try{
 			return m_Procedure.call(args);
+		}catch(MissingArgsException e){
+			throw e;
 		}catch(Exception e){
 			throw new ExecutionException(e);
 		}
