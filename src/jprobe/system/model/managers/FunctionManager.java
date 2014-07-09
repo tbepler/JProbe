@@ -1,4 +1,4 @@
-package jprobe.system.model;
+package jprobe.system.model.managers;
 
 import java.util.Collection;
 import java.util.Collections;

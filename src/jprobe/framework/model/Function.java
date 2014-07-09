@@ -1,6 +1,7 @@
 package jprobe.framework.model;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public interface Function<R>{
 	
@@ -14,7 +15,7 @@ public interface Function<R>{
 	 */
 	public <T> Function<R> putArgument(Parameter<T> param, Function<T> arg);
 	
-	public R call();
+	public R call() throws MissingArgsException, ExecutionException;
 	
 
 }

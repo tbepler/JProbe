@@ -24,10 +24,10 @@ import jprobe.services.data.DataWriter;
 import jprobe.services.data.ReadException;
 import jprobe.services.data.WriteException;
 import jprobe.services.function.Function;
-import jprobe.system.model.FunctionManager;
-import jprobe.system.model.ReaderManager;
-import jprobe.system.model.WorkspaceManager;
-import jprobe.system.model.WriterManager;
+import jprobe.system.model.managers.FunctionManager;
+import jprobe.system.model.managers.ReaderManager;
+import jprobe.system.model.managers.WorkspaceManager;
+import jprobe.system.model.managers.WriterManager;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;

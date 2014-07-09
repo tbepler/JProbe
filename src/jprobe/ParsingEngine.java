@@ -20,7 +20,7 @@ import util.progress.ProgressListener;
 import jprobe.services.data.Data;
 import jprobe.services.function.Argument;
 import jprobe.services.function.Function;
-import jprobe.system.model.FunctionManager;
+import jprobe.system.model.managers.FunctionManager;
 
 public class ParsingEngine {
 	

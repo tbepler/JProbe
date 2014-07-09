@@ -1,4 +1,4 @@
-package jprobe.system.model;
+package jprobe.system.model.managers;
 
 import java.io.InputStream;
 import java.util.ArrayList;

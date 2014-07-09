@@ -16,5 +16,7 @@ public interface Parameter<T> {
 	 */
 	public T getDefaultValue();
 	
+	public boolean isOptional();
+	
 	
 }
