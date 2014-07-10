@@ -14,6 +14,7 @@ import jprobe.framework.model.Procedure;
 import jprobe.framework.model.Value;
 
 public class RootFunction<R> implements Function<R> {
+	private static final long serialVersionUID = 1L;
 	
 	private final Procedure<R> m_Procedure;
 	
@@ -22,7 +23,7 @@ public class RootFunction<R> implements Function<R> {
 	}
 	
 	@Override
-	public List<Parameter<?>> getParameters() {
+	public List<? extends Parameter<?>> getParameters() {
 		return m_Procedure.getParameters();
 	}
 

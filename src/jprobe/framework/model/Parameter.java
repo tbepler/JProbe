@@ -1,6 +1,8 @@
 package jprobe.framework.model;
 
-public interface Parameter<T> {
+import java.io.Serializable;
+
+public interface Parameter<T> extends Serializable{
 	
 	public String getName();
 	public String getDescription();

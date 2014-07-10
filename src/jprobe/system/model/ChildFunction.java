@@ -13,7 +13,8 @@ import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Value;
 
 public class ChildFunction<R,D> implements Function<R> {
-	
+	private static final long serialVersionUID = 1L;
+
 	private final Function<R> m_Parent;
 	
 	private final Parameter<D> m_Defined;
@@ -58,6 +59,7 @@ public class ChildFunction<R,D> implements Function<R> {
 	@Override
 	public R call(Map<Parameter<?>, Value<?>> args) throws MissingArgsException, ExecutionException {
 		this.process(args);
+		System.err.println(args.size());
 		return m_Parent.call(args);
 	}
 	
@@ -69,7 +71,11 @@ public class ChildFunction<R,D> implements Function<R> {
 				args.remove(param);
 			}
 		}
+		System.err.println("["+m_Parent+"] " +this + " defines: "+m_Defined + " valueFunction: "+m_ValueFunction);
+		System.err.println("Value args: "+valueFunctionArgs.size());
+		
 		args.put(m_Defined, new FunctionValue<D>(m_ValueFunction, valueFunctionArgs));
+		System.err.println("Parent args: "+args.size());
 	}
 
 }
