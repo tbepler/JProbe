@@ -1,81 +1,105 @@
 package jprobe.system.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 import jprobe.framework.model.Function;
-import jprobe.framework.model.MissingArgumentsException;
+import jprobe.framework.model.InvocationException;
 import jprobe.framework.model.Parameter;
+import jprobe.framework.model.TypeMismatchException;
 import jprobe.framework.model.Value;
 
-public class ChildFunction<R,D> implements Function<R> {
+public class ChildFunction<R> implements Function<R> {
 	private static final long serialVersionUID = 1L;
 
 	private final Function<R> m_Parent;
 	
-	private final Parameter<D> m_Defined;
-	private final Function<D> m_ValueFunction;
+	private final int m_ParamIndex;
+	private final int m_ParentArgsLength;
 	
-	private final List<Parameter<?>> m_Params;
+	private final Function<?> m_ValueFunction;
 	
-	public ChildFunction(Function<R> parent, Parameter<D> defined, Function<D> valueFunction){
+	private final Parameter<?>[] m_Params;
+	private final int m_ValueFuncParamsStart;
+	private final int m_ValueFuncParamsLength;
+	
+	public ChildFunction(Function<R> parent, int paramIndex, Function<?> valueFunction){
 		m_Parent = parent;
-		m_Defined = defined;
+		m_ParamIndex = paramIndex;
 		m_ValueFunction = valueFunction;
-		m_Params = new ArrayList<Parameter<?>>(m_Parent.getParameters());
-		for(int i=0; i<m_Params.size(); i++){
-			if(m_Params.get(i) == m_Defined){
-				m_Params.addAll(i, m_ValueFunction.getParameters());
-				m_Params.remove(m_Defined);
-				break;
-			}
-		}
+		
+		Parameter<?>[] parentParams = parent.getParameters();
+		m_ParentArgsLength = parentParams.length;
+		Parameter<?>[] valueParams = valueFunction.getParameters();
+		m_ValueFuncParamsStart = paramIndex;
+		m_ValueFuncParamsLength = valueParams.length;
+		
+		m_Params = new Parameter<?>[parentParams.length + valueParams.length - 1];
+		System.arraycopy(parentParams, 0, m_Params, 0, paramIndex);
+		System.arraycopy(valueParams, 0, m_Params, paramIndex, valueParams.length);
+		System.arraycopy(parentParams, paramIndex+1, m_Params, paramIndex + valueParams.length, parentParams.length - paramIndex - 1);
 	}
 
 	@Override
-	public List<Parameter<?>> getParameters() {
-		return Collections.unmodifiableList(m_Params);
+	public Parameter<?>[] getParameters() {
+		return m_Params;
 	}
 
 	@Override
-	public Class<R> returnType() {
+	public Class<? extends R> returnType() {
 		return m_Parent.returnType();
 	}
 
 	@Override
-	public <T> Function<R> putArgument(Parameter<T> param, Function<T> arg) {
-		return new ChildFunction<R,T>(this, param, arg);
+	public <T> Function<R> putArgument(int paramIndex, Function<T> arg)
+			throws TypeMismatchException {
+		Parameters.checkType(this.getParameters()[paramIndex], arg);
+		return new ChildFunction<R>(this, paramIndex, arg);
 	}
 
 	@Override
-	public R call() throws MissingArgumentsException, ExecutionException {
-		return this.call(new HashMap<Parameter<?>, Value<?>>());
-	}
-
-	@Override
-	public R call(Map<Parameter<?>, Value<?>> args) throws MissingArgumentsException, ExecutionException {
-		this.process(args);
-		System.err.println(args.size());
-		return m_Parent.call(args);
+	public <T> Function<R> putArgument(int paramIndex, Value<T> arg)
+			throws TypeMismatchException {
+		Parameters.checkType(this.getParameters()[paramIndex], arg);
+		return new ChildFunction<R>(this, paramIndex, new FixedValueFunction<T>(arg));
 	}
 	
-	public void process(Map<Parameter<?>, Value<?>> args){
-		Map<Parameter<?>, Value<?>> valueFunctionArgs = new HashMap<Parameter<?>, Value<?>>();
-		for(Parameter<?> param : m_ValueFunction.getParameters()){
-			if(args.containsKey(param)){
-				valueFunctionArgs.put(param, args.get(param));
-				args.remove(param);
-			}
-		}
-		System.err.println("["+m_Parent+"] " +this + " defines: "+m_Defined + " valueFunction: "+m_ValueFunction);
-		System.err.println("Value args: "+valueFunctionArgs.size());
-		
-		args.put(m_Defined, new FunctionValue<D>(m_ValueFunction, valueFunctionArgs));
-		System.err.println("Parent args: "+args.size());
+	@Override
+	public <T> Function<R> putArgument(int paramIndex, T arg)
+			throws TypeMismatchException {
+		Parameters.checkType(this.getParameters()[paramIndex], arg);
+		return new ChildFunction<R>(this, paramIndex, new FixedValueFunction<T>(arg));
 	}
+
+	@Override
+	public R invoke(Value<?>... args) throws IllegalArgumentException,
+			TypeMismatchException, InvocationException {
+		Parameter<?>[] params = this.getParameters();
+		//check that params and args match
+		Parameters.checkArguments(this, params, args);
+		
+		Value<?> val;
+		if(args == null){
+			val = this.createValue(m_ValueFunction, args);
+		}else{
+			//allocate value function args and create Value object for invoking the value function
+			Value<?>[] valueFuncArgs = new Value<?>[m_ValueFuncParamsLength];
+			System.arraycopy(args, m_ValueFuncParamsStart, valueFuncArgs, 0, m_ValueFuncParamsLength);
+			val = this.createValue(m_ValueFunction, valueFuncArgs);
+		}
+		
+		//allocate the parent function args
+		Value<?>[] parentArgs = new Value<?>[m_ParentArgsLength];
+		System.arraycopy(args, 0, parentArgs, 0, m_ParamIndex);
+		parentArgs[m_ParamIndex] = val;
+		System.arraycopy(args, m_ValueFuncParamsStart + m_ValueFuncParamsLength, parentArgs, m_ParamIndex+1, m_ParentArgsLength - m_ParamIndex - 1);
+		
+		//invoke parent function with parentArgs
+		return m_Parent.invoke(parentArgs);
+		
+	}
+	
+	protected <T> Value<T> createValue(Function<T> valueFunction, Value<?> ... args){
+		return new FunctionValue<T>(valueFunction, args);
+	}
+
+
 
 }

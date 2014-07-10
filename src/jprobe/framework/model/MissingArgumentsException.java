@@ -1,36 +1,34 @@
 package jprobe.framework.model;
 
-import java.util.Collection;
-
 public class MissingArgumentsException extends Exception{
 	private static final long serialVersionUID = 1L;
-	
-	private final Function<?> m_Func;
-	private final int m_Received;
-	private final int m_Required;
-	
-	public MissingArgumentsException(Function<?> func, int receivedArgs, int requiredArgs){
-		super(generateMessage(func, receivedArgs, requiredArgs));
+
+	public MissingArgumentsException() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public MissingArgumentsException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+		// TODO Auto-generated constructor stub
+	}
+
+	public MissingArgumentsException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
+
+	public MissingArgumentsException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
+
+	public MissingArgumentsException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
 	}
 	
-	public Function<?> getFunction(){
-		return m_Func;
-	}
 	
-	public int numArgsRecieved(){
-		return m_Received;
-	}
-	
-	public int numArgsRequired(){
-		return m_Required;
-	}
-	
-	private static String generateMessage(Function<?> f, int receivedArgs, int requiredArgs){
-		StringBuilder builder = new StringBuilder();
-		builder.append("Function ").append(f).append(": ");
-		builder.append("received ").append(receivedArgs);
-		builder.append(" args but requires ").append(requiredArgs).append(" args.");
-		return builder.toString();
-	}
 
 }

@@ -14,9 +14,10 @@ public interface Function<R> extends Serializable{
 	 */
 	public <T> Function<R> putArgument(int paramIndex, Function<T> arg) throws TypeMismatchException;
 	public <T> Function<R> putArgument(int paramIndex, Value<T> arg) throws TypeMismatchException;
+	public <T> Function<R> putArgument(int paramIndex, T arg) throws TypeMismatchException;
 	
 	public R invoke(Value<?> ... args)
-			throws MissingArgumentsException, TypeMismatchException, InvocationException;
+			throws IllegalArgumentException, TypeMismatchException, InvocationException;
 	
 
 }

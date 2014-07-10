@@ -6,52 +6,47 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import jprobe.framework.model.Function;
+import jprobe.framework.model.InvocationException;
 import jprobe.framework.model.MissingArgumentsException;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Procedure;
+import jprobe.framework.model.TypeMismatchException;
 import jprobe.framework.model.Value;
 import jprobe.system.model.RootFunction;
 
 public class FunctionTest extends junit.framework.TestCase{
 	
 	private static class Add implements Procedure<Integer>{
+		private static final long serialVersionUID = 1L;
 		
-		private final Parameter<Integer> x = new StubParameter<Integer>(Integer.class);
-		private final Parameter<Integer> y = new StubParameter<Integer>(Integer.class);
+		private static final Parameter<?>[] PARAMS = new Parameter<?>[]{
+			new StubParameter<Integer>(Integer.class),
+			new StubParameter<Integer>(Integer.class)
+		};
 		
-		@SuppressWarnings("unchecked")
 		@Override
-		public List<Parameter<Integer>> getParameters() {
-			return Arrays.asList(x,y);
+		public Parameter<?>[] getParameters() {
+			return PARAMS;
 		}
-
 		@Override
-		public Class<Integer> returnType() {
+		public Class<? extends Integer> returnType() {
 			return Integer.class;
 		}
-		
-		private <T> Value<T> getValue(Parameter<T> param, Map<Parameter<?>, Value<?>> args){
-			return (Value<T>) args.get(param);
-		}
-
 		@Override
-		public Integer call(Map<Parameter<?>, Value<?>> args) throws Exception {
-			Value<Integer> a = this.getValue(x, args);
-			Value<Integer> b = this.getValue(y, args);
-			return a.get() + b.get();
+		public Integer invoke(Value<?>... args)
+				throws IllegalArgumentException, TypeMismatchException,
+				InvocationException {
+			try{
+				int a = (Integer) args[0].get();
+				int b = (Integer) args[1].get();
+				return a + b;
+			}catch(Exception e){
+				throw new InvocationException(e);
+			}
 		}
 		
-	}
-	
-	private <R,T> Function<R> putValue(Function<R> func, Parameter<T> param, final T value){
-		return func.putArgument(param, new StubFunction<T>((Class<T>)value.getClass()){
-
-			@Override
-			public T call(Map<Parameter<?>, Value<?>> args) throws MissingArgumentsException, ExecutionException {
-				return value;
-			}
-			
-		});
+		
+		
 	}
 	
 	public void testSimple(){

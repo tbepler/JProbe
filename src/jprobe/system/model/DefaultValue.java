@@ -12,7 +12,7 @@ public class DefaultValue<T> implements Value<T>{
 	}
 	
 	@Override
-	public Class<T> getType() {
+	public Class<? extends T> getType() {
 		return m_Param.getType();
 	}
 

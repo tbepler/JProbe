@@ -9,5 +9,5 @@ public interface Procedure<R> extends Serializable{
 	public Class<? extends R> returnType();
 
 	public R invoke(Value<?> ... args)
-			throws MissingArgumentsException, TypeMismatchException, InvocationException;
+			throws IllegalArgumentException, TypeMismatchException, InvocationException;
 }
