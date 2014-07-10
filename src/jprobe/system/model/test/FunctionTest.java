@@ -12,6 +12,9 @@ import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Procedure;
 import jprobe.framework.model.TypeMismatchException;
 import jprobe.framework.model.Value;
+import jprobe.system.model.FixedValue;
+import jprobe.system.model.FunctionFactory;
+import jprobe.system.model.FunctionFactoryImpl;
 import jprobe.system.model.RootFunction;
 
 public class FunctionTest extends junit.framework.TestCase{
@@ -44,86 +47,55 @@ public class FunctionTest extends junit.framework.TestCase{
 				throw new InvocationException(e);
 			}
 		}
-		
-		
-		
 	}
 	
-	public void testSimple(){
+	private static final FunctionFactory FACTORY = new FunctionFactoryImpl();
+	private static final Add ADD_PROCEDURE = new Add();
+	
+	private static int sum(int[] vals){
+		int sum = 0;
+		for(int i : vals){
+			sum += i;
+		}
+		return sum;
+	}
+	
+	public void testSimple() throws IllegalArgumentException, TypeMismatchException, InvocationException{
 		
-		Function<Integer> add = new RootFunction<Integer>(new Add());
+		Function<Integer> add = FACTORY.newFunction(ADD_PROCEDURE);
 		
-		int a = 5;
-		int b = 31;
+		int[] vals = new int[]{5, 23};
 		
-		Function<Integer> call = add;
 		int count = 0;
-		for(Parameter<?> param : add.getParameters()){
-			int val = count == 0 ? a : b;
-			call = putValue(call, (Parameter<Integer>)param, val);
-			++count;
-		}
+		Function<Integer> call1 = add.putArgument(0, vals[count++]);
+		Function<Integer> call2 = call1.putArgument(0, vals[count++]);
 		
-		int ret;
-		try {
-			ret = call.call();
-		} catch (MissingArgumentsException e) {
-			throw new RuntimeException(e);
-		} catch (ExecutionException e) {
-			throw new RuntimeException(e);
+		Value<?>[] args = new Value<?>[vals.length];
+		for(int i=0; i<vals.length; i++){
+			args[i] = new FixedValue<Integer>(vals[i]);
 		}
+		int	ret0 = add.invoke(args);
+		int ret1 = call1.invoke(args[1]);
+		int	ret2 = call2.invoke(null);
+		int sum = sum(vals);
 		
-		assertEquals(a+b, ret);
+		assertEquals(sum, ret0);
+		assertEquals(sum, ret1);
+		assertEquals(sum, ret2);
+		
 		
 	}
 	
+	/*
 	public void testNested() throws MissingArgumentsException, ExecutionException{
-		Function<Integer> add = new RootFunction<Integer>(new Add());
 		
 		int[] vals = new int[]{5, 10, 23, 12, 56, 37};
-		Function<Integer> call = add;
 		
 		int sum = 0;
 		int i = 0;
 		
-		assertEquals(2, call.getParameters().size());
-		call = call.putArgument((Parameter<Integer>)call.getParameters().get(0), add);
-		assertEquals(3, call.getParameters().size());
-		
-		call = putValue(call, (Parameter<Integer>)call.getParameters().get(0), vals[i]);
-		assertEquals(2, call.getParameters().size());
-		sum += vals[i++];
-		call = putValue(call, (Parameter<Integer>)call.getParameters().get(0), vals[i]);
-		assertEquals(1, call.getParameters().size());
-		sum += vals[i++];
-		
-		call = call.putArgument((Parameter<Integer>)call.getParameters().get(0), add);
-		assertEquals(2, call.getParameters().size());
-		call = call.putArgument((Parameter<Integer>)call.getParameters().get(0), add);
-		assertEquals(3, call.getParameters().size());
-		
-		call = putValue(call, (Parameter<Integer>)call.getParameters().get(0), vals[i]);
-		assertEquals(2, call.getParameters().size());
-		sum += vals[i++];
-		call = putValue(call, (Parameter<Integer>)call.getParameters().get(0), vals[i]);
-		assertEquals(1, call.getParameters().size());
-		sum += vals[i++];
-		
-		call = call.putArgument((Parameter<Integer>)call.getParameters().get(0), add);
-		assertEquals(2, call.getParameters().size());
-		
-		call = putValue(call, (Parameter<Integer>)call.getParameters().get(0), vals[i]);
-		assertEquals(1, call.getParameters().size());
-		sum += vals[i++];
-		call = putValue(call, (Parameter<Integer>)call.getParameters().get(0), vals[i]);
-		assertEquals(0	, call.getParameters().size());
-		sum += vals[i++];
-		
-				
-		int ret = call.call();
-		assertEquals(sum, ret);
 		
 		
 	}
-	
+	*/
 }

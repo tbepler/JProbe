@@ -10,9 +10,11 @@ import jprobe.framework.model.Value;
 public class RootFunction<R> implements Function<R> {
 	private static final long serialVersionUID = 1L;
 	
+	private final FunctionFactory m_Factory;
 	private final Procedure<R> m_Procedure;
 	
-	public RootFunction(Procedure<R> procedure){
+	public RootFunction(FunctionFactory factory, Procedure<R> procedure){
+		m_Factory = factory;
 		m_Procedure = procedure;
 	}
 	
@@ -29,23 +31,20 @@ public class RootFunction<R> implements Function<R> {
 	@Override
 	public <T> Function<R> putArgument(int paramIndex, Function<T> arg) 
 			throws TypeMismatchException{
-		Parameters.checkType(this.getParameters()[paramIndex], arg);
-		return new ChildFunction<R>(this, paramIndex, arg);
+		return m_Factory.newFunction(this, paramIndex, arg);
 	}
 	
 
 	@Override
 	public <T> Function<R> putArgument(int paramIndex, Value<T> arg)
 			throws TypeMismatchException {
-		Parameters.checkType(this.getParameters()[paramIndex], arg);
-		return new ChildFunction<R>(this, paramIndex, new FixedValueFunction<T>(arg));
+		return m_Factory.newFunction(this, paramIndex, arg);
 	}
 
 	@Override
 	public <T> Function<R> putArgument(int paramIndex, T arg)
 			throws TypeMismatchException {
-		Parameters.checkType(this.getParameters()[paramIndex], arg);
-		return new ChildFunction<R>(this, paramIndex, new FixedValueFunction<T>(arg));
+		return m_Factory.newFunction(this, paramIndex, arg);
 	}
 
 	@Override

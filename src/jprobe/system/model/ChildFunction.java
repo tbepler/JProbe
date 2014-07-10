@@ -8,7 +8,9 @@ import jprobe.framework.model.Value;
 
 public class ChildFunction<R> implements Function<R> {
 	private static final long serialVersionUID = 1L;
-
+	
+	private final FunctionFactory m_Factory;
+	
 	private final Function<R> m_Parent;
 	
 	private final int m_ParamIndex;
@@ -20,7 +22,8 @@ public class ChildFunction<R> implements Function<R> {
 	private final int m_ValueFuncParamsStart;
 	private final int m_ValueFuncParamsLength;
 	
-	public ChildFunction(Function<R> parent, int paramIndex, Function<?> valueFunction){
+	public ChildFunction(FunctionFactory factory, Function<R> parent, int paramIndex, Function<?> valueFunction){
+		m_Factory = factory;
 		m_Parent = parent;
 		m_ParamIndex = paramIndex;
 		m_ValueFunction = valueFunction;
@@ -50,22 +53,19 @@ public class ChildFunction<R> implements Function<R> {
 	@Override
 	public <T> Function<R> putArgument(int paramIndex, Function<T> arg)
 			throws TypeMismatchException {
-		Parameters.checkType(this.getParameters()[paramIndex], arg);
-		return new ChildFunction<R>(this, paramIndex, arg);
+		return m_Factory.newFunction(this, paramIndex, arg);
 	}
 
 	@Override
 	public <T> Function<R> putArgument(int paramIndex, Value<T> arg)
 			throws TypeMismatchException {
-		Parameters.checkType(this.getParameters()[paramIndex], arg);
-		return new ChildFunction<R>(this, paramIndex, new FixedValueFunction<T>(arg));
+		return m_Factory.newFunction(this, paramIndex, arg);
 	}
 	
 	@Override
 	public <T> Function<R> putArgument(int paramIndex, T arg)
 			throws TypeMismatchException {
-		Parameters.checkType(this.getParameters()[paramIndex], arg);
-		return new ChildFunction<R>(this, paramIndex, new FixedValueFunction<T>(arg));
+		return m_Factory.newFunction(this, paramIndex, arg);
 	}
 
 	@Override
@@ -78,6 +78,7 @@ public class ChildFunction<R> implements Function<R> {
 		Value<?> val;
 		if(args == null){
 			val = this.createValue(m_ValueFunction, args);
+			return m_Parent.invoke(new Value<?>[]{val});
 		}else{
 			//allocate value function args and create Value object for invoking the value function
 			Value<?>[] valueFuncArgs = new Value<?>[m_ValueFuncParamsLength];
