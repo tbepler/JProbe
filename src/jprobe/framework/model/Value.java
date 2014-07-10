@@ -2,7 +2,7 @@ package jprobe.framework.model;
 
 public interface Value<T> {
 	
-	public Class<T> getType(); 
+	public Class<? extends T> getType(); 
 	public T get() throws Exception;
 	
 }

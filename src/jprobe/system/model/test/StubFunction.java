@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import jprobe.framework.model.Function;
-import jprobe.framework.model.MissingArgsException;
+import jprobe.framework.model.MissingArgumentsException;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Value;
 import jprobe.system.model.ChildFunction;
@@ -39,7 +39,7 @@ public abstract class StubFunction<R> implements Function<R>{
 	}
 
 	@Override
-	public R call() throws MissingArgsException, ExecutionException {
+	public R call() throws MissingArgumentsException, ExecutionException {
 		return this.call(new HashMap<Parameter<?>, Value<?>>());
 	}
 

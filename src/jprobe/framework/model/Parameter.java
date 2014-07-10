@@ -10,7 +10,7 @@ public interface Parameter<T> extends Serializable{
 	public Character getFlag();
 	public String getPrototype();
 	
-	public Class<T> getType();
+	public Class<? extends T> getType();
 	
 	/*
 	 * if Null - this parameter is required

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import jprobe.framework.model.Function;
-import jprobe.framework.model.MissingArgsException;
+import jprobe.framework.model.MissingArgumentsException;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Procedure;
 import jprobe.framework.model.Value;
@@ -47,7 +47,7 @@ public class FunctionTest extends junit.framework.TestCase{
 		return func.putArgument(param, new StubFunction<T>((Class<T>)value.getClass()){
 
 			@Override
-			public T call(Map<Parameter<?>, Value<?>> args) throws MissingArgsException, ExecutionException {
+			public T call(Map<Parameter<?>, Value<?>> args) throws MissingArgumentsException, ExecutionException {
 				return value;
 			}
 			
@@ -72,7 +72,7 @@ public class FunctionTest extends junit.framework.TestCase{
 		int ret;
 		try {
 			ret = call.call();
-		} catch (MissingArgsException e) {
+		} catch (MissingArgumentsException e) {
 			throw new RuntimeException(e);
 		} catch (ExecutionException e) {
 			throw new RuntimeException(e);
@@ -82,7 +82,7 @@ public class FunctionTest extends junit.framework.TestCase{
 		
 	}
 	
-	public void testNested() throws MissingArgsException, ExecutionException{
+	public void testNested() throws MissingArgumentsException, ExecutionException{
 		Function<Integer> add = new RootFunction<Integer>(new Add());
 		
 		int[] vals = new int[]{5, 10, 23, 12, 56, 37};
@@ -121,7 +121,7 @@ public class FunctionTest extends junit.framework.TestCase{
 		assertEquals(1, call.getParameters().size());
 		sum += vals[i++];
 		call = putValue(call, (Parameter<Integer>)call.getParameters().get(0), vals[i]);
-		assertEquals(0, call.getParameters().size());
+		assertEquals(0	, call.getParameters().size());
 		sum += vals[i++];
 		
 				

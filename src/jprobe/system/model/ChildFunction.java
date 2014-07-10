@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import jprobe.framework.model.Function;
-import jprobe.framework.model.MissingArgsException;
+import jprobe.framework.model.MissingArgumentsException;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Value;
 
@@ -52,12 +52,12 @@ public class ChildFunction<R,D> implements Function<R> {
 	}
 
 	@Override
-	public R call() throws MissingArgsException, ExecutionException {
+	public R call() throws MissingArgumentsException, ExecutionException {
 		return this.call(new HashMap<Parameter<?>, Value<?>>());
 	}
 
 	@Override
-	public R call(Map<Parameter<?>, Value<?>> args) throws MissingArgsException, ExecutionException {
+	public R call(Map<Parameter<?>, Value<?>> args) throws MissingArgumentsException, ExecutionException {
 		this.process(args);
 		System.err.println(args.size());
 		return m_Parent.call(args);
