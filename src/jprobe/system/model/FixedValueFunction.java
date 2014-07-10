@@ -4,34 +4,24 @@ import jprobe.framework.model.Function;
 import jprobe.framework.model.InvocationException;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.TypeMismatchException;
-import jprobe.framework.model.Value;
 
-public class FixedValueFunction<R> implements Function<R>{
+public class FixedValueFunction<R> extends Function<R>{
 	private static final long serialVersionUID = 1L;
 	
 	private static final Parameter<?>[] EMPTY_ARRAY = new Parameter<?>[]{};
 	
-	private final Value<R> m_Value;
+	private final Class<? extends R> m_Clazz;
+	private final R m_Value;
 	
-	public FixedValueFunction(Value<R> val){
+	@SuppressWarnings("unchecked")
+	public FixedValueFunction(R val){
 		m_Value = val;
+		m_Clazz = (Class<? extends R>) val.getClass();
 	}
 	
-	public FixedValueFunction(final R val){
-		m_Value = new Value<R>(){
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public Class<? extends R> getType() {
-				return (Class<? extends R>) val.getClass();
-			}
-
-			@Override
-			public R get() throws Exception {
-				return val;
-			}
-			
-		};
+	public FixedValueFunction(Class<? extends R> clazz){
+		m_Value = null;
+		m_Clazz = clazz;
 	}
 	
 	@Override
@@ -40,18 +30,12 @@ public class FixedValueFunction<R> implements Function<R>{
 	}
 
 	@Override
-	public Class<? extends R> returnType() {
-		return m_Value.getType();
+	public Class<? extends R> getReturnType() {
+		return m_Clazz;
 	}
 
 	@Override
 	public <T> Function<R> putArgument(int paramIndex, Function<T> arg)
-			throws TypeMismatchException {
-		throw new IndexOutOfBoundsException();
-	}
-
-	@Override
-	public <T> Function<R> putArgument(int paramIndex, Value<T> arg)
 			throws TypeMismatchException {
 		throw new IndexOutOfBoundsException();
 	}
@@ -63,14 +47,11 @@ public class FixedValueFunction<R> implements Function<R>{
 	}
 
 	@Override
-	public R invoke(Value<?>... args) throws IllegalArgumentException,
+	public R invoke(Function<?>... args) throws IllegalArgumentException,
 			TypeMismatchException, InvocationException {
+		
 		Parameters.checkArguments(this, EMPTY_ARRAY, args);
-		try {
-			return m_Value.get();
-		} catch (Exception e) {
-			throw new InvocationException(e);
-		}
+		return m_Value;
 	}
 
 

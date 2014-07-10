@@ -1,13 +1,11 @@
 package jprobe.framework.model;
 
-import java.io.Serializable;
+public abstract class Procedure<R> extends Signature<R>{
+	private static final long serialVersionUID = 1L;
 
-public interface Procedure<R> extends Serializable{
-	
-	public Parameter<?>[] getParameters();
-	
-	public Class<? extends R> returnType();
+	@Override
+	public abstract Parameter<?>[] getParameters();
 
-	public R invoke(Value<?> ... args)
+	public abstract R invoke(Function<?> ... args)
 			throws IllegalArgumentException, TypeMismatchException, InvocationException;
 }

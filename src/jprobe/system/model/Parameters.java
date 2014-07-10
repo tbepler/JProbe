@@ -3,32 +3,26 @@ package jprobe.system.model;
 import jprobe.framework.model.Function;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.TypeMismatchException;
-import jprobe.framework.model.Value;
 
 public class Parameters {
 	
 	public static void checkType(Parameter<?> param, Function<?> func) throws TypeMismatchException{
-		if(!param.getType().isAssignableFrom(func.returnType())){
-			throw new TypeMismatchException("Parameter "+param+" type "+param.getType()+
-					" is not assignable from function "+func+" return type "+func.returnType());
-		}
-	}
-	
-	public static void checkType(Parameter<?> param, Value<?> value) throws TypeMismatchException{
-		if(!param.getType().isAssignableFrom(value.getType())){
-			throw new TypeMismatchException("Parameter "+param+" type "+param.getType()+
-					" is not assignable from value "+value+" type "+value.getType());
+		if(func == null) return;
+		if(!param.isAssignableFrom(func)){
+			throw new TypeMismatchException("Parameter "+param+
+					" is not assignable from function "+func);
 		}
 	}
 	
 	public static <T> void checkType(Parameter<?> param, T value) throws TypeMismatchException{
-		if(!param.getType().isAssignableFrom(value.getClass())){
-			throw new TypeMismatchException("Parameter "+param+" type "+param.getType()+
-					" is not assignable from object "+value+" of class "+value.getClass());
+		if(value == null) return;
+		if(!param.getReturnType().isAssignableFrom(value.getClass()) || param.getParameters().length != 0){
+			throw new TypeMismatchException("Parameter "+param+
+					" is not assignable from class "+value.getClass());
 		}
 	}
 	
-	public static void checkArguments(Function<?> f, Parameter<?>[] params, Value<?> ... args)
+	public static void checkArguments(Function<?> f, Parameter<?>[] params, Function<?> ... args)
 			throws IllegalArgumentException, TypeMismatchException{
 		
 		if(args == null){

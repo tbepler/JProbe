@@ -6,7 +6,7 @@ import jprobe.framework.model.Parameter;
 import jprobe.framework.model.TypeMismatchException;
 import jprobe.framework.model.Value;
 
-public class ChildFunction<R> implements Function<R> {
+public class ChildFunction<R> extends Function<R> {
 	private static final long serialVersionUID = 1L;
 	
 	private final FunctionFactory m_Factory;
@@ -46,18 +46,12 @@ public class ChildFunction<R> implements Function<R> {
 	}
 
 	@Override
-	public Class<? extends R> returnType() {
-		return m_Parent.returnType();
+	public Class<? extends R> getReturnType() {
+		return m_Parent.getReturnType();
 	}
 
 	@Override
 	public <T> Function<R> putArgument(int paramIndex, Function<T> arg)
-			throws TypeMismatchException {
-		return m_Factory.newFunction(this, paramIndex, arg);
-	}
-
-	@Override
-	public <T> Function<R> putArgument(int paramIndex, Value<T> arg)
 			throws TypeMismatchException {
 		return m_Factory.newFunction(this, paramIndex, arg);
 	}
@@ -69,7 +63,7 @@ public class ChildFunction<R> implements Function<R> {
 	}
 
 	@Override
-	public R invoke(Value<?>... args) throws IllegalArgumentException,
+	public R invoke(Function<?>... args) throws IllegalArgumentException,
 			TypeMismatchException, InvocationException {
 		Parameter<?>[] params = this.getParameters();
 		//check that params and args match

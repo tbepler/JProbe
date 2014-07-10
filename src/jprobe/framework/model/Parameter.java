@@ -2,23 +2,26 @@ package jprobe.framework.model;
 
 import java.io.Serializable;
 
-public interface Parameter<T> extends Serializable{
+public abstract class Parameter<T> extends Signature<T> implements Serializable{
+	private static final long serialVersionUID = 1L;
+
+	public abstract String getName();
+	public abstract String getDescription();
+	public abstract String getCategory();
+	public abstract Character getFlag();
+	public abstract String getPrototype();
 	
-	public String getName();
-	public String getDescription();
-	public String getCategory();
-	public Character getFlag();
-	public String getPrototype();
-	
-	public Class<? extends T> getType();
+	@Override
+	public abstract Parameter<?>[] getParameters();
 	
 	/*
 	 * if Null - this parameter is required
 	 * if not Null - this parameter is optional
 	 */
-	public T getDefaultValue();
+	public abstract Function<? extends T> getDefaultValue();
 	
-	public boolean isOptional();
+	public abstract boolean isOptional();
+	
 	
 	
 }
