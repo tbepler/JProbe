@@ -10,9 +10,7 @@ public abstract class Parameter<T> extends Signature<T> implements Serializable{
 	public abstract String getCategory();
 	public abstract Character getFlag();
 	public abstract String getPrototype();
-	
-	@Override
-	public abstract Parameter<?>[] getParameters();
+
 	
 	/*
 	 * if Null - this parameter is required

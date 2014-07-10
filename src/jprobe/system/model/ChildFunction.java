@@ -31,6 +31,11 @@ public class ChildFunction<R> extends Function<R> {
 		Parameter<?>[] parentParams = parent.getParameters();
 		m_ParentArgsLength = parentParams.length;
 		Parameter<?>[] valueParams = valueFunction.getParameters();
+		
+		Parameter<?> defined = parentParams[paramIndex];
+		
+		
+		
 		m_ValueFuncParamsStart = paramIndex;
 		m_ValueFuncParamsLength = valueParams.length;
 		
