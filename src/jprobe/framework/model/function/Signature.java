@@ -5,17 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import util.ArrayUtils;
+import util.tuple.TupleClass;
 
 public abstract class Signature<T> implements Serializable{
 	private static final long serialVersionUID = 1L;
-
+	
+	public static final String VOID = "void";
+	
 	public abstract Signature<?>[] getParameters();
-	public abstract Class<? extends T> getReturnType();
+	public abstract TupleClass getReturnType();
 	
 	@Override
 	public String toString(){
 		StringBuilder builder = new StringBuilder();
-		builder.append(this.getReturnType()).append(" (");
+		builder.append(returnTypeToString(this.getReturnType())).append(" (");
 		boolean first = true;
 		for(Signature<?> s : this.getParameters()){
 			if(first){
@@ -27,6 +30,17 @@ public abstract class Signature<T> implements Serializable{
 		}
 		builder.append(")");
 		return builder.toString();
+	}
+	
+	public static String returnTypeToString(TupleClass type){
+		if(type.size() > 1){
+			return type.toString();
+		}else if(type.size() == 1){
+			return String.valueOf(type.get(0));
+		}else{
+			//the empty TupleClass is the void return type
+			return VOID;
+		}
 	}
 	
 	public final boolean subsignatureOf(Signature<?> other){
