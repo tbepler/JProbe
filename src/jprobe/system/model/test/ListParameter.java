@@ -1,38 +1,27 @@
 package jprobe.system.model.test;
 
+import java.util.List;
+
 import jprobe.framework.model.Function;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Signature;
 import jprobe.system.model.FixedValueFunction;
 
-public class StubParameter<T> extends Parameter<T> {
+public class ListParameter<T> extends Parameter<List<T>> {
 	private static final long serialVersionUID = 1L;
-
-	private final Function<? extends T> m_Default;
-	private final Signature<?>[] m_Signatures; 
+	
 	private final Class<? extends T> m_Clazz;
+	private final List<T> m_Default;
 	private final boolean m_Optional;
 	
-	public StubParameter(Function<? extends T> defaultVal, boolean optional){
+	private ListParameter(Class<? extends T> clazz, List<T> defaultVal, boolean optional){
+		m_Clazz = clazz;
 		m_Default = defaultVal;
-		m_Clazz = m_Default.getReturnType();
-		m_Signatures = m_Default.getParameters();
 		m_Optional = optional;
 	}
 	
-	public StubParameter(T defaultVal){
-		this( new FixedValueFunction<T>(defaultVal), true);
-	}
-	
-	public StubParameter(Class<? extends T> clazz){
-		this( new FixedValueFunction<T>(clazz), false);
-	}
-	
-	public StubParameter(Class<? extends T> clazz, Signature<?>[] signature){
-		m_Default = null;
-		m_Clazz = clazz;
-		m_Signatures = signature;
-		m_Optional = false;
+	public ListParameter(Class<? extends T> clazz){
+		this(clazz, null, false);
 	}
 	
 	@Override
@@ -61,13 +50,16 @@ public class StubParameter<T> extends Parameter<T> {
 	}
 
 	@Override
-	public Class<? extends T> getReturnType() {
-		return m_Clazz;
+	public Class<? extends List<T>> getReturnType() {
+		return (Class<? extends List<T>>) List.class;
 	}
 
 	@Override
-	public Function<? extends T> getDefaultValue() {
-		return m_Default;
+	public Function<List<T>> getDefaultValue() {
+		if(m_Default != null){
+			return new FixedValueFunction<List<T>>(m_Default);
+		}
+		return null;
 	}
 
 	@Override
@@ -77,7 +69,7 @@ public class StubParameter<T> extends Parameter<T> {
 
 	@Override
 	public Signature<?>[] getParameters() {
-		return m_Signatures;
+		return new Signature<?>[]{};
 	}
 
 }

@@ -1,10 +1,15 @@
 package jprobe.system.model.test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+
 import jprobe.framework.model.Function;
 import jprobe.framework.model.InvocationException;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Procedure;
+import jprobe.framework.model.Signature;
 import jprobe.framework.model.TypeMismatchException;
 import jprobe.system.model.FixedValueFunction;
 import jprobe.system.model.FunctionFactory;
@@ -40,6 +45,57 @@ public class FunctionTest extends junit.framework.TestCase{
 				throw new InvocationException(e);
 			}
 		}
+	}
+	
+	private static class Reduce<T> extends Procedure<T>{
+		
+		private final Parameter<T> functionParam;
+		private final Parameter<T> startValue;
+		private final Parameter<List<T>> listParam;
+		private final Class<? extends T> clazz;
+		
+		public Reduce(Class<? extends T> clazz){
+			this.clazz = clazz;
+			functionParam = new StubParameter<T>(
+					clazz,
+					new Signature<?>[]{
+							new StubParameter<T>(clazz),
+							new StubParameter<T>(clazz)
+							}
+					);
+			startValue = new StubParameter<T>(clazz);
+			listParam = new ListParameter<T>(clazz);
+		}
+		
+		 
+
+		@Override
+		public Parameter<?>[] getParameters() {
+			return new Parameter<?>[]{functionParam, startValue, listParam};
+		}
+
+		@Override
+		public T invoke(Function<?>... args) throws IllegalArgumentException,
+				TypeMismatchException, InvocationException {
+			try{
+				T aggregate = (T) args[1].invoke();
+				for(T val : (List<T>) args[2].invoke()){
+					aggregate = (T) args[0].invoke(
+							new FixedValueFunction<T>(aggregate),
+							new FixedValueFunction<T>(val));
+				}
+				return aggregate;
+			}catch(Exception e){
+				throw new InvocationException(e);
+			}
+		}
+
+		@Override
+		public Class<? extends T> getReturnType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
 	}
 	
 	private static final FunctionFactory FACTORY = new FunctionFactoryImpl();
@@ -135,7 +191,7 @@ public class FunctionTest extends junit.framework.TestCase{
 	public void testDeepNesting() throws TypeMismatchException, IllegalArgumentException, InvocationException{
 		int seed = 13;
 		Random r = new Random(seed);
-		int depth = 5000;
+		int depth = 2000;
 		int params = 2 + depth;
 		Function<Integer> add = FACTORY.newFunction(ADD_PROCEDURE);
 		Function<Integer> nested = add;
@@ -152,6 +208,25 @@ public class FunctionTest extends junit.framework.TestCase{
 		}
 		
 		assertEquals(sum, (int) nested.invoke());
+		
+	}
+	
+	public void testFunctionArgument() throws TypeMismatchException, IllegalArgumentException, InvocationException{
+		Reduce<Integer> reduceProcedure = new Reduce<Integer>(Integer.class);
+		Function<Integer> reduce = FACTORY.newFunction(reduceProcedure);
+		Function<Integer> add = FACTORY.newFunction(ADD_PROCEDURE);
+		
+		Function<Integer> sumList = reduce.putArgument(0, add).putArgument(0, new FixedValueFunction<Integer>(0));
+		
+		int[] vals = new int[]{5,13,65,18,128,-12,-1235,465,354};
+		int sum = sum(vals);
+		
+		List<Integer> list = new ArrayList<Integer>();
+		for(int i=0; i<vals.length; ++i){
+			list.add(vals[i]);
+		}
+		assertEquals(sum, (int) sumList.invoke(new FixedValueFunction<List<Integer>>(list)));
+		
 		
 	}
 	
