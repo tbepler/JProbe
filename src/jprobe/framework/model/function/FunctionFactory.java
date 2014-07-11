@@ -1,8 +1,6 @@
-package jprobe.system.model;
+package jprobe.framework.model.function;
 
-import jprobe.framework.model.Function;
-import jprobe.framework.model.Procedure;
-import jprobe.framework.model.TypeMismatchException;
+
 
 public interface FunctionFactory {
 	

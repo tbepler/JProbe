@@ -1,9 +1,9 @@
 package jprobe.system.model;
 
-import jprobe.framework.model.Function;
-import jprobe.framework.model.InvocationException;
-import jprobe.framework.model.Parameter;
-import jprobe.framework.model.TypeMismatchException;
+import jprobe.framework.model.function.Function;
+import jprobe.framework.model.function.InvocationException;
+import jprobe.framework.model.function.Parameter;
+import jprobe.framework.model.function.TypeMismatchException;
 
 public class FixedValueFunction<R> extends Function<R>{
 	private static final long serialVersionUID = 1L;

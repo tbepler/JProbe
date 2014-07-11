@@ -1,4 +1,4 @@
-package jprobe.framework.model;
+package jprobe.framework.model.function;
 
 public class InvocationException extends Exception{
 	private static final long serialVersionUID = 1L;

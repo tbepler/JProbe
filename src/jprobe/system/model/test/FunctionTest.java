@@ -5,14 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import jprobe.framework.model.Function;
-import jprobe.framework.model.InvocationException;
-import jprobe.framework.model.Parameter;
-import jprobe.framework.model.Procedure;
-import jprobe.framework.model.Signature;
-import jprobe.framework.model.TypeMismatchException;
+import jprobe.framework.model.function.Function;
+import jprobe.framework.model.function.FunctionFactory;
+import jprobe.framework.model.function.InvocationException;
+import jprobe.framework.model.function.Parameter;
+import jprobe.framework.model.function.Procedure;
+import jprobe.framework.model.function.Signature;
+import jprobe.framework.model.function.TypeMismatchException;
 import jprobe.system.model.FixedValueFunction;
-import jprobe.system.model.FunctionFactory;
 import jprobe.system.model.FunctionFactoryImpl;
 
 public class FunctionTest extends junit.framework.TestCase{
@@ -211,7 +211,7 @@ public class FunctionTest extends junit.framework.TestCase{
 		
 	}
 	
-	public void testFunctionArgument() throws TypeMismatchException, IllegalArgumentException, InvocationException{
+	public void testFunctionAsArgument() throws TypeMismatchException, IllegalArgumentException, InvocationException{
 		Reduce<Integer> reduceProcedure = new Reduce<Integer>(Integer.class);
 		Function<Integer> reduce = FACTORY.newFunction(reduceProcedure);
 		Function<Integer> add = FACTORY.newFunction(ADD_PROCEDURE);

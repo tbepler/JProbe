@@ -1,4 +1,4 @@
-package jprobe.framework.model;
+package jprobe.framework.model.function;
 
 import java.io.Serializable;
 

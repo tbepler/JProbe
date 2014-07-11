@@ -1,4 +1,5 @@
-package jprobe.framework.model;
+package jprobe.framework.model.function;
+
 
 public abstract class Procedure<R> extends Signature<R>{
 	private static final long serialVersionUID = 1L;

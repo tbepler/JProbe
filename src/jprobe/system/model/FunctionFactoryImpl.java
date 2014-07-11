@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import util.tuple.Tuple2;
-import jprobe.framework.model.Function;
-import jprobe.framework.model.Procedure;
-import jprobe.framework.model.TypeMismatchException;
+import jprobe.framework.model.function.Function;
+import jprobe.framework.model.function.FunctionFactory;
+import jprobe.framework.model.function.Procedure;
+import jprobe.framework.model.function.TypeMismatchException;
 
 public class FunctionFactoryImpl implements FunctionFactory{
 

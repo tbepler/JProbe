@@ -8,10 +8,11 @@ import java.util.List;
 
 import util.tuple.Tuple2;
 import util.tuple.Tuple3;
-import jprobe.framework.model.Function;
-import jprobe.framework.model.InvocationException;
-import jprobe.framework.model.Parameter;
-import jprobe.framework.model.TypeMismatchException;
+import jprobe.framework.model.function.Function;
+import jprobe.framework.model.function.FunctionFactory;
+import jprobe.framework.model.function.InvocationException;
+import jprobe.framework.model.function.Parameter;
+import jprobe.framework.model.function.TypeMismatchException;
 
 public class ChildFunction<R> extends Function<R> {
 	private static final long serialVersionUID = 1L;

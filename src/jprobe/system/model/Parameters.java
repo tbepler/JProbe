@@ -6,10 +6,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import jprobe.framework.model.Function;
-import jprobe.framework.model.Parameter;
-import jprobe.framework.model.Signature;
-import jprobe.framework.model.TypeMismatchException;
+import jprobe.framework.model.function.Function;
+import jprobe.framework.model.function.Parameter;
+import jprobe.framework.model.function.Signature;
+import jprobe.framework.model.function.TypeMismatchException;
 
 public class Parameters {
 	
@@ -20,8 +20,8 @@ public class Parameters {
 	 * @return
 	 * @throws TypeMismatchException
 	 */
-	public static List<Integer> assignFunctionToParameter(Parameter<?> param, Function<?> arg)
-			throws TypeMismatchException, IllegalArgumentException{
+	public static List<Integer> assignFunctionToParameter(Signature<?> param, Function<?> arg)
+			throws TypeMismatchException{
 		//first check if arg is null, because null matches any parameter
 		if(arg != null){
 			//check return types
@@ -32,7 +32,7 @@ public class Parameters {
 			
 			List<Integer> remainingFuncParams = removeAllSignaturesFromParameters(paramSigs, funcParams);
 			if(!paramSigs.isEmpty()){
-				throw new IllegalArgumentException("Parameter "+param+
+				throw new TypeMismatchException("Parameter "+param+
 						" is not assignable from function "+arg);
 			}
 			return remainingFuncParams;
@@ -67,7 +67,7 @@ public class Parameters {
 		return paramIndices;
 	}
 	
-	public static void checkReturnType(Parameter<?> param, Function<?> func) throws TypeMismatchException{
+	public static void checkReturnType(Signature<?> param, Function<?> func) throws TypeMismatchException{
 		if(func != null){
 			if(!param.getReturnType().isAssignableFrom(func.getReturnType())){
 				throw new TypeMismatchException("Parameter "+param+

@@ -1,34 +1,34 @@
-package jprobe.framework.model;
+package jprobe.framework.model.function;
 
-public class MissingArgumentsException extends Exception{
+public class TypeMismatchException extends Exception{
 	private static final long serialVersionUID = 1L;
 
-	public MissingArgumentsException() {
+	public TypeMismatchException() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public MissingArgumentsException(String message, Throwable cause,
+	public TypeMismatchException(String message, Throwable cause,
 			boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
 
-	public MissingArgumentsException(String message, Throwable cause) {
+	public TypeMismatchException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public MissingArgumentsException(String message) {
+	public TypeMismatchException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public MissingArgumentsException(Throwable cause) {
+	public TypeMismatchException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 	
 	
-
+	
 }

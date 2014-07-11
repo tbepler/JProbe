@@ -2,9 +2,9 @@ package jprobe.system.model.test;
 
 import java.util.List;
 
-import jprobe.framework.model.Function;
-import jprobe.framework.model.Parameter;
-import jprobe.framework.model.Signature;
+import jprobe.framework.model.function.Function;
+import jprobe.framework.model.function.Parameter;
+import jprobe.framework.model.function.Signature;
 import jprobe.system.model.FixedValueFunction;
 
 public class ListParameter<T> extends Parameter<List<T>> {

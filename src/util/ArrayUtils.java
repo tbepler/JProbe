@@ -1,6 +1,26 @@
 package util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ArrayUtils {
+	
+	
+	public static <T> List<T> toList(T[] array){
+		if(array != null){
+			List<T> list;
+			if(array.length > 10){
+				list = new ArrayList<T>(array.length);
+			}else{
+				list = new ArrayList<T>();
+			}
+			for(T elem : array){
+				list.add(elem);
+			}
+			return list;
+		}
+		return new ArrayList<T>();
+	}
 	
 	public static int min(int[] ints){
 		int min = Integer.MAX_VALUE;

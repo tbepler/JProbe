@@ -1,4 +1,5 @@
-package jprobe.framework.model;
+package jprobe.framework.model.function;
+
 
 public abstract class Function<R> extends Procedure<R>{
 	private static final long serialVersionUID = 1L;
