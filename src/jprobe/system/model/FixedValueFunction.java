@@ -54,5 +54,23 @@ public class FixedValueFunction<R> extends Function<R>{
 		return m_Value;
 	}
 
+	@Override
+	public Function<R> putArguments(int[] indices, Function<?>[] args)
+			throws TypeMismatchException {
+		if(indices.length > 0){
+			throw new IndexOutOfBoundsException();
+		}
+		return this;
+	}
+
+	@Override
+	public Function<R> putArguments(int[] indices, Object[] args)
+			throws TypeMismatchException {
+		if(indices.length > 0){
+			throw new IndexOutOfBoundsException();
+		}
+		return this;
+	}
+
 
 }

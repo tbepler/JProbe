@@ -48,6 +48,7 @@ public abstract class Signature<T> implements Serializable{
 		return false;
 	}
 	
+/*	
 	@Override
 	public final boolean equals(Object o){
 		if(o == null) return false;
@@ -74,5 +75,7 @@ public abstract class Signature<T> implements Serializable{
 		}
 		return false;
 	}
+	
+*/
 	
 }

@@ -1,26 +1,18 @@
 package jprobe.system.model.test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-
 import jprobe.framework.model.Function;
 import jprobe.framework.model.InvocationException;
-import jprobe.framework.model.MissingArgumentsException;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.Procedure;
 import jprobe.framework.model.TypeMismatchException;
-import jprobe.framework.model.Value;
-import jprobe.system.model.FixedValue;
+import jprobe.system.model.FixedValueFunction;
 import jprobe.system.model.FunctionFactory;
 import jprobe.system.model.FunctionFactoryImpl;
-import jprobe.system.model.RootFunction;
 
 public class FunctionTest extends junit.framework.TestCase{
 	
-	private static class Add implements Procedure<Integer>{
+	private static class Add extends Procedure<Integer>{
 		private static final long serialVersionUID = 1L;
 		
 		private static final Parameter<?>[] PARAMS = new Parameter<?>[]{
@@ -33,16 +25,16 @@ public class FunctionTest extends junit.framework.TestCase{
 			return PARAMS;
 		}
 		@Override
-		public Class<? extends Integer> returnType() {
+		public Class<? extends Integer> getReturnType() {
 			return Integer.class;
 		}
 		@Override
-		public Integer invoke(Value<?>... args)
+		public Integer invoke(Function<?>... args)
 				throws IllegalArgumentException, TypeMismatchException,
 				InvocationException {
 			try{
-				int a = (Integer) args[0].get();
-				int b = (Integer) args[1].get();
+				int a = (Integer) args[0].invoke();
+				int b = (Integer) args[1].invoke();
 				return a + b;
 			}catch(Exception e){
 				throw new InvocationException(e);
@@ -71,13 +63,13 @@ public class FunctionTest extends junit.framework.TestCase{
 		Function<Integer> call1 = add.putArgument(0, vals[count++]);
 		Function<Integer> call2 = call1.putArgument(0, vals[count++]);
 		
-		Value<?>[] args = new Value<?>[vals.length];
+		Function<?>[] args = new Function<?>[vals.length];
 		for(int i=0; i<vals.length; i++){
-			args[i] = new FixedValue<Integer>(vals[i]);
+			args[i] = new FixedValueFunction<Integer>(vals[i]);
 		}
 		int	ret0 = add.invoke(args);
 		int ret1 = call1.invoke(args[1]);
-		int	ret2 = call2.invoke(null);
+		int	ret2 = call2.invoke();
 		int sum = sum(vals);
 		
 		assertEquals(sum, ret0);
@@ -93,9 +85,9 @@ public class FunctionTest extends junit.framework.TestCase{
 		Function<Integer> add = FACTORY.newFunction(ADD_PROCEDURE);
 		
 		int[] vals = new int[]{5, 10, 23, 12, 56, 37};
-		Value<?>[] args = new Value<?>[vals.length];
+		Function<?>[] args = new Function<?>[vals.length];
 		for(int i=0; i<vals.length; i++){
-			args[i] = new FixedValue<Integer>(vals[i]);
+			args[i] = new FixedValueFunction<Integer>(vals[i]);
 		}
 		
 		int i = 0;
@@ -131,7 +123,7 @@ public class FunctionTest extends junit.framework.TestCase{
 		assertEquals(sum6, (int) call9.invoke(args[5]));
 		
 		Function<Integer> call10 = call9.putArgument(0, vals[i++]);
-		assertEquals(sum6, (int) call10.invoke(null));
+		assertEquals(sum6, (int) call10.invoke());
 		
 		Function<Integer> nested5 = call5.putArgument(1, call5);
 		int nested5Sum = sum(vals[0], vals[1], vals[0], vals[1]);
@@ -143,7 +135,7 @@ public class FunctionTest extends junit.framework.TestCase{
 	public void testDeepNesting() throws TypeMismatchException, IllegalArgumentException, InvocationException{
 		int seed = 13;
 		Random r = new Random(seed);
-		int depth = 1500;
+		int depth = 5000;
 		int params = 2 + depth;
 		Function<Integer> add = FACTORY.newFunction(ADD_PROCEDURE);
 		Function<Integer> nested = add;
@@ -159,7 +151,7 @@ public class FunctionTest extends junit.framework.TestCase{
 			nested = nested.putArgument(0, i + 1);
 		}
 		
-		assertEquals(sum, (int) nested.invoke(null));
+		assertEquals(sum, (int) nested.invoke());
 		
 	}
 	

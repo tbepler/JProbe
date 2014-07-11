@@ -27,8 +27,8 @@ public class Parameters {
 			//check return types
 			checkReturnType(param, arg);
 			//for each signature in the param's signature, make sure that the argument function has a compatible parameter 
-			List<Signature<?>> paramSigs = Arrays.asList(param.getParameters());
-			List<Parameter<?>> funcParams = Arrays.asList(arg.getParameters());
+			List<Signature<?>> paramSigs = new ArrayList<Signature<?>>(Arrays.asList(param.getParameters()));
+			List<Parameter<?>> funcParams = new ArrayList<Parameter<?>>(Arrays.asList(arg.getParameters()));
 			
 			List<Integer> remainingFuncParams = removeAllSignaturesFromParameters(paramSigs, funcParams);
 			if(!paramSigs.isEmpty()){
@@ -46,7 +46,7 @@ public class Parameters {
 	 */
 	private static List<Integer> removeAllSignaturesFromParameters(List<Signature<?>> sigs, List<Parameter<?>> params){
 		List<Integer> paramIndices = new ArrayList<Integer>(params.size());
-		for(int i=0; i<paramIndices.size(); i++){
+		for(int i=0; i<params.size(); i++){
 			paramIndices.add(i);
 		}
 		

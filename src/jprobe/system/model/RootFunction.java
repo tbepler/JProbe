@@ -40,6 +40,18 @@ public class RootFunction<R> extends Function<R> {
 	}
 
 	@Override
+	public Function<R> putArguments(int[] indices, Function<?>[] args)
+			throws TypeMismatchException {
+		return m_Factory.newFunction(this, indices, args);
+	}
+
+	@Override
+	public Function<R> putArguments(int[] indices, Object[] args)
+			throws TypeMismatchException {
+		return m_Factory.newFunction(this, indices, args);
+	}
+
+	@Override
 	public R invoke(Function<?>... args)
 			throws IllegalArgumentException, TypeMismatchException, InvocationException {
 		
@@ -50,6 +62,7 @@ public class RootFunction<R> extends Function<R> {
 		//invoke the procedure
 		return m_Procedure.invoke(args);
 	}
+
 
 
 

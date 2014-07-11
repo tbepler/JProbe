@@ -15,7 +15,13 @@ public interface FunctionFactory {
 	public <T,U> Function<T> newFunction(Function<T> parent, int paramIndex, Function<U> arg)
 			throws TypeMismatchException;
 	
+	public <T> Function<T> newFunction(Function<T> parent, int[] indices, Function<?>[] args)
+			throws TypeMismatchException, IllegalArgumentException;
+	
 	public <T,U> Function<T> newFunction(Function<T> parent, int paramIndex, U arg)
 			throws TypeMismatchException;
+	
+	public <T> Function<T> newFunction(Function<T> parent, int[] indices, Object[] args)
+			throws TypeMismatchException, IllegalArgumentException;
 	
 }

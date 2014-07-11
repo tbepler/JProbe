@@ -1,7 +1,13 @@
 package jprobe.system.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import util.tuple.Tuple2;
+import util.tuple.Tuple3;
 import jprobe.framework.model.Function;
 import jprobe.framework.model.InvocationException;
 import jprobe.framework.model.Parameter;
@@ -13,55 +19,57 @@ public class ChildFunction<R> extends Function<R> {
 	private final FunctionFactory m_Factory;
 	
 	private final Function<R> m_Parent;
-	
-	private final int m_ParamIndex;
-	private final int m_ParentArgsLength;
-	
-	private final Function<?> m_ValueFunction;
-	private final int[] m_ValueParamIndices;
+	private final List<Tuple3<Integer, Function<?>, List<Integer>>> m_Functions;
 	
 	private final Parameter<?>[] m_Params;
-	private final int m_ValueFuncParamsStart;
-	private final int m_ValueFuncParamsLength;
 	
-	public ChildFunction(FunctionFactory factory, Function<R> parent, int paramIndex, Function<?> valueFunction)
+	public ChildFunction(FunctionFactory factory, Function<R> parent, List<Tuple2<Integer, Function<?>>> functions)
 			throws IllegalArgumentException, TypeMismatchException{
 		m_Factory = factory;
 		m_Parent = parent;
-		m_ParamIndex = paramIndex;
-		m_ValueFunction = valueFunction;
-		
-		Parameter<?>[] parentParams = parent.getParameters();
-		m_ParentArgsLength = parentParams.length;
-		
-		Parameter<?>[] undefinedValueParams;
-		
-		if(valueFunction != null){
-			Parameter<?>[] valueParams = valueFunction.getParameters();
-			Parameter<?> defined = parentParams[paramIndex];
+		List<Tuple2<Integer, Function<?>>> sorted = new ArrayList<Tuple2<Integer, Function<?>>>(functions);
+		Collections.sort(sorted, new Comparator<Tuple2<Integer, Function<?>>>(){
 
-			List<Integer> undefinedValueParamIndices = Parameters.assignFunctionToParameter(defined, valueFunction);
-			m_ValueParamIndices = new int[undefinedValueParamIndices.size()];
-			for(int i=0; i<m_ValueParamIndices.length; ++i){
-				m_ValueParamIndices[i] = undefinedValueParamIndices.get(i);
+			@Override
+			public int compare(Tuple2<Integer, Function<?>> arg0,
+					Tuple2<Integer, Function<?>> arg1) {
+				return arg0.first - arg1.first;
 			}
-			undefinedValueParams = new Parameter<?>[m_ValueParamIndices.length];
-			for(int i=0; i<undefinedValueParams.length; ++i){
-				int valueIndex = m_ValueParamIndices[i];
-				undefinedValueParams[i] = valueParams[valueIndex];
-			}
-		}else{
-			m_ValueParamIndices = new int[]{};
-			undefinedValueParams = new Parameter<?>[]{};
+			
+		});
+		
+		m_Functions = new ArrayList<Tuple3<Integer, Function<?>, List<Integer>>>(sorted.size());
+		List<Parameter<?>> params = new ArrayList<Parameter<?>>();
+		for(Parameter<?> param : parent.getParameters()){
+			params.add(param);
 		}
 		
-		m_ValueFuncParamsStart = paramIndex;
-		m_ValueFuncParamsLength = undefinedValueParams.length;
+		int offset = 0;
+		for(int i=0; i<sorted.size(); ++i){
+			Tuple2<Integer, Function<?>> tuple2 = sorted.get(i);
+			int index = tuple2.first + offset;
+			Function<?> arg = tuple2.second;
+			Parameter<?> defined = params.get(index);
+			params.remove(index);
+			List<Integer> argParamIndices;
+			if(arg != null){
+				argParamIndices = Parameters.assignFunctionToParameter(defined, arg);
+				Parameter<?>[] argParams = arg.getParameters();
+				List<Parameter<?>> undefinedParams = new ArrayList<Parameter<?>>(argParamIndices.size());
+				for(int argIndex : argParamIndices){
+					undefinedParams.add(argParams[argIndex]);
+				}
+				params.addAll(index, undefinedParams);
+			}else{
+				argParamIndices = new ArrayList<Integer>();
+			}
+			offset += argParamIndices.size() - 1;
+			Tuple3<Integer, Function<?>, List<Integer>> tuple3 = 
+					new Tuple3<Integer, Function<?>, List<Integer>>(index, arg, argParamIndices);
+			m_Functions.add(tuple3);
+		}
 		
-		m_Params = new Parameter<?>[parentParams.length + undefinedValueParams.length - 1];
-		System.arraycopy(parentParams, 0, m_Params, 0, paramIndex);
-		System.arraycopy(undefinedValueParams, 0, m_Params, paramIndex, undefinedValueParams.length);
-		System.arraycopy(parentParams, paramIndex+1, m_Params, paramIndex + undefinedValueParams.length, parentParams.length - paramIndex - 1);
+		m_Params = params.toArray(new Parameter<?>[params.size()]);
 	}
 
 	@Override
@@ -87,37 +95,82 @@ public class ChildFunction<R> extends Function<R> {
 	}
 
 	@Override
+	public Function<R> putArguments(int[] indices, Function<?>[] args)
+			throws TypeMismatchException {
+		return m_Factory.newFunction(this, indices, args);
+	}
+
+	@Override
+	public Function<R> putArguments(int[] indices, Object[] args)
+			throws TypeMismatchException {
+		return m_Factory.newFunction(this, indices, args);
+	}
+	
+	private Function<?>[] getAndRemoveFunctionArgs(int function, List<Function<?>> args){
+		int offset = m_Functions.get(function).first;
+		int length = m_Functions.get(function).third.size();
+		
+		Function<?>[] functionArgs = new Function<?>[length];
+		for(int i=0; i<length; i++){
+			int argsIndex = i + offset;
+			functionArgs[i] = args.get(argsIndex);
+			args.remove(argsIndex);
+			--offset;
+		}
+
+		return functionArgs;
+	}
+	
+	private Function<?> applyArguments(int function, Function<?>[] args) throws TypeMismatchException{
+		int[] indices = toArray(m_Functions.get(function).third);
+		return m_Functions.get(function).second.putArguments(indices, args);
+	}
+	
+	private Function<?>[] getFunctionsArray(){
+		Function<?>[] array = new Function<?>[m_Functions.size()];
+		for(int i=0; i<m_Functions.size(); ++i){
+			array[i] = m_Functions.get(i).second;
+		}
+		return array;
+	}
+	
+	private static int[] toArray(List<Integer> list){
+		int[] array = new int[list.size()];
+		for(int i=0; i<list.size(); i++){
+			array[i] = list.get(i);
+		}
+		return array;
+	}
+
+	@Override
 	public R invoke(Function<?>... args) throws IllegalArgumentException,
 			TypeMismatchException, InvocationException {
 		Parameter<?>[] params = this.getParameters();
 		//check that params and args match
 		Parameters.checkArguments(this, params, args);
 		
-		Value<?> val;
-		if(args == null){
-			val = this.createValue(m_ValueFunction, args);
-			return m_Parent.invoke(new Value<?>[]{val});
-		}else{
-			//allocate value function args and create Value object for invoking the value function
-			Value<?>[] valueFuncArgs = new Value<?>[m_ValueFuncParamsLength];
-			System.arraycopy(args, m_ValueFuncParamsStart, valueFuncArgs, 0, m_ValueFuncParamsLength);
-			val = this.createValue(m_ValueFunction, valueFuncArgs);
+		if(args == null || args.length == 0){
+			return m_Parent.invoke(this.getFunctionsArray());
 		}
 		
-		//allocate the parent function args
-		Value<?>[] parentArgs = new Value<?>[m_ParentArgsLength];
-		System.arraycopy(args, 0, parentArgs, 0, m_ParamIndex);
-		parentArgs[m_ParamIndex] = val;
-		System.arraycopy(args, m_ValueFuncParamsStart + m_ValueFuncParamsLength, parentArgs, m_ParamIndex+1, m_ParentArgsLength - m_ParamIndex - 1);
-		
+		List<Function<?>> values = new ArrayList<Function<?>>();
+		for(int i=0; i<args.length; i++){
+			values.add(args[i]);
+		}
+				//Arrays.asList(args);
+		for(int i=0; i<m_Functions.size(); i++){
+			Tuple3<Integer, Function<?>, List<Integer>> tuple = m_Functions.get(i);
+			Function<?>[] funcArgs = this.getAndRemoveFunctionArgs(i, values);
+			Function<?> func = this.applyArguments(i, funcArgs);
+			values.add(tuple.first, func);
+		}
+
 		//invoke parent function with parentArgs
-		return m_Parent.invoke(parentArgs);
+		return m_Parent.invoke(values.toArray(new Function<?>[values.size()]));
 		
 	}
-	
-	protected <T> Value<T> createValue(Function<T> valueFunction, Value<?> ... args){
-		return new FunctionValue<T>(valueFunction, args);
-	}
+
+
 
 
 
