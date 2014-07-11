@@ -20,7 +20,8 @@ public class Parameters {
 	 * @return
 	 * @throws TypeMismatchException
 	 */
-	public static List<Integer> assignArgument(Parameter<?> param, Function<?> arg) throws TypeMismatchException{
+	public static List<Integer> assignFunctionToParameter(Parameter<?> param, Function<?> arg)
+			throws TypeMismatchException, IllegalArgumentException{
 		//first check if arg is null, because null matches any parameter
 		if(arg != null){
 			//check return types

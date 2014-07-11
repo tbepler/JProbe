@@ -1,10 +1,11 @@
 package jprobe.system.model;
 
+import java.util.List;
+
 import jprobe.framework.model.Function;
 import jprobe.framework.model.InvocationException;
 import jprobe.framework.model.Parameter;
 import jprobe.framework.model.TypeMismatchException;
-import jprobe.framework.model.Value;
 
 public class ChildFunction<R> extends Function<R> {
 	private static final long serialVersionUID = 1L;
@@ -17,12 +18,14 @@ public class ChildFunction<R> extends Function<R> {
 	private final int m_ParentArgsLength;
 	
 	private final Function<?> m_ValueFunction;
+	private final int[] m_ValueParamIndices;
 	
 	private final Parameter<?>[] m_Params;
 	private final int m_ValueFuncParamsStart;
 	private final int m_ValueFuncParamsLength;
 	
-	public ChildFunction(FunctionFactory factory, Function<R> parent, int paramIndex, Function<?> valueFunction){
+	public ChildFunction(FunctionFactory factory, Function<R> parent, int paramIndex, Function<?> valueFunction)
+			throws IllegalArgumentException, TypeMismatchException{
 		m_Factory = factory;
 		m_Parent = parent;
 		m_ParamIndex = paramIndex;
@@ -30,19 +33,35 @@ public class ChildFunction<R> extends Function<R> {
 		
 		Parameter<?>[] parentParams = parent.getParameters();
 		m_ParentArgsLength = parentParams.length;
-		Parameter<?>[] valueParams = valueFunction.getParameters();
 		
-		Parameter<?> defined = parentParams[paramIndex];
+		Parameter<?>[] undefinedValueParams;
 		
-		
+		if(valueFunction != null){
+			Parameter<?>[] valueParams = valueFunction.getParameters();
+			Parameter<?> defined = parentParams[paramIndex];
+
+			List<Integer> undefinedValueParamIndices = Parameters.assignFunctionToParameter(defined, valueFunction);
+			m_ValueParamIndices = new int[undefinedValueParamIndices.size()];
+			for(int i=0; i<m_ValueParamIndices.length; ++i){
+				m_ValueParamIndices[i] = undefinedValueParamIndices.get(i);
+			}
+			undefinedValueParams = new Parameter<?>[m_ValueParamIndices.length];
+			for(int i=0; i<undefinedValueParams.length; ++i){
+				int valueIndex = m_ValueParamIndices[i];
+				undefinedValueParams[i] = valueParams[valueIndex];
+			}
+		}else{
+			m_ValueParamIndices = new int[]{};
+			undefinedValueParams = new Parameter<?>[]{};
+		}
 		
 		m_ValueFuncParamsStart = paramIndex;
-		m_ValueFuncParamsLength = valueParams.length;
+		m_ValueFuncParamsLength = undefinedValueParams.length;
 		
-		m_Params = new Parameter<?>[parentParams.length + valueParams.length - 1];
+		m_Params = new Parameter<?>[parentParams.length + undefinedValueParams.length - 1];
 		System.arraycopy(parentParams, 0, m_Params, 0, paramIndex);
-		System.arraycopy(valueParams, 0, m_Params, paramIndex, valueParams.length);
-		System.arraycopy(parentParams, paramIndex+1, m_Params, paramIndex + valueParams.length, parentParams.length - paramIndex - 1);
+		System.arraycopy(undefinedValueParams, 0, m_Params, paramIndex, undefinedValueParams.length);
+		System.arraycopy(parentParams, paramIndex+1, m_Params, paramIndex + undefinedValueParams.length, parentParams.length - paramIndex - 1);
 	}
 
 	@Override
