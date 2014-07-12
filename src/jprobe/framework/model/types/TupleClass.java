@@ -4,20 +4,18 @@ import java.util.Arrays;
 
 import jprobe.framework.model.tuple.Tuple;
 
-public final class TupleClass<T extends Tuple<T>> extends Type<T>{
+public final class TupleClass<T extends Tuple<T>> implements Type<T>{
 	private static final long serialVersionUID = 1L;
 	
 	private final Type<?>[] m_Types;
 	private final int m_Hash;
 	
 	public TupleClass(Type<?> ... types){
-		super(Types.TUPLE);
 		m_Types = types.clone();
 		m_Hash = this.computeHash();
 	}
 	
 	public TupleClass(Object ... objs){
-		super(Types.TUPLE);
 		m_Types = new Type[objs.length];
 		for(int i=0; i<m_Types.length; ++i){
 			m_Types[i] = Types.typeOf(objs[i]);

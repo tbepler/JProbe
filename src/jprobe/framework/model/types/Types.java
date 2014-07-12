@@ -24,11 +24,11 @@ public enum Types {
 		}
 		@SuppressWarnings("unchecked")
 		Class<? extends T> clazz = (Class<? extends T>) o.getClass();
-		return new ClassType<T>(clazz);
+		return new ObjectType<T>(clazz);
 	}
 	
 	public static <T> Type<? extends T> getType(Class<? extends T> clazz){
-		return new ClassType<T>(clazz);
+		return new ObjectType<T>(clazz);
 	}
 	
 	

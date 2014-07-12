@@ -1,12 +1,11 @@
 package jprobe.framework.model.types;
 
-public class ClassType<T> extends Type<T> {
+public class ObjectType<T> implements Type<T> {
 	private static final long serialVersionUID = 1L;
 	
 	private final Class<? extends T> m_Clazz;
 	
-	ClassType(Class<? extends T> clazz) {
-		super(Types.CLASS);
+	ObjectType(Class<? extends T> clazz) {
 		m_Clazz = clazz;
 	}
 	
@@ -29,8 +28,8 @@ public class ClassType<T> extends Type<T> {
 	public boolean isAssignableFrom(Type<?> other) {
 		if(other == null) return false;
 		if(other == this) return true;
-		if(other instanceof ClassType){
-			ClassType<?> type = (ClassType<?>) other;
+		if(other instanceof ObjectType){
+			ObjectType<?> type = (ObjectType<?>) other;
 			return m_Clazz.isAssignableFrom(type.m_Clazz);
 		}
 		return false;
@@ -56,8 +55,8 @@ public class ClassType<T> extends Type<T> {
 	public boolean equals(Object o){
 		if(o == null) return false;
 		if(o == this) return true;
-		if(o instanceof ClassType){
-			ClassType<?> type = (ClassType<?>) o;
+		if(o instanceof ObjectType){
+			ObjectType<?> type = (ObjectType<?>) o;
 			return m_Clazz.equals(type.m_Clazz);
 		}
 		return false;

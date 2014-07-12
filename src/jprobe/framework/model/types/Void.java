@@ -1,6 +1,6 @@
 package jprobe.framework.model.types;
 
-public class Void extends Type<Void>{
+public class Void implements Type<Void>{
 	private static final long serialVersionUID = 1L;
 	
 	public static final String VOID = "void";
@@ -15,7 +15,6 @@ public class Void extends Type<Void>{
 	}
 
 	private Void() {
-		super(Types.VOID);
 	}
 
 	@Override

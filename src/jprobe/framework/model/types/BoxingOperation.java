@@ -7,8 +7,7 @@ import jprobe.framework.model.function.TypeMismatchException;
 import jprobe.framework.model.tuple.Tuple;
 
 /**
- * A procedure that boxes parameters into a tuple
- * 
+ * A procedure that boxes parameters into tuples
  * 
  * @author Tristan Bepler
  *

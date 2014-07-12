@@ -1,28 +1,9 @@
 package jprobe.framework.model.types;
 
-public final class Signature<R,T> implements Type<T>{
+public class SignatureImpl implements Signature{
 	
-	private final Signature<?,?>[] m_Params;
-	private final Type<R> m_ReturnType;
 	
-	public Signature(Type<R> returnType, Signature<?,?> ... params){
-		m_ReturnType = returnType;
-		m_Params = params.clone();
-	}
 	
-	public Signature<?,?>[] getParameters(){
-		return m_Params.clone();
-	}
-	
-	/**
-	 * Returns the {@link Type} of this signature's return value
-	 * 
-	 * @return - type of this signatures return value
-	 */
-	public Type<R> getReturnType(){
-		return m_ReturnType;
-	}
-		
 	@Override
 	public String toString(){
 		StringBuilder builder = new StringBuilder();
@@ -94,17 +75,17 @@ public final class Signature<R,T> implements Type<T>{
 		if(o == null) return false;
 		if(o == this) return true;
 		if(o instanceof Signature){
-			Signature<?,?> sig = (Signature<?,?>) o;
+			Signature sig = (Signature) o;
 			if(this.getReturnType().equals(sig.getReturnType())){
-				Signature<?,?>[] oParams = sig.getParameters();
-				Signature<?,?>[] tParams = this.getParameters();
+				Signature[] oParams = sig.getParameters();
+				Signature[] tParams = this.getParameters();
 				return parametersEqual(oParams, tParams);
 			}
 		}
 		return false;
 	}
 	
-	private static boolean parametersEqual(Signature<?,?>[] params1, Signature<?,?>[] params2){
+	private static boolean parametersEqual(Signature[] params1, Signature[] params2){
 		if(params1.length == params2.length){
 			for(int i=0; i<params1.length; i++){
 				if(!params1[i].equals(params2[i])){
@@ -115,5 +96,6 @@ public final class Signature<R,T> implements Type<T>{
 		}
 		return false;
 	}
+
 	
 }
