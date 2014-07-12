@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import jprobe.framework.model.tuple.Tuple;
 
-public final class TupleClass<T extends Tuple<T>> implements Type<T>{
+public final class TupleClass<T extends Tuple<? extends T>> implements Type<T>{
 	private static final long serialVersionUID = 1L;
 	
 	private final Type<?>[] m_Types;

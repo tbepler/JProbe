@@ -6,11 +6,11 @@ import jprobe.framework.model.types.Signature;
 import jprobe.framework.model.types.Typed;
 
 
-public interface Procedure<R,T extends Procedure<R,T>> extends Typed<T>, Serializable{
+public interface Procedure<R> extends Typed<Procedure<? extends R>>, Serializable{
 	
 	@Override
-	public Signature<R,T> getType();
+	public Signature<R> getType();
 
-	public abstract R invoke(Function<?,?> ... args)
+	public abstract R invoke(Procedure<?> ... args)
 			throws IllegalArgumentException, TypeMismatchException, InvocationException;
 }

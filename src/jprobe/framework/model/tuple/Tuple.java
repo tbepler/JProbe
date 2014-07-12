@@ -6,11 +6,11 @@ import java.util.Arrays;
 import jprobe.framework.model.types.TupleClass;
 import jprobe.framework.model.types.Typed;
 
-public class Tuple<T extends Tuple<T>> implements Typed<T>, Serializable{
+public class Tuple<T extends Tuple<? extends T>> implements Typed<T>, Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private final Object[] m_Vals;
-	private final TupleClass<T> m_Type;
+	private final TupleClass<? extends T> m_Type;
 	private final int m_Hash;
 	
 	public Tuple(Object ... values){
@@ -28,7 +28,7 @@ public class Tuple<T extends Tuple<T>> implements Typed<T>, Serializable{
 		return (U) m_Vals[index];
 	}
 	
-	public final TupleClass<T> getType(){
+	public final TupleClass<? extends T> getType(){
 		return m_Type;
 	}
 	

@@ -2,10 +2,9 @@ package jprobe.framework.model.function;
 
 import java.io.Serializable;
 
-import jprobe.framework.model.types.Signature;
-import jprobe.framework.model.types.Typed;
+import jprobe.framework.model.types.Type;
 
-public abstract class Parameter<R,T extends Function<R,T>> implements Typed<T>, Serializable{
+public abstract class Parameter<R> implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	public abstract String getName();
@@ -13,13 +12,14 @@ public abstract class Parameter<R,T extends Function<R,T>> implements Typed<T>, 
 	public abstract String getCategory();
 	public abstract Character getFlag();
 	public abstract String getPrototype();
-
+	
+	public abstract Type<R> getArgumentType();
 	
 	/*
 	 * if Null - this parameter is required
 	 * if not Null - this parameter is optional
 	 */
-	public abstract Function<? extends R,T> getDefaultValue();
+	public abstract Function<? extends R> getDefaultValue();
 	
 	public abstract boolean isOptional();
 	

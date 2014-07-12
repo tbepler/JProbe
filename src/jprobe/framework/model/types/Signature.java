@@ -1,16 +1,19 @@
 package jprobe.framework.model.types;
 
-public final class Signature<R,T> implements Type<T>{
+import jprobe.framework.model.function.Procedure;
+
+public final class Signature<R> implements Type<Procedure<? extends R>>{
+	private static final long serialVersionUID = 1L;
 	
-	private final Signature<?,?>[] m_Params;
-	private final Type<R> m_ReturnType;
+	private final Type<?>[] m_Params;
+	private final Type<? extends R> m_ReturnType;
 	
-	public Signature(Type<R> returnType, Signature<?,?> ... params){
+	public Signature(Type<? extends R> returnType, Type<?> ... params){
 		m_ReturnType = returnType;
 		m_Params = params.clone();
 	}
 	
-	public Signature<?,?>[] getParameters(){
+	public Type<?>[] getParameterTypess(){
 		return m_Params.clone();
 	}
 	
@@ -19,32 +22,37 @@ public final class Signature<R,T> implements Type<T>{
 	 * 
 	 * @return - type of this signatures return value
 	 */
-	public Type<R> getReturnType(){
+	public Type<? extends R> getReturnType(){
 		return m_ReturnType;
+	}
+	
+	@Override
+	public Procedure<? extends R> cast(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 		
 	@Override
 	public String toString(){
 		StringBuilder builder = new StringBuilder();
 		builder.append(this.getReturnType());
-		Signature<?,?>[] params = this.getParameters();
-		if(params.length > 0){
+		if(m_Params.length > 0){
 			builder.append(" ");
-			builder.append(signatureArrayToString(params));
+			builder.append(arrayToString(m_Params));
 		}
 		return builder.toString();
 	}
 	
-	public static String signatureArrayToString(Signature<?,?>[] array){
+	public static <T> String arrayToString(T[] array){
 		StringBuilder builder = new StringBuilder();
 		builder.append("(");
 		boolean first = true;
-		for(Signature<?,?> s : array){
+		for(T o : array){
 			if(first){
-				builder.append(s);
+				builder.append(o);
 				first = false;
 			}else{
-				builder.append(", ").append(s);
+				builder.append(", ").append(o);
 			}
 		}
 		builder.append(")");
@@ -56,17 +64,15 @@ public final class Signature<R,T> implements Type<T>{
 		if(type == null) return false;
 		if(type == this) return true;
 		if(type instanceof Signature){
-			Signature<?,?> other = (Signature<?,?>) type;
+			Signature<?> other = (Signature<?>) type;
 			if(this.getReturnType().isAssignableFrom(other.getReturnType())){
-				Signature<?,?>[] oParams = other.getParameters();
-				Signature<?,?>[] tParams = this.getParameters();
-				return signaturesAssignableFrom(oParams, tParams);
+				return signaturesAssignableFrom(other.m_Params, m_Params);
 			}
 		}
 		return false;
 	}
 	
-	private static boolean signaturesAssignableFrom(Signature<?,?>[] array, Signature<?,?>[] assignableFrom){
+	private static boolean signaturesAssignableFrom(Type<?>[] array, Type<?>[] assignableFrom){
 		if(array == assignableFrom) return true;
 		if((array == null || array.length == 0) && (assignableFrom == null || assignableFrom.length == 0)){
 			return true;
@@ -94,17 +100,15 @@ public final class Signature<R,T> implements Type<T>{
 		if(o == null) return false;
 		if(o == this) return true;
 		if(o instanceof Signature){
-			Signature<?,?> sig = (Signature<?,?>) o;
-			if(this.getReturnType().equals(sig.getReturnType())){
-				Signature<?,?>[] oParams = sig.getParameters();
-				Signature<?,?>[] tParams = this.getParameters();
-				return parametersEqual(oParams, tParams);
+			Signature<?> other = (Signature<?>) o;
+			if(this.getReturnType().equals(other.getReturnType())){
+				return arraysEqual(other.m_Params, m_Params);
 			}
 		}
 		return false;
 	}
 	
-	private static boolean parametersEqual(Signature<?,?>[] params1, Signature<?,?>[] params2){
+	private static <T> boolean arraysEqual(T[] params1, T[] params2){
 		if(params1.length == params2.length){
 			for(int i=0; i<params1.length; i++){
 				if(!params1[i].equals(params2[i])){
