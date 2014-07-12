@@ -10,10 +10,10 @@ public class UnboxingOperation<R> implements Procedure<R>{
 	private final Procedure<R> m_Parent;
 	private final TupleClass<?> m_Unbox;
 	
-	public UnboxingOperation(Procedure<R> parent, TupleClass<?> unboxType){
+	public UnboxingOperation(Procedure<R> parent, int startIndex, TupleClass<?> unboxType){
 		m_Parent = parent;
 		m_Unbox = unboxType;
-		
+		Signature<R> parentSign = m_Parent.getType();
 	}
 	
 	@Override

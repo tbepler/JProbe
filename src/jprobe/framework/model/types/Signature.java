@@ -28,8 +28,8 @@ public final class Signature<R> implements Type<Procedure<? extends R>>{
 	
 	@Override
 	public Procedure<? extends R> cast(Object obj) {
-		// TODO Auto-generated method stub
-		return null;
+		//TODO
+		
 	}
 		
 	@Override
