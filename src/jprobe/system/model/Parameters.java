@@ -8,8 +8,8 @@ import java.util.List;
 
 import jprobe.framework.model.function.Function;
 import jprobe.framework.model.function.Parameter;
-import jprobe.framework.model.function.Signature;
 import jprobe.framework.model.function.TypeMismatchException;
+import jprobe.framework.model.types.Signature;
 
 public class Parameters {
 	

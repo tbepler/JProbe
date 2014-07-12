@@ -1,4 +1,4 @@
-package jprobe.system.model;
+package jprobe.framework.model.types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import util.tuple.TupleClass;
-import jprobe.framework.model.function.Signature;
+import jprobe.system.model.DefaultSignature;
 
 public final class Signatures {
 	

@@ -1,24 +1,39 @@
-package jprobe.framework.model.function;
+package jprobe.framework.model.types;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import jprobe.framework.model.function.Procedure;
 import util.ArrayUtils;
 import util.tuple.TupleClass;
 
-public abstract class Signature implements Serializable{
+public abstract class Signature<R,T extends Procedure<R>> extends Type<T>{
+
 	private static final long serialVersionUID = 1L;
 	
 	public static final String VOID = "void";
 	
+	Signature() {
+		super(Types.SIGNATURE);
+	}
+	
 	public abstract Signature[] getParameters();
-	public abstract Signature[] getReturnType();
+	
+	/**
+	 * Returns an array of dummy object representing the return type of this signature.
+	 * An emtpy array indicates a return type of void. If multiple objects are specified,
+	 * then the return type will be 
+	 * In order for tuples to be processed correctly, they must be of the class
+	 * 
+	 * @return - dummy object signifying the return type of this signature
+	 */
+	public abstract Object[] getReturnType();
 	
 	@Override
 	public String toString(){
 		StringBuilder builder = new StringBuilder();
-		builder.append(returnTypeToString(this.getReturnType()));
+		builder.append(this.getReturnType());
 		Signature[] params = this.getParameters();
 		if(params.length > 0){
 			builder.append(" ");

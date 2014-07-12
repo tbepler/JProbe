@@ -1,7 +1,9 @@
-package util.tuple;
+package jprobe.framework.model.tuple;
 
 import java.io.Serializable;
 import java.util.Arrays;
+
+import jprobe.framework.model.types.TupleClass;
 
 public class Tuple implements Serializable{
 	private static final long serialVersionUID = 1L;

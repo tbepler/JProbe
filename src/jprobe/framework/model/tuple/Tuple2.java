@@ -1,4 +1,4 @@
-package util.tuple;
+package jprobe.framework.model.tuple;
 
 public class Tuple2<A,B> extends Tuple{
 	private static final long serialVersionUID = 1L;

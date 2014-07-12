@@ -1,21 +1,26 @@
-package util.tuple;
+package jprobe.framework.model.types;
 
 import java.io.Serializable;
 import java.util.Arrays;
 
-public final class TupleClass implements Serializable{
+import jprobe.framework.model.tuple.Tuple;
+import jprobe.framework.model.tuple.TupleCastException;
+
+public final class TupleClass<T extends Tuple> extends Type<T>{
 	private static final long serialVersionUID = 1L;
 	
-	private final Class<?>[] m_Types;
+	private final Type<?>[] m_Types;
 	private final int m_Hash;
 	
-	public TupleClass(Class<?> ... classes){
-		m_Types = classes.clone();
+	public TupleClass(Type<?> ... types){
+		super(Types.TUPLE);
+		m_Types = types.clone();
 		m_Hash = this.computeHash();
 	}
 	
 	public TupleClass(Object ... objs){
-		m_Types = new Class<?>[objs.length];
+		super(Types.TUPLE);
+		m_Types = new Type[objs.length];
 		for(int i=0; i<m_Types.length; ++i){
 			m_Types[i] = objs[i] == null ? null : objs[i].getClass();
 		}
@@ -30,11 +35,11 @@ public final class TupleClass implements Serializable{
 		return m_Types.length;
 	}
 	
-	public final Class<?> get(int index){
+	public final Type get(int index){
 		return m_Types[index];
 	}
 	
-	public final Class<?>[] toArray(){
+	public final Type<?>[] toArray(){
 		return m_Types.clone();
 	}
 	

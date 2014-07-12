@@ -1,11 +1,13 @@
 package jprobe.framework.model.function;
 
+import java.io.Serializable;
 
-public abstract class Procedure<R> extends Signature<R>{
-	private static final long serialVersionUID = 1L;
+import jprobe.framework.model.types.Signature;
 
-	@Override
-	public abstract Parameter<?>[] getParameters();
+
+public interface Procedure<R> extends Serializable{
+	
+	public Signature getSignature();
 
 	public abstract R invoke(Function<?> ... args)
 			throws IllegalArgumentException, TypeMismatchException, InvocationException;

@@ -2,6 +2,8 @@ package jprobe.framework.model.function;
 
 import java.io.Serializable;
 
+import jprobe.framework.model.types.Signature;
+
 public abstract class Parameter<T> extends Signature<T> implements Serializable{
 	private static final long serialVersionUID = 1L;
 

@@ -4,7 +4,7 @@ import java.util.List;
 
 import jprobe.framework.model.function.Function;
 import jprobe.framework.model.function.Parameter;
-import jprobe.framework.model.function.Signature;
+import jprobe.framework.model.types.Signature;
 import jprobe.system.model.FixedValueFunction;
 
 public class ListParameter<T> extends Parameter<List<T>> {
