@@ -1,40 +1,31 @@
 package jprobe.framework.model.types;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import jprobe.framework.model.function.Procedure;
 import util.ArrayUtils;
-import util.tuple.TupleClass;
 
-public abstract class Signature<R,T extends Procedure<R>> extends Type<T>{
-
+public abstract class Signature<R,T extends Typed<T>> extends Type<T>{
 	private static final long serialVersionUID = 1L;
 	
-	public static final String VOID = "void";
-	
-	Signature() {
+	public Signature() {
 		super(Types.SIGNATURE);
 	}
 	
-	public abstract Signature[] getParameters();
+	public abstract Signature<?,?>[] getParameters();
 	
 	/**
-	 * Returns an array of dummy object representing the return type of this signature.
-	 * An emtpy array indicates a return type of void. If multiple objects are specified,
-	 * then the return type will be 
-	 * In order for tuples to be processed correctly, they must be of the class
+	 * Returns the {@link Type} of this signature's return value
 	 * 
-	 * @return - dummy object signifying the return type of this signature
+	 * @return - type of this signatures return value
 	 */
-	public abstract Object[] getReturnType();
+	public abstract Type<R> getReturnType();
 	
 	@Override
 	public String toString(){
 		StringBuilder builder = new StringBuilder();
 		builder.append(this.getReturnType());
-		Signature[] params = this.getParameters();
+		Signature<?,?>[] params = this.getParameters();
 		if(params.length > 0){
 			builder.append(" ");
 			builder.append(signatureArrayToString(params));
@@ -42,22 +33,11 @@ public abstract class Signature<R,T extends Procedure<R>> extends Type<T>{
 		return builder.toString();
 	}
 	
-	public static String returnTypeToString(Signature[] type){
-		if(type.length > 1){
-			return signatureArrayToString(type);
-		}else if(type.length == 1){
-			return String.valueOf(type[0]);
-		}else{
-			//the empty TupleClass is the void return type
-			return VOID;
-		}
-	}
-	
-	public static String signatureArrayToString(Signature[] array){
+	public static String signatureArrayToString(Signature<?,?>[] array){
 		StringBuilder builder = new StringBuilder();
 		builder.append("(");
 		boolean first = true;
-		for(Signature s : array){
+		for(Signature<?,?> s : array){
 			if(first){
 				builder.append(s);
 				first = false;
@@ -70,18 +50,18 @@ public abstract class Signature<R,T extends Procedure<R>> extends Type<T>{
 	}
 	
 	
-	public final boolean subsignatureOf(Signature other){
+	public final boolean subsignatureOf(Signature<?,?> other){
 		if(other == null) return false;
 		if(other == this) return true;
 		if(this.getReturnType().isAssignableFrom(other.getReturnType())){
-			Signature[] oParams = other.getParameters();
-			Signature[] tParams = this.getParameters();
+			Signature<?,?>[] oParams = other.getParameters();
+			Signature<?,?>[] tParams = this.getParameters();
 			return parametersSubsetOf(tParams, oParams);
 		}
 		return false;
 	}
 	
-	private static boolean parametersSubsetOf(Signature[] params, Signature[] parentSet){
+	private static boolean parametersSubsetOf(Signature<?,?>[] params, Signature<?,?>[] parentSet){
 		if(params == parentSet) return true;
 		if((parentSet == null || parentSet.length == 0) && (params == null || params.length == 0)){
 			return true;
@@ -89,17 +69,17 @@ public abstract class Signature<R,T extends Procedure<R>> extends Type<T>{
 		if(parentSet == null) return false;
 		if(params == null) return true;
 		if(params.length <= parentSet.length){
-			List<Signature> paramsRemoved = removeAssignableSignatures(parentSet, params);
+			List<Signature<?,?>> paramsRemoved = removeAssignableSignatures(parentSet, params);
 			return (paramsRemoved.size() == parentSet.length - params.length);
 		}
 		return false;
 	}
 	
-	public static List<Signature> removeAssignableSignatures(Signature[] set, Signature[] remove){
-		List<Signature> list = ArrayUtils.toList(set);
+	public static List<Signature<?,?>> removeAssignableSignatures(Signature<?,?>[] set, Signature<?,?>[] remove){
+		List<Signature<?,?>> list = ArrayUtils.toList(set);
 		if(remove != null){
 			for(int i=remove.length-1; i>=0; --i){
-				Signature r = remove[i];
+				Signature<?,?> r = remove[i];
 				for(int j=list.size()-1; j>=0; --j){
 					if(list.get(j).isAssignableFrom(r)){
 						list.remove(j);
@@ -111,15 +91,15 @@ public abstract class Signature<R,T extends Procedure<R>> extends Type<T>{
 		return list;
 	}
 	
-	public static List<Integer> getUnassignableSignatureIndices(Signature[] set, Signature[] assign){
-		List<Signature> list = ArrayUtils.toList(set);
+	public static List<Integer> getUnassignableSignatureIndices(Signature<?,?>[] set, Signature<?,?>[] assign){
+		List<Signature<?,?>> list = ArrayUtils.toList(set);
 		List<Integer> indices = new ArrayList<Integer>(list.size());
 		for(int i=0; i<indices.size(); i++){
 			indices.add(i);
 		}
 		if(assign != null){
 			for(int i=assign.length-1; i>=0; --i){
-				Signature r = assign[i];
+				Signature<?,?> r = assign[i];
 				for(int j=list.size()-1; j>=0; --j){
 					if(list.get(j).isAssignableFrom(r)){
 						list.remove(j);
@@ -132,20 +112,22 @@ public abstract class Signature<R,T extends Procedure<R>> extends Type<T>{
 		return indices;
 	}
 	
-	public final boolean isAssignableFrom(Signature other){
-		if(other == null) return false;
-		if(other == this) return true;
-		Signature[] oReturn = other.getReturnType();
-		Signature[] tReturn = this.getReturnType();
-		if(signaturesAssignableFrom(tReturn, oReturn)){
-			Signature[] oParams = other.getParameters();
-			Signature[] tParams = this.getParameters();
-			return signaturesAssignableFrom(oParams, tParams);
+	@Override
+	public final boolean isAssignableFrom(Type<?> type){
+		if(type == null) return false;
+		if(type == this) return true;
+		if(type instanceof Signature){
+			Signature<?,?> other = (Signature<?,?>) type;
+			if(this.getReturnType().isAssignableFrom(other.getReturnType())){
+				Signature<?,?>[] oParams = other.getParameters();
+				Signature<?,?>[] tParams = this.getParameters();
+				return signaturesAssignableFrom(oParams, tParams);
+			}
 		}
 		return false;
 	}
 	
-	private static boolean signaturesAssignableFrom(Signature[] array, Signature[] assignableFrom){
+	private static boolean signaturesAssignableFrom(Signature<?,?>[] array, Signature<?,?>[] assignableFrom){
 		if(array == assignableFrom) return true;
 		if((array == null || array.length == 0) && (assignableFrom == null || assignableFrom.length == 0)){
 			return true;
@@ -160,6 +142,18 @@ public abstract class Signature<R,T extends Procedure<R>> extends Type<T>{
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public T cast(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isInstance(Object obj) {
+		Type<?> type = Types.typeOf(obj);
+		return this.isAssignableFrom(type);
 	}
 	
 /*	

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import util.tuple.TupleClass;
 import jprobe.system.model.DefaultSignature;
 
 public final class Signatures {
@@ -50,10 +49,6 @@ public final class Signatures {
 	}
 	
 	private static Signature createNoParamsSignature(Class<?> returnType){
-		return new DefaultSignature(returnType);
-	}
-	
-	private static Signature createNoParamsSignature(TupleClass returnType){
 		return new DefaultSignature(returnType);
 	}
 	

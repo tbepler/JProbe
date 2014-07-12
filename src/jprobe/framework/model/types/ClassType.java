@@ -3,14 +3,14 @@ package jprobe.framework.model.types;
 public class ClassType<T> extends Type<T> {
 	private static final long serialVersionUID = 1L;
 	
-	private final Class<T> m_Clazz;
+	private final Class<? extends T> m_Clazz;
 	
-	ClassType(Class<T> clazz) {
+	ClassType(Class<? extends T> clazz) {
 		super(Types.CLASS);
 		m_Clazz = clazz;
 	}
 	
-	public Class<T> getClassType(){
+	public Class<? extends T> getClassType(){
 		return m_Clazz;
 	}
 
@@ -22,7 +22,7 @@ public class ClassType<T> extends Type<T> {
 		if(this.isInstance(obj)){
 			return m_Clazz.cast(obj);
 		}
-		throw new ClassCastException("Object: "+obj+" cannot be cast to type: "+this);
+		throw new ClassCastException("Object: "+obj+" of type: "+Types.typeOf(obj)+" cannot be cast to type: "+this);
 	}
 
 	@Override

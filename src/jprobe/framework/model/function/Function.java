@@ -1,23 +1,22 @@
 package jprobe.framework.model.function;
 
 
-public abstract class Function<R> extends Procedure<R>{
-	private static final long serialVersionUID = 1L;
+public interface Function<R,T extends Function<R,T>> extends Procedure<R,T>{
 	
 	/*
 	 * One parameter - one function
 	 * 
 	 */
-	public abstract <T> Function<R> putArgument(int paramIndex, Function<T> arg)
+	public <U> Function<R,?> putArgument(int paramIndex, Function<U,?> arg)
 			throws TypeMismatchException;
 	
-	public abstract Function<R> putArguments(int[] indices, Function<?>[] args)
+	public Function<R,?> putArguments(int[] indices, Function<?,?>[] args)
 			throws TypeMismatchException;
 	
-	public abstract <T> Function<R> putArgument(int paramIndex, T arg)
+	public <U> Function<R,?> putArgument(int paramIndex, U arg)
 			throws TypeMismatchException;
 	
-	public abstract Function<R> putArguments(int[] indices, Object[] args)
+	public Function<R,?> putArguments(int[] indices, Object[] args)
 			throws TypeMismatchException;
 	
 
