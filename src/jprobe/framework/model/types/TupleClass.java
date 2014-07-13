@@ -2,7 +2,9 @@ package jprobe.framework.model.types;
 
 import java.util.Arrays;
 
+import util.ArrayUtils;
 import jprobe.framework.model.tuple.Tuple;
+import jprobe.framework.model.tuple.Tuple2;
 
 public final class TupleClass implements Type<Tuple>{
 	private static final long serialVersionUID = 1L;
@@ -41,7 +43,7 @@ public final class TupleClass implements Type<Tuple>{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Tuple cast(Object obj) {
+	public Tuple2<Tuple,Object[]> cast(Object ... objs) {
 		if(obj == null) return null;
 		if(this.isInstance(obj)){
 			return (Tuple) obj;
@@ -50,17 +52,24 @@ public final class TupleClass implements Type<Tuple>{
 	}
 	
 	@Override
-	public final boolean isAssignableFrom(Type<?> other){
-		if(other == null) return false;
-		if(other == this) return true;
-		if(other instanceof TupleClass){
-			TupleClass type = (TupleClass) other;
-			return arrayAssignableFrom(m_Types, type.m_Types);
+	public final Tuple2<Boolean,Type<?>[]> isAssignableFrom(Type<?> ... types){
+		if(types == null || types.length == 0) return resultTuple(false, 0, types);
+		Type<?> head = types[0];
+		if(head == this) return resultTuple(true, 1, types);
+		if(head instanceof TupleClass){
+			TupleClass type = (TupleClass) head;
+			return resultTuple(arrayAssignableFrom(m_Types, type.m_Types), 1, types);
 		}
 		return false;
 	}
 	
-	
+	private static <T> Tuple2<Boolean, T[]> resultTuple(boolean result, int used, T ... array){
+		if(result){
+			return new Tuple2<Boolean, T[]>(result, array);
+		}else{
+			return new Tuple2<Boolean, T[]>(result, ArrayUtils.tail(used, array));
+		}
+	}
 	
 	private static boolean arrayAssignableFrom(Type<?>[] array, Type<?>[] assignableFrom){
 		if(array.length == assignableFrom.length){
@@ -77,7 +86,7 @@ public final class TupleClass implements Type<Tuple>{
 	private static boolean isAssignableFrom(Type<?> type, Type<?> assignableFrom){
 		if(type == assignableFrom) return true;
 		if(type == null) return false;
-		return type.isAssignableFrom(assignableFrom);
+		return type.isAssignableFrom(assignableFrom).first();
 	}
 	
 	@Override

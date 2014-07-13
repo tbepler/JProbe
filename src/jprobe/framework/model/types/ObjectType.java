@@ -106,7 +106,7 @@ public class ObjectType<T> implements Type<T> {
 	 */
 	private boolean canUnwrap(TupleClass type){
 		if(type.size() == 1){
-			return this.isAssignableFrom(type.get(0)).first;
+			return this.isAssignableFrom(type.get(0)).first();
 		}
 		return false;
 	}
@@ -119,7 +119,7 @@ public class ObjectType<T> implements Type<T> {
 	 */
 	private T unwrap(Tuple obj){
 		if(obj.size() == 1){
-			return this.cast(obj.get(0)).first;
+			return this.cast(obj.get(0)).first();
 		}
 		throw new ClassCastException("Object: "+obj+" of type: "+obj.getType()+" cannot be cast to type: "+this);
 	}
@@ -132,7 +132,7 @@ public class ObjectType<T> implements Type<T> {
 	 */
 	private boolean canUnwrap(Signature<?> type){
 		if(type.numParameters() == 0){
-			return this.isAssignableFrom(type.getReturnType()).first;
+			return this.isAssignableFrom(type.getReturnType()).first();
 		}
 		return false;
 	}
@@ -145,7 +145,7 @@ public class ObjectType<T> implements Type<T> {
 	private T unwrap(Procedure<?> proc){
 		if(proc.numParameters() == 0){
 			try{
-				return this.cast(proc.invoke()).first;
+				return this.cast(proc.invoke()).first();
 			}catch(Exception e){
 				//proceed to throw the class cast exception
 			}
