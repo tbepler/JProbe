@@ -1,5 +1,7 @@
 package jprobe.framework.model.types;
 
+import java.util.Deque;
+
 public class Void implements Type<Void>{
 	private static final long serialVersionUID = 1L;
 	
@@ -56,6 +58,16 @@ public class Void implements Type<Void>{
 	@Override
 	public boolean isTypeInstance(Type<?> other) {
 		return other instanceof Void;
+	}
+
+	@Override
+	public Void cast(Deque<Object> objs) {
+		return this;
+	}
+
+	@Override
+	public boolean isAssignableFrom(Deque<Type<?>> types) {
+		return true;
 	}
 
 }

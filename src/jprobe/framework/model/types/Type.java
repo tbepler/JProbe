@@ -1,42 +1,44 @@
 package jprobe.framework.model.types;
 
 import java.io.Serializable;
-
-import jprobe.framework.model.tuple.Tuple2;
+import java.util.Deque;
 
 public interface Type<T> extends Serializable{
 	
 	/**
 	 * Casts the given objects into an object of this 
 	 * type, if possible. This method consumes objects starting from
-	 * array index 0 and will consume as many array elements as
+	 * the deque head and will consume as many elements from the deque as
 	 * necessary to cast this type. This method should always return
 	 * if the {@link #isAssignableFrom(Type...)} method returns
-	 * true for the types of the objects.
-	 * @param objs - object array from which to cast to this type
-	 * @return a tuple containing the cast object and the remaining
-	 * objects from the array
+	 * true for the types of the objects. If an exception is thrown,
+	 * then no items should be removed from the deque.
+	 * @param objs - objects from which to cast to this type
+	 * @return the cast object
 	 * @throws ClassCastException - if the object cannot
 	 * be cast to this type
 	 */
-	public Tuple2<T,Object[]> cast(Object ... objs);
+	public T cast(Deque<Object> objs);
+	
+	public T cast(Object obj);
 	
 	/**
 	 * Checks if the given types can be assigned to
-	 * this type. In other words, can an array of objects
-	 * of the given type be cast to this type.
+	 * this type. In other words, can object instances
+	 * of the given types be cast to this type.
 	 * This method consumes types starting from
-	 * array index 0 and will consume as many array elements
+	 * the deque head and will consume as many elements
 	 * as necessary to assign this type. This
 	 * can return True even if {@link #isInstance(Object)}
-	 * would not return true for an array of instances of the
-	 * given types, because of type wrapping/unwrapping
-	 * and boxing/unboxing.
-	 * @param types - type array from which to assign this type
-	 * @return a tuple containing a boolean indicating the result
-	 * and a Type array containing the remaining types from the array
+	 * would not return true, because of type wrapping/unwrapping
+	 * and boxing/unboxing. If false is returned, then no
+	 * items should be removed from the deque.
+	 * @param types - types from which to assign this type
+	 * @return boolean indicating the result
 	 */
-	public Tuple2<Boolean,Type<?>[]> isAssignableFrom(Type<?> ... types);
+	public boolean isAssignableFrom(Deque<Type<?>> types);
+	
+	public boolean isAssignableFrom(Type<?> type);
 	
 	/**
 	 * Checks if the given type is equal to this type

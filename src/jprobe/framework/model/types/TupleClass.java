@@ -1,10 +1,9 @@
 package jprobe.framework.model.types;
 
 import java.util.Arrays;
+import java.util.Deque;
 
-import util.ArrayUtils;
 import jprobe.framework.model.tuple.Tuple;
-import jprobe.framework.model.tuple.Tuple2;
 
 public final class TupleClass implements Type<Tuple>{
 	private static final long serialVersionUID = 1L;
@@ -41,9 +40,20 @@ public final class TupleClass implements Type<Tuple>{
 		return m_Types.clone();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public Tuple2<Tuple,Object[]> cast(Object ... objs) {
+	public Tuple cast(Deque<Object> objs) {
+		if(objs == null || objs.size() == 0) return null;
+		Object obj = objs.poll();
+		try{
+			return this.cast(obj);
+		}catch(RuntimeException e){
+			objs.push(obj);
+			throw e;
+		}
+	}
+	
+	@Override
+	public Tuple cast(Object obj){
 		if(obj == null) return null;
 		if(this.isInstance(obj)){
 			return (Tuple) obj;
@@ -52,23 +62,24 @@ public final class TupleClass implements Type<Tuple>{
 	}
 	
 	@Override
-	public final Tuple2<Boolean,Type<?>[]> isAssignableFrom(Type<?> ... types){
-		if(types == null || types.length == 0) return resultTuple(false, 0, types);
-		Type<?> head = types[0];
-		if(head == this) return resultTuple(true, 1, types);
-		if(head instanceof TupleClass){
-			TupleClass type = (TupleClass) head;
-			return resultTuple(arrayAssignableFrom(m_Types, type.m_Types), 1, types);
+	public final boolean isAssignableFrom(Deque<Type<?>> types){
+		if(types == null || types.size() == 0) return false;
+		Type<?> head = types.poll();
+		if(this.isAssignableFrom(head)){
+			return true;
 		}
+		types.push(head);
 		return false;
 	}
 	
-	private static <T> Tuple2<Boolean, T[]> resultTuple(boolean result, int used, T ... array){
-		if(result){
-			return new Tuple2<Boolean, T[]>(result, array);
-		}else{
-			return new Tuple2<Boolean, T[]>(result, ArrayUtils.tail(used, array));
+	@Override
+	public final boolean isAssignableFrom(Type<?> type){
+		if(type == this) return true;
+		if(type instanceof TupleClass){
+			TupleClass clazz = (TupleClass) type;
+			return arrayAssignableFrom(m_Types, clazz.m_Types);
 		}
+		return false;
 	}
 	
 	private static boolean arrayAssignableFrom(Type<?>[] array, Type<?>[] assignableFrom){
@@ -86,7 +97,7 @@ public final class TupleClass implements Type<Tuple>{
 	private static boolean isAssignableFrom(Type<?> type, Type<?> assignableFrom){
 		if(type == assignableFrom) return true;
 		if(type == null) return false;
-		return type.isAssignableFrom(assignableFrom).first();
+		return type.isAssignableFrom(assignableFrom);
 	}
 	
 	@Override

@@ -1,9 +1,9 @@
 package jprobe.framework.model.types;
 
-import util.ArrayUtils;
+import java.util.Deque;
+
 import jprobe.framework.model.function.Procedure;
 import jprobe.framework.model.tuple.Tuple;
-import jprobe.framework.model.tuple.Tuple2;
 
 public class ObjectType<T> implements Type<T> {
 	private static final long serialVersionUID = 1L;
@@ -19,49 +19,55 @@ public class ObjectType<T> implements Type<T> {
 	}
 
 	@Override
-	public Tuple2<T,Object[]> cast(Object ... objs) {
-		if(objs == null || objs.length == 0){
-			return resultTuple(null, objs);
+	public T cast(Deque<Object> objs) {
+		if(objs == null || objs.size() == 0){
+			return null;
 		}
-		Object obj = objs[0];
+		Object obj = objs.poll();
+		try{
+			return this.cast(obj);
+		}catch(RuntimeException e){
+			objs.push(obj);
+			throw e;
+		}
+	}
+	
+	@Override
+	public T cast(Object obj){
 		if(obj == null){
-			return resultTuple(null, ArrayUtils.tail(objs));
+			return null;
 		}
 		Type<?> type = Types.typeOf(obj);
 		if(this.isTypeInstance(type)){
-			T cast = m_Clazz.cast(obj);
-			return resultTuple(cast, ArrayUtils.tail(objs));
+			return m_Clazz.cast(obj);
 		}
 		//check if the object can be unwrapped into this type and unwrap it
-		T unwrapped = this.unwrap(obj);
-		return resultTuple(unwrapped, ArrayUtils.tail(objs));
+		return this.unwrap(obj);
 	}
 
 	@Override
-	public Tuple2<Boolean,Type<?>[]> isAssignableFrom(Type<?> ... other) {
-		if(other == null || other.length == 0) return resultTuple(false,other);
+	public boolean isAssignableFrom(Deque<Type<?>> other) {
+		if(other == null || other.size() == 0) return false;
 		//retrieve the first type from the array, and check it
-		Type<?> type = other[0];
-		if(type == this) return resultTuple(true,other);
+		Type<?> type = other.poll();
+		if(this.isAssignableFrom(type)){
+			return true;
+		}
+		other.push(type);
+		return false;
+	}
+	
+	@Override
+	public boolean isAssignableFrom(Type<?> type){
+		if(type == null) return false;
+		if(type == this) return true;
 		if(type instanceof ObjectType){
 			ObjectType<?> objType = (ObjectType<?>) type;
-			return resultTuple(m_Clazz.isAssignableFrom(objType.m_Clazz),other);
+			return m_Clazz.isAssignableFrom(objType.m_Clazz);
 		}
 		//check for unwrapping of single element tuples and no
 		//parameter procedures
-		return resultTuple(this.canUnwrap(type),other);
-	}
-	
-	private static <T> Tuple2<T,Object[]> resultTuple(T obj, Object ... objs){
-		return new Tuple2<T,Object[]>(obj,objs);
-	}
-	
-	private static <T> Tuple2<Boolean,T[]> resultTuple(boolean result, T ...types){
-		if(result){
-			return new Tuple2<Boolean,T[]>(result,ArrayUtils.tail(types));
-		}else{
-			return new Tuple2<Boolean,T[]>(result,types);
-		}
+		return this.canUnwrap(type);
 	}
 	
 	/**
@@ -106,7 +112,7 @@ public class ObjectType<T> implements Type<T> {
 	 */
 	private boolean canUnwrap(TupleClass type){
 		if(type.size() == 1){
-			return this.isAssignableFrom(type.get(0)).first();
+			return this.isAssignableFrom(type.get(0));
 		}
 		return false;
 	}
@@ -119,7 +125,7 @@ public class ObjectType<T> implements Type<T> {
 	 */
 	private T unwrap(Tuple obj){
 		if(obj.size() == 1){
-			return this.cast(obj.get(0)).first();
+			return this.cast(obj.get(0));
 		}
 		throw new ClassCastException("Object: "+obj+" of type: "+obj.getType()+" cannot be cast to type: "+this);
 	}
@@ -132,7 +138,7 @@ public class ObjectType<T> implements Type<T> {
 	 */
 	private boolean canUnwrap(Signature<?> type){
 		if(type.numParameters() == 0){
-			return this.isAssignableFrom(type.getReturnType()).first();
+			return this.isAssignableFrom(type.getReturnType());
 		}
 		return false;
 	}
@@ -145,7 +151,7 @@ public class ObjectType<T> implements Type<T> {
 	private T unwrap(Procedure<?> proc){
 		if(proc.numParameters() == 0){
 			try{
-				return this.cast(proc.invoke()).first();
+				return this.cast(proc.invoke());
 			}catch(Exception e){
 				//proceed to throw the class cast exception
 			}
