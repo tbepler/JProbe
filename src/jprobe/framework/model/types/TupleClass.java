@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import jprobe.framework.model.tuple.Tuple;
 
-public final class TupleClass<T extends Tuple<? extends T>> implements Type<T>{
+public final class TupleClass implements Type<Tuple>{
 	private static final long serialVersionUID = 1L;
 	
 	private final Type<?>[] m_Types;
@@ -41,10 +41,10 @@ public final class TupleClass<T extends Tuple<? extends T>> implements Type<T>{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public T cast(Object obj) {
+	public Tuple cast(Object obj) {
 		if(obj == null) return null;
 		if(this.isInstance(obj)){
-			return (T) obj;
+			return (Tuple) obj;
 		}
 		throw new ClassCastException("Object: "+obj+" of type: "+Types.typeOf(obj)+" cannot be cast to type: "+this);
 	}
@@ -54,11 +54,13 @@ public final class TupleClass<T extends Tuple<? extends T>> implements Type<T>{
 		if(other == null) return false;
 		if(other == this) return true;
 		if(other instanceof TupleClass){
-			TupleClass<?> type = (TupleClass<?>) other;
+			TupleClass type = (TupleClass) other;
 			return arrayAssignableFrom(m_Types, type.m_Types);
 		}
 		return false;
 	}
+	
+	
 	
 	private static boolean arrayAssignableFrom(Type<?>[] array, Type<?>[] assignableFrom){
 		if(array.length == assignableFrom.length){
@@ -89,7 +91,7 @@ public final class TupleClass<T extends Tuple<? extends T>> implements Type<T>{
 		if(other == null) return false;
 		if(other == this) return true;
 		if(other instanceof TupleClass){
-			TupleClass<?> type = (TupleClass<?>) other;
+			TupleClass type = (TupleClass) other;
 			return arrayTypeInstance(m_Types, type.m_Types);
 		}
 		return false;
@@ -123,7 +125,7 @@ public final class TupleClass<T extends Tuple<? extends T>> implements Type<T>{
 		if(o == null) return false;
 		if(o == this) return true;
 		if(o instanceof TupleClass){
-			TupleClass<?> other = (TupleClass<?>) o;
+			TupleClass other = (TupleClass) o;
 			if(m_Types.length == other.m_Types.length){
 				for(int i=0; i<m_Types.length; ++i){
 					if(!equals(m_Types[i], other.m_Types[i])){

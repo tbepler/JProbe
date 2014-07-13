@@ -3,13 +3,12 @@ package jprobe.framework.model.types;
 import jprobe.framework.model.function.InvocationException;
 import jprobe.framework.model.function.Procedure;
 import jprobe.framework.model.function.TypeMismatchException;
-import jprobe.framework.model.tuple.Tuple;
 
 public class UnboxingOperation<R> implements Procedure<R>{
 	private static final long serialVersionUID = 1L;
 
 	private final Procedure<R> m_Parent;
-	private final TupleClass<?> m_Unbox;
+	private final TupleClass m_Unbox;
 	private final int m_StartIndex;
 	
 	public UnboxingOperation(Procedure<R> parent, int startIndex, int length){
@@ -19,7 +18,7 @@ public class UnboxingOperation<R> implements Procedure<R>{
 		Type<?>[] parentParams = parentSign.getParameterTypes();
 		Type<?>[] toTuple = new Type<?>[length];
 		System.arraycopy(parentParams, startIndex, toTuple, 0, toTuple.length);
-		m_Unbox = new TupleClass<Tuple<?>>(toTuple);
+		m_Unbox = new TupleClass(toTuple);
 				
 	}
 	

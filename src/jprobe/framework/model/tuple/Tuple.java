@@ -6,16 +6,16 @@ import java.util.Arrays;
 import jprobe.framework.model.types.TupleClass;
 import jprobe.framework.model.types.Typed;
 
-public class Tuple<T extends Tuple<? extends T>> implements Typed<T>, Serializable{
+public class Tuple implements Typed<Tuple>, Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private final Object[] m_Vals;
-	private final TupleClass<? extends T> m_Type;
+	private final TupleClass m_Type;
 	private final int m_Hash;
 	
 	public Tuple(Object ... values){
 		m_Vals = values.clone();
-		m_Type = new TupleClass<T>(m_Vals);
+		m_Type = new TupleClass(m_Vals);
 		m_Hash = Arrays.hashCode(m_Vals);
 	}
 	
@@ -28,7 +28,7 @@ public class Tuple<T extends Tuple<? extends T>> implements Typed<T>, Serializab
 		return (U) m_Vals[index];
 	}
 	
-	public final TupleClass<? extends T> getType(){
+	public final TupleClass getType(){
 		return m_Type;
 	}
 	
@@ -41,7 +41,7 @@ public class Tuple<T extends Tuple<? extends T>> implements Typed<T>, Serializab
 		if(o == null) return false;
 		if(o == this) return true;
 		if(o instanceof Tuple){
-			Tuple<?> other = (Tuple<?>) o;
+			Tuple other = (Tuple) o;
 			if(other.m_Vals.length == this.m_Vals.length){
 				for(int i=0; i<m_Vals.length; ++i){
 					if(!equals(m_Vals[i], other.m_Vals[i])){

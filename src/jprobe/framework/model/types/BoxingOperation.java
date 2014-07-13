@@ -11,25 +11,25 @@ import jprobe.framework.model.tuple.Tuple;
  * @author Tristan Bepler
  *
  */
-public class BoxingOperation implements Procedure<Tuple<?>>{
+public class BoxingOperation implements Procedure<Tuple>{
 	private static final long serialVersionUID = 1L;
 	
 	private final Type<?>[] m_Params;
-	private final Signature<Tuple<?>> m_Sign;
+	private final Signature<Tuple> m_Sign;
 	
-	public BoxingOperation(TupleClass<?> targetType){
+	public BoxingOperation(TupleClass targetType){
 		m_Params = targetType.toArray();
 		//construct the boxing signature
-		m_Sign = new Signature<Tuple<?>>(targetType, m_Params);
+		m_Sign = new Signature<Tuple>(targetType, m_Params);
 	}
 	
 	@Override
-	public Signature<Tuple<?>> getType() {
+	public Signature<Tuple> getType() {
 		return m_Sign;
 	}
 
 	@Override
-	public Tuple<?> invoke(Procedure<?>... args)
+	public Tuple invoke(Procedure<?>... args)
 			throws IllegalArgumentException, TypeMismatchException,
 			InvocationException {
 		
@@ -37,7 +37,7 @@ public class BoxingOperation implements Procedure<Tuple<?>>{
 		for(int i=0; i<vals.length; ++i){
 			vals[i] = m_Params[i].cast(args[i]);
 		}
-		return new Tuple<Tuple<?>>(vals);
+		return new Tuple(vals);
 		
 	}
 

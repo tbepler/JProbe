@@ -1,10 +1,25 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ArrayUtils {
 	
+	public static <T> T head(T ... array){
+		return array[0];
+	}
+	
+	public static <T> T[] tail(T ... array){
+		return tail(1, array);
+	}
+	
+	public static <T> T[] tail(int headLength, T ... array){
+		if(array.length < headLength){
+			return (T[]) new Object[]{};
+		}
+		return Arrays.copyOfRange(array, headLength, array.length);
+	}
 	
 	public static <T> List<T> toList(T[] array){
 		if(array != null){

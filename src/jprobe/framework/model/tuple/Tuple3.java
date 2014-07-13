@@ -1,6 +1,6 @@
 package jprobe.framework.model.tuple;
 
-public class Tuple3<A,B,C> extends Tuple<Tuple3<A,B,C>>{
+public class Tuple3<A,B,C> extends Tuple{
 	private static final long serialVersionUID = 1L;
 	
 	public final A first;
