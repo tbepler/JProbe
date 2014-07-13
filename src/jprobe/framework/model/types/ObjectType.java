@@ -32,6 +32,20 @@ public class ObjectType<T> implements Type<T> {
 			ObjectType<?> type = (ObjectType<?>) other;
 			return m_Clazz.isAssignableFrom(type.m_Clazz);
 		}
+		if(other instanceof TupleClass){
+			TupleClass<?> type = (TupleClass<?>) other;
+			//check if the tuple can be unwrapped into this type
+			if(type.size() == 1){
+				return this.isAssignableFrom(type.get(0));
+			}
+		}
+		if(other instanceof Signature){
+			Signature<?> type = (Signature<?>) other;
+			//check if the procedure can be unwrapped into this type
+			if(type.numParameters() == 0){
+				return this.isAssignableFrom(type.getReturnType());
+			}
+		}
 		return false;
 	}
 

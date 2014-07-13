@@ -13,8 +13,12 @@ public final class Signature<R> implements Type<Procedure<? extends R>>{
 		m_Params = params.clone();
 	}
 	
-	public Type<?>[] getParameterTypess(){
+	public Type<?>[] getParameterTypes(){
 		return m_Params.clone();
+	}
+	
+	public int numParameters(){
+		return m_Params.length;
 	}
 	
 	/**
@@ -28,8 +32,15 @@ public final class Signature<R> implements Type<Procedure<? extends R>>{
 	
 	@Override
 	public Procedure<? extends R> cast(Object obj) {
-		//TODO
-		
+		if(obj == null) return null;
+		Type<?> type = Types.typeOf(obj);
+		if(type instanceof Signature){
+			//cast obj procedure to this signature
+		}
+		if(type.isAssignableFrom(m_ReturnType)){
+			return new AdapterOperation<R>(m_ReturnType.cast(obj), this);
+		}
+		throw new ClassCastException("Object "+obj+" of type: "+type+" cannot be cast to type: "+this);
 	}
 		
 	@Override
