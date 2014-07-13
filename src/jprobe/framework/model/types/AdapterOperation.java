@@ -27,4 +27,9 @@ public class AdapterOperation<R> implements Procedure<R> {
 		return m_Obj;
 	}
 
+	@Override
+	public int numParameters() {
+		return m_Sign.numParameters();
+	}
+
 }

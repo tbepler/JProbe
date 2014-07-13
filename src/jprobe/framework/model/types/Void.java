@@ -53,4 +53,9 @@ public class Void implements Type<Void>{
 		return VOID;
 	}
 
+	@Override
+	public boolean isTypeInstance(Type<?> other) {
+		return other instanceof Void;
+	}
+
 }

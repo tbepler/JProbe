@@ -41,4 +41,9 @@ public class BoxingOperation implements Procedure<Tuple<?>>{
 		
 	}
 
+	@Override
+	public int numParameters() {
+		return m_Params.length;
+	}
+
 }

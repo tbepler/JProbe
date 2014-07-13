@@ -39,10 +39,14 @@ public final class TupleClass<T extends Tuple<? extends T>> implements Type<T>{
 		return m_Types.clone();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public final boolean isInstance(Object o){
-		Type<?> type = Types.typeOf(o);
-		return this.isAssignableFrom(type);
+	public T cast(Object obj) {
+		if(obj == null) return null;
+		if(this.isInstance(obj)){
+			return (T) obj;
+		}
+		throw new ClassCastException("Object: "+obj+" of type: "+Types.typeOf(obj)+" cannot be cast to type: "+this);
 	}
 	
 	@Override
@@ -51,22 +55,62 @@ public final class TupleClass<T extends Tuple<? extends T>> implements Type<T>{
 		if(other == this) return true;
 		if(other instanceof TupleClass){
 			TupleClass<?> type = (TupleClass<?>) other;
-			if(type.m_Types.length == m_Types.length){
-				for(int i=0; i<m_Types.length; ++i){
-					if(!isAssignableFrom(m_Types[i], type.m_Types[i])){
-						return false;
-					}
+			return arrayAssignableFrom(m_Types, type.m_Types);
+		}
+		return false;
+	}
+	
+	private static boolean arrayAssignableFrom(Type<?>[] array, Type<?>[] assignableFrom){
+		if(array.length == assignableFrom.length){
+			for(int i=0; i<array.length; ++i){
+				if(!isAssignableFrom(array[i], assignableFrom[i])){
+					return false;
 				}
-				return true;
 			}
+			return true;
 		}
 		return false;
 	}
 	
 	private static boolean isAssignableFrom(Type<?> type, Type<?> assignableFrom){
-		if(type == assignableFrom || assignableFrom == null) return true;
+		if(type == assignableFrom) return true;
 		if(type == null) return false;
 		return type.isAssignableFrom(assignableFrom);
+	}
+	
+	@Override
+	public final boolean isInstance(Object o){
+		Type<?> type = Types.typeOf(o);
+		return this.isTypeInstance(type);
+	}
+	
+	@Override
+	public boolean isTypeInstance(Type<?> other) {
+		if(other == null) return false;
+		if(other == this) return true;
+		if(other instanceof TupleClass){
+			TupleClass<?> type = (TupleClass<?>) other;
+			return arrayTypeInstance(m_Types, type.m_Types);
+		}
+		return false;
+	}
+	
+	private static boolean arrayTypeInstance(Type<?>[] array, Type<?>[] instance){
+		if(array.length == instance.length){
+			for(int i=0; i<array.length; ++i){
+				if(!isTypeInstance(array[i], instance[i])){
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	private static boolean isTypeInstance(Type<?> type, Type<?> instance){
+		if(type == instance) return true;
+		if(type == null) return false;
+		return type.isTypeInstance(instance);
 	}
 	
 	@Override
@@ -115,15 +159,6 @@ public final class TupleClass<T extends Tuple<? extends T>> implements Type<T>{
 		return builder.toString();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public T cast(Object obj) {
-		if(obj == null) return null;
-		if(this.isInstance(obj)){
-			return (T) obj;
-		}
-		throw new ClassCastException("Object: "+obj+" of type: "+Types.typeOf(obj)+" cannot be cast to type: "+this);
-	}
 	
 	
 	

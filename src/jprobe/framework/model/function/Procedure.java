@@ -10,6 +10,8 @@ public interface Procedure<R> extends Typed<Procedure<? extends R>>, Serializabl
 	
 	@Override
 	public Signature<R> getType();
+	
+	public int numParameters();
 
 	public abstract R invoke(Procedure<?> ... args)
 			throws IllegalArgumentException, TypeMismatchException, InvocationException;

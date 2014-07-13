@@ -1,5 +1,8 @@
 package jprobe.framework.model.types;
 
+import jprobe.framework.model.function.Procedure;
+import jprobe.framework.model.tuple.Tuple;
+
 public class ObjectType<T> implements Type<T> {
 	private static final long serialVersionUID = 1L;
 	
@@ -18,10 +21,12 @@ public class ObjectType<T> implements Type<T> {
 		if(obj == null){
 			return null;
 		}
-		if(this.isInstance(obj)){
+		Type<?> type = Types.typeOf(obj);
+		if(this.isTypeInstance(type)){
 			return m_Clazz.cast(obj);
 		}
-		throw new ClassCastException("Object: "+obj+" of type: "+Types.typeOf(obj)+" cannot be cast to type: "+this);
+		//check if the object can be unwrapped into this type and unwrap it
+		return this.unwrap(obj);
 	}
 
 	@Override
@@ -32,19 +37,107 @@ public class ObjectType<T> implements Type<T> {
 			ObjectType<?> type = (ObjectType<?>) other;
 			return m_Clazz.isAssignableFrom(type.m_Clazz);
 		}
-		if(other instanceof TupleClass){
-			TupleClass<?> type = (TupleClass<?>) other;
-			//check if the tuple can be unwrapped into this type
-			if(type.size() == 1){
-				return this.isAssignableFrom(type.get(0));
+		//check for unwrapping of single element tuples and no
+		//parameter procedures
+		return this.canUnwrap(other);
+	}
+	
+	/**
+	 * Checks if the type can be unwrapped.
+	 * @param type
+	 * @return
+	 */
+	private boolean canUnwrap(Type<?> type){
+		if(type instanceof TupleClass){
+			return this.canUnwrap((TupleClass<?>) type);
+		}
+		if(type instanceof Signature){
+			return this.canUnwrap((Signature<?>) type);
+		}
+		return false;
+	}
+	
+	/**
+	 * Unwraps the object if it is a tuple or procedure.
+	 * @param obj
+	 * @return
+	 */
+	private T unwrap(Object obj){
+		Type<?> type = Types.typeOf(obj);
+		if(!this.canUnwrap(type)){
+			throw new ClassCastException("Object: "+obj+" of type: "+type+" cannot be cast to type: "+this);
+		}
+		if(obj instanceof Tuple){
+			return this.unwrap((Tuple<?>) obj);
+		}
+		if(obj instanceof Procedure){
+			return this.unwrap((Procedure<?>) obj);
+		}
+		throw new ClassCastException("Object: "+obj+" of type: "+type+" cannot be cast to type: "+this);
+	}
+	
+	/**
+	 * A tuple can be unwrapped by this type if it is a single element tuple and
+	 * that element can be assigned to this type.
+	 * @param type
+	 * @return
+	 */
+	private boolean canUnwrap(TupleClass<?> type){
+		if(type.size() == 1){
+			return this.isAssignableFrom(type.get(0));
+		}
+		return false;
+	}
+	
+	/**
+	 * Unwraps a single element tuple by extracting the element and casting it
+	 * to this type.
+	 * @param obj
+	 * @return
+	 */
+	private T unwrap(Tuple<?> obj){
+		if(obj.size() == 1){
+			return this.cast(obj.get(0));
+		}
+		throw new ClassCastException("Object: "+obj+" of type: "+obj.getType()+" cannot be cast to type: "+this);
+	}
+	
+	/**
+	 * A signature can be unwrapped if it requires no parameters and returns a type
+	 * that can be assigned to this type.
+	 * @param type
+	 * @return
+	 */
+	private boolean canUnwrap(Signature<?> type){
+		if(type.numParameters() == 0){
+			return this.isAssignableFrom(type.getReturnType());
+		}
+		return false;
+	}
+	
+	/**
+	 * Unwraps a no params procedure by invoking it and casting the result.
+	 * @param proc
+	 * @return
+	 */
+	private T unwrap(Procedure<?> proc){
+		if(proc.numParameters() == 0){
+			try{
+				return this.cast(proc.invoke());
+			}catch(Exception e){
+				//proceed to throw the class cast exception
 			}
 		}
-		if(other instanceof Signature){
-			Signature<?> type = (Signature<?>) other;
-			//check if the procedure can be unwrapped into this type
-			if(type.numParameters() == 0){
-				return this.isAssignableFrom(type.getReturnType());
-			}
+		throw new ClassCastException("Object: "+proc+" of type: "+proc.getType()+" cannot be cast to type: "+this);
+	}
+	
+	@Override
+	public boolean isTypeInstance(Type<?> other) {
+		if(other == null) return false;
+		if(other == this) return true;
+		if(other instanceof ObjectType){
+			ObjectType<?> type = (ObjectType<?>) other;
+			return m_Clazz.isAssignableFrom(type.m_Clazz);
 		}
 		return false;
 	}
@@ -52,7 +145,7 @@ public class ObjectType<T> implements Type<T> {
 	@Override
 	public boolean isInstance(Object obj) {
 		Type<?> type = Types.typeOf(obj);
-		return this.isAssignableFrom(type);
+		return this.isTypeInstance(type);
 	}
 	
 	@Override
