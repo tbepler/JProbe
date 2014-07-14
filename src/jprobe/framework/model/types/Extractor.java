@@ -21,7 +21,7 @@ public abstract class Extractor<E, T extends Type<E>> implements Serializable{
 	 * if possible. This method consumes objects starting from
 	 * the deque head and will consume as many elements from the deque as
 	 * necessary to create an object of the type. This method should always return
-	 * if the {@link } method returns
+	 * if the {@link #isExtractableFrom(Type, Deque)} method returns
 	 * true for the types of the objects. If an exception is thrown,
 	 * then no items should be removed from the deque.
 	 * @param type - the type of the object which should be extracted

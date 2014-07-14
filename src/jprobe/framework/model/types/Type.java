@@ -10,7 +10,7 @@ public interface Type<T> extends Serializable{
 	 * if possible. This method consumes objects starting from
 	 * the deque head and will consume as many elements from the deque as
 	 * necessary to create this type. This method should always return
-	 * if the {@link #isExtractableFrom(Type...)} method returns
+	 * if the {@link #isExtractableFrom(Deque)} method returns
 	 * true for the types of the objects. If an exception is thrown,
 	 * then no items should be removed from the deque.
 	 * @param objs - objects from which to cast to this type

@@ -41,98 +41,85 @@ public final class TupleClass implements Type<Tuple>{
 	}
 	
 	@Override
-	public Tuple cast(Deque<Object> objs) {
+	public Tuple extract(Deque<Object> objs) {
 		if(objs == null || objs.size() == 0) return null;
 		Object obj = objs.poll();
 		try{
-			return this.cast(obj);
+			if(this.isInstance(obj)){
+				return this.cast(obj);
+			}
 		}catch(RuntimeException e){
 			objs.push(obj);
 			throw e;
+		}
+
+		objs.push(obj);
+		//try boxing the given types into this tuple type
+		return new Tuple(Types.extract(m_Types, objs));
+
+	}
+	
+	@Override
+	public boolean canExtract(Deque<Object> objs) {
+		Deque<Type<?>> types = Types.typesOf(objs);
+		return this.isExtractableFrom(types);
+	}
+	
+	@Override
+	public final boolean isExtractableFrom(Deque<Type<?>> types){
+		if(types == null || types.size() == 0) return false;
+		Type<?> head = types.poll();
+		if(this.isExtractableFrom(head)){
+			return true;
+		}
+		types.push(head);
+		//test whether this can be boxed from the given types
+		return Types.isExctractableFrom(m_Types, types);
+	}
+	
+	public final boolean isExtractableFrom(Type<?> type){
+		if(this.isAssignableFrom(type)){
+			return true;
+		}
+		return this.canUnwrap(type);
+	}
+	
+	private boolean canUnwrap(Type<?> type){
+		if(type instanceof Signature){
+			Signature<?> sign = (Signature<?>) type;
+			return sign.numParameters() == 0 && this.isExtractableFrom(sign.getReturnType());
+		}
+		if(type instanceof TupleClass){
+			TupleClass clazz = (TupleClass) type;
+			
 		}
 	}
 	
 	@Override
 	public Tuple cast(Object obj){
 		if(obj == null) return null;
-		if(this.isInstance(obj)){
+		Type<?> type = Types.typeOf(obj);
+		if(this.isAssignableFrom(type)){
 			return (Tuple) obj;
 		}
-		throw new ClassCastException("Object: "+obj+" of type: "+Types.typeOf(obj)+" cannot be cast to type: "+this);
-	}
-	
-	@Override
-	public final boolean isAssignableFrom(Deque<Type<?>> types){
-		if(types == null || types.size() == 0) return false;
-		Type<?> head = types.poll();
-		if(this.isAssignableFrom(head)){
-			return true;
-		}
-		types.push(head);
-		return false;
+		throw new ClassCastException("Object: "+obj+" of type: "+type+" cannot be cast to type: "+this);
 	}
 	
 	@Override
 	public final boolean isAssignableFrom(Type<?> type){
+		if(type == null) return false;
 		if(type == this) return true;
 		if(type instanceof TupleClass){
 			TupleClass clazz = (TupleClass) type;
-			return arrayAssignableFrom(m_Types, clazz.m_Types);
+			return Types.isAssignableFrom(m_Types, clazz.m_Types);
 		}
 		return false;
-	}
-	
-	private static boolean arrayAssignableFrom(Type<?>[] array, Type<?>[] assignableFrom){
-		if(array.length == assignableFrom.length){
-			for(int i=0; i<array.length; ++i){
-				if(!isAssignableFrom(array[i], assignableFrom[i])){
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-	
-	private static boolean isAssignableFrom(Type<?> type, Type<?> assignableFrom){
-		if(type == assignableFrom) return true;
-		if(type == null) return false;
-		return type.isAssignableFrom(assignableFrom);
 	}
 	
 	@Override
 	public final boolean isInstance(Object o){
 		Type<?> type = Types.typeOf(o);
-		return this.isTypeInstance(type);
-	}
-	
-	@Override
-	public boolean isTypeInstance(Type<?> other) {
-		if(other == null) return false;
-		if(other == this) return true;
-		if(other instanceof TupleClass){
-			TupleClass type = (TupleClass) other;
-			return arrayTypeInstance(m_Types, type.m_Types);
-		}
-		return false;
-	}
-	
-	private static boolean arrayTypeInstance(Type<?>[] array, Type<?>[] instance){
-		if(array.length == instance.length){
-			for(int i=0; i<array.length; ++i){
-				if(!isTypeInstance(array[i], instance[i])){
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-	
-	private static boolean isTypeInstance(Type<?> type, Type<?> instance){
-		if(type == instance) return true;
-		if(type == null) return false;
-		return type.isTypeInstance(instance);
+		return this.isAssignableFrom(type);
 	}
 	
 	@Override

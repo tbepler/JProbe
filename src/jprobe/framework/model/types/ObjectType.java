@@ -1,7 +1,6 @@
 package jprobe.framework.model.types;
 
 import java.util.Deque;
-
 import jprobe.framework.model.function.Procedure;
 import jprobe.framework.model.tuple.Tuple;
 
@@ -19,17 +18,51 @@ public class ObjectType<T> implements Type<T> {
 	}
 
 	@Override
-	public T cast(Deque<Object> objs) {
+	public T extract(Deque<Object> objs) {
 		if(objs == null || objs.size() == 0){
 			return null;
 		}
 		Object obj = objs.poll();
 		try{
-			return this.cast(obj);
+			return this.extract(obj);
 		}catch(RuntimeException e){
 			objs.push(obj);
 			throw e;
 		}
+	}
+	
+	public T extract(Object obj){
+		if(this.isInstance(obj)){
+			return this.cast(obj);
+		}
+		return this.unwrap(obj);
+	}
+
+	@Override
+	public boolean isExtractableFrom(Deque<Type<?>> other) {
+		if(other == null || other.size() == 0) return false;
+		//retrieve the first type from the array, and check it
+		Type<?> type = other.poll();
+		if(this.isExtractableFrom(type)){
+			return true;
+		}
+		other.push(type);
+		return false;
+	}
+	
+	public boolean isExtractableFrom(Type<?> type){
+		if(this.isAssignableFrom(type)){
+			return true;
+		}
+		//check for unwrapping of single element tuples and no
+		//parameter procedures
+		return this.canUnwrap(type);
+	}
+
+	@Override
+	public boolean canExtract(Deque<Object> objs) {
+		Deque<Type<?>> types = Types.typesOf(objs);
+		return this.isExtractableFrom(types);
 	}
 	
 	@Override
@@ -38,23 +71,10 @@ public class ObjectType<T> implements Type<T> {
 			return null;
 		}
 		Type<?> type = Types.typeOf(obj);
-		if(this.isTypeInstance(type)){
+		if(this.isAssignableFrom(type)){
 			return m_Clazz.cast(obj);
 		}
-		//check if the object can be unwrapped into this type and unwrap it
-		return this.unwrap(obj);
-	}
-
-	@Override
-	public boolean isAssignableFrom(Deque<Type<?>> other) {
-		if(other == null || other.size() == 0) return false;
-		//retrieve the first type from the array, and check it
-		Type<?> type = other.poll();
-		if(this.isAssignableFrom(type)){
-			return true;
-		}
-		other.push(type);
-		return false;
+		throw new ClassCastException("Object: "+obj+" of type: "+type+" cannot be cast to type: "+this);
 	}
 	
 	@Override
@@ -65,9 +85,13 @@ public class ObjectType<T> implements Type<T> {
 			ObjectType<?> objType = (ObjectType<?>) type;
 			return m_Clazz.isAssignableFrom(objType.m_Clazz);
 		}
-		//check for unwrapping of single element tuples and no
-		//parameter procedures
-		return this.canUnwrap(type);
+		return false;
+	}
+
+	@Override
+	public boolean isInstance(Object obj) {
+		Type<?> type = Types.typeOf(obj);
+		return this.isAssignableFrom(type);
 	}
 	
 	/**
@@ -111,10 +135,7 @@ public class ObjectType<T> implements Type<T> {
 	 * @return
 	 */
 	private boolean canUnwrap(TupleClass type){
-		if(type.size() == 1){
-			return this.isAssignableFrom(type.get(0));
-		}
-		return false;
+		return type.size() == 1 && this.isExtractableFrom(type.get(0));
 	}
 	
 	/**
@@ -125,7 +146,7 @@ public class ObjectType<T> implements Type<T> {
 	 */
 	private T unwrap(Tuple obj){
 		if(obj.size() == 1){
-			return this.cast(obj.get(0));
+			return this.extract(obj.get(0));
 		}
 		throw new ClassCastException("Object: "+obj+" of type: "+obj.getType()+" cannot be cast to type: "+this);
 	}
@@ -137,10 +158,7 @@ public class ObjectType<T> implements Type<T> {
 	 * @return
 	 */
 	private boolean canUnwrap(Signature<?> type){
-		if(type.numParameters() == 0){
-			return this.isAssignableFrom(type.getReturnType());
-		}
-		return false;
+		return type.numParameters() == 0 && this.isExtractableFrom(type.getReturnType());
 	}
 	
 	/**
@@ -151,29 +169,12 @@ public class ObjectType<T> implements Type<T> {
 	private T unwrap(Procedure<?> proc){
 		if(proc.numParameters() == 0){
 			try{
-				return this.cast(proc.invoke());
+				return this.extract(proc.invoke());
 			}catch(Exception e){
 				//proceed to throw the class cast exception
 			}
 		}
 		throw new ClassCastException("Object: "+proc+" of type: "+proc.getType()+" cannot be cast to type: "+this);
-	}
-	
-	@Override
-	public boolean isTypeInstance(Type<?> other) {
-		if(other == null) return false;
-		if(other == this) return true;
-		if(other instanceof ObjectType){
-			ObjectType<?> type = (ObjectType<?>) other;
-			return m_Clazz.isAssignableFrom(type.m_Clazz);
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isInstance(Object obj) {
-		Type<?> type = Types.typeOf(obj);
-		return this.isTypeInstance(type);
 	}
 	
 	@Override
