@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Deque;
 
 import util.ArrayUtils;
+import jprobe.framework.model.function.Procedure;
 import jprobe.framework.model.tuple.Tuple;
 
 public final class TupleClass implements Type<Tuple>{
@@ -45,19 +46,30 @@ public final class TupleClass implements Type<Tuple>{
 	public Tuple extract(Deque<Object> objs) {
 		if(objs == null || objs.size() == 0) return null;
 		Object obj = objs.poll();
-		try{
-			if(this.isInstance(obj)){
-				return this.cast(obj);
+		if(this.isExtractableFrom(Types.typeOf(obj))){
+			try{
+				return this.extract(obj);
+			}catch(RuntimeException e){
+				objs.push(obj);
+				throw e;
 			}
-		}catch(RuntimeException e){
-			objs.push(obj);
-			throw e;
 		}
-
 		objs.push(obj);
 		//try boxing the given types into this tuple type
 		return new Tuple(Types.extract(m_Types, objs));
 
+	}
+	
+	public Tuple extract(Object obj){
+		Type<?> type = Types.typeOf(obj);
+		if(this.isAssignableFrom(type)){
+			return this.cast(obj);
+		}
+		if(this.canUnwrap(type)){
+			return this.unwrap(obj);
+		}
+
+		throw new ClassCastException("Object: "+obj+" of type: "+type+" cannot be cast to type: "+this);
 	}
 	
 	@Override
@@ -74,15 +86,29 @@ public final class TupleClass implements Type<Tuple>{
 			return true;
 		}
 		types.push(head);
-		//test whether this can be boxed from the given types
+		//test whether the given types can be boxed into a tuple
+		//of this type
 		return Types.isExctractableFrom(m_Types, types);
 	}
 	
 	public final boolean isExtractableFrom(Type<?> type){
-		if(this.isAssignableFrom(type)){
-			return true;
+		return this.isAssignableFrom(type) || this.canUnwrap(type);
+	}
+	
+	private Tuple unwrap(Object obj){
+		if(obj instanceof Procedure){
+			Procedure<?> p = (Procedure<?>) obj;
+			try {
+				return this.extract(ArrayUtils.<Object>toDeque(p.invoke()));
+			} catch (Exception e){
+				throw new ClassCastException("Object: "+obj+" of type: "+p.getType()+" cannot be cast to type: "+this);
+			}
 		}
-		return this.canUnwrap(type);
+		if(obj instanceof Tuple){
+			Tuple t = (Tuple) obj;
+			return this.extract(ArrayUtils.toDeque(t.toArray()));
+		}
+		throw new ClassCastException("Object: "+obj+" of type: "+Types.typeOf(obj)+" cannot be cast to type: "+this);
 	}
 	
 	private boolean canUnwrap(Type<?> type){
@@ -92,12 +118,14 @@ public final class TupleClass implements Type<Tuple>{
 		}
 		if(type instanceof TupleClass){
 			TupleClass clazz = (TupleClass) type;
+			//unbox the tuple type
 			Deque<Type<?>> deck = ArrayUtils.toDeque(clazz.m_Types);
-			//check if this tuple type can be extracted by unwrapping the given tuple type
+			//check if this can be extracted from the unboxed tuple type,
 			//for this to be valid, all the elements of the other tuple must be used,
 			//therefore, need to also check that the deque is empty after extracting
 			return this.isExtractableFrom(deck) && deck.isEmpty();
 		}
+		return false;
 	}
 	
 	@Override

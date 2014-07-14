@@ -16,6 +16,7 @@ public class ArrayUtils {
 		return tail(1, array);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <T> T[] tail(int headLength, T ... array){
 		if(array.length < headLength){
 			return (T[]) new Object[]{};
@@ -23,7 +24,7 @@ public class ArrayUtils {
 		return Arrays.copyOfRange(array, headLength, array.length);
 	}
 	
-	public static <T> Deque<T> toDeque(T[] array){
+	public static <T> Deque<T> toDeque(T ... array){
 		Deque<T> deck = new LinkedList<T>(Arrays.asList(array));
 		return deck;
 	}
