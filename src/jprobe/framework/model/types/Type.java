@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.util.Deque;
 
 public interface Type<T> extends Serializable{
-	
+
 	/**
-	 * Casts the given objects into an object of this 
-	 * type, if possible. This method consumes objects starting from
+	 * Extracts an object of this type from the given objects,
+	 * if possible. This method consumes objects starting from
 	 * the deque head and will consume as many elements from the deque as
-	 * necessary to cast this type. This method should always return
-	 * if the {@link #isAssignableFrom(Type...)} method returns
+	 * necessary to create this type. This method should always return
+	 * if the {@link #isExtractableFrom(Type...)} method returns
 	 * true for the types of the objects. If an exception is thrown,
 	 * then no items should be removed from the deque.
 	 * @param objs - objects from which to cast to this type
@@ -18,40 +18,43 @@ public interface Type<T> extends Serializable{
 	 * @throws ClassCastException - if the object cannot
 	 * be cast to this type
 	 */
-	public T cast(Deque<Object> objs);
-	
-	public T cast(Object obj);
+	public T extract(Deque<Object> objs);
 	
 	/**
-	 * Checks if the given types can be assigned to
-	 * this type. In other words, can object instances
-	 * of the given types be cast to this type.
+	 * Checks if an object of this type can be extracted from
+	 * a deque of objects of the given types. In other words, can object instances
+	 * of the given types be used to produce an object of this type.
 	 * This method consumes types starting from
 	 * the deque head and will consume as many elements
-	 * as necessary to assign this type. This
-	 * can return True even if {@link #isInstance(Object)}
-	 * would not return true, because of type wrapping/unwrapping
-	 * and boxing/unboxing. If false is returned, then no
+	 * as necessary to assign this type. If false is returned, then no
 	 * items should be removed from the deque.
 	 * @param types - types from which to assign this type
 	 * @return boolean indicating the result
 	 */
-	public boolean isAssignableFrom(Deque<Type<?>> types);
+	public boolean isExtractableFrom(Deque<Type<?>> types);
 	
-	public boolean isAssignableFrom(Type<?> type);
+	/**
+	 * Tests whether an object of this type can be extracted from
+	 * the given deque of objects. When this function returns, the
+	 * deque will be in the same state as it was received.
+	 * @param objs - deque of objects to test whether an object
+	 * of this type could be extracted from
+	 * @return True if an object of this type could be extracted
+	 * from the given deque, False otherwise
+	 */
+	public boolean canExtract(Deque<Object> objs);
+	
+	public T cast(Object obj);
 	
 	/**
 	 * Checks if the given type is equal to this type
-	 * or is a subtype of this type. This is a subset
-	 * of the {@link #isAssignableFrom(Type)} types and
-	 * whenever the {@link #isAssignableFrom(Type)} method
-	 * returns false, this should also return false. Returns
+	 * or is a subtype of this type. Returns
 	 * False if the given type is null.
 	 * @param other - type to check
 	 * @return True if the given type is equal to or a 
 	 * subtype of this type. False otherwise.
 	 */
-	public boolean isTypeInstance(Type<?> other);
+	public boolean isAssignableFrom(Type<?> type);
 	
 	/**
 	 * Checks if the given object is an instance of

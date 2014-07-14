@@ -56,17 +56,17 @@ public class Void implements Type<Void>{
 	}
 
 	@Override
-	public boolean isTypeInstance(Type<?> other) {
-		return other instanceof Void;
-	}
-
-	@Override
-	public Void cast(Deque<Object> objs) {
+	public Void extract(Deque<Object> objs) {
 		return this;
 	}
 
 	@Override
-	public boolean isAssignableFrom(Deque<Type<?>> types) {
+	public boolean isExtractableFrom(Deque<Type<?>> types) {
+		return true;
+	}
+
+	@Override
+	public boolean canExtract(Deque<Object> objs) {
 		return true;
 	}
 

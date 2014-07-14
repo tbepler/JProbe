@@ -1,9 +1,12 @@
-package jprobe.framework.model.types;
+package jprobe.framework.model.types.remove;
 
 import jprobe.framework.model.function.InvocationException;
 import jprobe.framework.model.function.Procedure;
 import jprobe.framework.model.function.TypeMismatchException;
 import jprobe.framework.model.tuple.Tuple;
+import jprobe.framework.model.types.Signature;
+import jprobe.framework.model.types.TupleClass;
+import jprobe.framework.model.types.Type;
 
 /**
  * A procedure that boxes parameters into tuples
