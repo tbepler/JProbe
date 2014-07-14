@@ -3,6 +3,7 @@ package jprobe.framework.model.types;
 import java.util.Arrays;
 import java.util.Deque;
 
+import util.ArrayUtils;
 import jprobe.framework.model.tuple.Tuple;
 
 public final class TupleClass implements Type<Tuple>{
@@ -91,7 +92,11 @@ public final class TupleClass implements Type<Tuple>{
 		}
 		if(type instanceof TupleClass){
 			TupleClass clazz = (TupleClass) type;
-			
+			Deque<Type<?>> deck = ArrayUtils.toDeque(clazz.m_Types);
+			//check if this tuple type can be extracted by unwrapping the given tuple type
+			//for this to be valid, all the elements of the other tuple must be used,
+			//therefore, need to also check that the deque is empty after extracting
+			return this.isExtractableFrom(deck) && deck.isEmpty();
 		}
 	}
 	

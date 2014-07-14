@@ -2,6 +2,8 @@ package util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ArrayUtils {
@@ -19,6 +21,11 @@ public class ArrayUtils {
 			return (T[]) new Object[]{};
 		}
 		return Arrays.copyOfRange(array, headLength, array.length);
+	}
+	
+	public static <T> Deque<T> toDeque(T[] array){
+		Deque<T> deck = new LinkedList<T>(Arrays.asList(array));
+		return deck;
 	}
 	
 	public static <T> List<T> toList(T[] array){
