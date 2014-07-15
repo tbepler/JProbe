@@ -7,6 +7,13 @@ import jprobe.framework.model.function.Procedure;
 public final class Signature<R> implements Type<Procedure<? extends R>>{
 	private static final long serialVersionUID = 1L;
 	
+	public static Signature<?> asSignature(Type<?> type){
+		if(type instanceof Signature){
+			return (Signature<?>) type;
+		}
+		return Types.asSignature(type);
+	}
+	
 	private final TupleClass m_Params;
 	private final Type<? extends R> m_ReturnType;
 	
