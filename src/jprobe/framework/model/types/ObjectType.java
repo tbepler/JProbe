@@ -20,7 +20,7 @@ public class ObjectType<T> implements Type<T> {
 	@Override
 	public T extract(Deque<Object> objs) {
 		if(objs == null || objs.size() == 0){
-			return null;
+			throw new RuntimeException("Unable to extract type: "+this+" from an empty deque.");
 		}
 		Object obj = objs.poll();
 		try{

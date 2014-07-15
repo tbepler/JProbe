@@ -30,7 +30,7 @@ public enum Types {
 		return new ObjectType<T>(clazz);
 	}
 	
-	public static <T> Type<? extends T> getType(Class<? extends T> clazz){
+	public static <T> Type<? extends T> asObjectType(Class<? extends T> clazz){
 		return new ObjectType<T>(clazz);
 	}
 	
@@ -38,6 +38,14 @@ public enum Types {
 		Deque<Type<? extends T>> types = new LinkedList<Type<? extends T>>();
 		for(T obj : objs){
 			types.add(Types.typeOf(obj));
+		}
+		return types;
+	}
+	
+	public static Type<?>[] typesOf(Object ... objs){
+		Type<?>[] types = new Type<?>[objs.length];
+		for(int i=0; i<objs.length; ++i){
+			types[i] = Types.typeOf(objs[i]);
 		}
 		return types;
 	}

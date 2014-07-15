@@ -8,7 +8,7 @@ public class TestTypes extends junit.framework.TestCase{
 	
 	private static class TestTyped implements Typed<TestTyped>{
 		
-		private final Type<? extends TestTyped> type = Types.getType(TestTyped.class);
+		private final Type<? extends TestTyped> type = Types.asObjectType(TestTyped.class);
 		
 		@Override
 		public Type<? extends TestTyped> getType() {
