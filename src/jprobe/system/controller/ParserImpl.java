@@ -2,9 +2,11 @@ package jprobe.system.controller;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import jprobe.framework.model.function.FunctionFactory;
@@ -32,6 +34,7 @@ public class ParserImpl {
 	
 	private final FunctionFactory m_Factory;
 	private final Map<String, Object> m_Vars = new HashMap<String, Object>();
+	private final List<Tokenizer> m_Tokenizers = new ArrayList<Tokenizer>();
 	
 	private Object nextToken(Reader r){
 		Deque<Object> tokens = new LinkedList<Object>();
