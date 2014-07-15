@@ -30,8 +30,16 @@ public enum Types {
 		return new ObjectType<T>(clazz);
 	}
 	
-	public static <T> Type<? extends T> asObjectType(Class<? extends T> clazz){
+	public static <T> ObjectType<? extends T> asObjectType(Class<? extends T> clazz){
 		return new ObjectType<T>(clazz);
+	}
+	
+	public static <T> Signature<T> asSignature(Type<? extends T> returnType, Type<?> ... params){
+		return new Signature<T>(returnType, params);
+	}
+	
+	public static TupleClass asTupleType(Type<?> ... types){
+		return new TupleClass(types);
 	}
 	
 	public static <T> Deque<Type<? extends T>> typesOf(Deque<? extends T> objs){

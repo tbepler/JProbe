@@ -44,7 +44,9 @@ public final class TupleClass implements Type<Tuple>{
 	
 	@Override
 	public Tuple extract(Deque<Object> objs) {
-		if(objs == null || objs.size() == 0) return null;
+		if(objs == null || objs.size() == 0){
+			throw new RuntimeException("Unable to extract type: "+this+" from an empty deque.");
+		}
 		Object obj = objs.poll();
 		if(this.isExtractableFrom(Types.typeOf(obj))){
 			try{
@@ -60,7 +62,9 @@ public final class TupleClass implements Type<Tuple>{
 
 	}
 	
+	@Override
 	public Tuple extract(Object obj){
+		if(obj == null) return null;
 		Type<?> type = Types.typeOf(obj);
 		if(this.isAssignableFrom(type)){
 			return this.cast(obj);
@@ -79,6 +83,12 @@ public final class TupleClass implements Type<Tuple>{
 	}
 	
 	@Override
+	public boolean canExtract(Object obj){
+		Type<?> type = Types.typeOf(obj);
+		return this.isExtractableFrom(type);
+	}
+	
+	@Override
 	public final boolean isExtractableFrom(Deque<Type<?>> types){
 		if(types == null || types.size() == 0) return false;
 		Type<?> head = types.poll();
@@ -91,6 +101,7 @@ public final class TupleClass implements Type<Tuple>{
 		return Types.isExctractableFrom(m_Types, types);
 	}
 	
+	@Override
 	public final boolean isExtractableFrom(Type<?> type){
 		return this.isAssignableFrom(type) || this.canUnwrap(type);
 	}
@@ -114,7 +125,7 @@ public final class TupleClass implements Type<Tuple>{
 	private boolean canUnwrap(Type<?> type){
 		if(type instanceof Signature){
 			Signature<?> sign = (Signature<?>) type;
-			return sign.numParameters() == 0 && this.isExtractableFrom(sign.getReturnType());
+			return sign.size() == 0 && this.isExtractableFrom(sign.getReturnType());
 		}
 		if(type instanceof TupleClass){
 			TupleClass clazz = (TupleClass) type;

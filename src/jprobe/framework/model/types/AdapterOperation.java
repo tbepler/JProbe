@@ -21,7 +21,7 @@ public class AdapterOperation<R> implements Procedure<R> {
 	}
 
 	@Override
-	public R invoke(Procedure<?>... args) throws IllegalArgumentException,
+	public R invoke(Object ... args) throws IllegalArgumentException,
 			TypeMismatchException, InvocationException {
 		//adapter function simply ignores args and returns its object
 		return m_Obj;
@@ -29,7 +29,7 @@ public class AdapterOperation<R> implements Procedure<R> {
 
 	@Override
 	public int numParameters() {
-		return m_Sign.numParameters();
+		return m_Sign.size();
 	}
 
 }

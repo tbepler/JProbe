@@ -13,6 +13,6 @@ public interface Procedure<R> extends Typed<Procedure<? extends R>>, Serializabl
 	
 	public int numParameters();
 
-	public abstract R invoke(Procedure<?> ... args)
+	public abstract R invoke(Object ... args)
 			throws IllegalArgumentException, TypeMismatchException, InvocationException;
 }

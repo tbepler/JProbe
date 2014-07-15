@@ -1,28 +1,34 @@
 package jprobe.framework.model.types;
 
+import java.util.Deque;
+
 import jprobe.framework.model.function.Procedure;
 
 public final class Signature<R> implements Type<Procedure<? extends R>>{
 	private static final long serialVersionUID = 1L;
 	
-	private final Type<?>[] m_Params;
+	private final TupleClass m_Params;
 	private final Type<? extends R> m_ReturnType;
 	
 	public Signature(Type<? extends R> returnType, Type<?> ... params){
 		m_ReturnType = returnType;
-		m_Params = params.clone();
+		m_Params = Types.asTupleType(params);
 	}
 	
 	public Type<?>[] getParameterTypes(){
-		return m_Params.clone();
+		return m_Params.toArray();
 	}
 	
-	public int numParameters(){
-		return m_Params.length;
+	public Type<?> getParameterType(int index){
+		return m_Params.get(index);
+	}
+	
+	public int size(){
+		return m_Params.size();
 	}
 	
 	/**
-	 * Returns the {@link Type} of this signature's return value
+	 * Returns the {@link Type} of this signature's return type
 	 * 
 	 * @return - type of this signatures return value
 	 */
@@ -31,14 +37,80 @@ public final class Signature<R> implements Type<Procedure<? extends R>>{
 	}
 	
 	@Override
+	public Procedure<? extends R> extract(Deque<Object> objs) {
+		if(objs == null || objs.isEmpty()){
+			throw new RuntimeException("Unable to extract type: "+this+" from an empty deque.");
+		}
+		try{
+			Procedure<? extends R> extracted = this.extract(objs.peek());
+			objs.poll();
+			return extracted;
+		}catch(RuntimeException e){
+			return new AdapterOperation<R>(m_ReturnType.extract(objs), this);
+		}
+	}
+	
+	public Procedure<? extends R> extract(Object obj){
+		if(obj == null) return null;
+		Type<?> type = Types.typeOf(obj);
+		if(this.isExtractableFrom(type)){
+			if(obj instanceof Procedure){
+				Procedure<?> proc = (Procedure<?>) obj;
+				return new ProcedureAdapter<R>(proc, this);
+			}
+			return new AdapterOperation<R>(m_ReturnType.extract(obj),this);
+		}
+		throw new ClassCastException("Object "+obj+" of type: "+type+" cannot be cast to type: "+this);
+	}
+
+	@Override
+	public boolean isExtractableFrom(Deque<Type<?>> types) {
+		if(types == null || types.isEmpty()) return false;
+		Type<?> head = types.poll();
+		if(this.isExtractableFrom(head)){
+			return true;
+		}
+		types.push(head);
+		//if this signature doesn't take parameters, then check if
+		//the types could be boxed into this signature's return type
+		return m_Params.size() == 0 && m_ReturnType.isExtractableFrom(types);
+	}
+	
+	@Override
+	public boolean isExtractableFrom(Type<?> type){
+		if(type == null) return false;
+		if(type == this) return true;
+		if(type instanceof Signature){
+			Signature<?> other = (Signature<?>) type;
+			if(this.getReturnType().isExtractableFrom(other.getReturnType())){
+				return other.m_Params.isExtractableFrom(m_Params);
+			}
+			return false;
+		}
+		//if this doesn't require params, check if the given type can be
+		//boxed into this signature's return type
+		return m_Params.size() == 0 && m_ReturnType.isExtractableFrom(type);
+	}
+
+	@Override
+	public boolean canExtract(Deque<Object> objs) {
+		Deque<Type<?>> types = Types.typesOf(objs);
+		return this.isExtractableFrom(types);
+	}
+	
+	@Override
+	public boolean canExtract(Object obj){
+		Type<?> type = Types.typeOf(obj);
+		return this.isExtractableFrom(type);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
 	public Procedure<? extends R> cast(Object obj) {
 		if(obj == null) return null;
 		Type<?> type = Types.typeOf(obj);
-		if(type instanceof Signature){
-			//cast obj procedure to this signature
-		}
-		if(type.isAssignableFrom(m_ReturnType)){
-			return new AdapterOperation<R>(m_ReturnType.cast(obj), this);
+		if(this.isAssignableFrom(type)){
+			return (Procedure<? extends R>) obj;
 		}
 		throw new ClassCastException("Object "+obj+" of type: "+type+" cannot be cast to type: "+this);
 	}
@@ -46,27 +118,8 @@ public final class Signature<R> implements Type<Procedure<? extends R>>{
 	@Override
 	public String toString(){
 		StringBuilder builder = new StringBuilder();
+		builder.append(m_Params).append(" => ");
 		builder.append(this.getReturnType());
-		if(m_Params.length > 0){
-			builder.append(" ");
-			builder.append(arrayToString(m_Params));
-		}
-		return builder.toString();
-	}
-	
-	public static <T> String arrayToString(T[] array){
-		StringBuilder builder = new StringBuilder();
-		builder.append("(");
-		boolean first = true;
-		for(T o : array){
-			if(first){
-				builder.append(o);
-				first = false;
-			}else{
-				builder.append(", ").append(o);
-			}
-		}
-		builder.append(")");
 		return builder.toString();
 	}
 	
@@ -77,25 +130,8 @@ public final class Signature<R> implements Type<Procedure<? extends R>>{
 		if(type instanceof Signature){
 			Signature<?> other = (Signature<?>) type;
 			if(this.getReturnType().isAssignableFrom(other.getReturnType())){
-				return signaturesAssignableFrom(other.m_Params, m_Params);
+				return other.m_Params.isAssignableFrom(m_Params);
 			}
-		}
-		return false;
-	}
-	
-	private static boolean signaturesAssignableFrom(Type<?>[] array, Type<?>[] assignableFrom){
-		if(array == assignableFrom) return true;
-		if((array == null || array.length == 0) && (assignableFrom == null || assignableFrom.length == 0)){
-			return true;
-		}
-		if(array == null || assignableFrom == null) return false;
-		if(array.length == assignableFrom.length){
-			for(int i=0; i<array.length; i++){
-				if(!array[i].isAssignableFrom(assignableFrom[i])){
-					return false;
-				}
-			}
-			return true;
 		}
 		return false;
 	}
@@ -113,22 +149,10 @@ public final class Signature<R> implements Type<Procedure<? extends R>>{
 		if(o instanceof Signature){
 			Signature<?> other = (Signature<?>) o;
 			if(this.getReturnType().equals(other.getReturnType())){
-				return arraysEqual(other.m_Params, m_Params);
+				return other.m_Params.equals(m_Params);
 			}
 		}
 		return false;
 	}
-	
-	private static <T> boolean arraysEqual(T[] params1, T[] params2){
-		if(params1.length == params2.length){
-			for(int i=0; i<params1.length; i++){
-				if(!params1[i].equals(params2[i])){
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-	
+
 }

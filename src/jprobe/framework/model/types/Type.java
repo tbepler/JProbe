@@ -20,6 +20,8 @@ public interface Type<T> extends Serializable{
 	 */
 	public T extract(Deque<Object> objs);
 	
+	public T extract(Object obj);
+	
 	/**
 	 * Checks if an object of this type can be extracted from
 	 * a deque of objects of the given types. In other words, can object instances
@@ -33,6 +35,8 @@ public interface Type<T> extends Serializable{
 	 */
 	public boolean isExtractableFrom(Deque<Type<?>> types);
 	
+	public boolean isExtractableFrom(Type<?> type);
+	
 	/**
 	 * Tests whether an object of this type can be extracted from
 	 * the given deque of objects. When this function returns, the
@@ -43,6 +47,8 @@ public interface Type<T> extends Serializable{
 	 * from the given deque, False otherwise
 	 */
 	public boolean canExtract(Deque<Object> objs);
+	
+	public boolean canExtract(Object obj);
 	
 	public T cast(Object obj);
 	

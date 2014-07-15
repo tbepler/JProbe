@@ -31,7 +31,9 @@ public class ObjectType<T> implements Type<T> {
 		}
 	}
 	
+	@Override
 	public T extract(Object obj){
+		if(obj == null) return null;
 		if(this.isInstance(obj)){
 			return this.cast(obj);
 		}
@@ -50,6 +52,7 @@ public class ObjectType<T> implements Type<T> {
 		return false;
 	}
 	
+	@Override
 	public boolean isExtractableFrom(Type<?> type){
 		if(this.isAssignableFrom(type)){
 			return true;
@@ -63,6 +66,12 @@ public class ObjectType<T> implements Type<T> {
 	public boolean canExtract(Deque<Object> objs) {
 		Deque<Type<?>> types = Types.typesOf(objs);
 		return this.isExtractableFrom(types);
+	}
+	
+	@Override
+	public boolean canExtract(Object obj){
+		Type<?> type = Types.typeOf(obj);
+		return this.isExtractableFrom(type);
 	}
 	
 	@Override
@@ -158,7 +167,7 @@ public class ObjectType<T> implements Type<T> {
 	 * @return
 	 */
 	private boolean canUnwrap(Signature<?> type){
-		return type.numParameters() == 0 && this.isExtractableFrom(type.getReturnType());
+		return type.size() == 0 && this.isExtractableFrom(type.getReturnType());
 	}
 	
 	/**

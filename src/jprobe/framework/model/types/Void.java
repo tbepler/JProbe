@@ -70,4 +70,19 @@ public class Void implements Type<Void>{
 		return true;
 	}
 
+	@Override
+	public Void extract(Object obj) {
+		return this;
+	}
+
+	@Override
+	public boolean isExtractableFrom(Type<?> type) {
+		return true;
+	}
+
+	@Override
+	public boolean canExtract(Object obj) {
+		return true;
+	}
+
 }
