@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Deque;
 
 public interface Type<T> extends Serializable{
+	
+	public boolean isBoxableType();
+	public BoxableType<T> asBoxableType();
+	
 
 	/**
 	 * Extracts an object of this type from the given objects,

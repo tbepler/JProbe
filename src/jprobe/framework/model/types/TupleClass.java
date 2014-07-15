@@ -7,7 +7,7 @@ import util.ArrayUtils;
 import jprobe.framework.model.function.Procedure;
 import jprobe.framework.model.tuple.Tuple;
 
-public final class TupleClass implements Type<Tuple>{
+public final class TupleClass implements BoxableType<Tuple>{
 	private static final long serialVersionUID = 1L;
 	
 	private final Type<?>[] m_Types;
@@ -40,6 +40,43 @@ public final class TupleClass implements Type<Tuple>{
 	
 	public final Type<?>[] toArray(){
 		return m_Types.clone();
+	}
+	
+
+	@Override
+	public boolean isBoxableType() {
+		return true;
+	}
+
+	@Override
+	public BoxableType<Tuple> asBoxableType() {
+		return this;
+	}
+
+	@Override
+	public boolean isVarArgsType() {
+		return false;
+	}
+
+	@Override
+	public VarArgsType<Tuple> asVarArgsType() {
+		return null;
+	}
+
+	@Override
+	public Deque<Type<?>> unbox() {
+		return ArrayUtils.toDeque(m_Types);
+	}
+
+	@Override
+	public Deque<Object> unbox(Object obj) {
+		Tuple t = this.cast(obj);
+		return t.unbox();
+	}
+
+	@Override
+	public Tuple box(Deque<Object> objs) {
+		return new Tuple(Types.extract(m_Types, objs));
 	}
 	
 	@Override

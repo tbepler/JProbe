@@ -2,7 +2,9 @@ package jprobe.framework.model.tuple;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Deque;
 
+import util.ArrayUtils;
 import jprobe.framework.model.types.TupleClass;
 import jprobe.framework.model.types.Typed;
 
@@ -34,6 +36,10 @@ public class Tuple implements Typed<Tuple>, Serializable{
 	
 	public final Object[] toArray(){
 		return m_Vals.clone();
+	}
+	
+	public final Deque<Object> unbox(){
+		return ArrayUtils.toDeque(m_Vals);
 	}
 	
 	@Override
