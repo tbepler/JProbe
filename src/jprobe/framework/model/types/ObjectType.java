@@ -1,8 +1,10 @@
 package jprobe.framework.model.types;
 
 import java.util.Deque;
+
 import jprobe.framework.model.function.Procedure;
 import jprobe.framework.model.tuple.Tuple;
+import jprobe.framework.model.tuple.TupleType;
 
 public class ObjectType<T> implements Type<T> {
 	private static final long serialVersionUID = 1L;
@@ -109,8 +111,8 @@ public class ObjectType<T> implements Type<T> {
 	 * @return
 	 */
 	private boolean canUnwrap(Type<?> type){
-		if(type instanceof TupleClass){
-			return this.canUnwrap((TupleClass) type);
+		if(type instanceof TupleType){
+			return this.canUnwrap((TupleType) type);
 		}
 		if(type instanceof Signature){
 			return this.canUnwrap((Signature<?>) type);
@@ -143,7 +145,7 @@ public class ObjectType<T> implements Type<T> {
 	 * @param type
 	 * @return
 	 */
-	private boolean canUnwrap(TupleClass type){
+	private boolean canUnwrap(TupleType type){
 		return type.size() == 1 && this.isExtractableFrom(type.get(0));
 	}
 	

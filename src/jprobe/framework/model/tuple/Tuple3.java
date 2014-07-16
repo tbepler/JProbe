@@ -1,10 +1,20 @@
 package jprobe.framework.model.tuple;
 
+import jprobe.framework.model.types.Type;
+
 public class Tuple3<A,B,C> extends Tuple{
 	private static final long serialVersionUID = 1L;
 	
+	private final Tuple3Type<A,B,C> m_Type;
+	
 	public Tuple3(A first, B second, C third){
-		super(Tuples.newTupleType(first, second, third), first, second, third);
+		super(first, second, third);
+		m_Type = Tuples.newTupleType(first, second, third);
+	}
+	
+	Tuple3(Tuple3Type<A,B,C> type, A a, B b, C c){
+		super(a,b,c);
+		m_Type = type;
 	}
 	
 	public Tuple3(Tuple2<A,B> tuple2, C third){
@@ -25,6 +35,11 @@ public class Tuple3<A,B,C> extends Tuple{
 	
 	public C third(){
 		return this.get(2);
+	}
+
+	@Override
+	public Type<? extends Tuple> getType() {
+		return m_Type;
 	}
 	
 }

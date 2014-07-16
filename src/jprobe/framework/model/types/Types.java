@@ -3,6 +3,8 @@ package jprobe.framework.model.types;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import jprobe.framework.model.tuple.TupleType;
+
 public enum Types {
 	
 	CLASS,
@@ -38,8 +40,8 @@ public enum Types {
 		return new Signature<T>(returnType, params);
 	}
 	
-	public static TupleClass asTupleType(Type<?> ... types){
-		return new TupleClass(types);
+	public static TupleType asTupleType(Type<?> ... types){
+		return new TupleType(types);
 	}
 	
 	public static <T> Deque<Type<? extends T>> typesOf(Deque<? extends T> objs){

@@ -5,23 +5,16 @@ import java.util.Arrays;
 import java.util.Deque;
 
 import util.ArrayUtils;
-import jprobe.framework.model.types.TupleClass;
 import jprobe.framework.model.types.Typed;
 
-public class Tuple implements Typed<Tuple>, Serializable{
+public abstract class Tuple implements Typed<Tuple>, Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private final Object[] m_Vals;
-	private final TupleClass<?> m_Type;
 	private final int m_Hash;
 	
-	public Tuple(Object ... values){
-		this(new TupleClass<Tuple>(values), values);
-	}
-	
-	protected Tuple(TupleClass<?> type, Object ... values){
+	protected Tuple(Object ... values){
 		m_Vals = values.clone();
-		m_Type = type;
 		m_Hash = Arrays.hashCode(m_Vals);
 	}
 	
@@ -32,10 +25,6 @@ public class Tuple implements Typed<Tuple>, Serializable{
 	@SuppressWarnings("unchecked")
 	public final <U> U get(int index){
 		return (U) m_Vals[index];
-	}
-	
-	public final TupleClass<?> getType(){
-		return m_Type;
 	}
 	
 	public final Object[] toArray(){

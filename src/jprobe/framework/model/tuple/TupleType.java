@@ -1,26 +1,27 @@
-package jprobe.framework.model.types;
+package jprobe.framework.model.tuple;
 
 import java.util.Arrays;
 import java.util.Deque;
 
-import util.ArrayUtils;
-import jprobe.framework.model.function.Procedure;
-import jprobe.framework.model.tuple.Tuple;
+import jprobe.framework.model.types.Type;
+import jprobe.framework.model.types.Types;
 
-public class TupleClass<T extends Tuple> implements Type<T>{
+public abstract class TupleType<T extends Tuple> implements Type<T>{
 	private static final long serialVersionUID = 1L;
 	
 	private final Type<?>[] m_Types;
 	private final int m_Hash;
 	
-	public TupleClass(Type<?> ... types){
+	public TupleType(Type<?> ... types){
 		m_Types = types.clone();
 		m_Hash = this.computeHash();
 	}
 	
-	public TupleClass(Object ... objs){
+	public TupleType(Object ... objs){
 		this(Types.typesOf(objs));
 	}
+	
+	public abstract T newInstance(Object ... objs);
 	
 	private int computeHash(){
 		return Arrays.hashCode(m_Types);
@@ -30,8 +31,8 @@ public class TupleClass<T extends Tuple> implements Type<T>{
 		return m_Types.length;
 	}
 	
-	public final Type<?> get(int index){
-		return m_Types[index];
+	public final <U> Type<? extends U> get(int index){
+		return (Type<? extends U>) m_Types[index];
 	}
 	
 	public final Type<?>[] toArray(){
@@ -42,8 +43,8 @@ public class TupleClass<T extends Tuple> implements Type<T>{
 	public final boolean isAssignableFrom(Type<?> type){
 		if(type == null) return false;
 		if(type == this) return true;
-		if(type instanceof TupleClass){
-			TupleClass<?> clazz = (TupleClass<?>) type;
+		if(type instanceof TupleType){
+			TupleType<?> clazz = (TupleType<?>) type;
 			return Types.isAssignableFrom(m_Types, clazz.m_Types);
 		}
 		return false;
@@ -57,12 +58,12 @@ public class TupleClass<T extends Tuple> implements Type<T>{
 	}
 	
 	@Override
-	public Tuple cast(Object obj){
+	public T cast(Object obj){
 		if(obj == null) return null;
 		if(this.isInstance(obj)){
-			return (Tuple) obj;
+			return (T) obj;
 		}
-		throw new ClassCastException("Object: "+obj+" of type: "+type+" cannot be cast to type: "+this);
+		throw new ClassCastException("Object: "+obj+" of type: "+Types.typeOf(obj)+" cannot be cast to type: "+this);
 	}
 	
 	@Override
@@ -74,8 +75,8 @@ public class TupleClass<T extends Tuple> implements Type<T>{
 	public final boolean equals(Object o){
 		if(o == null) return false;
 		if(o == this) return true;
-		if(o instanceof TupleClass){
-			TupleClass other = (TupleClass) o;
+		if(o instanceof TupleType){
+			TupleType<?> other = (TupleType<?>) o;
 			if(m_Types.length == other.m_Types.length){
 				for(int i=0; i<m_Types.length; ++i){
 					if(!equals(m_Types[i], other.m_Types[i])){
@@ -117,29 +118,34 @@ public class TupleClass<T extends Tuple> implements Type<T>{
 	}
 
 	@Override
-	public int boxSize() {
-		return m_Types.length;
-	}
-
-	@Override
 	public Type<?>[] unbox() {
 		return m_Types.clone();
 	}
 
 	@Override
-	public Object[] unbox(Tuple obj) {
+	public Object[] unbox(T obj) {
 		return obj.toArray();
 	}
 
 	@Override
-	public Tuple box(Object[] objs) {
-		return new Tuple();
+	public T box(Deque<Object> objs) {
+		Object[] array = new Object[this.size()];
+		for(int i=0; i<array.length; ++i){
+			array[i] = objs.pop();
+		}
+		return this.newInstance(array);
 	}
 
 	@Override
-	public boolean canBox(Type<?>[] types) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean canBox(Deque<Type<?>> types) {
+		if(types.size() < this.size()){
+			return false;
+		}
+		Type<?>[] array = new Type<?>[this.size()];
+		for(int i=0; i<array.length; ++i){
+			array[i] = types.pop();
+		}
+		return Types.isAssignableFrom(m_Types, array);
 	}
 
 	

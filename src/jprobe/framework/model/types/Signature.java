@@ -18,7 +18,7 @@ public final class Signature implements Type<Procedure<?>>{
 	}
 	
 	private int computeHash(){
-		return Arrays.hashCode(m_Param, m_ReturnType);
+		return Arrays.hashCode(new Object[]{m_Param, m_ReturnType});
 	}
 	
 	public Type<?> getParameterType(){
