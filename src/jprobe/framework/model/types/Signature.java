@@ -1,165 +1,87 @@
 package jprobe.framework.model.types;
 
+import java.util.Arrays;
 import java.util.Deque;
 
 import jprobe.framework.model.function.Procedure;
 
-public final class Signature<R> implements Type<Procedure<? extends R>>{
+public final class Signature implements Type<Procedure<?>>{
 	private static final long serialVersionUID = 1L;
+	private final Type<?> m_Param;
+	private final Type<?> m_ReturnType;
+	private final int m_Hash;
 	
-	public static Signature<?> asSignature(Type<?> type){
-		if(type instanceof Signature){
-			return (Signature<?>) type;
-		}
-		return Types.asSignature(type);
-	}
-	
-	private final TupleClass m_Params;
-	private final Type<? extends R> m_ReturnType;
-	
-	public Signature(Type<? extends R> returnType, Type<?> ... params){
+	public Signature(Type<?> param, Type<?> returnType){
 		m_ReturnType = returnType;
-		m_Params = Types.asTupleType(params);
+		m_Param = param;
+		m_Hash = this.computeHash();
 	}
 	
-	public Type<?>[] getParameterTypes(){
-		return m_Params.toArray();
+	private int computeHash(){
+		return Arrays.hashCode(m_Param, m_ReturnType);
 	}
 	
-	public Type<?> getParameterType(int index){
-		return m_Params.get(index);
+	public Type<?> getParameterType(){
+		return m_Param;
 	}
 	
-	public int size(){
-		return m_Params.size();
-	}
-	
-	/**
-	 * Returns the {@link Type} of this signature's return type
-	 * 
-	 * @return - type of this signatures return value
-	 */
-	public Type<? extends R> getReturnType(){
+	public Type<?> getReturnType(){
 		return m_ReturnType;
 	}
 	
 	@Override
-	public Procedure<? extends R> extract(Deque<Object> objs) {
-		if(objs == null || objs.isEmpty()){
-			throw new RuntimeException("Unable to extract type: "+this+" from an empty deque.");
-		}
-		try{
-			Procedure<? extends R> extracted = this.extract(objs.peek());
-			objs.poll();
-			return extracted;
-		}catch(RuntimeException e){
-			return new AdapterOperation<R>(m_ReturnType.extract(objs), this);
-		}
-	}
-	
-	public Procedure<? extends R> extract(Object obj){
-		if(obj == null) return null;
-		Type<?> type = Types.typeOf(obj);
-		if(this.isExtractableFrom(type)){
-			if(obj instanceof Procedure){
-				Procedure<?> proc = (Procedure<?>) obj;
-				return new ProcedureAdapter<R>(proc, this);
-			}
-			return new AdapterOperation<R>(m_ReturnType.extract(obj),this);
-		}
-		throw new ClassCastException("Object "+obj+" of type: "+type+" cannot be cast to type: "+this);
-	}
-
-	@Override
-	public boolean isExtractableFrom(Deque<Type<?>> types) {
-		if(types == null || types.isEmpty()) return false;
-		Type<?> head = types.poll();
-		if(this.isExtractableFrom(head)){
-			return true;
-		}
-		types.push(head);
-		//if this signature doesn't take parameters, then check if
-		//the types could be boxed into this signature's return type
-		return m_Params.size() == 0 && m_ReturnType.isExtractableFrom(types);
-	}
-	
-	@Override
-	public boolean isExtractableFrom(Type<?> type){
-		if(type == null) return false;
-		if(type == this) return true;
-		if(type instanceof Signature){
-			Signature<?> other = (Signature<?>) type;
-			if(this.getReturnType().isExtractableFrom(other.getReturnType())){
-				return other.m_Params.isExtractableFrom(m_Params);
-			}
-			return false;
-		}
-		//if this doesn't require params, check if the given type can be
-		//boxed into this signature's return type
-		return m_Params.size() == 0 && m_ReturnType.isExtractableFrom(type);
-	}
-
-	@Override
-	public boolean canExtract(Deque<Object> objs) {
-		Deque<Type<?>> types = Types.typesOf(objs);
-		return this.isExtractableFrom(types);
-	}
-	
-	@Override
-	public boolean canExtract(Object obj){
-		Type<?> type = Types.typeOf(obj);
-		return this.isExtractableFrom(type);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Procedure<? extends R> cast(Object obj) {
-		if(obj == null) return null;
-		Type<?> type = Types.typeOf(obj);
-		if(this.isAssignableFrom(type)){
-			return (Procedure<? extends R>) obj;
-		}
-		throw new ClassCastException("Object "+obj+" of type: "+type+" cannot be cast to type: "+this);
-	}
-		
-	@Override
 	public String toString(){
-		StringBuilder builder = new StringBuilder();
-		builder.append(m_Params).append(" => ");
-		builder.append(this.getReturnType());
-		return builder.toString();
+		return m_Param + " -> " + m_ReturnType;
 	}
 	
 	@Override
-	public final boolean isAssignableFrom(Type<?> type){
-		if(type == null) return false;
-		if(type == this) return true;
-		if(type instanceof Signature){
-			Signature<?> other = (Signature<?>) type;
-			if(this.getReturnType().isAssignableFrom(other.getReturnType())){
-				return other.m_Params.isAssignableFrom(m_Params);
-			}
+	public int hashCode(){
+		return m_Hash;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o == null) return false;
+		if(o == this) return true;
+		if(o instanceof Signature){
+			Signature other = (Signature) o;
+			return m_Param.equals(other.m_Param) && m_ReturnType.equals(other.m_ReturnType);
 		}
 		return false;
 	}
-
+	
 	@Override
-	public boolean isInstance(Object obj) {
-		Type<?> type = Types.typeOf(obj);
+	public boolean isAssignableFrom(Type<?> t){
+		if(t == null) return false;
+		if(t == this) return true;
+		if(t instanceof Signature){
+			Signature other = (Signature) t;
+			return other.m_Param.isAssignableFrom(m_Param) && m_ReturnType.isAssignableFrom(other.m_ReturnType);
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean isInstance(Object o){
+		if(o == null) return false;
+		Type<?> type = Types.typeOf(o);
 		return this.isAssignableFrom(type);
 	}
 	
 	@Override
-	public final boolean equals(Object o){
-		if(o == null) return false;
-		if(o == this) return true;
-		if(o instanceof Signature){
-			Signature<?> other = (Signature<?>) o;
-			if(this.getReturnType().equals(other.getReturnType())){
-				return other.m_Params.equals(m_Params);
+	public Procedure<?> cast(Object o){
+		if(o == null) return null;
+		if(o instanceof Procedure){
+			Procedure<?> other = (Procedure<?>) o;
+			if(this.isInstance(other)){
+				return other;
 			}
 		}
-		return false;
+		throw new TypeCastException("Object: "+o+" of type: "+Types.typeOf(o)+" cannot be cast to type: "+this);
 	}
-
+	
+	
+	
+	
+	
 }

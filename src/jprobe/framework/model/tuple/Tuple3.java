@@ -4,7 +4,7 @@ public class Tuple3<A,B,C> extends Tuple{
 	private static final long serialVersionUID = 1L;
 	
 	public Tuple3(A first, B second, C third){
-		super(first, second, third);
+		super(Tuples.newTupleType(first, second, third), first, second, third);
 	}
 	
 	public Tuple3(Tuple2<A,B> tuple2, C third){

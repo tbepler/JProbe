@@ -12,12 +12,16 @@ public class Tuple implements Typed<Tuple>, Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private final Object[] m_Vals;
-	private final TupleClass m_Type;
+	private final TupleClass<?> m_Type;
 	private final int m_Hash;
 	
 	public Tuple(Object ... values){
+		this(new TupleClass<Tuple>(values), values);
+	}
+	
+	protected Tuple(TupleClass<?> type, Object ... values){
 		m_Vals = values.clone();
-		m_Type = new TupleClass(m_Vals);
+		m_Type = type;
 		m_Hash = Arrays.hashCode(m_Vals);
 	}
 	
@@ -30,7 +34,7 @@ public class Tuple implements Typed<Tuple>, Serializable{
 		return (U) m_Vals[index];
 	}
 	
-	public final TupleClass getType(){
+	public final TupleClass<?> getType(){
 		return m_Type;
 	}
 	
