@@ -56,33 +56,29 @@ public class Void implements Type<Void>{
 	}
 
 	@Override
-	public Void extract(Deque<Object> objs) {
-		return this;
+	public boolean isBoxable() {
+		return false;
 	}
 
 	@Override
-	public boolean isExtractableFrom(Deque<Type<?>> types) {
-		return true;
+	public Type<?>[] unbox() {
+		return null;
 	}
 
 	@Override
-	public boolean canExtract(Deque<Object> objs) {
-		return true;
+	public Object[] unbox(Void obj) {
+		return null;
 	}
 
 	@Override
-	public Void extract(Object obj) {
-		return this;
+	public boolean canBox(Deque<Type<?>> types) {
+		return false;
 	}
 
 	@Override
-	public boolean isExtractableFrom(Type<?> type) {
-		return true;
+	public Void box(Deque<Object> objs) {
+		return null;
 	}
 
-	@Override
-	public boolean canExtract(Object obj) {
-		return true;
-	}
 
 }

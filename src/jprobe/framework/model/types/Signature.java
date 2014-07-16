@@ -7,6 +7,7 @@ import jprobe.framework.model.function.Procedure;
 
 public final class Signature implements Type<Procedure<?>>{
 	private static final long serialVersionUID = 1L;
+	
 	private final Type<?> m_Param;
 	private final Type<?> m_ReturnType;
 	private final int m_Hash;
@@ -78,6 +79,31 @@ public final class Signature implements Type<Procedure<?>>{
 			}
 		}
 		throw new TypeCastException("Object: "+o+" of type: "+Types.typeOf(o)+" cannot be cast to type: "+this);
+	}
+
+	@Override
+	public boolean isBoxable() {
+		return false;
+	}
+
+	@Override
+	public Type<?>[] unbox() {
+		return null;
+	}
+
+	@Override
+	public Object[] unbox(Procedure<?> obj) {
+		return null;
+	}
+
+	@Override
+	public boolean canBox(Deque<Type<?>> types) {
+		return false;
+	}
+
+	@Override
+	public Procedure<?> box(Deque<Object> objs) {
+		return null;
 	}
 	
 	

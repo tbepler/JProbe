@@ -6,7 +6,7 @@ import java.util.Deque;
 import jprobe.framework.model.types.Type;
 import jprobe.framework.model.types.Types;
 
-public abstract class TupleType<T extends Tuple> implements Type<T>{
+public abstract class TupleType<T extends Tuple> implements Type<Tuple>{
 	private static final long serialVersionUID = 1L;
 	
 	private final Type<?>[] m_Types;
@@ -123,7 +123,7 @@ public abstract class TupleType<T extends Tuple> implements Type<T>{
 	}
 
 	@Override
-	public Object[] unbox(T obj) {
+	public Object[] unbox(Tuple obj) {
 		return obj.toArray();
 	}
 

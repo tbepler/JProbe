@@ -1,7 +1,5 @@
 package jprobe.framework.model.tuple;
 
-import jprobe.framework.model.types.Type;
-
 public class Tuple3<A,B,C> extends Tuple{
 	private static final long serialVersionUID = 1L;
 	
@@ -38,7 +36,7 @@ public class Tuple3<A,B,C> extends Tuple{
 	}
 
 	@Override
-	public Type<? extends Tuple> getType() {
+	public Tuple3Type<A,B,C> getType() {
 		return m_Type;
 	}
 	
