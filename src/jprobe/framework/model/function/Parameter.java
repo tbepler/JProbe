@@ -19,7 +19,7 @@ public abstract class Parameter<R> implements Serializable{
 	 * if Null - this parameter is required
 	 * if not Null - this parameter is optional
 	 */
-	public abstract Function<? extends R> getDefaultValue();
+	public abstract R getDefaultValue();
 	
 	public abstract boolean isOptional();
 	

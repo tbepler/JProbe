@@ -2,7 +2,7 @@ package jprobe.system.model.test;
 
 import jprobe.framework.model.function.Function;
 import jprobe.framework.model.function.Parameter;
-import jprobe.framework.model.types.Signature;
+import jprobe.framework.model.function.Signature;
 import jprobe.system.model.FixedValueFunction;
 
 public class StubParameter<T> extends Parameter<T> {

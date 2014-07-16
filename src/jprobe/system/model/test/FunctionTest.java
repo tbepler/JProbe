@@ -10,8 +10,8 @@ import jprobe.framework.model.function.FunctionFactory;
 import jprobe.framework.model.function.InvocationException;
 import jprobe.framework.model.function.Parameter;
 import jprobe.framework.model.function.Procedure;
+import jprobe.framework.model.function.Signature;
 import jprobe.framework.model.function.TypeMismatchException;
-import jprobe.framework.model.types.Signature;
 import jprobe.system.model.FixedValueFunction;
 import jprobe.system.model.FunctionFactoryImpl;
 

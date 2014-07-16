@@ -2,8 +2,8 @@ package jprobe.system.model;
 
 import jprobe.framework.model.function.InvocationException;
 import jprobe.framework.model.function.Procedure;
+import jprobe.framework.model.function.Signature;
 import jprobe.framework.model.function.TypeMismatchException;
-import jprobe.framework.model.types.Signature;
 
 public class DerivedFunction<R> implements Procedure<R>{
 	private static final long serialVersionUID = 1L;

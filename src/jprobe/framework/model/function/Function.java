@@ -1,23 +1,16 @@
 package jprobe.framework.model.function;
 
+import java.io.Serializable;
 
-public interface Function<R> extends Procedure<R>{
+import jprobe.framework.model.types.Typed;
+
+
+public interface Function<P,R> extends Typed<Function<P,R>>, Serializable{
 	
-	/*
-	 * One parameter - one function
-	 * 
-	 */
-	public <U> Function<R> putArgument(int paramIndex, Function<U> arg)
-			throws TypeMismatchException;
+	@Override
+	public Signature<P,R> getType();
 	
-	public Function<R> putArguments(int[] indices, Function<?>[] args)
-			throws TypeMismatchException;
-	
-	public <U> Function<R> putArgument(int paramIndex, U arg)
-			throws TypeMismatchException;
-	
-	public Function<R> putArguments(int[] indices, Object[] args)
-			throws TypeMismatchException;
+	public R apply(P argument);
 	
 
 }

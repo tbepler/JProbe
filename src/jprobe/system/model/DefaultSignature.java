@@ -1,7 +1,7 @@
 package jprobe.system.model;
 
 import util.tuple.TupleClass;
-import jprobe.framework.model.types.Signature;
+import jprobe.framework.model.function.Signature;
 
 public class DefaultSignature extends Signature{
 	private static final long serialVersionUID = 1L;
