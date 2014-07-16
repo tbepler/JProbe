@@ -5,9 +5,53 @@ import java.util.Deque;
 
 public interface Type<T> extends Serializable{
 	
-	public boolean isBoxableType();
-	public BoxableType<T> asBoxableType();
+	/**
+	 * Tests if this type supports boxing and unboxing.
+	 * @return True if boxing/unboxing of this type is supported.
+	 */
+	public boolean isBoxable();
 	
+	/**
+	 * Returns the number of elements this type boxes, or -1
+	 * if boxing is unsupported.
+	 * @return
+	 */
+	public int boxSize();
+	
+	/**
+	 * Unboxes this type into its enclosed types.
+	 * @return Array of unboxed types or null if boxing is
+	 * not supported by this type
+	 */
+	public Type<?>[] unbox();
+	
+	/**
+	 * Unboxes an object of this type into its enclosed
+	 * objects.
+	 * @param obj - object to unbox
+	 * @return objects unboxed from the given object or
+	 * null if boxing is unsupported by this type
+	 */
+	public Object[] unbox(T obj);
+	
+	/**
+	 * Tests whether this type could box a deque of objects
+	 * with the given types.
+	 * @param types - array of types to test
+	 * @return True if this type could box an array of objects
+	 * with the given types
+	 */
+	public boolean canBox(Deque<Type<?>> types);
+	
+	/**
+	 * Consumes objects from the given deque and boxes them
+	 * into an object of this type.
+	 * @param objs - objects to box
+	 * @return - object of this type that boxes the given
+	 * objects or null if boxing is not supported by this 
+	 * type
+	 */
+	public T box(Deque<Object> objs);
 
 	/**
 	 * Extracts an object of this type from the given objects,
