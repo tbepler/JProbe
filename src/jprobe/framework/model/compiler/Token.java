@@ -12,4 +12,14 @@ public class Token {
 		return m_Str;
 	}
 	
+	public int start(){
+		//TODO
+		return 0;
+	}
+	
+	public int length(){
+		//TODO
+		return 0;
+	}
+	
 }

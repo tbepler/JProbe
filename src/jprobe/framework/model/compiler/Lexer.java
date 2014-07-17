@@ -34,7 +34,7 @@ public class Lexer {
 	public List<Token> analyze(String s){
 		List<Token> tokens = new ArrayList<Token>();
 		Matcher tokenMatcher = this.tokenPattern().matcher(s);
-		System.out.println(this.tokenPattern().pattern());
+		//System.out.println(this.tokenPattern().pattern());
 		while(tokenMatcher.find()){
 			tokens.add(this.tokenize(tokenMatcher.group()));
 		}

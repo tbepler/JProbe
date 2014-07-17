@@ -67,14 +67,14 @@ public class TestLexer extends junit.framework.TestCase{
 	private final Lexer lexer = new Lexer(Arrays.asList(stringTokenizer, numericTokenizer, identifierTokenizer));
 	
 	public void testLexer(){
-		String s = "_identifier 0.0001 \" a string\\\" 56 literal\"  ";
+		String s = "_identifier 0.0001 \" a string\\\" 56 literal\"  -5 ";
 		List<Token> tokens = lexer.analyze(s);
 		
 		for(Token t : tokens){
 			System.out.println(t.getString());
 		}
 		
-		assertEquals(3, tokens.size());
+		assertEquals(4, tokens.size());
 		
 		Token token0 = tokens.get(0);
 		assertTrue(Identifier.class.isInstance(token0));
@@ -87,6 +87,10 @@ public class TestLexer extends junit.framework.TestCase{
 		Token token2 = tokens.get(2);
 		assertTrue(StringLiteral.class.isInstance(token2));
 		assertEquals("\" a string\\\" 56 literal\"", token2.getString());
+		
+		Token token3 = tokens.get(3);
+		assertTrue(NumericLiteral.class.isInstance(token3));
+		assertEquals("-5", token3.getString());
 		
 	}
 	
