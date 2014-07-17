@@ -1,3 +1,6 @@
 /bin
 felix-cache/**
 distributable/felix-cache/**
+/.settings
+/.externalToolBuilders
+.classpath
