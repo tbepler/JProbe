@@ -1,7 +1,7 @@
 package jprobe.framework.model.types;
 
 import java.io.Serializable;
-import java.util.Deque;
+import jprobe.framework.model.Pointer;
 
 public interface Type<T> extends Serializable{
 	
@@ -10,6 +10,13 @@ public interface Type<T> extends Serializable{
 	 * @return True if boxing/unboxing of this type is supported.
 	 */
 	public boolean isBoxable();
+	
+	/**
+	 * The size of the underlying types array boxed by
+	 * this type or -1 if boxing is not supported.
+	 * @return
+	 */
+	public int size();
 	
 	/**
 	 * Unboxes this type into its enclosed types.
@@ -25,7 +32,7 @@ public interface Type<T> extends Serializable{
 	 * @return objects unboxed from the given object or
 	 * null if boxing is unsupported by this type
 	 */
-	public Object[] unbox(T obj);
+	public Pointer[] unbox(T obj);
 	
 	/**
 	 * Tests whether this type could box a deque of objects
@@ -34,7 +41,9 @@ public interface Type<T> extends Serializable{
 	 * @return True if this type could box an array of objects
 	 * with the given types
 	 */
-	public boolean canBox(Deque<Type<?>> types);
+	public boolean canBox(Type<?>[] types);
+	
+	public Type<?> box(Type<?>[] types);
 	
 	/**
 	 * Consumes objects from the given deque and boxes them
@@ -44,7 +53,7 @@ public interface Type<T> extends Serializable{
 	 * objects or null if boxing is not supported by this 
 	 * type
 	 */
-	public T box(Deque<Object> objs);
+	public T box(Pointer[] objs);
 	
 	public T cast(Object obj);
 	
