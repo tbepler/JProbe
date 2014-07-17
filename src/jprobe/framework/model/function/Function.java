@@ -10,7 +10,7 @@ public interface Function<P,R> extends Typed<Function<P,R>>, Serializable{
 	@Override
 	public Signature<P,R> getType();
 	
-	public R apply(P argument);
+	public R apply(Pointer<P> argument);
 	
 
 }
