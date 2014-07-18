@@ -4,6 +4,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
+import jprobe.framework.model.compiler.lexer.Token;
+
 public class Parser {
 	
 	private final Grammar m_Grammar;

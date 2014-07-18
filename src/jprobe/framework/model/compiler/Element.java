@@ -3,6 +3,8 @@ package jprobe.framework.model.compiler;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import jprobe.framework.model.compiler.lexer.Token;
+
 public final class Element implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

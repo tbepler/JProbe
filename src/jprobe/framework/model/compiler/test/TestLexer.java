@@ -2,101 +2,63 @@ package jprobe.framework.model.compiler.test;
 
 import java.util.List;
 
-import jprobe.framework.model.compiler.Lexer;
-import jprobe.framework.model.compiler.Token;
-import jprobe.framework.model.compiler.Tokenizer;
+import jprobe.framework.model.compiler.lexer.Lexer;
+import jprobe.framework.model.compiler.lexer.Token;
+import jprobe.framework.model.compiler.lexer.TokenTypes;
 
 public class TestLexer extends junit.framework.TestCase{
 	
-	private enum Type{
-		ID,
-		NUM,
-		STR;
-	}
-	
-	private static class Identifier extends Token<Type>{
-
-		public Identifier(String s) {
-			super(s,Type.ID);
-		}
-		
-	}
-	
-	private static class NumericLiteral extends Token<Type>{
-
-		public NumericLiteral(String s) {
-			super(s,Type.NUM);
-		}
-		
-	}
-	
-	private static class StringLiteral extends Token<Type>{
-
-		public StringLiteral(String s) {
-			super(s,Type.STR);
-		}
-		
-	}
-	
-	private final String identifierRegex = "[a-zA-Z_]+[a-zA-Z0-9_]*";
-	private final Tokenizer<Type> identifierTokenizer = new Tokenizer<Type>(identifierRegex){
-
-		@Override
-		public Token<Type> tokenize(String s) {
-			return new Identifier(s);
-		}
-		
-	};
-	
-	private final String numericRegex = "-?[0-9]+(\\.[0-9]+)?";
-	private final Tokenizer<Type> numericTokenizer = new Tokenizer<Type>(numericRegex){
-
-		@Override
-		public Token<Type> tokenize(String s) {
-			return new NumericLiteral(s);
-		}
-		
-	};
-	
-	//private final String stringRegex = "([\"\'])(?:(?=(\\\\?))\\2.)*?\\1";
-	private final String stringRegex = "\"(?:\\\\\"|[^\"])*?\"";
-	private final Tokenizer<Type> stringTokenizer = new Tokenizer<Type>(stringRegex){
-
-		@Override
-		public Token<Type> tokenize(String s) {
-			return new StringLiteral(s);
-		}
-		
-	};
-	
-	@SuppressWarnings("unchecked")
-	private final Lexer<Type> lexer = new Lexer<Type>(stringTokenizer, numericTokenizer, identifierTokenizer);
+	private final Lexer<TokenTypes> lexer = new Lexer<TokenTypes>(TokenTypes.values());
 	
 	public void testLexer(){
-		String s = "_identifier 0.0001 \" a string\\\" 56 literal\"  -5 ";
-		List<Token<Type>> tokens = lexer.lex(s);
+		String s = "_identifier 0.0001 \" a string\\\" 56 literal\"  -5  (a,b) ; ";
+		List<Token<TokenTypes>> tokens = lexer.lex(s);
 		
-		for(Token<Type> t : tokens){
+		for(Token<TokenTypes> t : tokens){
 			System.out.println(t.text());
 		}
 		
-		assertEquals(4, tokens.size());
+		assertEquals(10, tokens.size());
 		
-		Token<Type> token0 = tokens.get(0);
-		assertTrue(Identifier.class.isInstance(token0));
+		Token<TokenTypes> token0 = tokens.get(0);
+		assertEquals(TokenTypes.ID, token0.id());
 		assertEquals("_identifier", token0.text());
 		
-		Token<Type> token1 = tokens.get(1);
-		assertTrue(NumericLiteral.class.isInstance(token1));
+		Token<TokenTypes> token1 = tokens.get(1);
+		assertEquals(TokenTypes.NUM, token1.id());
 		assertEquals("0.0001", token1.text());
 		
-		Token<Type> token2 = tokens.get(2);
-		assertTrue(StringLiteral.class.isInstance(token2));
+		Token<TokenTypes> token2 = tokens.get(2);
+		assertEquals(TokenTypes.STR, token2.id());
 		assertEquals("\" a string\\\" 56 literal\"", token2.text());
 		
-		Token<Type> token3 = tokens.get(3);
-		assertTrue(NumericLiteral.class.isInstance(token3));
+		Token<TokenTypes> token3 = tokens.get(3);
+		assertEquals(TokenTypes.NUM, token3.id());
 		assertEquals("-5", token3.text());
+		
+		Token<TokenTypes> token = tokens.get(4);
+		assertEquals(TokenTypes.L_PAREN, token.id());
+		assertEquals("(", token.text());
+		
+		token = tokens.get(5);
+		assertEquals(TokenTypes.ID, token.id());
+		assertEquals("a", token.text());
+		
+		token = tokens.get(6);
+		assertEquals(TokenTypes.COMMA, token.id());
+		assertEquals(",", token.text());
+		
+		token = tokens.get(7);
+		assertEquals(TokenTypes.ID, token.id());
+		assertEquals("b", token.text());
+		
+		token = tokens.get(8);
+		assertEquals(TokenTypes.R_PAREN, token.id());
+		assertEquals(")", token.text());
+		
+		token = tokens.get(9);
+		assertEquals(TokenTypes.SEMICOLON, token.id());
+		assertEquals(";", token.text());
 		
 	}
 	

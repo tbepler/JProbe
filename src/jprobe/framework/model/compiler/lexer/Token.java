@@ -1,4 +1,4 @@
-package jprobe.framework.model.compiler;
+package jprobe.framework.model.compiler.lexer;
 
 public class Token<T> {
 	
