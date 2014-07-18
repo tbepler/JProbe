@@ -2,7 +2,7 @@ package jprobe.framework.model.compiler;
 
 import java.util.regex.Pattern;
 
-public abstract class Tokenizer {
+public abstract class Tokenizer<T> {
 	
 	private final Pattern m_Regex;
 	
@@ -18,6 +18,6 @@ public abstract class Tokenizer {
 		return m_Regex;
 	}
 	
-	abstract public Token tokenize(String s);
+	abstract public Token<T> tokenize(String s);
 	
 }

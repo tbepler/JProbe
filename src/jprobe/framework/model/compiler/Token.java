@@ -1,25 +1,21 @@
 package jprobe.framework.model.compiler;
 
-public class Token {
+public class Token<T> {
 	
 	private String m_Str;
+	private T m_Id;
 	
-	public Token(String s){
+	public Token(String s, T id){
 		m_Str = s;
+		m_Id = id;
 	}
 	
-	public String getString(){
+	public String text(){
 		return m_Str;
 	}
 	
-	public int start(){
-		//TODO
-		return 0;
-	}
-	
-	public int length(){
-		//TODO
-		return 0;
+	public T id(){
+		return m_Id;
 	}
 	
 }
