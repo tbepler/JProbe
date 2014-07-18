@@ -1,13 +1,16 @@
 package jprobe.framework.model.compiler;
 
-import java.util.Deque;
+import java.util.Collection;
 
-public interface Grammar {
+public interface Grammar<S> extends Iterable<Production<S>>{
 	
-	public char statementTerminator();
+	public Collection<S> getTerminalSymbols();
 	
-	public boolean matches(Deque<Element> elems);
+	public boolean isTerminal(S symbol);
 	
-	public void reduce(Deque<Element> elems);
+	public Collection<Production<S>> getProductions(S leftHandSide);
+	
+	public Collection<Production<S>> getAllProductions();
+	
 	
 }

@@ -18,4 +18,9 @@ public class Token<T> {
 		return m_Id;
 	}
 	
+	@Override
+	public String toString(){
+		return m_Id.toString() + "("+m_Str+")";
+	}
+	
 }
