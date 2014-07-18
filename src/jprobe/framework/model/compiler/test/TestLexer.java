@@ -1,6 +1,9 @@
 package jprobe.framework.model.compiler.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Scanner;
 
 import jprobe.framework.model.compiler.lexer.Lexer;
 import jprobe.framework.model.compiler.lexer.Token;
@@ -8,17 +11,32 @@ import jprobe.framework.model.compiler.lexer.TokenTypes;
 
 public class TestLexer extends junit.framework.TestCase{
 	
+	private final String s = "_identifier 0.0001 \" a string\\\" 56 literal\"  -5  (a,b) ;   \"  ";
 	private final Lexer<TokenTypes> lexer = new Lexer<TokenTypes>(TokenTypes.values());
 	
-	public void testLexer(){
-		String s = "_identifier 0.0001 \" a string\\\" 56 literal\"  -5  (a,b) ; ";
+	public void testLexerString(){
 		List<Token<TokenTypes>> tokens = lexer.lex(s);
 		
-		for(Token<TokenTypes> t : tokens){
-			System.out.println(t.text());
-		}
+		checkTokens(tokens);
 		
-		assertEquals(10, tokens.size());
+	}
+	
+	public void testLexerScanner(){
+
+		List<Token<TokenTypes>> tokens = lexer.lex(new Scanner(s));
+		
+		checkTokens(tokens);
+	}
+	
+	public void testLexerInputStream() throws UnsupportedEncodingException{
+		
+		List<Token<TokenTypes>> tokens = lexer.lex(new ByteArrayInputStream(s.getBytes("UTF-8")));
+		
+		checkTokens(tokens);
+	}
+
+	private void checkTokens(List<Token<TokenTypes>> tokens) {
+		assertEquals(11, tokens.size());
 		
 		Token<TokenTypes> token0 = tokens.get(0);
 		assertEquals(TokenTypes.ID, token0.id());
@@ -60,6 +78,9 @@ public class TestLexer extends junit.framework.TestCase{
 		assertEquals(TokenTypes.SEMICOLON, token.id());
 		assertEquals(";", token.text());
 		
+		token = tokens.get(10);
+		assertEquals(TokenTypes.ERROR, token.id());
+		assertEquals("\"", token.text());
 	}
 	
 	
