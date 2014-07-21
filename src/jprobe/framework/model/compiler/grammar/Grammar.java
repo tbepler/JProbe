@@ -2,19 +2,21 @@ package jprobe.framework.model.compiler.grammar;
 
 import java.util.Collection;
 
-public interface Grammar<S> extends Iterable<Production<S>>{
+public interface Grammar<V> extends Iterable<Production<V>>{
 	
-	public Collection<S> getTerminalSymbols();
+	public Collection<V> getTerminalSymbols();
 	
-	public boolean isTerminal(S symbol);
+	public boolean isTerminal(Symbol<V> symbol);
 	
-	public Collection<Production<S>> getProductions(S leftHandSide);
+	public Collection<Production<V>> getProductions(Symbol<V> leftHandSide);
 	
-	public Collection<Production<S>> getAllProductions();
+	public Collection<Production<V>> getAllProductions();
 	
-	public Production<S> getStartProduction();
+	public Production<V> getStartProduction();
 	
-	public boolean isEOFSymbol(S symbol);
+	public boolean isEOFSymbol(Symbol<V> symbol);
+	
+	public Symbol<V> getEOFSymbol();
 	
 	
 }

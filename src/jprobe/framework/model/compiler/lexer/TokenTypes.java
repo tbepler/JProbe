@@ -2,6 +2,8 @@ package jprobe.framework.model.compiler.lexer;
 
 import java.util.regex.Pattern;
 
+import jprobe.framework.model.compiler.grammar.Tokenizer;
+
 public enum TokenTypes implements Tokenizer<TokenTypes>{
 	
 	ID( "[a-zA-Z_]+[a-zA-Z0-9_]*" , false),

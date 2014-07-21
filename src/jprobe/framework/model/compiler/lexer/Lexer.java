@@ -9,6 +9,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jprobe.framework.model.compiler.grammar.Tokenizer;
+
 public class Lexer<T> {
 	
 	private final Collection<Tokenizer<T>> m_Tokenizers;

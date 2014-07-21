@@ -14,9 +14,9 @@ import java.util.regex.Pattern;
 
 import jprobe.framework.model.compiler.grammar.Grammar;
 import jprobe.framework.model.compiler.grammar.Production;
+import jprobe.framework.model.compiler.grammar.Tokenizer;
 import jprobe.framework.model.compiler.lexer.Lexer;
 import jprobe.framework.model.compiler.lexer.Token;
-import jprobe.framework.model.compiler.lexer.Tokenizer;
 
 public class GrammarImport implements Grammar<String>{
 	

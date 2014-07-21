@@ -6,22 +6,17 @@ import jprobe.framework.model.compiler.grammar.Symbol;
 import jprobe.framework.model.compiler.grammar.implementation.ListUtil;
 import jprobe.framework.model.compiler.grammar.implementation.SabreVisitor;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.Expression;
-import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.Identifier;
+import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.CharLiteral;
 
-public class IdentifierExp extends Expression{
+public class CharExp extends Expression{
 	private static final long serialVersionUID = 1L;
 	
-	private static final List<Class<? extends Symbol<SabreVisitor>>> RHS =
-			ListUtil.<Class<? extends Symbol<SabreVisitor>>>asUnmodifiableList(Identifier.class);
+	private static final List<Class<? extends Symbol<SabreVisitor>>> RHS = 
+			ListUtil.<Class<? extends Symbol<SabreVisitor>>>asUnmodifiableList(CharLiteral.class);
 	
-	public Identifier id;
+	public CharLiteral c;
 	
-	public IdentifierExp(Identifier id){ this.id = id; }
-
-	@Override
-	public void accept(SabreVisitor visitor) {
-		visitor.visit(this);
-	}
+	public CharExp(CharLiteral c){ this.c = c; }
 
 	@Override
 	public List<Class<? extends Symbol<SabreVisitor>>> rightHandSide() {
@@ -31,8 +26,13 @@ public class IdentifierExp extends Expression{
 	@Override
 	public Expression reduce(Symbol<SabreVisitor>... symbols) {
 		assert(symbols.length == 1);
-		assert(symbols[0] instanceof Identifier);
-		return new IdentifierExp((Identifier) symbols[0]);
+		assert(symbols[0] instanceof CharLiteral);
+		return new CharExp((CharLiteral) symbols[0]);
+	}
+
+	@Override
+	public void accept(SabreVisitor visitor) {
+		visitor.visit(this);
 	}
 
 }

@@ -1,23 +1,19 @@
-package jprobe.framework.model.compiler.grammar.implementation.symbols.terminators;
+package jprobe.framework.model.compiler.grammar.implementation.symbols;
 
 import jprobe.framework.model.compiler.grammar.Symbol;
 import jprobe.framework.model.compiler.grammar.implementation.SabreVisitor;
 
-public class CharLiteral extends Symbol<SabreVisitor> {
+public class EOF extends Symbol<SabreVisitor>{
 	private static final long serialVersionUID = 1L;
-	
-	public String s;
-	
-	public CharLiteral(String s){ this.s = s; }
 
 	@Override
 	public void accept(SabreVisitor visitor) {
-		visitor.visit(this);
+		//do nothing
 	}
 
 	@Override
 	public Class<? extends Symbol<SabreVisitor>> getSymbolType() {
-		return CharLiteral.class;
+		return EOF.class;
 	}
-	
+
 }
