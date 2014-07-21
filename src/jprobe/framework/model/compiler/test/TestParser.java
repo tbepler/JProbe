@@ -273,97 +273,97 @@ public class TestParser extends junit.framework.TestCase{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE1 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(AUXIL_START_PRODUCTION),
-			new Item<String>(Rules2.S_VaE, EOF),
-			new Item<String>(Rules2.S_E, EOF),
-			new Item<String>(Rules2.E_V, EOF),
-			new Item<String>(Rules2.V_x, EOF),
-			new Item<String>(Rules2.V_x, "="),
-			new Item<String>(Rules2.V_sE, EOF),
-			new Item<String>(Rules2.V_sE, "=")
+	private static final State<String> STATE1 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(AUXIL_START_PRODUCTION, new ArrayList<String>()),
+			new Item<String>(Rules2.S_VaE, Arrays.asList(EOF)),
+			new Item<String>(Rules2.S_E, Arrays.asList(EOF)),
+			new Item<String>(Rules2.E_V, Arrays.asList(EOF)),
+			new Item<String>(Rules2.V_x, Arrays.asList(EOF)),
+			new Item<String>(Rules2.V_x, Arrays.asList("=")),
+			new Item<String>(Rules2.V_sE, Arrays.asList(EOF)),
+			new Item<String>(Rules2.V_sE, Arrays.asList("="))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE2 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(1,AUXIL_START_PRODUCTION)
+	private static final State<String> STATE2 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1,AUXIL_START_PRODUCTION, new ArrayList<String>())
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE3 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(1, Rules2.S_VaE, EOF),
-			new Item<String>(1, Rules2.E_V, EOF)
+	private static final State<String> STATE3 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.S_VaE, Arrays.asList(EOF)),
+			new Item<String>(1, Rules2.E_V, Arrays.asList(EOF))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE4 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(2, Rules2.S_VaE, EOF),
-			new Item<String>(Rules2.E_V, EOF),
-			new Item<String>(Rules2.V_x, EOF),
-			new Item<String>(Rules2.V_sE, EOF)
+	private static final State<String> STATE4 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(2, Rules2.S_VaE, Arrays.asList(EOF)),
+			new Item<String>(Rules2.E_V, Arrays.asList(EOF)),
+			new Item<String>(Rules2.V_x, Arrays.asList(EOF)),
+			new Item<String>(Rules2.V_sE, Arrays.asList(EOF))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE5 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(1, Rules2.S_E, EOF)
+	private static final State<String> STATE5 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.S_E, Arrays.asList(EOF))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE6 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(1, Rules2.V_sE, EOF),
-			new Item<String>(1, Rules2.V_sE, "="),
-			new Item<String>(Rules2.E_V, EOF),
-			new Item<String>(Rules2.E_V, "="),
-			new Item<String>(Rules2.V_x, EOF),
-			new Item<String>(Rules2.V_x, "="),
-			new Item<String>(Rules2.V_sE, EOF),
-			new Item<String>(Rules2.V_sE, "=")
+	private static final State<String> STATE6 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.V_sE, Arrays.asList(EOF)),
+			new Item<String>(1, Rules2.V_sE, Arrays.asList("=")),
+			new Item<String>(Rules2.E_V, Arrays.asList(EOF)),
+			new Item<String>(Rules2.E_V, Arrays.asList("=")),
+			new Item<String>(Rules2.V_x, Arrays.asList(EOF)),
+			new Item<String>(Rules2.V_x, Arrays.asList("=")),
+			new Item<String>(Rules2.V_sE, Arrays.asList(EOF)),
+			new Item<String>(Rules2.V_sE, Arrays.asList("="))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE7 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(1, Rules2.E_V, EOF)
+	private static final State<String> STATE7 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.E_V, Arrays.asList(EOF))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE8 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(1, Rules2.V_x, EOF),
-			new Item<String>(1, Rules2.V_x, "=")
+	private static final State<String> STATE8 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.V_x, Arrays.asList(EOF)),
+			new Item<String>(1, Rules2.V_x, Arrays.asList("="))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE9 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(3, Rules2.S_VaE, EOF)
+	private static final State<String> STATE9 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(3, Rules2.S_VaE, Arrays.asList(EOF))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE10 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(2, Rules2.V_sE, EOF),
-			new Item<String>(2, Rules2.V_sE, "=")
+	private static final State<String> STATE10 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(2, Rules2.V_sE, Arrays.asList(EOF)),
+			new Item<String>(2, Rules2.V_sE, Arrays.asList("="))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE11 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(1, Rules2.V_x, EOF)
+	private static final State<String> STATE11 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.V_x, Arrays.asList(EOF))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE12 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(1, Rules2.E_V, EOF),
-			new Item<String>(1, Rules2.E_V, "=")
+	private static final State<String> STATE12 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.E_V, Arrays.asList(EOF)),
+			new Item<String>(1, Rules2.E_V, Arrays.asList("="))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE13 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(1, Rules2.V_sE, EOF),
-			new Item<String>(Rules2.E_V, EOF),
-			new Item<String>(Rules2.V_x, EOF),
-			new Item<String>(Rules2.V_sE, EOF)
+	private static final State<String> STATE13 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.V_sE, Arrays.asList(EOF)),
+			new Item<String>(Rules2.E_V, Arrays.asList(EOF)),
+			new Item<String>(Rules2.V_x, Arrays.asList(EOF)),
+			new Item<String>(Rules2.V_sE, Arrays.asList(EOF))
 			)));
 	
 	@SuppressWarnings("unchecked")
-	private static final State<String> STATE14 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
-			new Item<String>(2, Rules2.V_sE, EOF)
+	private static final State<String> STATE14 = new State<String>(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(2, Rules2.V_sE, Arrays.asList(EOF))
 			)));
 	
 	

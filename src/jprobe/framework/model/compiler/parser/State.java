@@ -10,15 +10,11 @@ import java.util.Set;
 
 public class State<S> implements Iterable<Item<S>> {
 	
-	public static <S> State<S> forSet(Set<Item<S>>	items){
-		return new State<S>(new HashSet<Item<S>>(items));
-	}
-	
 	private final Set<Item<S>> m_Items;
 	private final int m_Hash;
 	
-	private State(Set<Item<S>> items){
-		m_Items = items;
+	public State(Set<Item<S>> items){
+		m_Items = new HashSet<Item<S>>(items);
 		m_Hash = Arrays.hashCode(items.toArray());
 	}
 	
