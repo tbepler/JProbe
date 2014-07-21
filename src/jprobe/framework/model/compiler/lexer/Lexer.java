@@ -29,16 +29,6 @@ public class Lexer<T> {
 		m_TokenPattern = buildPattern(tokenizers);
 	}
 	
-	public void addTokenizer(Tokenizer<T> t){
-		m_Tokenizers.add(t);
-		m_TokenPattern = appendPattern(m_TokenPattern, t.getPattern());
-	}
-	
-	public void removeTokenizer(Tokenizer<T> t){
-		m_Tokenizers.remove(t);
-		m_TokenPattern = buildPattern(m_Tokenizers);
-	}
-	
 	public List<Token<T>> lex(String s){
 		//do this using matcher rather than wrapping the string
 		//into a scanner, because the matcher is significantly
@@ -85,13 +75,6 @@ public class Lexer<T> {
 	
 	private Pattern tokenPattern(){
 		return m_TokenPattern;
-	}
-	
-	private static Pattern appendPattern(Pattern a, Pattern b){
-		if(a == null){
-			return Pattern.compile("("+b.pattern()+")");
-		}
-		return Pattern.compile(a.pattern()+"|("+b.pattern()+")");
 	}
 	
 	private static <U> Pattern buildPattern(Collection<Tokenizer<U>> tokenizers){

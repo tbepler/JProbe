@@ -1,19 +1,15 @@
 package jprobe.framework.model.compiler.parser;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import jprobe.framework.model.compiler.Element;
 import jprobe.framework.model.compiler.HashSetHashMap;
 import jprobe.framework.model.compiler.lexer.Token;
 
@@ -23,6 +19,7 @@ public class Parser<S> {
 	private final Set<S> m_Nullable;
 	private final Map<S,Set<S>> m_First;
 	private final Map<S,Set<S>> m_Follow;
+	private final State<S> m_Start;
 	private final Map<State<S>, Map<S, Action<S>>> m_Actions;
 	
 	public Parser(Grammar<S> g){
@@ -30,6 +27,7 @@ public class Parser<S> {
 		m_Nullable = this.computeNullables();
 		m_First = this.computeFirstSets();
 		m_Follow = this.computeFollowSets();
+		m_Start = this.computeStartState();
 		m_Actions = this.constructActionTable();
 	}
 	
@@ -173,7 +171,7 @@ public class Parser<S> {
 		return Collections.unmodifiableSet(m_Actions.keySet());
 	}
 	
-	public void parse(List<Token> tokens){
+	public void parse(List<Token<S>> tokens){
 		
 	}
 	
@@ -279,11 +277,15 @@ public class Parser<S> {
 		return table;
 	}
 	
-	private Set<State<S>> initializeStatesSet(){
-		Set<State<S>> states = new HashSet<State<S>>();
+	private State<S> computeStartState(){
 		Set<Item<S>> start = new HashSet<Item<S>>();
 		start.add(Item.forProduction(m_Grammar.getStartProduction()));
-		states.add(this.closure(start));
+		return this.closure(start);
+	}
+	
+	private Set<State<S>> initializeStatesSet(){
+		Set<State<S>> states = new HashSet<State<S>>();
+		states.add(m_Start);
 		return states;
 	}
 	
@@ -322,15 +324,7 @@ public class Parser<S> {
 		}
 		return State.forSet(items);
 	}
-	
-	private static String generateBadParseMessage(List<Token> tokens, Deque<Element> stack){
-		String msg = "Bad parse. Input tokens: "
-			+ iterableToString(tokens)
-			+ " resulted in invalid parse stack: "
-			+ iterableToString(stack);
-		return msg;
-	}
-	
+
 	private static <T> String iterableToString(Iterable<T> tokens){
 		String s = "[";
 		boolean first = true;

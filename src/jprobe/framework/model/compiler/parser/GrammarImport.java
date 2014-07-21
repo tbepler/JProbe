@@ -50,7 +50,7 @@ public class GrammarImport implements Grammar<String>{
 	}
 	
 	public static GrammarImport readGrammar(InputStream in) throws IOException{
-		Lexer<Types> lexer = new Lexer<Types>();
+		Lexer<Types> lexer = new Lexer<Types>(Types.values());
 		List<Token<Types>> tokens = lexer.lex(in);
 		List<String> terminators = new ArrayList<String>();
 		List<Production<String>> productions = new ArrayList<Production<String>>();
