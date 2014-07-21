@@ -43,6 +43,11 @@ public class Action<S> {
 	}
 	
 	@Override
+	public String toString(){
+		return m_Id.toString();
+	}
+	
+	@Override
 	public int hashCode(){
 		return m_Hash;
 	}

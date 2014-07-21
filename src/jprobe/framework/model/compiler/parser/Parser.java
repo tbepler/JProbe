@@ -134,6 +134,22 @@ public class Parser<S> {
 		return true;
 	}
 	
+	private Set<S> first(List<S> symbols){
+		return this.first(0, symbols);
+	}
+	
+	private Set<S> first(int index, List<S> symbols){
+		if(index >= symbols.size()){
+			return new HashSet<S>();
+		}
+		if(!m_Nullable.contains(symbols.get(index))){
+			return m_First.get(symbols.get(index));
+		}
+		Set<S> set = m_First.get(symbols.get(index));
+		set.addAll(this.first(index+1, symbols));
+		return set;
+	}
+	
 	public Set<S> getFirst(S symbol){
 		return Collections.unmodifiableSet(m_First.get(symbol));
 	}
@@ -177,34 +193,51 @@ public class Parser<S> {
 					S next = item.next();
 					if(m_Grammar.isEOFSymbol(next)){
 						//accept action
-						actionTable = add(actionTable, cur, next, this.getAcceptAction());
+						Action<S> a = this.getAcceptAction();
+						if(containsKeys(actionTable, cur, next)){
+							System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
+							System.err.println("Current: "+actionTable.get(cur).get(next));
+							System.err.println("Replacement: "+a);
+						}
+						actionTable = add(actionTable, cur, next, a);
 					}else{
 						State<S> descendent = this.gotoo(cur, next);
 						if(states.add(descendent)){
 							stateQ.add(descendent);
-						}
-						if(m_Grammar.isTerminal(next)){
-							//shift action
+							Action<S> a;
+							if(m_Grammar.isTerminal(next)){
+								a = this.getShiftAction(descendent);
+							}else{
+								a = this.getGotoAction(descendent);
+							}
 							if(containsKeys(actionTable, cur, next)){
 								System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
+								System.err.println("Current: "+actionTable.get(cur).get(next));
+								System.err.println("Replacement: "+a);
 							}
-							actionTable = add(actionTable, cur, next, this.getShiftAction(descendent));
-						}else{
-							//goto action
-							if(containsKeys(actionTable, cur, next)){
-								System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
-							}
-							actionTable = add(actionTable, cur, next, this.getGotoAction(descendent));
+							actionTable = add(actionTable, cur, next, a);
 						}
 					}
 				}else{
 					//reduce action
 					Action<S> action = this.getReduceAction(item.getProduction());
-					for(S terminal : m_Grammar.getTerminalSymbols()){
-						if(containsKeys(actionTable, cur, terminal)){
+					if(item.lookaheadLength() > 0){
+						S lookahead = item.lookahead(0);
+						if(containsKeys(actionTable, cur, lookahead)){
 							System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
+							System.err.println("Current: "+actionTable.get(cur).get(lookahead));
+							System.err.println("Replacement: "+action);
 						}
-						add(actionTable, cur, terminal, action);
+						add(actionTable, cur, lookahead, action);
+					}else{
+						for(S terminal : m_Grammar.getTerminalSymbols()){
+							if(containsKeys(actionTable, cur, terminal)){
+								System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
+								System.err.println("Current: "+actionTable.get(cur).get(terminal));
+								System.err.println("Replacement: "+action);
+							}
+							add(actionTable, cur, terminal, action);
+						}
 					}
 				}
 			}
@@ -269,22 +302,24 @@ public class Parser<S> {
 	}
 	
 	private State<S> closure(Set<Item<S>> items){
-		S next;
-		boolean changed;
-		do{
-			changed = false;
-			Set<Item<S>> copy = new HashSet<Item<S>>(items);
-			for(Item<S> item : items){
-				if(item.hasNext()){
-					next = item.next();
-					for(Production<S> p : m_Grammar.getProductions(next)){
-						Item<S> newItem = Item.forProduction(p);
-						changed = copy.add(newItem) || changed;
+		Queue<Item<S>> itemQ = new LinkedList<Item<S>>(items);
+		while(!itemQ.isEmpty()){
+			Item<S> item = itemQ.poll();
+			if(item.hasNext()){
+				S next = item.next();
+				List<S> symbols = item.beta();
+				symbols.addAll(item.lookahead());
+				Set<S> firstSet = this.first(symbols);
+				for(Production<S> p : m_Grammar.getProductions(next)){
+					for(S symbol : firstSet){
+						Item<S> newItem = Item.forProduction(p, symbol);
+						if(items.add(newItem)){
+							itemQ.add(newItem);
+						}
 					}
 				}
 			}
-			items = copy;
-		}while(changed);
+		}
 		return State.forSet(items);
 	}
 	
