@@ -3,13 +3,18 @@ package jprobe.framework.model.compiler.test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import jprobe.framework.model.compiler.Grammar;
-import jprobe.framework.model.compiler.Parser;
-import jprobe.framework.model.compiler.Production;
+import jprobe.framework.model.compiler.parser.Action;
+import jprobe.framework.model.compiler.parser.Actions;
+import jprobe.framework.model.compiler.parser.Grammar;
+import jprobe.framework.model.compiler.parser.Item;
+import jprobe.framework.model.compiler.parser.Parser;
+import jprobe.framework.model.compiler.parser.Production;
+import jprobe.framework.model.compiler.parser.State;
 
 public class TestParser extends junit.framework.TestCase{
 	
@@ -20,7 +25,9 @@ public class TestParser extends junit.framework.TestCase{
 		X(false),
 		a(true),
 		c(true),
-		d(true);
+		d(true),
+		EOF(true),
+		Zprime(false);
 		
 		private final boolean terminal;
 		
@@ -101,6 +108,28 @@ public class TestParser extends junit.framework.TestCase{
 		public boolean isTerminal(Symbols symbol) {
 			return symbol.isTerminal();
 		}
+
+		@Override
+		public Production<Symbols> getEOFStartProduction() {
+			return new Production<Symbols>(){
+
+				@Override
+				public Symbols leftHandSide() {
+					return Symbols.Zprime;
+				}
+
+				@Override
+				public Symbols[] rightHandSide() {
+					return new Symbols[]{Symbols.Z, Symbols.EOF};
+				}
+				
+			};
+		}
+
+		@Override
+		public boolean isEOFSymbol(Symbols symbol) {
+			return symbol == Symbols.EOF;
+		}
 		
 	}
 	
@@ -168,5 +197,202 @@ public class TestParser extends junit.framework.TestCase{
 		Set<Symbols> dfollow = parser.getFollow(Symbols.d);
 		assertTrue(dfollow.isEmpty());
 	}
+	
+	private static final Collection<String> TERMINAL = new HashSet<String>(Arrays.asList(
+			"x",
+			"+"
+			));
+	
+	private static final String EOF = "$";
+	private static final String AUXIL_START = "S";
+	private static final Production<String> AUXIL_START_PRODUCTION = new Production<String>(){
+
+		@Override
+		public String leftHandSide() {
+			return AUXIL_START;
+		}
+
+		@Override
+		public String[] rightHandSide() {
+			return new String[]{"E", EOF};
+		}
+		
+	};
+	
+	private static enum Rules2 implements Production<String>{
+		
+		E_TpE("E", "T", "+", "E"),
+		E_T("E", "T"),
+		T_x("T", "x");
+		
+		private final String lhs;
+		private final String[] rhs;
+		
+		private Rules2(String lhs, String ... rhs){
+			this.lhs = lhs;
+			this.rhs = rhs;
+		}
+		
+		@Override
+		public String leftHandSide() {
+			return lhs;
+		}
+
+		@Override
+		public String[] rightHandSide() {
+			return rhs.clone();
+		}
+		
+	}
+	
+	private static final class Grammar2 implements Grammar<String>{
+
+		@Override
+		public Iterator<Production<String>> iterator() {
+			return Arrays.<Production<String>>asList(Rules2.values()).iterator();
+		}
+
+		@Override
+		public Collection<String> getTerminalSymbols() {
+			return TERMINAL;
+		}
+
+		@Override
+		public boolean isTerminal(String symbol) {
+			return TERMINAL.contains(symbol);
+		}
+
+		@Override
+		public Collection<Production<String>> getProductions(String leftHandSide) {
+			Collection<Production<String>> list = new ArrayList<Production<String>>();
+			for(Production<String> prod : this){
+				if(prod.leftHandSide().equals(leftHandSide)){
+					list.add(prod);
+				}
+			}
+			return list;
+		}
+
+		@Override
+		public Collection<Production<String>> getAllProductions() {
+			return Arrays.<Production<String>>asList(Rules2.values());
+		}
+
+		@Override
+		public Production<String> getEOFStartProduction() {
+			return AUXIL_START_PRODUCTION;
+		}
+
+		@Override
+		public boolean isEOFSymbol(String symbol) {
+			return EOF.equals(symbol);
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static final State<String> STATE1 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(AUXIL_START_PRODUCTION),
+			new Item<String>(Rules2.E_TpE),
+			new Item<String>(Rules2.E_T),
+			new Item<String>(Rules2.T_x)
+			)));
+	
+	@SuppressWarnings("unchecked")
+	private static final State<String> STATE2 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1,AUXIL_START_PRODUCTION)
+			)));
+	
+	@SuppressWarnings("unchecked")
+	private static final State<String> STATE3 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.E_TpE),
+			new Item<String>(1, Rules2.E_T)
+			)));
+	
+	@SuppressWarnings("unchecked")
+	private static final State<String> STATE4 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(2, Rules2.E_TpE),
+			new Item<String>(Rules2.E_TpE),
+			new Item<String>(Rules2.E_T),
+			new Item<String>(Rules2.T_x)
+			)));
+	
+	@SuppressWarnings("unchecked")
+	private static final State<String> STATE5 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(1, Rules2.T_x)
+			)));
+	
+	@SuppressWarnings("unchecked")
+	private static final State<String> STATE6 = State.forSet(new HashSet<Item<String>>(Arrays.asList(
+			new Item<String>(3, Rules2.E_TpE)
+			)));
+	
+	public void testActionsTable(){
+		Parser<String> parse = new Parser<String>(new Grammar2());
+		
+		//check the states
+		Collection<State<String>> states = parse.getStates();
+		assertEquals(6, states.size());
+		assertTrue(states.contains(STATE1));
+		assertTrue(states.contains(STATE2));
+		assertTrue(states.contains(STATE3));
+		assertTrue(states.contains(STATE4));
+		assertTrue(states.contains(STATE5));
+		assertTrue(states.contains(STATE6));
+		
+		//check the actions table
+		Action<String> action = parse.getAction(STATE1, "x");
+		assertEquals(Actions.SHIFT, action.id());
+		assertEquals(STATE5, action.nextState());
+		assertNull(action.production());
+		
+		action = parse.getAction(STATE1, "+");
+		assertNull(action);
+		
+		action = parse.getAction(STATE1, EOF);
+		assertNull(action);
+		
+		action = parse.getAction(STATE1, "E");
+		assertEquals(Actions.GOTO, action.id());
+		assertEquals(STATE2, action.nextState());
+		assertNull(action.production());
+		
+		action = parse.getAction(STATE1, "T");
+		assertEquals(Actions.GOTO, action.id());
+		assertEquals(STATE3, action.nextState());
+		assertNull(action.production());
+		
+		action = parse.getAction(STATE2, EOF);
+		assertEquals(Actions.ACCEPT, action.id());
+		assertNull(action.nextState());
+		assertNull(action.production());
+		
+		action = parse.getAction(STATE3, "x");
+		assertEquals(Actions.REDUCE, action.id());
+		assertNull(action.nextState());
+		assertEquals(Rules2.E_T, action.production());
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

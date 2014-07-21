@@ -1,4 +1,4 @@
-package jprobe.framework.model.compiler;
+package jprobe.framework.model.compiler.parser;
 
 import java.util.Collection;
 
@@ -11,6 +11,10 @@ public interface Grammar<S> extends Iterable<Production<S>>{
 	public Collection<Production<S>> getProductions(S leftHandSide);
 	
 	public Collection<Production<S>> getAllProductions();
+	
+	public Production<S> getEOFStartProduction();
+	
+	public boolean isEOFSymbol(S symbol);
 	
 	
 }

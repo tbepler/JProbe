@@ -1,4 +1,4 @@
-package jprobe.framework.model.compiler;
+package jprobe.framework.model.compiler.parser;
 
 public class ParsingException extends RuntimeException{
 	private static final long serialVersionUID = 1L;

@@ -1,130 +1,36 @@
-package jprobe.framework.model.compiler;
+package jprobe.framework.model.compiler.parser;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
+import jprobe.framework.model.compiler.Element;
+import jprobe.framework.model.compiler.HashSetHashMap;
 import jprobe.framework.model.compiler.lexer.Token;
 
 public class Parser<S> {
-	
-	private static class Item<S>{
-		
-		private final S lhs;
-		private final S[] rhs;
-		private final int index;
-		private final int hash;
-		
-		public Item(Production<S> prod){
-			this(prod.leftHandSide(), prod.rightHandSide());
-		}
-		
-		public Item(S lhs, S ... rhs){
-			this(0, lhs, rhs);
-		}
-		
-		private Item(int index, S lhs, S ... rhs){
-			this.index = index;
-			this.lhs = lhs;
-			this.rhs = rhs;
-			hash = Arrays.hashCode(new Object[]{index, lhs, rhs});
-		}
-		
-		public Item<S> increment(){
-			return new Item<S>(index+1, lhs, rhs);
-		}
-		
-		public int index(){
-			return index;
-		}
-		
-		public boolean hasNext(){
-			return index < rhs.length;
-		}
-		
-		public S nextSymbol(){
-			return rhs[index];
-		}
-		
-		public S leftHandSide(){
-			return lhs;
-		}
-		
-		@Override
-		public boolean equals(Object o){
-			if(o == null) return false;
-			if(o == this) return true;
-			if(o instanceof Item){
-				Item<?> i = (Item<?>) o;
-				return index == i.index && lhs.equals(i.lhs) && Arrays.equals(rhs, i.rhs);
-			}
-			return false;
-		}
-		
-		@Override
-		public int hashCode(){
-			return hash;
-		}
-		
-	}
-	
-	private static class State<S>{
-		
-		private final Set<Item<S>> items;
-		private final int hash;
-		
-		public State(Set<Item<S>> items){
-			this.items = new HashSet<Item<S>>(items);
-			hash = Arrays.hashCode(items.toArray());
-		}
-		
-		public Set<Item<S>> asSet(){
-			return Collections.unmodifiableSet(items);
-		}
-		
-		@Override
-		public int hashCode(){
-			return hash;
-		}
-		
-		@Override
-		public boolean equals(Object o){
-			if(o == null) return false;
-			if(o == this) return true;
-			if(o instanceof State){
-				State<?> s = (State<?>) o;
-				if(items.size() == s.items.size()){
-					for(Item<S> item : items){
-						if(!s.items.contains(item)){
-							return false;
-						}
-					}
-					return true;
-				}
-			}
-			return false;
-		}
-		
-	}
-	
-	private static class Action{
-		
-	}
 	
 	private final Grammar<S> m_Grammar;
 	private final Set<S> m_Nullable;
 	private final Map<S,Set<S>> m_First;
 	private final Map<S,Set<S>> m_Follow;
+	private final Map<State<S>, Map<S, Action<S>>> m_Actions;
 	
 	public Parser(Grammar<S> g){
 		m_Grammar = g;
 		m_Nullable = this.computeNullables();
 		m_First = this.computeFirstSets();
 		m_Follow = this.computeFollowSets();
+		m_Actions = this.constructActionTable();
 	}
 	
 	private Set<S> computeNullables(){
@@ -240,25 +146,129 @@ public class Parser<S> {
 		return m_Nullable.contains(symbol);
 	}
 	
+	public Action<S> getAction(State<S> state, S symbol){
+		if(m_Actions.containsKey(state)){
+			return m_Actions.get(state).get(symbol);
+		}
+		return null;
+	}
+	
+	public Collection<State<S>> getStates(){
+		return Collections.unmodifiableSet(m_Actions.keySet());
+	}
+	
 	public void parse(List<Token> tokens){
 		
 	}
 	
-	private Map<State<S>,Map<S,Action>> constructParseTable(){
+	private Map<State<S>,Map<S,Action<S>>> constructActionTable(){
+		Set<State<S>> states = this.initializeStatesSet();
+		Map<State<S>, Map<S,Action<S>>> actionTable = new HashMap<State<S>, Map<S, Action<S>>>();
 		
+		Queue<State<S>> stateQ = new LinkedList<State<S>>();
+		stateQ.addAll(states);
+		
+		while(!stateQ.isEmpty()){
+			State<S> cur = stateQ.poll();
+			
+			for(Item<S> item : cur){
+				
+				if(item.hasNext()){
+					S next = item.next();
+					if(m_Grammar.isEOFSymbol(next)){
+						//accept action
+						actionTable = add(actionTable, cur, next, this.getAcceptAction());
+					}else{
+						State<S> descendent = this.gotoo(cur, next);
+						if(states.add(descendent)){
+							stateQ.add(descendent);
+						}
+						if(m_Grammar.isTerminal(next)){
+							//shift action
+							if(containsKeys(actionTable, cur, next)){
+								System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
+							}
+							actionTable = add(actionTable, cur, next, this.getShiftAction(descendent));
+						}else{
+							//goto action
+							if(containsKeys(actionTable, cur, next)){
+								System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
+							}
+							actionTable = add(actionTable, cur, next, this.getGotoAction(descendent));
+						}
+					}
+				}else{
+					//reduce action
+					Action<S> action = this.getReduceAction(item.getProduction());
+					for(S terminal : m_Grammar.getTerminalSymbols()){
+						if(containsKeys(actionTable, cur, terminal)){
+							System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
+						}
+						add(actionTable, cur, terminal, action);
+					}
+				}
+			}
+		}
+		return actionTable;
 	}
 	
-	private Set<Item<S>> gotoo(Set<Item<S>> items, S symbol){
+	private Action<S> getReduceAction(Production<S> reduce){
+		return new Action<S>(Actions.REDUCE, reduce);
+	}
+	
+	private Action<S> getGotoAction(State<S> next){
+		return new Action<S>(Actions.GOTO, next);
+	}
+	
+	private Action<S> getShiftAction(State<S> next){
+		return new Action<S>(Actions.SHIFT, next);
+	}
+	
+	private Action<S> getAcceptAction(){
+		return new Action<S>(Actions.ACCEPT);
+	}
+	
+	private static <K1,K2,V> boolean containsKeys(Map<K1,Map<K2,V>> table, K1 key1, K2 key2){
+		if(table.containsKey(key1)){
+			return table.get(key1).containsKey(key2);
+		}
+		return false;
+	}
+	
+	private static <K1,K2,V> Map<K1,Map<K2,V>> add(Map<K1,Map<K2,V>> table, K1 key1, K2 key2, V value){
+		if(table.containsKey(key1)){
+			table.get(key1).put(key2, value);
+		}else{
+			Map<K2,V> map = new HashMap<K2,V>();
+			map.put(key2, value);
+			table.put(key1, map);
+		}
+		return table;
+	}
+	
+	private Set<State<S>> initializeStatesSet(){
+		Set<State<S>> states = new HashSet<State<S>>();
+		Set<Item<S>> start = new HashSet<Item<S>>();
+		start.add(Item.forProduction(m_Grammar.getEOFStartProduction()));
+		states.add(this.closure(start));
+		return states;
+	}
+	
+	private State<S> gotoo(State<S> state, S symbol){
 		Set<Item<S>> shifted = new HashSet<Item<S>>();
-		for(Item<S> item : items){
-			if(item.hasNext() && symbol.equals(item.nextSymbol())){
+		for(Item<S> item : state){
+			if(item.hasNext() && symbol.equals(item.next())){
 				shifted.add(item.increment());
 			}
 		}
 		return this.closure(shifted);
 	}
 	
-	private Set<Item<S>> closure(Set<Item<S>> items){
+	private State<S> closure(State<S> state){
+		return this.closure(state.asSet());
+	}
+	
+	private State<S> closure(Set<Item<S>> items){
 		S next;
 		boolean changed;
 		do{
@@ -266,16 +276,16 @@ public class Parser<S> {
 			Set<Item<S>> copy = new HashSet<Item<S>>(items);
 			for(Item<S> item : items){
 				if(item.hasNext()){
-					next = item.nextSymbol();
+					next = item.next();
 					for(Production<S> p : m_Grammar.getProductions(next)){
-						Item<S> newItem = new Item<S>(p);
+						Item<S> newItem = Item.forProduction(p);
 						changed = copy.add(newItem) || changed;
 					}
 				}
 			}
 			items = copy;
 		}while(changed);
-		return items;
+		return State.forSet(items);
 	}
 	
 	private static String generateBadParseMessage(List<Token> tokens, Deque<Element> stack){
@@ -301,7 +311,13 @@ public class Parser<S> {
 		return s;
 	}
 	
-	
+	private static <T> Set<T> asSet(T ... objs){
+		Set<T> set = new HashSet<T>();
+		for(T t : objs){
+			set.add(t);
+		}
+		return set;
+	}
 	
 	
 	
