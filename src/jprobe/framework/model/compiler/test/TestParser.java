@@ -88,7 +88,8 @@ public class TestParser extends junit.framework.TestCase{
 		}
 
 		@Override
-		public Production<String> getEOFStartProduction() {
+		public Production<String> getStartProduction() {
+			//return Rules.Z_XYZ;
 			return new Production<String>(){
 
 				@Override
@@ -262,7 +263,7 @@ public class TestParser extends junit.framework.TestCase{
 		}
 
 		@Override
-		public Production<String> getEOFStartProduction() {
+		public Production<String> getStartProduction() {
 			return AUXIL_START_PRODUCTION;
 		}
 
@@ -401,8 +402,36 @@ public class TestParser extends junit.framework.TestCase{
 		assertEquals(STATE8, a.nextState());
 		assertNull(a.production());
 		
+		a = parse.getAction(STATE1, "*");
+		assertEquals(Actions.SHIFT, a.id());
+		assertEquals(STATE6, a.nextState());
+		assertNull(a.production());
 		
+		a = parse.getAction(STATE1, "=");
+		assertNull(a);
 		
+		a = parse.getAction(STATE1, EOF);
+		assertNull(a);
+		
+		a = parse.getAction(STATE1, "S");
+		assertEquals(Actions.GOTO, a.id());
+		assertEquals(STATE2, a.nextState());
+		assertNull(a.production());
+		
+		a = parse.getAction(STATE1, "E");
+		assertEquals(Actions.GOTO, a.id());
+		assertEquals(STATE5, a.nextState());
+		assertNull(a.production());
+		
+		a = parse.getAction(STATE1, "V");
+		assertEquals(Actions.GOTO, a.id());
+		assertEquals(STATE3, a.nextState());
+		assertNull(a.production());
+		
+		a = parse.getAction(STATE2, "$");
+		assertEquals(Actions.ACCEPT, a.id());
+		assertNull(a.nextState());
+		assertNull(a.production());
 		
 	}
 	

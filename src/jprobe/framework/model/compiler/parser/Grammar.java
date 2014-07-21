@@ -12,7 +12,7 @@ public interface Grammar<S> extends Iterable<Production<S>>{
 	
 	public Collection<Production<S>> getAllProductions();
 	
-	public Production<S> getEOFStartProduction();
+	public Production<S> getStartProduction();
 	
 	public boolean isEOFSymbol(S symbol);
 	

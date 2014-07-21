@@ -282,7 +282,7 @@ public class Parser<S> {
 	private Set<State<S>> initializeStatesSet(){
 		Set<State<S>> states = new HashSet<State<S>>();
 		Set<Item<S>> start = new HashSet<Item<S>>();
-		start.add(Item.forProduction(m_Grammar.getEOFStartProduction()));
+		start.add(Item.forProduction(m_Grammar.getStartProduction()));
 		states.add(this.closure(start));
 		return states;
 	}
