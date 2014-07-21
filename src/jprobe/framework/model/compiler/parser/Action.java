@@ -2,6 +2,8 @@ package jprobe.framework.model.compiler.parser;
 
 import java.util.Arrays;
 
+import jprobe.framework.model.compiler.grammar.Production;
+
 public class Action<S> {
 	
 	private final State<S> m_Next;

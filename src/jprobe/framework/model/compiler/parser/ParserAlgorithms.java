@@ -10,6 +10,8 @@ import java.util.Queue;
 import java.util.Set;
 
 import jprobe.framework.model.compiler.HashSetHashMap;
+import jprobe.framework.model.compiler.grammar.Grammar;
+import jprobe.framework.model.compiler.grammar.Production;
 
 public class ParserAlgorithms {
 	

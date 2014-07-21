@@ -7,12 +7,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import jprobe.framework.model.compiler.grammar.Grammar;
+import jprobe.framework.model.compiler.grammar.Production;
 import jprobe.framework.model.compiler.parser.Action;
 import jprobe.framework.model.compiler.parser.Actions;
-import jprobe.framework.model.compiler.parser.Grammar;
 import jprobe.framework.model.compiler.parser.Item;
 import jprobe.framework.model.compiler.parser.Parser;
-import jprobe.framework.model.compiler.parser.Production;
 import jprobe.framework.model.compiler.parser.State;
 
 public class TestParser extends junit.framework.TestCase{

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import jprobe.framework.model.compiler.grammar.Grammar;
+import jprobe.framework.model.compiler.grammar.Production;
 import jprobe.framework.model.compiler.lexer.Lexer;
 import jprobe.framework.model.compiler.lexer.Token;
 import jprobe.framework.model.compiler.lexer.Tokenizer;

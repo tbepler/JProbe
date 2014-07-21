@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import jprobe.framework.model.compiler.grammar.Production;
+
 public class Item<S> {
 	
 	private final Production<S> m_Prod;

@@ -2,6 +2,8 @@ package jprobe.framework.model.compiler.parser;
 
 import java.util.Arrays;
 
+import jprobe.framework.model.compiler.grammar.Production;
+
 public class ProductionImport implements Production<String>{
 	
 	private final String m_LHS;

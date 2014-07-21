@@ -1,4 +1,4 @@
-package jprobe.framework.model.compiler.parser;
+package jprobe.framework.model.compiler.grammar;
 
 import java.util.Collection;
 
