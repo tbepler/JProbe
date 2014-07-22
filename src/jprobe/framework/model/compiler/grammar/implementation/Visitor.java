@@ -8,6 +8,8 @@ import jprobe.framework.model.compiler.grammar.implementation.symbols.expression
 import jprobe.framework.model.compiler.grammar.implementation.symbols.expressions.IdentifierExp;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.expressions.IntExp;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.expressions.StringExp;
+import jprobe.framework.model.compiler.grammar.implementation.symbols.lists.StmList;
+import jprobe.framework.model.compiler.grammar.implementation.symbols.statements.AssignStm;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.BooleanLiteral;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.CharLiteral;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.DoubleLiteral;
@@ -15,9 +17,13 @@ import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.IntLiteral;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.StringLiteral;
 
-public interface SabreVisitor {
+public interface Visitor {
 	
 	public void visit(Program p);
+	
+	public void visit(StmList s);
+	
+	public void visit(AssignStm s);
 	
 	public void visit(IdentifierExp e);
 	public void visit(StringExp e);

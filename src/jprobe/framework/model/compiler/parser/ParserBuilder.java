@@ -74,19 +74,19 @@ public class ParserBuilder<V> {
 						State<V> descendent = gotoo(fac, cur, next);
 						if(states.add(descendent)){
 							stateQ.add(descendent);
-							Action<V> a;
-							if(m_Grammar.isTerminal(next)){
-								a = fac.newShiftAction(descendent);
-							}else{
-								a = fac.newGotoAction(descendent);
-							}
-							if(containsKeys(actionTable, cur, next)){
-								System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
-								System.err.println("Current: "+actionTable.get(cur).get(next));
-								System.err.println("Replacement: "+a);
-							}
-							actionTable = add(actionTable, cur, next, a);
 						}
+						Action<V> a;
+						if(m_Grammar.isTerminal(next)){
+							a = fac.newShiftAction(descendent);
+						}else{
+							a = fac.newGotoAction(descendent);
+						}
+						if(containsKeys(actionTable, cur, next) && !a.equals(get(actionTable, cur, next))){
+							System.err.println("Warning: grammar "+m_Grammar+"  contains ambiguous actions.");
+							System.err.println("Current: "+actionTable.get(cur).get(next));
+							System.err.println("Replacement: "+a);
+						}
+						actionTable = add(actionTable, cur, next, a);
 					}
 				}else{
 					//reduce action
@@ -123,7 +123,14 @@ public class ParserBuilder<V> {
 		return false;
 	}
 	
+	private static <K1,K2,V> V get(Map<K1,Map<K2,V>> table, K1 key1, K2 key2){
+		return table.get(key1).get(key2);
+	}
+	
 	private static <K1,K2,V> Map<K1,Map<K2,V>> add(Map<K1,Map<K2,V>> table, K1 key1, K2 key2, V value){
+		System.out.println("Adding: "+value);
+		System.out.println("Key1: "+key1);
+		System.out.println("Key2: "+key2);
 		if(table.containsKey(key1)){
 			table.get(key1).put(key2, value);
 		}else{

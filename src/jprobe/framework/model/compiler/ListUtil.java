@@ -6,6 +6,22 @@ import java.util.List;
 
 public class ListUtil {
 	
+	public static String toString(List<?> list){
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		builder.append("[");
+		for(Object o : list){
+			if(first){
+				first = false;
+			}else{
+				builder.append(", ");
+			}
+			builder.append(o);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
+	
 	public static <T> List<T> asList(){
 		return new ArrayList<T>();
 	}

@@ -4,14 +4,12 @@ import jprobe.framework.model.compiler.grammar.Symbol;
 import jprobe.framework.model.compiler.grammar.implementation.Visitor;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.Terminal;
 
-public final class Semicolon extends Terminal{
+public final class Assign extends Terminal{
 	private static final long serialVersionUID = 1L;
-	
-	private static final int HASH = 1253683;
-	
+
 	@Override
 	public String getRegex() {
-		return Constants.SEMICOLON_REGEX;
+		return Constants.ASSIGN_REGEX;
 	}
 
 	@Override
@@ -26,24 +24,7 @@ public final class Semicolon extends Terminal{
 
 	@Override
 	public Class<? extends Symbol<Visitor>> getSymbolType() {
-		return Semicolon.class;
-	}
-	
-	@Override
-	public String toString(){
-		return ";";
-	}
-	
-	@Override
-	public int hashCode(){
-		return HASH;
-	}
-	
-	@Override
-	public boolean equals(Object o){
-		if(o == null) return false;
-		if(o == this) return true;
-		return o instanceof Semicolon;
+		return Assign.class;
 	}
 
 }

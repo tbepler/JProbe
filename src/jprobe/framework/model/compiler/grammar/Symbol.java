@@ -9,4 +9,7 @@ public abstract class Symbol<V> implements Serializable{
 	
 	public abstract Class<? extends Symbol<V>> getSymbolType();
 	
+	@Override
+	public String toString(){ return this.getClass().getSimpleName(); }
+	
 }

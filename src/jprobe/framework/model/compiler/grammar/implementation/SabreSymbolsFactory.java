@@ -17,6 +17,9 @@ import jprobe.framework.model.compiler.grammar.implementation.symbols.expression
 import jprobe.framework.model.compiler.grammar.implementation.symbols.expressions.IdentifierExp;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.expressions.IntExp;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.expressions.StringExp;
+import jprobe.framework.model.compiler.grammar.implementation.symbols.lists.StmList;
+import jprobe.framework.model.compiler.grammar.implementation.symbols.statements.AssignStm;
+import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.Assign;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.BooleanLiteral;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.CharLiteral;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.Comma;
@@ -28,24 +31,26 @@ import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.Semicolon;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.StringLiteral;
 
-public class SabreSymbolsFactory implements SymbolsFactory<SabreVisitor>{	
+public class SabreSymbolsFactory implements SymbolsFactory<Visitor>{	
 	
 	
 
 	@Override
-	public Symbol<SabreVisitor> newEOFSymbol() {
+	public Symbol<Visitor> newEOFSymbol() {
 		return new EOF();
 	}
 	
 	@Override
-	public Production<SabreVisitor> newStartProduction() {
+	public Production<Visitor> newStartProduction() {
 		return new Program(null);
 	}
 
 	@Override
-	public List<Production<SabreVisitor>> newProductions() {
-		List<Production<SabreVisitor>> list = new ArrayList<Production<SabreVisitor>>();
-		//list.add(new Program(null));
+	public List<Production<Visitor>> newProductions() {
+		List<Production<Visitor>> list = new ArrayList<Production<Visitor>>();
+		list.add(new Program(null));
+		list.add(new AssignStm(null, null));
+		list.add(new StmList(null, null));
 		list.add(new BooleanExp(null));
 		list.add(new CharExp(null));
 		list.add(new DoubleExp(null));
@@ -58,6 +63,7 @@ public class SabreSymbolsFactory implements SymbolsFactory<SabreVisitor>{
 	@Override
 	public List<Terminal> newTerminals() {
 		List<Terminal> list = new ArrayList<Terminal>();
+		list.add(new Assign());
 		list.add(new BooleanLiteral(false));
 		list.add(new CharLiteral(' '));
 		list.add(new Comma());

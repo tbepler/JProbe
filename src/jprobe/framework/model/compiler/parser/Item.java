@@ -87,6 +87,44 @@ public class Item<V> {
 	}
 	
 	@Override
+	public String toString(){
+		return m_LHS.getSimpleName() + " -> (" + this.rhsToString() + "), "+this.lookaheadToString();
+	}
+	
+	private String rhsToString(){
+		StringBuilder builder = new StringBuilder();
+		for( int i = 0; i < m_RHS.size() ; ++i ){
+			if(i != 0){
+				builder.append(" ");
+			}
+			if(i == m_Index){
+				builder.append(". ");
+			}
+			builder.append(m_RHS.get(i).getSimpleName());
+		}
+		if(m_Index == m_RHS.size()){
+			builder.append(" .");
+		}
+		return builder.toString();
+	}
+	
+	private String lookaheadToString(){
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		builder.append("[");
+		for(Class<? extends Symbol<V>> c : m_Lookahead){
+			if(first){
+				first = false;
+			}else{
+				builder.append(", ");
+			}
+			builder.append(c.getSimpleName());
+		}
+		builder.append("]");
+		return builder.toString();
+	}
+	
+	@Override
 	public int hashCode(){
 		return m_Hash;
 	}

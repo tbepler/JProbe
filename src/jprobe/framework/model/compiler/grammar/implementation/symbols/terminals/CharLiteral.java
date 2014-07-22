@@ -1,7 +1,7 @@
 package jprobe.framework.model.compiler.grammar.implementation.symbols.terminals;
 
 import jprobe.framework.model.compiler.grammar.Symbol;
-import jprobe.framework.model.compiler.grammar.implementation.SabreVisitor;
+import jprobe.framework.model.compiler.grammar.implementation.Visitor;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.Terminal;
 
 public class CharLiteral extends Terminal {
@@ -12,12 +12,12 @@ public class CharLiteral extends Terminal {
 	public CharLiteral(char c){ this.c = c; }
 
 	@Override
-	public void accept(SabreVisitor visitor) {
+	public void accept(Visitor visitor) {
 		visitor.visit(this);
 	}
 
 	@Override
-	public Class<? extends Symbol<SabreVisitor>> getSymbolType() {
+	public Class<? extends Symbol<Visitor>> getSymbolType() {
 		return CharLiteral.class;
 	}
 
@@ -27,7 +27,7 @@ public class CharLiteral extends Terminal {
 	}
 
 	@Override
-	public Symbol<SabreVisitor> tokenize(String s) {
+	public Symbol<Visitor> tokenize(String s) {
 		assert(s.length() == 3);
 		return new CharLiteral(s.charAt(1));
 	}

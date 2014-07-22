@@ -1,7 +1,7 @@
 package jprobe.framework.model.compiler.grammar.implementation.symbols.terminals;
 
 import jprobe.framework.model.compiler.grammar.Symbol;
-import jprobe.framework.model.compiler.grammar.implementation.SabreVisitor;
+import jprobe.framework.model.compiler.grammar.implementation.Visitor;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.Terminal;
 
 public final class Comma extends Terminal{
@@ -15,17 +15,17 @@ public final class Comma extends Terminal{
 	}
 
 	@Override
-	public Symbol<SabreVisitor> tokenize(String s) {
+	public Symbol<Visitor> tokenize(String s) {
 		return this;
 	}
 
 	@Override
-	public void accept(SabreVisitor visitor) {
+	public void accept(Visitor visitor) {
 		//do nothing
 	}
 
 	@Override
-	public Class<? extends Symbol<SabreVisitor>> getSymbolType() {
+	public Class<? extends Symbol<Visitor>> getSymbolType() {
 		return Comma.class;
 	}
 	

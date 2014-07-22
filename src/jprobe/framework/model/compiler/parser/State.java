@@ -30,6 +30,23 @@ public class State<S> implements Iterable<Item<S>> {
 	}
 	
 	@Override
+	public String toString(){
+		StringBuilder b = new StringBuilder();
+		b.append("{\n  ");
+		boolean first = true;
+		for(Item<S> item : m_Items){
+			if(first){
+				first = false;
+			}else{
+				b.append("\n  ");
+			}
+			b.append(item);
+		}
+		b.append("\n}");
+		return b.toString();
+	}
+	
+	@Override
 	public int hashCode(){
 		return m_Hash;
 	}

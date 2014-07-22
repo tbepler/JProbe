@@ -26,7 +26,7 @@ public class Parser<V> {
 		Deque<State<V>> states = new LinkedList<State<V>>();
 		states.push(m_Start);
 		Deque<Symbol<V>> symbols = new LinkedList<Symbol<V>>();
-		Queue<Symbol<V>> remaining = new LinkedList<Symbol<V>>(tokens);
+		Deque<Symbol<V>> remaining = new LinkedList<Symbol<V>>(tokens);
 		while(true){
 			State<V> state = states.peek();
 			Symbol<V> lookahead = remaining.peek();
@@ -39,14 +39,16 @@ public class Parser<V> {
 			case ACCEPT:
 				return symbols.peek();
 			case GOTO:
+				symbols.push(lookahead);
+				remaining.pop();
 				states.push(action.nextState());
 				break;
 			case REDUCE:
-				this.reduce(symbols, action.production());
-				states.pop();
+				remaining.push(this.reduce(symbols, states, action.production()));
 				break;
 			case SHIFT:
-				symbols.push(remaining.poll());
+				symbols.push(lookahead);
+				remaining.pop();
 				states.push(action.nextState());
 				break;
 			default:
@@ -59,44 +61,73 @@ public class Parser<V> {
 		Deque<State<V>> states = new LinkedList<State<V>>();
 		states.push(m_Start);
 		Deque<Symbol<V>> symbols = new LinkedList<Symbol<V>>();
-		Symbol<V> lookahead;
-		while(lexer.hasNext()){
-			lookahead = lexer.nextToken();
+		Deque<Symbol<V>> lookaheadStack = new LinkedList<Symbol<V>>();
+		lookaheadStack.add(lexer.nextToken());
+		while(true){
+			Symbol<V> lookahead = lookaheadStack.peek();
 			State<V> state = states.peek();
 			Action<V> action = this.getAction(state, lookahead);
+			//System.out.println("Lookahead: "+lookahead);
+			//System.out.println("Stack: "+stackToString(symbols));
+			//System.out.println("Action: "+action);
+			//System.out.println("State: "+state);
 			if(action == null){
 				//ERROR //TODO
-				throw new RuntimeException("Error on token: "+lookahead);
+				throw new RuntimeException("Error on token: " + lookahead +
+						"\nStack: "+stackToString(symbols) +
+						"\nState: "+state);
 			}
 			switch(action.id()){
 			case ACCEPT:
 				return symbols.peek();
 			case GOTO:
+				symbols.push(lookahead);
+				lookaheadStack.pop();
 				states.push(action.nextState());
 				break;
 			case REDUCE:
-				this.reduce(symbols, action.production());
-				states.pop();
+				lookaheadStack.push(this.reduce(symbols, states, action.production()));
 				break;
 			case SHIFT:
 				symbols.push(lookahead);
+				lookaheadStack.pop();
+				if(!lexer.hasNext()){
+					throw new RuntimeException("All symbols exhausted and no accept action reached.");
+				}
+				lookaheadStack.push(lexer.nextToken());
 				states.push(action.nextState());
 				break;
 			default:
 				throw new RuntimeException("Unknown action: "+action.id());
 			}
 		}
-		throw new RuntimeException("All symbols exhausted and no accept action reached.");
+	}
+	
+	private static <V> String stackToString(Iterable<Symbol<V>> stack){
+		StringBuilder b = new StringBuilder();
+		b.append("[");
+		boolean first = true;
+		for(Symbol<?> s : stack){
+			if(first){
+				first = false;
+			}else{
+				b.append(", ");
+			}
+			b.append(s);
+		}
+		b.append("]");
+		return b.toString();
 	}
 	
 	
-	private void reduce(Deque<Symbol<V>> stack, Production<V> rule){
+	private Symbol<V> reduce(Deque<Symbol<V>> stack, Deque<State<V>> states, Production<V> rule){
 		List<Symbol<V>> lhs = new ArrayList<Symbol<V>>();
 		int len = rule.rightHandSide().size();
 		for(int i=0; i<len; ++i){
 			lhs.add(0, stack.pop());
+			states.pop();
 		}
-		stack.push(rule.reduce(lhs));
+		return rule.reduce(lhs);
 	}
 	
 	public Action<V> getAction(State<V> state, Symbol<V> symbol){
