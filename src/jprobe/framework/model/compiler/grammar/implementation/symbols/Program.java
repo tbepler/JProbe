@@ -2,9 +2,9 @@ package jprobe.framework.model.compiler.grammar.implementation.symbols;
 
 import java.util.List;
 
+import jprobe.framework.model.compiler.ListUtil;
 import jprobe.framework.model.compiler.grammar.Production;
 import jprobe.framework.model.compiler.grammar.Symbol;
-import jprobe.framework.model.compiler.grammar.implementation.ListUtil;
 import jprobe.framework.model.compiler.grammar.implementation.SabreVisitor;
 
 public class Program extends Symbol<SabreVisitor> implements Production<SabreVisitor>{
@@ -28,11 +28,11 @@ public class Program extends Symbol<SabreVisitor> implements Production<SabreVis
 	}
 
 	@Override
-	public Symbol<SabreVisitor> reduce(Symbol<SabreVisitor>... symbols) {
-		assert(symbols.length == 2);
-		assert(symbols[0] instanceof Statement);
-		assert(symbols[1] instanceof EOF);
-		return new Program((Statement) symbols[0]);
+	public Symbol<SabreVisitor> reduce(List<Symbol<SabreVisitor>> symbols) {
+		assert(symbols.size() == 2);
+		assert(symbols.get(0) instanceof Statement);
+		assert(symbols.get(1) instanceof EOF);
+		return new Program((Statement) symbols.get(0));
 	}
 
 	@Override

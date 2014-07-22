@@ -1,4 +1,4 @@
-package jprobe.framework.model.compiler.grammar.implementation;
+package jprobe.framework.model.compiler;
 
 import java.util.ArrayList;
 import java.util.Collections;

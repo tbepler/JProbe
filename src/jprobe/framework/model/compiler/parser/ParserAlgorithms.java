@@ -1,6 +1,5 @@
 package jprobe.framework.model.compiler.parser;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -10,28 +9,30 @@ import java.util.Queue;
 import java.util.Set;
 
 import jprobe.framework.model.compiler.HashSetHashMap;
+import jprobe.framework.model.compiler.ListUtil;
 import jprobe.framework.model.compiler.grammar.Grammar;
 import jprobe.framework.model.compiler.grammar.Production;
+import jprobe.framework.model.compiler.grammar.Symbol;
 
 public class ParserAlgorithms {
 	
-	public static <S> Map<State<S>,Map<S,Action<S>>> constructActionTable(Parser<S> parser, Grammar<S> g){
-		Set<State<S>> states = initializeStatesSet(parser);
-		Map<State<S>, Map<S,Action<S>>> actionTable = new HashMap<State<S>, Map<S, Action<S>>>();
+	public static <V> Map<State<V>,Map<Class<? extends Symbol<V>>,Action<V>>> constructActionTable(Parser<V> parser, Grammar<V> g){
+		Set<State<V>> states = initializeStatesSet(parser);
+		Map<State<V>, Map<Class<? extends Symbol<V>>,Action<V>>> actionTable = new HashMap<State<V>, Map<Class<? extends Symbol<V>>, Action<V>>>();
 		
-		Queue<State<S>> stateQ = new LinkedList<State<S>>();
+		Queue<State<V>> stateQ = new LinkedList<State<V>>();
 		stateQ.addAll(states);
 		
 		while(!stateQ.isEmpty()){
-			State<S> cur = stateQ.poll();
+			State<V> cur = stateQ.poll();
 			
-			for(Item<S> item : cur){
+			for(Item<V> item : cur){
 				
 				if(item.hasNext()){
-					S next = item.next();
+					Class<? extends Symbol<V>> next = item.next();
 					if(g.isEOFSymbol(next)){
 						//accept action
-						Action<S> a = parser.newAcceptAction();
+						Action<V> a = parser.newAcceptAction();
 						if(containsKeys(actionTable, cur, next)){
 							System.err.println("Warning: grammar "+g+"  contains ambiguous actions.");
 							System.err.println("Current: "+actionTable.get(cur).get(next));
@@ -39,10 +40,10 @@ public class ParserAlgorithms {
 						}
 						actionTable = add(actionTable, cur, next, a);
 					}else{
-						State<S> descendent = gotoo(parser, cur, next);
+						State<V> descendent = gotoo(parser, cur, next);
 						if(states.add(descendent)){
 							stateQ.add(descendent);
-							Action<S> a;
+							Action<V> a;
 							if(g.isTerminal(next)){
 								a = parser.newShiftAction(descendent);
 							}else{
@@ -58,9 +59,9 @@ public class ParserAlgorithms {
 					}
 				}else{
 					//reduce action
-					Action<S> action = parser.newReduceAction(item.getProduction());
+					Action<V> action = parser.newReduceAction(item.getProduction());
 					if(item.lookaheadLength() > 0){
-						S lookahead = item.lookahead(0);
+						Class<? extends Symbol<V>> lookahead = item.lookahead(0);
 						if(containsKeys(actionTable, cur, lookahead)){
 							System.err.println("Warning: grammar "+g+"  contains ambiguous actions.");
 							System.err.println("Current: "+actionTable.get(cur).get(lookahead));
@@ -68,7 +69,7 @@ public class ParserAlgorithms {
 						}
 						add(actionTable, cur, lookahead, action);
 					}else{
-						for(S terminal : g.getTerminalSymbols()){
+						for(Class<? extends Symbol<V>> terminal : g.getTerminalSymbolTypes()){
 							if(containsKeys(actionTable, cur, terminal)){
 								System.err.println("Warning: grammar "+g+"  contains ambiguous actions.");
 								System.err.println("Current: "+actionTable.get(cur).get(terminal));
@@ -76,6 +77,7 @@ public class ParserAlgorithms {
 							}
 							add(actionTable, cur, terminal, action);
 						}
+						add(actionTable, cur, null, action);
 					}
 				}
 			}
@@ -101,15 +103,15 @@ public class ParserAlgorithms {
 		return table;
 	}
 	
-	private static <S> Set<State<S>> initializeStatesSet(Parser<S> parser){
-		Set<State<S>> states = new HashSet<State<S>>();
+	private static <V> Set<State<V>> initializeStatesSet(Parser<V> parser){
+		Set<State<V>> states = new HashSet<State<V>>();
 		states.add(parser.getStartState());
 		return states;
 	}
 	
-	public static <S> State<S> gotoo(Parser<S> parser, State<S> state, S symbol){
-		Set<Item<S>> shifted = new HashSet<Item<S>>();
-		for(Item<S> item : state){
+	public static <V> State<V> gotoo(Parser<V> parser, State<V> state, Class<? extends Symbol<V>> symbol){
+		Set<Item<V>> shifted = new HashSet<Item<V>>();
+		for(Item<V> item : state){
 			if(item.hasNext() && symbol.equals(item.next())){
 				shifted.add(parser.incrementItem(item));
 			}
@@ -117,19 +119,18 @@ public class ParserAlgorithms {
 		return closure(parser, shifted);
 	}
 	
-	public static <S> State<S> closure(Parser<S> parser, Set<Item<S>> items){
-		Queue<Item<S>> itemQ = new LinkedList<Item<S>>(items);
+	public static <V> State<V> closure(Parser<V> parser, Set<Item<V>> items){
+		Queue<Item<V>> itemQ = new LinkedList<Item<V>>(items);
 		while(!itemQ.isEmpty()){
-			Item<S> item = itemQ.poll();
+			Item<V> item = itemQ.poll();
 			if(item.hasNext()){
-				S next = item.next();
-				List<S> symbols = item.beta();
+				Class<? extends Symbol<V>> next = item.next();
+				List<Class<? extends Symbol<V>>> symbols = item.beta();
 				symbols.addAll(item.lookahead());
-				Set<S> firstSet = parser.getFirst(symbols);
-				for(Production<S> p : parser.getProductions(next)){
-					for(S symbol : firstSet){
-						@SuppressWarnings("unchecked")
-						Item<S> newItem = parser.newItem(p, Arrays.asList(symbol));
+				Set<Class<? extends Symbol<V>>> firstSet = parser.getFirst(symbols);
+				for(Production<V> p : parser.getProductions(next)){
+					for(Class<? extends Symbol<V>> symbol : firstSet){
+						Item<V> newItem = parser.newItem(p, ListUtil.<Class<? extends Symbol<V>>>asList(symbol));
 						if(items.add(newItem)){
 							itemQ.add(newItem);
 						}
@@ -140,31 +141,36 @@ public class ParserAlgorithms {
 		return parser.newState(items);
 	}
 	
-	public static <S> Map<S,Set<S>> computeFollowSets(Grammar<S> g, Set<S> nullables, Map<S,Set<S>> firstSets){
-		Map<S,Set<S>> followSets = new HashSetHashMap<S,S>();
+	public static <V> Map<Class<? extends Symbol<V>>,Set<Class<? extends Symbol<V>>>> computeFollowSets(
+			Grammar<V> g,
+			Set<Class<? extends Symbol<V>>> nullables,
+			Map<Class<? extends Symbol<V>>,Set<Class<? extends Symbol<V>>>> firstSets
+			){
+		
+		Map<Class<? extends Symbol<V>>,Set<Class<? extends Symbol<V>>>> followSets = new HashSetHashMap<Class<? extends Symbol<V>>,Class<? extends Symbol<V>>>();
 		boolean changed;
-		S lhs;
-		S[] rhs;
-		Set<S> follow;
+		Class<? extends Symbol<V>> lhs;
+		List<Class<? extends Symbol<V>>> rhs;
+		Set<Class<? extends Symbol<V>>> follow;
 		do{
 			changed = false;
-			for(Production<S> p : g){
+			for(Production<V> p : g){
 				lhs = p.leftHandSide();
 				rhs = p.rightHandSide();
-				for(int i=0; i<rhs.length-1; ++i){
-					if(!g.isTerminal(rhs[i])){
-						follow = followSets.get(rhs[i]);
-						for(int j=i+1; j<rhs.length; ++j){
-							changed = follow.addAll(firstSets.get(rhs[j])) || changed;
+				for(int i=0; i<rhs.size()-1; ++i){
+					if(!g.isTerminal(rhs.get(i))){
+						follow = followSets.get(rhs.get(i));
+						for(int j=i+1; j<rhs.size(); ++j){
+							changed = follow.addAll(firstSets.get(rhs.get(j))) || changed;
 						}
-						followSets.put(rhs[i], follow);
+						followSets.put(rhs.get(i), follow);
 					}
 				}
-				for(int i=rhs.length-1; i>=0; --i){
-					if(!g.isTerminal(rhs[i]) && nullable(rhs, i+1, rhs.length, nullables)){
-						follow = followSets.get(rhs[i]);
+				for(int i=rhs.size()-1; i>=0; --i){
+					if(!g.isTerminal(rhs.get(i)) && nullable(rhs, i+1, rhs.size(), nullables)){
+						follow = followSets.get(rhs.get(i));
 						changed = follow.addAll(followSets.get(lhs)) || changed;
-						followSets.put(rhs[i], follow);
+						followSets.put(rhs.get(i), follow);
 					}
 				}
 			}
@@ -172,27 +178,31 @@ public class ParserAlgorithms {
 		return followSets;
 	}
 	
-	public static <S> Map<S,Set<S>> computeFirstSets(Grammar<S> g, Set<S> nullables){
-		Map<S,Set<S>> firstSets = new HashSetHashMap<S,S>();
-		for(S terminal : g.getTerminalSymbols()){
-			Set<S> set = firstSets.get(terminal);
+	public static <V> Map<Class<? extends Symbol<V>>,Set<Class<? extends Symbol<V>>>> computeFirstSets(
+			Grammar<V> g,
+			Set<Class<? extends Symbol<V>>> nullables
+			){
+		
+		Map<Class<? extends Symbol<V>>,Set<Class<? extends Symbol<V>>>> firstSets = new HashSetHashMap<Class<? extends Symbol<V>>,Class<? extends Symbol<V>>>();
+		for(Class<? extends Symbol<V>> terminal : g.getTerminalSymbolTypes()){
+			Set<Class<? extends Symbol<V>>> set = firstSets.get(terminal);
 			set.add(terminal);
 			firstSets.put(terminal, set);
 		}
 		boolean changed;
-		S lhs;
-		S[] rhs;
+		Class<? extends Symbol<V>> lhs;
+		List<Class<? extends Symbol<V>>> rhs;
 		do{
 			changed = false;
-			for(Production<S> p : g){
+			for(Production<V> p : g){
 				lhs = p.leftHandSide();
 				rhs = p.rightHandSide();
-				if(rhs.length > 0){
-					Set<S> first = firstSets.get(lhs);
-					changed = first.addAll(firstSets.get(rhs[0])) || changed;
-					for(int i=1; i<rhs.length; ++i){
+				if(rhs.size() > 0){
+					Set<Class<? extends Symbol<V>>> first = firstSets.get(lhs);
+					changed = first.addAll(firstSets.get(rhs.get(0))) || changed;
+					for(int i=1; i<rhs.size(); ++i){
 						if(nullable(rhs, 0, i, nullables)){
-							changed = first.addAll(firstSets.get(rhs[i])) || changed;
+							changed = first.addAll(firstSets.get(rhs.get(i))) || changed;
 						}
 					}
 					firstSets.put(lhs, first);
@@ -202,14 +212,14 @@ public class ParserAlgorithms {
 		return firstSets;
 	}
 	
-	public static <S> Set<S> computeNullables(Grammar<S> g){
-		Set<S> nullables = new HashSet<S>();
+	public static <V> Set<Class<? extends Symbol<V>>> computeNullables(Grammar<V> g){
+		Set<Class<? extends Symbol<V>>> nullables = new HashSet<Class<? extends Symbol<V>>>();
 		boolean changed;
-		S lhs;
-		S[] rhs;
+		Class<? extends Symbol<V>> lhs;
+		List<Class<? extends Symbol<V>>> rhs;
 		do{
 			changed = false;
-			for(Production<S> p : g){
+			for(Production<V> p : g){
 				lhs = p.leftHandSide();
 				if(nullables.contains(lhs)){
 					continue;
@@ -223,16 +233,16 @@ public class ParserAlgorithms {
 		return nullables;
 	}
 	
-	private static <S> boolean nullable(S[] symbols, int start, int stop, Set<S> nullables){
+	private static <S> boolean nullable(List<S> symbols, int start, int stop, Set<S> nullables){
 		for(int i=start; i<stop; ++i){
-			if(!nullables.contains(symbols[i])){
+			if(!nullables.contains(symbols.get(i))){
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	private static <S> boolean nullable(S[] symbols, Set<S> nullables){
+	private static <S> boolean nullable(List<S> symbols, Set<S> nullables){
 		for(S symbol : symbols){
 			if(!nullables.contains(symbol)){
 				return false;

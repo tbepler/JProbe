@@ -6,82 +6,83 @@ import java.util.Collections;
 import java.util.List;
 
 import jprobe.framework.model.compiler.grammar.Production;
+import jprobe.framework.model.compiler.grammar.Symbol;
 
-public class Item<S> {
+public class Item<V> {
 	
-	private final Production<S> m_Prod;
-	private final S[] m_RHS;
-	private final S m_LHS;
-	private final List<S> m_Lookahead;
+	private final Production<V> m_Prod;
+	private final List<Class<? extends Symbol<V>>> m_RHS;
+	private final Class<? extends Symbol<V>> m_LHS;
+	private final List<Class<? extends Symbol<V>>> m_Lookahead;
 	private final int m_Index;
 	private final int m_Hash;
 	
-	public Item(Production<S> prod, List<S> lookahead){
+	public Item(Production<V> prod, List<Class<? extends Symbol<V>>> lookahead){
 		this(0, prod, lookahead);
 	}
 	
-	public Item(int index, Production<S> prod, List<S> lookahead){
+	public Item(int index, Production<V> prod, List<Class<? extends Symbol<V>>> lookahead){
 		this(index, lookahead, prod, prod.leftHandSide(), prod.rightHandSide());
 	}
 	
-	protected Item(int index, List<S> lookahead, Production<S> prod, S lhs, S ... rhs){
+	protected Item(int index, List<Class<? extends Symbol<V>>> lookahead, Production<V> prod, Class<? extends Symbol<V>> lhs, List<Class<? extends Symbol<V>>> rhs){
 		m_Index = index;
-		m_Lookahead = new ArrayList<S>(lookahead);
+		m_Lookahead = new ArrayList<Class<? extends Symbol<V>>>(lookahead);
 		m_Prod = prod;
 		m_RHS = rhs;
 		m_LHS = lhs;
 		m_Hash = Arrays.deepHashCode(new Object[]{m_Index, m_Prod, m_Lookahead.toArray()});
 	}
 	
-	public Production<S> getProduction(){
+	public Production<V> getProduction(){
 		return m_Prod;
 	}
 	
-	public Item<S> increment(){
-		return new Item<S>(m_Index+1, m_Lookahead, m_Prod, m_LHS, m_RHS);
+	public Item<V> increment(){
+		return new Item<V>(m_Index+1, m_Lookahead, m_Prod, m_LHS, m_RHS);
 	}
 	
-	public List<S> alpha(){
-		List<S> alpha = new ArrayList<S>();
+	public List<Class<? extends Symbol<V>>> alpha(){
+		List<Class<? extends Symbol<V>>> alpha = new ArrayList<Class<? extends Symbol<V>>>();
 		for(int i=0; i<m_Index; ++i){
-			alpha.add(m_RHS[i]);
+			alpha.add(m_RHS.get(i));
 		}
 		return alpha;
 	}
 	
-	public List<S> beta(){
-		List<S> beta = new ArrayList<S>();
-		for(int i=m_Index+1; i<m_RHS.length; ++i){
-			beta.add(m_RHS[i]);
+	public List<Class<? extends Symbol<V>>> beta(){
+		List<Class<? extends Symbol<V>>> beta = new ArrayList<Class<? extends Symbol<V>>>();
+		for(int i=m_Index+1; i<m_RHS.size(); ++i){
+			beta.add(m_RHS.get(i));
 		}
 		return beta;
 	}
 	
 	public boolean hasNext(){
-		return m_Index < m_RHS.length;
+		return m_Index < m_RHS.size();
 	}
 	
-	public S next(){
-		return m_RHS[m_Index];
+	public Class<? extends Symbol<V>> next(){
+		return m_RHS.get(m_Index);
 	}
 	
 	public boolean hasPrev(){
 		return m_Index > 0;
 	}
 	
-	public S prev(){
-		return m_RHS[m_Index-1];
+	public Class<? extends Symbol<V>> prev(){
+		return m_RHS.get(m_Index-1);
 	}
 	
 	public int lookaheadLength(){
 		return m_Lookahead.size();
 	}
 	
-	public S lookahead(int index){
+	public Class<? extends Symbol<V>> lookahead(int index){
 		return m_Lookahead.get(index);
 	}
 	
-	public List<S> lookahead(){
+	public List<Class<? extends Symbol<V>>> lookahead(){
 		return Collections.unmodifiableList(m_Lookahead);
 	}
 	

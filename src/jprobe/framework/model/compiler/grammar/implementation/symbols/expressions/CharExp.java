@@ -2,8 +2,8 @@ package jprobe.framework.model.compiler.grammar.implementation.symbols.expressio
 
 import java.util.List;
 
+import jprobe.framework.model.compiler.ListUtil;
 import jprobe.framework.model.compiler.grammar.Symbol;
-import jprobe.framework.model.compiler.grammar.implementation.ListUtil;
 import jprobe.framework.model.compiler.grammar.implementation.SabreVisitor;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.Expression;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.CharLiteral;
@@ -24,10 +24,10 @@ public class CharExp extends Expression{
 	}
 
 	@Override
-	public Expression reduce(Symbol<SabreVisitor>... symbols) {
-		assert(symbols.length == 1);
-		assert(symbols[0] instanceof CharLiteral);
-		return new CharExp((CharLiteral) symbols[0]);
+	public Expression reduce(List<Symbol<SabreVisitor>> symbols) {
+		assert(symbols.size() == 1);
+		assert(symbols.get(0) instanceof CharLiteral);
+		return new CharExp((CharLiteral) symbols.get(0));
 	}
 
 	@Override

@@ -8,6 +8,6 @@ public interface Production<V> {
 	
 	public List<Class<? extends Symbol<V>>> rightHandSide();
 	
-	public Symbol<V> reduce(Symbol<V> ... symbols);
+	public Symbol<V> reduce(List<Symbol<V>> symbols);
 	
 }

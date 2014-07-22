@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import jprobe.framework.model.compiler.grammar.Grammar;
 import jprobe.framework.model.compiler.grammar.Production;
@@ -22,6 +23,8 @@ public class SabreGrammar implements Grammar<SabreVisitor>{
 	private final Production<SabreVisitor> m_Start;
 	private final List<Terminal> m_Terminals;
 	private final Set<Class<? extends Symbol<SabreVisitor>>> m_TerminalTypes;
+	private final Pattern m_TokenPattern;
+	private final List<Pattern> m_Patterns;
 	private final List<Production<SabreVisitor>> m_Productions;
 	private final Map<Class<? extends Symbol<SabreVisitor>>, Collection<Production<SabreVisitor>>> m_LHS;
 	
@@ -33,6 +36,11 @@ public class SabreGrammar implements Grammar<SabreVisitor>{
 		m_TerminalTypes = new HashSet<Class<? extends Symbol<SabreVisitor>>>();
 		for(Symbol<SabreVisitor> s : m_Terminals){
 			m_TerminalTypes.add(s.getSymbolType());
+		}
+		m_TokenPattern = this.generateTokenPattern();
+		m_Patterns = new ArrayList<Pattern>(m_Terminals.size());
+		for(Tokenizer<?> t : m_Terminals){
+			m_Patterns.add(Pattern.compile(t.getRegex()));
 		}
 		m_Productions = fac.newProductions();
 		m_LHS = new HashMap<Class<? extends Symbol<SabreVisitor>>, Collection<Production<SabreVisitor>>>();
@@ -47,6 +55,20 @@ public class SabreGrammar implements Grammar<SabreVisitor>{
 			}
 		}
 	}
+	
+	private Pattern generateTokenPattern(){
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		for(Tokenizer<?> t : m_Terminals){
+			if(first){
+				builder.append("(").append(t.getRegex()).append(")");
+				first = false;
+			}else{
+				builder.append("|(").append(t.getRegex()).append(")");
+			}
+		}
+		return Pattern.compile(builder.toString());
+	}
 
 	@Override
 	public Iterator<Production<SabreVisitor>> iterator() {
@@ -54,13 +76,18 @@ public class SabreGrammar implements Grammar<SabreVisitor>{
 	}
 
 	@Override
-	public Collection<? extends Symbol<SabreVisitor>> getTerminalSymbols() {
-		return Collections.unmodifiableList(m_Terminals);
+	public Collection<Class<? extends Symbol<SabreVisitor>>> getTerminalSymbolTypes() {
+		return Collections.unmodifiableSet(m_TerminalTypes);
 	}
 
 	@Override
 	public boolean isTerminal(Symbol<SabreVisitor> symbol) {
 		return m_TerminalTypes.contains(symbol.getSymbolType());
+	}
+	
+	@Override
+	public boolean isTerminal(Class<? extends Symbol<SabreVisitor>> symbolType){
+		return m_TerminalTypes.contains(symbolType);
 	}
 
 	@Override
@@ -82,6 +109,11 @@ public class SabreGrammar implements Grammar<SabreVisitor>{
 	public boolean isEOFSymbol(Symbol<SabreVisitor> symbol) {
 		return m_EOF.equals(symbol);
 	}
+	
+	@Override
+	public boolean isEOFSymbol(Class<? extends Symbol<SabreVisitor>> symbolType) {
+		return m_EOF.getSymbolType().equals(symbolType);
+	}
 
 	@Override
 	public Symbol<SabreVisitor> getEOFSymbol() {
@@ -89,8 +121,25 @@ public class SabreGrammar implements Grammar<SabreVisitor>{
 	}
 
 	@Override
-	public List<? extends Tokenizer<SabreVisitor>> getTokenizers() {
-		return Collections.unmodifiableList(m_Terminals);
+	public boolean isStartSymbol(Symbol<SabreVisitor> symbol) {
+		return symbol.getSymbolType().equals(m_Start.leftHandSide());
 	}
+
+	@Override
+	public Pattern getTokenRegex() {
+		return m_TokenPattern;
+	}
+
+	@Override
+	public Symbol<SabreVisitor> tokenize(String s) {
+		for(int i=0; i<m_Terminals.size(); ++i){
+			if(m_Patterns.get(i).matcher(s).matches()){
+				return m_Terminals.get(i).tokenize(s);
+			}
+		}
+		throw new RuntimeException("String \""+s+"\" does not match any known token patterns.");
+	}
+
+
 
 }
