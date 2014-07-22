@@ -5,8 +5,8 @@ public class Constants {
 	public static final String IF_REGEX = "if";
 	public static final String THEN_REGEX = "then";
 	public static final String ELSE_REGEX = "else";
-	public static final String TRUE_REGEX = "true";
-	public static final String FALSE_REGEX = "false";
+	public static final String TRUE_REGEX = "true(?=[^a-zA-Z0-9_]|$)";
+	public static final String FALSE_REGEX = "false(?=[^a-zA-Z0-9_]|$)";
 	
 	public static final String ID_REGEX = "[a-zA-Z_]+[a-zA-Z0-9_]*";
 	public static final String NUM_REGEX = "-?[0-9]+(\\.[0-9]+)?";

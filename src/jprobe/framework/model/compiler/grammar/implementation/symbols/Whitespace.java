@@ -2,11 +2,10 @@ package jprobe.framework.model.compiler.grammar.implementation.symbols;
 
 import jprobe.framework.model.compiler.grammar.Symbol;
 import jprobe.framework.model.compiler.grammar.implementation.SabreVisitor;
+import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.Constants;
 
-public final class EOF extends Symbol<SabreVisitor>{
+public class Whitespace extends Terminal{
 	private static final long serialVersionUID = 1L;
-	
-	private static final int HASH = 34920523;
 
 	@Override
 	public void accept(SabreVisitor visitor) {
@@ -15,24 +14,18 @@ public final class EOF extends Symbol<SabreVisitor>{
 
 	@Override
 	public Class<? extends Symbol<SabreVisitor>> getSymbolType() {
-		return EOF.class;
+		return Whitespace.class;
 	}
-	
+
 	@Override
-	public String toString(){
-		return "EOF";
+	public String getRegex() {
+		return Constants.WHITESPACE_REGEX;
 	}
-	
+
 	@Override
-	public int hashCode(){
-		return HASH;
-	}
-	
-	@Override
-	public boolean equals(Object o){
-		if(o == null) return false;
-		if(o == this) return true;
-		return o instanceof EOF;
+	public Symbol<SabreVisitor> tokenize(String s) {
+		//these tokens are ignored
+		return null;
 	}
 
 }

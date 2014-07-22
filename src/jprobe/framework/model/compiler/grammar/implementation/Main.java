@@ -1,4 +1,4 @@
-package jprobe.framework.model.compiler;
+package jprobe.framework.model.compiler.grammar.implementation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,19 +6,18 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 
+import jprobe.framework.model.compiler.grammar.Symbol;
 import jprobe.framework.model.compiler.lexer.Lexer;
-import jprobe.framework.model.compiler.lexer.Token;
-import jprobe.framework.model.compiler.lexer.TokenTypes;
 
 public class Main {
 	
 	public static void main(String[] args){
 		
-		Lexer<TokenTypes> lexer = new Lexer<TokenTypes>(TokenTypes.values());
+		Lexer<SabreVisitor> lexer = new Lexer<SabreVisitor>(new SabreGrammar());
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line;
-		List<Token<TokenTypes>> tokens;
+		List<Symbol<SabreVisitor>> tokens;
 		try {
 			while((line = reader.readLine()) != null){
 				if(line.matches("[qQ]([uU][iI][tT])?")){
@@ -42,9 +41,9 @@ public class Main {
 		
 	}
 	
-	private static <T> void printTokens(Iterable<Token<T>> tokens, PrintStream out){
+	private static <T> void printTokens(Iterable<Symbol<T>> tokens, PrintStream out){
 		boolean first = true;
-		for(Token<T> t : tokens){
+		for(Symbol<T> t : tokens){
 			if(first){
 				first = false;
 			}else{

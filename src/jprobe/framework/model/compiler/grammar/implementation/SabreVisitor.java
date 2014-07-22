@@ -1,5 +1,7 @@
 package jprobe.framework.model.compiler.grammar.implementation;
 
+import jprobe.framework.model.compiler.grammar.implementation.symbols.ErrorToken;
+import jprobe.framework.model.compiler.grammar.implementation.symbols.Program;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.expressions.BooleanExp;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.expressions.CharExp;
 import jprobe.framework.model.compiler.grammar.implementation.symbols.expressions.DoubleExp;
@@ -15,6 +17,8 @@ import jprobe.framework.model.compiler.grammar.implementation.symbols.terminals.
 
 public interface SabreVisitor {
 	
+	public void visit(Program p);
+	
 	public void visit(IdentifierExp e);
 	public void visit(StringExp e);
 	public void visit(CharExp e);
@@ -28,5 +32,7 @@ public interface SabreVisitor {
 	public void visit(IntLiteral n);
 	public void visit(DoubleLiteral n);
 	public void visit(BooleanLiteral b);
+	
+	public void visit(ErrorToken e);
 	
 }

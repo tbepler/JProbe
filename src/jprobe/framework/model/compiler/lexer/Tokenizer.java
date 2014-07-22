@@ -1,4 +1,6 @@
-package jprobe.framework.model.compiler.grammar;
+package jprobe.framework.model.compiler.lexer;
+
+import jprobe.framework.model.compiler.grammar.Symbol;
 
 public interface Tokenizer<V> {
 	
