@@ -31,6 +31,10 @@ public class Parser<V> {
 			State<V> state = states.peek();
 			Symbol<V> lookahead = remaining.peek();
 			Action<V> action = this.getAction(state, lookahead);
+			if(action == null){
+				//ERROR //TODO
+				throw new RuntimeException("Error on token: "+lookahead);
+			}
 			switch(action.id()){
 			case ACCEPT:
 				return symbols.peek();
@@ -61,7 +65,7 @@ public class Parser<V> {
 			State<V> state = states.peek();
 			Action<V> action = this.getAction(state, lookahead);
 			if(action == null){
-				//ERROR
+				//ERROR //TODO
 				throw new RuntimeException("Error on token: "+lookahead);
 			}
 			switch(action.id()){
