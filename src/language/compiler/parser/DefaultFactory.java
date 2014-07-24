@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import language.compiler.grammar.Production;
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 
 public class DefaultFactory implements Factory {
 
@@ -19,7 +19,7 @@ public class DefaultFactory implements Factory {
 	}
 
 	@Override
-	public <V> Action<V> newShiftAction(State<V> next, Class<? extends Symbol<V>> nextToken) {
+	public <V> Action<V> newShiftAction(State<V> next, Class<? extends Token<V>> nextToken) {
 		return Action.newShiftAction(next, nextToken);
 	}
 
@@ -30,7 +30,7 @@ public class DefaultFactory implements Factory {
 
 	@Override
 	public <V> Item<V> newItem(Production<V> production,
-			List<Class<? extends Symbol<V>>> lookahead) {
+			List<Class<? extends Token<V>>> lookahead) {
 		return new Item<V>(production, lookahead);
 	}
 

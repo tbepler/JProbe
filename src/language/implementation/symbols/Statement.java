@@ -1,18 +1,18 @@
 package language.implementation.symbols;
 
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 
 public abstract class Statement extends Rule<Visitor>{
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public Class<? extends Symbol<Visitor>> getSymbolType() {
+	public Class<? extends Token<Visitor>> getSymbolType() {
 		return Statement.class;
 	}
 	
 	@Override
-	public Class<? extends Symbol<Visitor>> leftHandSide(){
+	public Class<? extends Token<Visitor>> leftHandSide(){
 		return Statement.class;
 	}
 

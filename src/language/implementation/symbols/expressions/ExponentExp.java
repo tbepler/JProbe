@@ -4,7 +4,7 @@ import java.util.List;
 
 import language.compiler.ListUtil;
 import language.compiler.grammar.Assoc;
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
 import language.implementation.symbols.Expression;
@@ -13,7 +13,7 @@ import language.implementation.symbols.terminals.Exponent;
 public class ExponentExp extends Expression{
 	private static final long serialVersionUID = 1L;
 	
-	private static final List<Class<? extends Symbol<Visitor>>> RHS =
+	private static final List<Class<? extends Token<Visitor>>> RHS =
 			ListUtil.asUnmodifiableList(Expression.class, Exponent.class, Expression.class);
 	
 	public final Expression left, right;
@@ -31,12 +31,12 @@ public class ExponentExp extends Expression{
 	}
 
 	@Override
-	public List<Class<? extends Symbol<Visitor>>> rightHandSide() {
+	public List<Class<? extends Token<Visitor>>> rightHandSide() {
 		return RHS;
 	}
 
 	@Override
-	public Symbol<Visitor> reduce(List<Symbol<Visitor>> symbols) {
+	public Token<Visitor> reduce(List<Token<Visitor>> symbols) {
 		assert(RHS.size() == symbols.size());
 		for( int i = 0 ; i < RHS.size() ; ++i ){
 			assert(RHS.get(i).equals(symbols.get(i).getSymbolType()));

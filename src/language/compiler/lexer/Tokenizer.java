@@ -1,11 +1,11 @@
 package language.compiler.lexer;
 
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 
 public interface Tokenizer<V> {
 	
 	public String getRegex();
 	
-	public Symbol<V> tokenize(String s);
+	public Token<V> tokenize(String s);
 	
 }

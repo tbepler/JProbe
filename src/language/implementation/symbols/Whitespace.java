@@ -1,6 +1,6 @@
 package language.implementation.symbols;
 
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 
 public class Whitespace extends Terminal{
@@ -12,7 +12,7 @@ public class Whitespace extends Terminal{
 	}
 
 	@Override
-	public Class<? extends Symbol<Visitor>> getSymbolType() {
+	public Class<? extends Token<Visitor>> getSymbolType() {
 		return Whitespace.class;
 	}
 
@@ -22,7 +22,7 @@ public class Whitespace extends Terminal{
 	}
 
 	@Override
-	public Symbol<Visitor> tokenize(String s) {
+	public Token<Visitor> tokenize(String s) {
 		//these tokens are ignored
 		return null;
 	}

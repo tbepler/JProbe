@@ -2,9 +2,9 @@ package language.implementation.symbols;
 
 import language.compiler.grammar.Assoc;
 import language.compiler.grammar.Production;
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 
-public abstract class Rule<V> extends Symbol<V> implements Production<V> {
+public abstract class Rule<V> extends Token<V> implements Production<V> {
 	private static final long serialVersionUID = 1L;
 	
 	@Override
@@ -15,6 +15,11 @@ public abstract class Rule<V> extends Symbol<V> implements Production<V> {
 	@Override
 	public Assoc getAssoc(){
 		return Constants.DEFAULT_ASSOC;
+	}
+	
+	@Override
+	public String toString(){
+		return this.getClass().getSimpleName();
 	}
 
 }

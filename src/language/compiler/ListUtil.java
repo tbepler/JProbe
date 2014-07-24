@@ -1,6 +1,7 @@
 package language.compiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,6 +65,10 @@ public class ListUtil {
 		list.add(e3);
 		list.add(e4);
 		return list;
+	}
+	
+	public static <T> List<T> asUnmodifiableList(T ... es){
+		return Collections.unmodifiableList(Arrays.asList(es));
 	}
 	
 	public static <T> List<T> asUnmodifiableList(){

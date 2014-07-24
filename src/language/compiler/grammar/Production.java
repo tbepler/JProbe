@@ -4,11 +4,11 @@ import java.util.List;
 
 public interface Production<V> {
 	
-	public Class<? extends Symbol<V>> leftHandSide();
+	public Class<? extends Token<V>> leftHandSide();
 	
-	public List<Class<? extends Symbol<V>>> rightHandSide();
+	public List<Class<? extends Token<V>>> rightHandSide();
 	
-	public Symbol<V> reduce(List<Symbol<V>> symbols);
+	public Token<V> reduce(List<Token<V>> symbols);
 	
 	public int getPriority();
 	

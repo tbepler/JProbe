@@ -3,7 +3,7 @@ package language.implementation.symbols.expressions;
 import java.util.List;
 
 import language.compiler.ListUtil;
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.implementation.Equals;
 import language.implementation.Visitor;
 import language.implementation.symbols.Expression;
@@ -12,20 +12,20 @@ import language.implementation.symbols.terminals.DoubleLiteral;
 public class DoubleExp extends Expression{
 	private static final long serialVersionUID = 1L;
 	
-	private static final List<Class<? extends Symbol<Visitor>>> RHS =
-			ListUtil.<Class<? extends Symbol<Visitor>>>asUnmodifiableList(DoubleLiteral.class);
+	private static final List<Class<? extends Token<Visitor>>> RHS =
+			ListUtil.<Class<? extends Token<Visitor>>>asUnmodifiableList(DoubleLiteral.class);
 	
 	public DoubleLiteral n;
 	
 	public DoubleExp(DoubleLiteral n){ this.n = n; }
 
 	@Override
-	public List<Class<? extends Symbol<Visitor>>> rightHandSide() {
+	public List<Class<? extends Token<Visitor>>> rightHandSide() {
 		return RHS;
 	}
 
 	@Override
-	public Expression reduce(List<Symbol<Visitor>> symbols) {
+	public Expression reduce(List<Token<Visitor>> symbols) {
 		assert(symbols.size() == 1);
 		assert(symbols.get(0) instanceof DoubleLiteral);
 		return new DoubleExp((DoubleLiteral) symbols.get(0));

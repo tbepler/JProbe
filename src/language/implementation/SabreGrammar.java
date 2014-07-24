@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import language.compiler.grammar.Grammar;
 import language.compiler.grammar.Production;
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.compiler.lexer.Tokenizer;
 import language.implementation.symbols.Terminal;
 
@@ -20,18 +20,18 @@ public class SabreGrammar implements Grammar<Visitor>{
 	private final Terminal m_EOF;
 	private final Production<Visitor> m_Start;
 	private final List<Terminal> m_Terminals;
-	private final Map<Class<? extends Symbol<Visitor>>, Terminal> m_TerminalTypes;
+	private final Map<Class<? extends Token<Visitor>>, Terminal> m_TerminalTypes;
 	private final Pattern m_TokenPattern;
 	private final List<Pattern> m_Patterns;
 	private final List<Production<Visitor>> m_Productions;
-	private final Map<Class<? extends Symbol<Visitor>>, Collection<Production<Visitor>>> m_LHS;
+	private final Map<Class<? extends Token<Visitor>>, Collection<Production<Visitor>>> m_LHS;
 	
 	public SabreGrammar(){
-		SabreSymbolsFactory fac = new SabreSymbolsFactory();
-		m_EOF = fac.newEOFSymbol();
+		SabreTokenFactory fac = new SabreTokenFactory();
+		m_EOF = fac.newEOFToken();
 		m_Start = fac.newStartProduction();
 		m_Terminals = fac.newTerminals();
-		m_TerminalTypes = new HashMap<Class<? extends Symbol<Visitor>>, Terminal>();
+		m_TerminalTypes = new HashMap<Class<? extends Token<Visitor>>, Terminal>();
 		for(Terminal s : m_Terminals){
 			m_TerminalTypes.put(s.getSymbolType(), s);
 		}
@@ -42,9 +42,9 @@ public class SabreGrammar implements Grammar<Visitor>{
 			m_Patterns.add(Pattern.compile(t.getRegex()));
 		}
 		m_Productions = fac.newProductions();
-		m_LHS = new HashMap<Class<? extends Symbol<Visitor>>, Collection<Production<Visitor>>>();
+		m_LHS = new HashMap<Class<? extends Token<Visitor>>, Collection<Production<Visitor>>>();
 		for(Production<Visitor> p : m_Productions){
-			Class<? extends Symbol<Visitor>> lhs = p.leftHandSide();
+			Class<? extends Token<Visitor>> lhs = p.leftHandSide();
 			if(m_LHS.containsKey(lhs)){
 				m_LHS.get(lhs).add(p);
 			}else{
@@ -75,22 +75,22 @@ public class SabreGrammar implements Grammar<Visitor>{
 	}
 
 	@Override
-	public Collection<Class<? extends Symbol<Visitor>>> getTerminalSymbolTypes() {
+	public Collection<Class<? extends Token<Visitor>>> getTerminalSymbolTypes() {
 		return Collections.unmodifiableSet(m_TerminalTypes.keySet());
 	}
 
 	@Override
-	public boolean isTerminal(Symbol<Visitor> symbol) {
+	public boolean isTerminal(Token<Visitor> symbol) {
 		return m_TerminalTypes.containsKey(symbol.getSymbolType());
 	}
 	
 	@Override
-	public boolean isTerminal(Class<? extends Symbol<Visitor>> symbolType){
+	public boolean isTerminal(Class<? extends Token<Visitor>> symbolType){
 		return m_TerminalTypes.containsKey(symbolType);
 	}
 
 	@Override
-	public Collection<Production<Visitor>> getProductions(Class<? extends Symbol<Visitor>> symbolType) {
+	public Collection<Production<Visitor>> getProductions(Class<? extends Token<Visitor>> symbolType) {
 		if(!m_LHS.containsKey(symbolType)){
 			return Collections.emptySet();
 		}
@@ -108,22 +108,22 @@ public class SabreGrammar implements Grammar<Visitor>{
 	}
 
 	@Override
-	public boolean isEOFSymbol(Symbol<Visitor> symbol) {
+	public boolean isEOFSymbol(Token<Visitor> symbol) {
 		return m_EOF.equals(symbol);
 	}
 	
 	@Override
-	public boolean isEOFSymbol(Class<? extends Symbol<Visitor>> symbolType) {
+	public boolean isEOFSymbol(Class<? extends Token<Visitor>> symbolType) {
 		return m_EOF.getSymbolType().equals(symbolType);
 	}
 
 	@Override
-	public Symbol<Visitor> getEOFSymbol() {
+	public Token<Visitor> getEOFSymbol() {
 		return m_EOF;
 	}
 
 	@Override
-	public boolean isStartSymbol(Symbol<Visitor> symbol) {
+	public boolean isStartSymbol(Token<Visitor> symbol) {
 		return symbol.getSymbolType().equals(m_Start.leftHandSide());
 	}
 
@@ -133,7 +133,7 @@ public class SabreGrammar implements Grammar<Visitor>{
 	}
 
 	@Override
-	public Symbol<Visitor> tokenize(String s) {
+	public Token<Visitor> tokenize(String s) {
 		for(int i=0; i<m_Terminals.size(); ++i){
 			if(m_Patterns.get(i).matcher(s).matches()){
 				return m_Terminals.get(i).tokenize(s);
@@ -143,7 +143,7 @@ public class SabreGrammar implements Grammar<Visitor>{
 	}
 
 	@Override
-	public int getPrecedence(Class<? extends Symbol<Visitor>> symbolType) {
+	public int getPrecedence(Class<? extends Token<Visitor>> symbolType) {
 		return m_TerminalTypes.get(symbolType).getPriority();
 	}
 

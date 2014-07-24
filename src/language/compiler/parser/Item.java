@@ -6,28 +6,28 @@ import java.util.Collections;
 import java.util.List;
 
 import language.compiler.grammar.Production;
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 
 public class Item<V> {
 	
 	private final Production<V> m_Prod;
-	private final List<Class<? extends Symbol<V>>> m_RHS;
-	private final Class<? extends Symbol<V>> m_LHS;
-	private final List<Class<? extends Symbol<V>>> m_Lookahead;
+	private final List<Class<? extends Token<V>>> m_RHS;
+	private final Class<? extends Token<V>> m_LHS;
+	private final List<Class<? extends Token<V>>> m_Lookahead;
 	private final int m_Index;
 	private final int m_Hash;
 	
-	public Item(Production<V> prod, List<Class<? extends Symbol<V>>> lookahead){
+	public Item(Production<V> prod, List<Class<? extends Token<V>>> lookahead){
 		this(0, prod, lookahead);
 	}
 	
-	public Item(int index, Production<V> prod, List<Class<? extends Symbol<V>>> lookahead){
+	public Item(int index, Production<V> prod, List<Class<? extends Token<V>>> lookahead){
 		this(index, lookahead, prod, prod.leftHandSide(), prod.rightHandSide());
 	}
 	
-	protected Item(int index, List<Class<? extends Symbol<V>>> lookahead, Production<V> prod, Class<? extends Symbol<V>> lhs, List<Class<? extends Symbol<V>>> rhs){
+	protected Item(int index, List<Class<? extends Token<V>>> lookahead, Production<V> prod, Class<? extends Token<V>> lhs, List<Class<? extends Token<V>>> rhs){
 		m_Index = index;
-		m_Lookahead = new ArrayList<Class<? extends Symbol<V>>>(lookahead);
+		m_Lookahead = new ArrayList<Class<? extends Token<V>>>(lookahead);
 		m_Prod = prod;
 		m_RHS = rhs;
 		m_LHS = lhs;
@@ -42,16 +42,16 @@ public class Item<V> {
 		return new Item<V>(m_Index+1, m_Lookahead, m_Prod, m_LHS, m_RHS);
 	}
 	
-	public List<Class<? extends Symbol<V>>> alpha(){
-		List<Class<? extends Symbol<V>>> alpha = new ArrayList<Class<? extends Symbol<V>>>();
+	public List<Class<? extends Token<V>>> alpha(){
+		List<Class<? extends Token<V>>> alpha = new ArrayList<Class<? extends Token<V>>>();
 		for(int i=0; i<m_Index; ++i){
 			alpha.add(m_RHS.get(i));
 		}
 		return alpha;
 	}
 	
-	public List<Class<? extends Symbol<V>>> beta(){
-		List<Class<? extends Symbol<V>>> beta = new ArrayList<Class<? extends Symbol<V>>>();
+	public List<Class<? extends Token<V>>> beta(){
+		List<Class<? extends Token<V>>> beta = new ArrayList<Class<? extends Token<V>>>();
 		for(int i=m_Index+1; i<m_RHS.size(); ++i){
 			beta.add(m_RHS.get(i));
 		}
@@ -62,7 +62,7 @@ public class Item<V> {
 		return m_Index < m_RHS.size();
 	}
 	
-	public Class<? extends Symbol<V>> next(){
+	public Class<? extends Token<V>> next(){
 		return m_RHS.get(m_Index);
 	}
 	
@@ -70,7 +70,7 @@ public class Item<V> {
 		return m_Index > 0;
 	}
 	
-	public Class<? extends Symbol<V>> prev(){
+	public Class<? extends Token<V>> prev(){
 		return m_RHS.get(m_Index-1);
 	}
 	
@@ -78,11 +78,11 @@ public class Item<V> {
 		return m_Lookahead.size();
 	}
 	
-	public Class<? extends Symbol<V>> lookahead(int index){
+	public Class<? extends Token<V>> lookahead(int index){
 		return m_Lookahead.get(index);
 	}
 	
-	public List<Class<? extends Symbol<V>>> lookahead(){
+	public List<Class<? extends Token<V>>> lookahead(){
 		return Collections.unmodifiableList(m_Lookahead);
 	}
 	
@@ -112,7 +112,7 @@ public class Item<V> {
 		StringBuilder builder = new StringBuilder();
 		boolean first = true;
 		builder.append("[");
-		for(Class<? extends Symbol<V>> c : m_Lookahead){
+		for(Class<? extends Token<V>> c : m_Lookahead){
 			if(first){
 				first = false;
 			}else{

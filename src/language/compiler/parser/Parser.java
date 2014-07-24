@@ -8,27 +8,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import language.compiler.grammar.Production;
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.compiler.lexer.Lexer;
 
 public class Parser<V> {
 	
-	private final Map<State<V>, Map<Class<? extends Symbol<V>>, Action<V>>> m_Actions;
+	private final Map<State<V>, Map<Class<? extends Token<V>>, Action<V>>> m_Actions;
 	private final State<V> m_Start;
 	
-	public Parser(Map<State<V>, Map<Class<? extends Symbol<V>>, Action<V>>> actionTable, State<V> startState){
+	public Parser(Map<State<V>, Map<Class<? extends Token<V>>, Action<V>>> actionTable, State<V> startState){
 		m_Actions = actionTable;
 		m_Start = startState;
 	}
 	
-	public Symbol<V> parse(List<Symbol<V>> tokens){
+	public Token<V> parse(List<Token<V>> tokens){
 		Deque<State<V>> states = new LinkedList<State<V>>();
 		states.push(m_Start);
-		Deque<Symbol<V>> symbols = new LinkedList<Symbol<V>>();
-		Deque<Symbol<V>> remaining = new LinkedList<Symbol<V>>(tokens);
+		Deque<Token<V>> symbols = new LinkedList<Token<V>>();
+		Deque<Token<V>> remaining = new LinkedList<Token<V>>(tokens);
 		while(true){
 			State<V> state = states.peek();
-			Symbol<V> lookahead = remaining.peek();
+			Token<V> lookahead = remaining.peek();
 			Action<V> action = this.getAction(state, lookahead);
 			if(action == null){
 				//ERROR //TODO
@@ -56,14 +56,14 @@ public class Parser<V> {
 		}
 	}
 	
-	public Symbol<V> parse(Lexer<V> lexer){
+	public Token<V> parse(Lexer<V> lexer){
 		Deque<State<V>> states = new LinkedList<State<V>>();
 		states.push(m_Start);
-		Deque<Symbol<V>> symbols = new LinkedList<Symbol<V>>();
-		Deque<Symbol<V>> lookaheadStack = new LinkedList<Symbol<V>>();
+		Deque<Token<V>> symbols = new LinkedList<Token<V>>();
+		Deque<Token<V>> lookaheadStack = new LinkedList<Token<V>>();
 		lookaheadStack.add(lexer.nextToken());
 		while(true){
-			Symbol<V> lookahead = lookaheadStack.peek();
+			Token<V> lookahead = lookaheadStack.peek();
 			State<V> state = states.peek();
 			Action<V> action = this.getAction(state, lookahead);
 			//System.out.println("Lookahead: "+lookahead);
@@ -102,11 +102,11 @@ public class Parser<V> {
 		}
 	}
 	
-	private static <V> String stackToString(Iterable<Symbol<V>> stack){
+	private static <V> String stackToString(Iterable<Token<V>> stack){
 		StringBuilder b = new StringBuilder();
 		b.append("[");
 		boolean first = true;
-		for(Symbol<?> s : stack){
+		for(Token<?> s : stack){
 			if(first){
 				first = false;
 			}else{
@@ -119,8 +119,8 @@ public class Parser<V> {
 	}
 	
 	
-	private Symbol<V> reduce(Deque<Symbol<V>> stack, Deque<State<V>> states, Production<V> rule){
-		List<Symbol<V>> lhs = new ArrayList<Symbol<V>>();
+	private Token<V> reduce(Deque<Token<V>> stack, Deque<State<V>> states, Production<V> rule){
+		List<Token<V>> lhs = new ArrayList<Token<V>>();
 		int len = rule.rightHandSide().size();
 		for(int i=0; i<len; ++i){
 			lhs.add(0, stack.pop());
@@ -129,11 +129,11 @@ public class Parser<V> {
 		return rule.reduce(lhs);
 	}
 	
-	public Action<V> getAction(State<V> state, Symbol<V> symbol){
+	public Action<V> getAction(State<V> state, Token<V> symbol){
 		return this.getAction(state, symbol.getSymbolType());
 	}
 	
-	public Action<V> getAction(State<V> state, Class<? extends Symbol<V>> symbolType){
+	public Action<V> getAction(State<V> state, Class<? extends Token<V>> symbolType){
 		if(m_Actions.containsKey(state)){
 			return m_Actions.get(state).get(symbolType);
 		}

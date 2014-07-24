@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import language.compiler.grammar.Grammar;
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 
 public class Lexer<T> {
 	
@@ -34,24 +34,24 @@ public class Lexer<T> {
 		return m_Next;
 	}
 	
-	public Symbol<T> nextToken(){
+	public Token<T> nextToken(){
 		String match = m_Scanner.findWithinHorizon(m_TokenPattern, 0);
 		if(match == null){
 			m_Next = false;
 			return m_Grammar.getEOFSymbol();
 		}
-		Symbol<T> token = this.tokenize(match);
+		Token<T> token = this.tokenize(match);
 		if(token == null){
 			return this.nextToken();
 		}
 		return token;
 	}
 	
-	public List<Symbol<T>> lexAllTokens(){
-		List<Symbol<T>> tokens = new ArrayList<Symbol<T>>();
+	public List<Token<T>> lexAllTokens(){
+		List<Token<T>> tokens = new ArrayList<Token<T>>();
 		String match;
 		while((match = m_Scanner.findWithinHorizon(m_TokenPattern, 0)) != null){
-			Symbol<T> token = this.tokenize(match);
+			Token<T> token = this.tokenize(match);
 			//if token is null, then it is an ignored type
 			if(token != null){
 				tokens.add(token);
@@ -62,7 +62,7 @@ public class Lexer<T> {
 		return tokens;
 	}
 	
-	private Symbol<T> tokenize(String s){
+	private Token<T> tokenize(String s){
 		try{
 			return m_Grammar.tokenize(s);
 		}catch(RuntimeException e){

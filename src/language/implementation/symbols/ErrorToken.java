@@ -1,6 +1,6 @@
 package language.implementation.symbols;
 
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 
 public class ErrorToken extends Terminal{
@@ -16,7 +16,7 @@ public class ErrorToken extends Terminal{
 	}
 
 	@Override
-	public Symbol<Visitor> tokenize(String s) {
+	public Token<Visitor> tokenize(String s) {
 		return new ErrorToken(s);
 	}
 
@@ -26,7 +26,7 @@ public class ErrorToken extends Terminal{
 	}
 
 	@Override
-	public Class<? extends Symbol<Visitor>> getSymbolType() {
+	public Class<? extends Token<Visitor>> getSymbolType() {
 		return ErrorToken.class;
 	}
 	

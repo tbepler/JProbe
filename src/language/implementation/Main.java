@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import language.compiler.grammar.Grammar;
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.compiler.lexer.Lexer;
 import language.compiler.parser.Parser;
 import language.compiler.parser.ParserBuilder;
@@ -36,7 +36,7 @@ public class Main {
 				System.out.println();
 				lexer = new Lexer<Visitor>(grammar, line);
 				try{
-					Symbol<Visitor> term = parser.parse(lexer);
+					Token<Visitor> term = parser.parse(lexer);
 					term.accept(v);
 				} catch(RuntimeException e){
 					System.err.println(e.getMessage());

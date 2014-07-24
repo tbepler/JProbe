@@ -1,6 +1,6 @@
 package language.implementation.symbols.terminals;
 
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
 import language.implementation.symbols.Terminal;
@@ -18,7 +18,7 @@ public class CharLiteral extends Terminal {
 	}
 
 	@Override
-	public Class<? extends Symbol<Visitor>> getSymbolType() {
+	public Class<? extends Token<Visitor>> getSymbolType() {
 		return CharLiteral.class;
 	}
 
@@ -28,7 +28,7 @@ public class CharLiteral extends Terminal {
 	}
 
 	@Override
-	public Symbol<Visitor> tokenize(String s) {
+	public Token<Visitor> tokenize(String s) {
 		assert(s.length() == 3);
 		return new CharLiteral(s.charAt(1));
 	}

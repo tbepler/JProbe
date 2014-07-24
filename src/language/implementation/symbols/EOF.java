@@ -1,6 +1,6 @@
 package language.implementation.symbols;
 
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 
 public final class EOF extends Terminal{
@@ -14,7 +14,7 @@ public final class EOF extends Terminal{
 	}
 
 	@Override
-	public Class<? extends Symbol<Visitor>> getSymbolType() {
+	public Class<? extends Token<Visitor>> getSymbolType() {
 		return EOF.class;
 	}
 	
@@ -41,7 +41,7 @@ public final class EOF extends Terminal{
 	}
 
 	@Override
-	public Symbol<Visitor> tokenize(String s) {
+	public Token<Visitor> tokenize(String s) {
 		return null;
 	}
 

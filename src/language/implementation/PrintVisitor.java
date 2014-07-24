@@ -4,11 +4,15 @@ import java.io.PrintStream;
 
 import language.implementation.symbols.ErrorToken;
 import language.implementation.symbols.Program;
+import language.implementation.symbols.declarations.FuncDecl;
+import language.implementation.symbols.declarations.VarDecl;
+import language.implementation.symbols.expressions.AssignExp;
 import language.implementation.symbols.expressions.BooleanExp;
 import language.implementation.symbols.expressions.CharExp;
 import language.implementation.symbols.expressions.DivExp;
 import language.implementation.symbols.expressions.DoubleExp;
 import language.implementation.symbols.expressions.ExponentExp;
+import language.implementation.symbols.expressions.FunctionExp;
 import language.implementation.symbols.expressions.IdentifierExp;
 import language.implementation.symbols.expressions.IntExp;
 import language.implementation.symbols.expressions.MinusExp;
@@ -16,7 +20,7 @@ import language.implementation.symbols.expressions.MultExp;
 import language.implementation.symbols.expressions.PlusExp;
 import language.implementation.symbols.expressions.StringExp;
 import language.implementation.symbols.lists.StmList;
-import language.implementation.symbols.statements.AssignStm;
+import language.implementation.symbols.statements.ExpStm;
 import language.implementation.symbols.terminals.BooleanLiteral;
 import language.implementation.symbols.terminals.CharLiteral;
 import language.implementation.symbols.terminals.DoubleLiteral;
@@ -60,12 +64,22 @@ public class PrintVisitor implements Visitor{
 	}
 
 	@Override
-	public void visit(AssignStm s) {
+	public void visit(ExpStm s) {
 		this.println(s);
 		this.println("{");
 		++indent;
-		s.left.accept(this);
-		s.right.accept(this);
+		s.e.accept(this);
+		--indent;
+		this.println("}");
+	}
+	
+	@Override
+	public void visit(AssignExp e){
+		this.println(e);
+		this.println("{");
+		++indent;
+		e.left.accept(this);
+		e.right.accept(this);
 		--indent;
 		this.println("}");
 	}
@@ -216,6 +230,38 @@ public class PrintVisitor implements Visitor{
 		++indent;
 		e.left.accept(this);
 		e.right.accept(this);
+		--indent;
+		this.println("}");
+	}
+
+	@Override
+	public void visit(FunctionExp e) {
+		this.println(e);
+		this.println("{");
+		++indent;
+		e.left.accept(this);
+		e.right.accept(this);
+		--indent;
+		this.println("}");
+	}
+
+	@Override
+	public void visit(VarDecl d) {
+		this.println(d);
+		this.println("{");
+		++indent;
+		d.id.accept(this);
+		--indent;
+		this.println("}");
+	}
+
+	@Override
+	public void visit(FuncDecl d) {
+		this.println(d);
+		this.println("{");
+		++indent;
+		d.left.accept(this);
+		d.right.accept(this);
 		--indent;
 		this.println("}");
 	}

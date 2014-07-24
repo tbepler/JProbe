@@ -1,6 +1,6 @@
 package language.implementation.symbols.terminals;
 
-import language.compiler.grammar.Symbol;
+import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
 import language.implementation.symbols.Terminal;
@@ -21,7 +21,7 @@ public class BooleanLiteral extends Terminal{
 	}
 
 	@Override
-	public Symbol<Visitor> tokenize(String s) {
+	public Token<Visitor> tokenize(String s) {
 		if(s.matches(Constants.TRUE_REGEX)){
 			return TRUE;
 		}
@@ -34,7 +34,7 @@ public class BooleanLiteral extends Terminal{
 	}
 
 	@Override
-	public Class<? extends Symbol<Visitor>> getSymbolType() {
+	public Class<? extends Token<Visitor>> getSymbolType() {
 		return BooleanLiteral.class;
 	}
 	

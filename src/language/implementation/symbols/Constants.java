@@ -14,6 +14,11 @@ public class Constants {
 	public static final int EXP_PRIORITY = 80;
 	public static final Assoc EXP_ASSOC = Assoc.RIGHT;
 	
+	public static final int FUNCTION_APPLICATION_PRIORITY = 110;
+	public static final Assoc FUNCTION_APPLICATION_ASSOC = Assoc.LEFT;
+	
+	public static final Assoc ASSIGNMENT_ASSOC = Assoc.RIGHT;
+	
 	public static final String IF_REGEX = "if";
 	public static final String THEN_REGEX = "then";
 	public static final String ELSE_REGEX = "else";

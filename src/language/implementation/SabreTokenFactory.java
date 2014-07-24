@@ -4,17 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import language.compiler.grammar.Production;
-import language.compiler.grammar.SymbolsFactory;
+import language.compiler.grammar.TokenFactory;
 import language.implementation.symbols.EOF;
 import language.implementation.symbols.ErrorToken;
 import language.implementation.symbols.Program;
 import language.implementation.symbols.Terminal;
 import language.implementation.symbols.Whitespace;
+import language.implementation.symbols.declarations.FuncDecl;
+import language.implementation.symbols.declarations.VarDecl;
+import language.implementation.symbols.expressions.AssignExp;
 import language.implementation.symbols.expressions.BooleanExp;
 import language.implementation.symbols.expressions.CharExp;
 import language.implementation.symbols.expressions.DivExp;
 import language.implementation.symbols.expressions.DoubleExp;
 import language.implementation.symbols.expressions.ExponentExp;
+import language.implementation.symbols.expressions.FunctionExp;
 import language.implementation.symbols.expressions.IdentifierExp;
 import language.implementation.symbols.expressions.IntExp;
 import language.implementation.symbols.expressions.MinusExp;
@@ -22,7 +26,7 @@ import language.implementation.symbols.expressions.MultExp;
 import language.implementation.symbols.expressions.PlusExp;
 import language.implementation.symbols.expressions.StringExp;
 import language.implementation.symbols.lists.StmList;
-import language.implementation.symbols.statements.AssignStm;
+import language.implementation.symbols.statements.ExpStm;
 import language.implementation.symbols.terminals.Assign;
 import language.implementation.symbols.terminals.BooleanLiteral;
 import language.implementation.symbols.terminals.CharLiteral;
@@ -40,12 +44,12 @@ import language.implementation.symbols.terminals.RParen;
 import language.implementation.symbols.terminals.Semicolon;
 import language.implementation.symbols.terminals.StringLiteral;
 
-public class SabreSymbolsFactory implements SymbolsFactory<Visitor>{	
+public class SabreTokenFactory implements TokenFactory<Visitor>{	
 	
 	
 
 	@Override
-	public Terminal newEOFSymbol() {
+	public Terminal newEOFToken() {
 		return new EOF();
 	}
 	
@@ -58,8 +62,9 @@ public class SabreSymbolsFactory implements SymbolsFactory<Visitor>{
 	public List<Production<Visitor>> newProductions() {
 		List<Production<Visitor>> list = new ArrayList<Production<Visitor>>();
 		list.add(new Program(null));
-		list.add(new AssignStm(null, null));
 		list.add(new StmList(null, null));
+		list.add(new ExpStm(null));
+		list.add(new AssignExp(null, null));
 		list.add(new ExponentExp(null, null));
 		list.add(new PlusExp(null, null));
 		list.add(new MinusExp(null, null));
@@ -71,6 +76,11 @@ public class SabreSymbolsFactory implements SymbolsFactory<Visitor>{
 		list.add(new IdentifierExp(null));
 		list.add(new IntExp(null));
 		list.add(new StringExp(null));
+		list.add(new FunctionExp(null, null));
+		list.add(new VarDecl(null));
+		list.add(new FuncDecl(null, null));
+		//list.add(new ArgumentApplication(null, null));
+		//list.add(new IdentifierCall(null));
 		return list;
 	}
 
