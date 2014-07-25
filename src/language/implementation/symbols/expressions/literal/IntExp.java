@@ -1,4 +1,4 @@
-package language.implementation.symbols.expressions;
+package language.implementation.symbols.expressions.literal;
 
 import java.util.List;
 
@@ -6,18 +6,18 @@ import language.compiler.ListUtil;
 import language.compiler.grammar.Token;
 import language.implementation.Equals;
 import language.implementation.Visitor;
-import language.implementation.symbols.Expression;
-import language.implementation.symbols.terminals.CharLiteral;
+import language.implementation.symbols.expressions.Expression;
+import language.implementation.symbols.terminals.IntLiteral;
 
-public class CharExp extends Expression{
+public class IntExp extends Expression{
 	private static final long serialVersionUID = 1L;
 	
-	private static final List<Class<? extends Token<Visitor>>> RHS = 
-			ListUtil.<Class<? extends Token<Visitor>>>asUnmodifiableList(CharLiteral.class);
+	private static final List<Class<? extends Token<Visitor>>> RHS =
+			ListUtil.<Class<? extends Token<Visitor>>>asUnmodifiableList(IntLiteral.class);
 	
-	public final CharLiteral c;
+	public IntLiteral n;
 	
-	public CharExp(CharLiteral c){ this.c = c; }
+	public IntExp(IntLiteral n){ this.n = n; }
 
 	@Override
 	public List<Class<? extends Token<Visitor>>> rightHandSide() {
@@ -27,8 +27,8 @@ public class CharExp extends Expression{
 	@Override
 	public Expression reduce(List<Token<Visitor>> symbols) {
 		assert(symbols.size() == 1);
-		assert(symbols.get(0) instanceof CharLiteral);
-		return new CharExp((CharLiteral) symbols.get(0));
+		assert(symbols.get(0) instanceof IntLiteral);
+		return new IntExp((IntLiteral) symbols.get(0));
 	}
 
 	@Override
@@ -41,23 +41,23 @@ public class CharExp extends Expression{
 	public String toString(){
 		return this.getClass().getSimpleName() +
 				"\n{\n" +
-				ToString.nestedToString(c) +
+				ToString.nestedToString(n) +
 				"\n}";
 	}
 	*/
 	
 	@Override
 	public int hashCode(){
-		return Equals.hashCode(c);
+		return Equals.hashCode(n);
 	}
 	
 	@Override
 	public boolean equals(Object o){
 		if(o == null) return false;
 		if(o == this) return true;
-		if(o instanceof CharExp){
-			CharExp that = (CharExp)o;
-			return Equals.equals(this.c, that.c);
+		if(o instanceof IntExp){
+			IntExp that = (IntExp)o;
+			return Equals.equals(this.n, that.n);
 		}
 		return false;
 	}

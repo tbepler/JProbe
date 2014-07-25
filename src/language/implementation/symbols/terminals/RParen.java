@@ -18,6 +18,11 @@ public final class RParen extends Terminal{
 	public Token<Visitor> tokenize(String s) {
 		return this;
 	}
+	
+	@Override
+	public int getPriority(){
+		return Constants.UNPACK_PAREN_PRIORITY;
+	}
 
 	@Override
 	public void accept(Visitor visitor) {

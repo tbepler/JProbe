@@ -1,16 +1,15 @@
 package language.implementation.symbols.types;
 
 import language.implementation.Visitor;
-import language.implementation.symbols.Type;
 import language.implementation.symbols.terminals.LParen;
 import language.implementation.symbols.terminals.RParen;
 
-public class BlockType extends Type{
+public class ParenthType extends Type{
 	private static final long serialVersionUID = 1L;
 	
 	public final Type t;
 	
-	public BlockType(LParen l, Type t, RParen r){ this.t = t; }
+	public ParenthType(LParen l, Type t, RParen r){ this.t = t; }
 
 	@Override
 	public void accept(Visitor visitor) {
@@ -38,7 +37,7 @@ public class BlockType extends Type{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		BlockType other = (BlockType) obj;
+		ParenthType other = (ParenthType) obj;
 		if (t == null) {
 			if (other.t != null)
 				return false;

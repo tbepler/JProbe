@@ -23,6 +23,9 @@ public class Constants {
 	public static final int ASSIGNMENT_PRIORITY = 6000;
 	public static final Assoc ASSIGNMENT_ASSOC = Assoc.RIGHT;
 	
+	public static final int UNPACK_PAREN_PRIORITY = 4000;
+	public static final Assoc UNPACK_PAREN_ASSOC = Assoc.LEFT;
+	
 	public static final Assoc FUNC_TYPE_ASSOC = Assoc.RIGHT;
 	
 	public static final String NOT_ID = "(?=[^a-zA-Z0-9_]|$)";

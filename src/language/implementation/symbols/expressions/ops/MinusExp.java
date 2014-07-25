@@ -1,4 +1,4 @@
-package language.implementation.symbols.expressions;
+package language.implementation.symbols.expressions.ops;
 
 import java.util.List;
 
@@ -7,27 +7,27 @@ import language.compiler.grammar.Assoc;
 import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
-import language.implementation.symbols.Expression;
-import language.implementation.symbols.terminals.Exponent;
+import language.implementation.symbols.expressions.Expression;
+import language.implementation.symbols.terminals.Minus;
 
-public class ExponentExp extends Expression{
+public class MinusExp extends Expression{
 	private static final long serialVersionUID = 1L;
 	
 	private static final List<Class<? extends Token<Visitor>>> RHS =
-			ListUtil.asUnmodifiableList(Expression.class, Exponent.class, Expression.class);
+			ListUtil.asUnmodifiableList(Expression.class, Minus.class, Expression.class);
 	
 	public final Expression left, right;
 	
-	public ExponentExp(Expression left, Expression right){this.left = left; this.right = right; }
+	public MinusExp(Expression left, Expression right){this.left = left; this.right = right; }
 	
 	@Override
 	public int getPriority(){
-		return Constants.EXP_PRIORITY;
+		return Constants.PLUS_MINUS_PRIORITY;
 	}
 	
 	@Override
 	public Assoc getAssoc(){
-		return Constants.EXP_ASSOC;
+		return Constants.PLUS_MINUS_MULT_DIV_ASSOC;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class ExponentExp extends Expression{
 		for( int i = 0 ; i < RHS.size() ; ++i ){
 			assert(RHS.get(i).equals(symbols.get(i).getSymbolType()));
 		}
-		return new ExponentExp((Expression) symbols.get(0), (Expression) symbols.get(2));
+		return new MinusExp((Expression) symbols.get(0), (Expression) symbols.get(2));
 	}
 
 	@Override

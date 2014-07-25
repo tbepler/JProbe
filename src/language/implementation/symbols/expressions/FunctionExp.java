@@ -8,7 +8,6 @@ import language.compiler.grammar.Token;
 import language.implementation.Equals;
 import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
-import language.implementation.symbols.Expression;
 
 /**
  * Function application

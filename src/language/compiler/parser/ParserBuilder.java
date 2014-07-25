@@ -93,6 +93,10 @@ public class ParserBuilder<V> {
 						if(containsKeys(actionTable, cur, lookahead)){
 							action = resolveConflict(action, get(actionTable, cur, lookahead));
 						}
+						if(action == null){
+							System.err.println(lookahead);
+							System.err.println(cur);
+						}
 						add(actionTable, cur, lookahead, action);
 					}else{
 						for(Class<? extends Token<V>> terminal : m_Grammar.getTerminalSymbolTypes()){

@@ -2,9 +2,9 @@ package language.implementation.symbols.declarations;
 
 import language.implementation.Visitor;
 import language.implementation.symbols.Declaration;
-import language.implementation.symbols.Type;
 import language.implementation.symbols.lists.IdList;
 import language.implementation.symbols.terminals.DoubleColon;
+import language.implementation.symbols.types.Type;
 
 public class TypeDecl extends Declaration{
 	private static final long serialVersionUID = 1L;

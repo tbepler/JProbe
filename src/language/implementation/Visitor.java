@@ -3,22 +3,22 @@ package language.implementation;
 import language.implementation.symbols.ErrorToken;
 import language.implementation.symbols.Program;
 import language.implementation.symbols.declarations.TypeDecl;
-import language.implementation.symbols.expressions.BooleanExp;
-import language.implementation.symbols.expressions.CharExp;
-import language.implementation.symbols.expressions.DivExp;
-import language.implementation.symbols.expressions.DoubleExp;
-import language.implementation.symbols.expressions.ExponentExp;
 import language.implementation.symbols.expressions.FunctionExp;
 import language.implementation.symbols.expressions.IdentifierExp;
-import language.implementation.symbols.expressions.IntExp;
-import language.implementation.symbols.expressions.MinusExp;
-import language.implementation.symbols.expressions.MultExp;
-import language.implementation.symbols.expressions.PlusExp;
-import language.implementation.symbols.expressions.StringExp;
 import language.implementation.symbols.expressions.assignment.DeclFuncAssignment;
 import language.implementation.symbols.expressions.assignment.DeclVarAssignment;
 import language.implementation.symbols.expressions.assignment.FuncAssignment;
 import language.implementation.symbols.expressions.assignment.VarAssignment;
+import language.implementation.symbols.expressions.literal.BooleanExp;
+import language.implementation.symbols.expressions.literal.CharExp;
+import language.implementation.symbols.expressions.literal.DoubleExp;
+import language.implementation.symbols.expressions.literal.IntExp;
+import language.implementation.symbols.expressions.literal.StringExp;
+import language.implementation.symbols.expressions.ops.DivExp;
+import language.implementation.symbols.expressions.ops.ExponentExp;
+import language.implementation.symbols.expressions.ops.MinusExp;
+import language.implementation.symbols.expressions.ops.MultExp;
+import language.implementation.symbols.expressions.ops.PlusExp;
 import language.implementation.symbols.lists.IdList;
 import language.implementation.symbols.lists.PatternList;
 import language.implementation.symbols.lists.StmList;
@@ -31,9 +31,11 @@ import language.implementation.symbols.terminals.DoubleLiteral;
 import language.implementation.symbols.terminals.Identifier;
 import language.implementation.symbols.terminals.IntLiteral;
 import language.implementation.symbols.terminals.StringLiteral;
-import language.implementation.symbols.types.BlockType;
+import language.implementation.symbols.types.ParenthType;
 import language.implementation.symbols.types.FuncType;
 import language.implementation.symbols.types.IdType;
+import language.implementation.symbols.types.TupleType;
+import language.implementation.symbols.types.TypeList;
 
 public interface Visitor {
 	
@@ -68,8 +70,10 @@ public interface Visitor {
 	public void visit(IdList l);
 	
 	public void visit(IdType t);
-	public void visit(BlockType t);
+	public void visit(ParenthType t);
 	public void visit(FuncType t);
+	public void visit(TupleType t);
+	public void visit(TypeList l);
 	
 	public void visit(PatternList l);
 	public void visit(IdPattern p);

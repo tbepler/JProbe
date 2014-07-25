@@ -6,7 +6,6 @@ import language.compiler.ListUtil;
 import language.compiler.grammar.Token;
 import language.implementation.Equals;
 import language.implementation.Visitor;
-import language.implementation.symbols.Expression;
 import language.implementation.symbols.terminals.Identifier;
 
 public class IdentifierExp extends Expression{

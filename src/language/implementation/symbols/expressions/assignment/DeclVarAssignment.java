@@ -1,8 +1,8 @@
 package language.implementation.symbols.expressions.assignment;
 
 import language.implementation.Visitor;
-import language.implementation.symbols.Expression;
 import language.implementation.symbols.Declaration;
+import language.implementation.symbols.expressions.Expression;
 import language.implementation.symbols.terminals.Assign;
 
 public class DeclVarAssignment extends Assignment{

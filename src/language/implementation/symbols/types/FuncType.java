@@ -3,7 +3,6 @@ package language.implementation.symbols.types;
 import language.compiler.grammar.Assoc;
 import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
-import language.implementation.symbols.Type;
 import language.implementation.symbols.terminals.Arrow;
 
 public class FuncType extends Type{

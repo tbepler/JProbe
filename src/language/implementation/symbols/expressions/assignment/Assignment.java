@@ -2,7 +2,7 @@ package language.implementation.symbols.expressions.assignment;
 
 import language.compiler.grammar.Assoc;
 import language.implementation.symbols.Constants;
-import language.implementation.symbols.Expression;
+import language.implementation.symbols.expressions.Expression;
 
 public abstract class Assignment extends Expression{
 	private static final long serialVersionUID = 1L;

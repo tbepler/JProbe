@@ -1,4 +1,4 @@
-package language.implementation.symbols.expressions;
+package language.implementation.symbols.expressions.literal;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import language.compiler.ListUtil;
 import language.compiler.grammar.Token;
 import language.implementation.Equals;
 import language.implementation.Visitor;
-import language.implementation.symbols.Expression;
+import language.implementation.symbols.expressions.Expression;
 import language.implementation.symbols.terminals.BooleanLiteral;
 
 public class BooleanExp extends Expression{

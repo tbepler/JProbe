@@ -1,4 +1,4 @@
-package language.implementation.symbols.expressions;
+package language.implementation.symbols.expressions.ops;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import language.compiler.grammar.Assoc;
 import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
-import language.implementation.symbols.Expression;
+import language.implementation.symbols.expressions.Expression;
 import language.implementation.symbols.terminals.Plus;
 
 public class PlusExp extends Expression{

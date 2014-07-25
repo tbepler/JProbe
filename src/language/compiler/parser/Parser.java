@@ -66,9 +66,9 @@ public class Parser<V> {
 			Token<V> lookahead = lookaheadStack.peek();
 			State<V> state = states.peek();
 			Action<V> action = this.getAction(state, lookahead);
-			//System.out.println("Lookahead: "+lookahead);
+			System.out.println("Lookahead: "+lookahead);
 			//System.out.println("Stack: "+stackToString(symbols));
-			//System.out.println("Action: "+action);
+			System.out.println("Action: "+action);
 			//System.out.println("State: "+state);
 			if(action == null){
 				//ERROR //TODO
@@ -90,10 +90,10 @@ public class Parser<V> {
 			case SHIFT:
 				symbols.push(lookahead);
 				lookaheadStack.pop();
-				if(!lexer.hasNext()){
+				if(!lexer.hasNext() && lookaheadStack.isEmpty()){
 					throw new RuntimeException("All symbols exhausted and no accept action reached.");
 				}
-				lookaheadStack.push(lexer.nextToken());
+				lookaheadStack.add(lexer.nextToken());
 				states.push(action.nextState());
 				break;
 			default:
