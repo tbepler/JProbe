@@ -4,18 +4,18 @@ import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 
 public final class EOF extends Terminal{
+
 	private static final long serialVersionUID = 1L;
 	
 	private static final int HASH = 34920523;
 
-	@Override
-	public void accept(Visitor visitor) {
-		//do nothing
+	public EOF() {
+		super(EOF.class, null);
 	}
 
 	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return EOF.class;
+	public void accept(Visitor visitor) {
+		//do nothing
 	}
 	
 	@Override
@@ -33,11 +33,6 @@ public final class EOF extends Terminal{
 		if(o == null) return false;
 		if(o == this) return true;
 		return o instanceof EOF;
-	}
-
-	@Override
-	public String getRegex() {
-		return null;
 	}
 
 	@Override

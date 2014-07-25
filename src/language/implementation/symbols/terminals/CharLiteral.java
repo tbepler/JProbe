@@ -10,21 +10,14 @@ public class CharLiteral extends Terminal {
 	
 	public final char c;
 	
-	public CharLiteral(char c){ this.c = c; }
+	public CharLiteral(char c){
+		super(CharLiteral.class, Constants.CHAR_REGEX);
+		this.c = c;
+	}
 
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return CharLiteral.class;
-	}
-
-	@Override
-	public String getRegex() {
-		return Constants.CHAR_REGEX;
 	}
 
 	@Override

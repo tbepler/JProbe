@@ -119,6 +119,8 @@ public class ParserBuilder<V> {
 			return resolveShiftReduce(a2, a1);
 		}
 		System.err.println("Warning: ambiguous grammar ("+m_Grammar+"). Conflict on actions: "+a1+", "+a2);
+		System.err.println(a1.production());
+		System.err.println(a2.production());
 		return null;
 	}
 	

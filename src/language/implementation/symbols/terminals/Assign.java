@@ -8,9 +8,8 @@ import language.implementation.symbols.Terminal;
 public final class Assign extends Terminal{
 	private static final long serialVersionUID = 1L;
 
-	@Override
-	public String getRegex() {
-		return Constants.ASSIGN_REGEX;
+	public Assign() {
+		super(Assign.class, Constants.ASSIGN_REGEX);
 	}
 
 	@Override
@@ -22,10 +21,17 @@ public final class Assign extends Terminal{
 	public void accept(Visitor visitor) {
 		//do nothing
 	}
-
+	
 	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return Assign.class;
+	public int hashCode(){
+		return 135315;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o == this) return true;
+		if(o == null) return false;
+		return o instanceof Assign;
 	}
 
 }

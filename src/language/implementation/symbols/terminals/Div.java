@@ -10,9 +10,8 @@ public final class Div extends Terminal{
 
 	private static final int HASH = 13958942;
 	
-	@Override
-	public String getRegex() {
-		return Constants.DIV_REGEX;
+	public Div(){
+		super(Div.class, Constants.DIV_REGEX);
 	}
 
 	@Override
@@ -23,11 +22,6 @@ public final class Div extends Terminal{
 	@Override
 	public void accept(Visitor visitor) {
 		//do nothing
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return Div.class;
 	}
 	
 	@Override

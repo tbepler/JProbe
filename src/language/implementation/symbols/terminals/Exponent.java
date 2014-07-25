@@ -9,10 +9,9 @@ public final class Exponent extends Terminal{
 	private static final long serialVersionUID = 1L;
 	
 	private static final int HASH = 135;
-
-	@Override
-	public String getRegex() {
-		return Constants.EXP_REGEX;
+	
+	public Exponent(){
+		super(Exponent.class, Constants.EXP_REGEX);
 	}
 
 	@Override
@@ -23,11 +22,6 @@ public final class Exponent extends Terminal{
 	@Override
 	public void accept(Visitor visitor) {
 		//do nothing
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return Exponent.class;
 	}
 	
 	@Override

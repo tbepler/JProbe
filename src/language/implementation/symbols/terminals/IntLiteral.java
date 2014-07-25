@@ -10,21 +10,13 @@ public class IntLiteral extends Terminal{
 
 	public final int i;
 	
-	public IntLiteral(int i) { this.i = i; }
+	public IntLiteral(int i) {
+		super(IntLiteral.class, Constants.INT_REGEX);
+		this.i = i; }
 	
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return IntLiteral.class;
-	}
-
-	@Override
-	public String getRegex() {
-		return Constants.INT_REGEX;
 	}
 
 	@Override

@@ -11,22 +11,13 @@ public class Identifier extends Terminal {
 	public String id;
 	
 	public Identifier(String id){
+		super(Identifier.class, Constants.ID_REGEX);
 		this.id = id;
 	}
 
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return Identifier.class;
-	}
-
-	@Override
-	public String getRegex() {
-		return Constants.ID_REGEX;
 	}
 
 	@Override

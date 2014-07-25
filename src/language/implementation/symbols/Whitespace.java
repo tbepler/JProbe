@@ -6,19 +6,13 @@ import language.implementation.Visitor;
 public class Whitespace extends Terminal{
 	private static final long serialVersionUID = 1L;
 
+	public Whitespace() {
+		super(Whitespace.class, Constants.WHITESPACE_REGEX);
+	}
+
 	@Override
 	public void accept(Visitor visitor) {
 		//do nothing
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return Whitespace.class;
-	}
-
-	@Override
-	public String getRegex() {
-		return Constants.WHITESPACE_REGEX;
 	}
 
 	@Override

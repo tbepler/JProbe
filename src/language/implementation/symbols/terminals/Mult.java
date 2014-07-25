@@ -9,10 +9,9 @@ public class Mult extends Terminal{
 	private static final long serialVersionUID = 1L;
 	
 	private static final int HASH = 9935;
-
-	@Override
-	public String getRegex() {
-		return Constants.MULT_REGEX;
+	
+	public Mult(){
+		super(Mult.class, Constants.MULT_REGEX);
 	}
 
 	@Override
@@ -23,11 +22,6 @@ public class Mult extends Terminal{
 	@Override
 	public void accept(Visitor visitor) {
 		//do nothing
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return Mult.class;
 	}
 	
 	@Override

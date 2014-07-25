@@ -5,13 +5,11 @@ import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
 import language.implementation.symbols.Terminal;
 
-public class Plus extends Terminal{
+public class FunKeyword extends Terminal{
 	private static final long serialVersionUID = 1L;
-	
-	private static final int HASH = 350385;
-	
-	public Plus(){
-		super(Plus.class, Constants.PLUS_REGEX);
+
+	public FunKeyword() {
+		super(FunKeyword.class, Constants.FUNC_DEF_REGEX);
 	}
 
 	@Override
@@ -25,20 +23,8 @@ public class Plus extends Terminal{
 	}
 	
 	@Override
-	public int getPriority(){
-		return Constants.PLUS_MINUS_PRIORITY;
-	}
-	
-	@Override
-	public int hashCode(){
-		return HASH;
-	}
-	
-	@Override
-	public boolean equals(Object o){
-		if(o == null) return false;
-		if(o == this) return true;
-		return o instanceof Plus;
+	public String toString(){
+		return "fun";
 	}
 
 }

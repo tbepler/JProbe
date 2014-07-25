@@ -10,9 +10,8 @@ public final class Comma extends Terminal{
 
 	private static final int HASH = 256924;
 	
-	@Override
-	public String getRegex() {
-		return Constants.COMMA_REGEX;
+	public Comma() {
+		super(Comma.class, Constants.COMMA_REGEX);
 	}
 
 	@Override
@@ -24,15 +23,15 @@ public final class Comma extends Terminal{
 	public void accept(Visitor visitor) {
 		//do nothing
 	}
-
+	
 	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return Comma.class;
+	public int getPriority(){
+		return Constants.LIST_APPEND_PRIORITY;
 	}
 	
 	@Override
 	public String toString(){
-		return ",";
+		return Constants.COMMA_REGEX;
 	}
 	
 	@Override

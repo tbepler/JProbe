@@ -10,9 +10,8 @@ public class Minus extends Terminal{
 	
 	private static int HASH = 246490;
 
-	@Override
-	public String getRegex() {
-		return Constants.MINUS_REGEX;
+	public Minus(){
+		super(Minus.class, Constants.MINUS_REGEX);
 	}
 
 	@Override
@@ -23,11 +22,6 @@ public class Minus extends Terminal{
 	@Override
 	public void accept(Visitor visitor) {
 		//do nothing
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return Minus.class;
 	}
 	
 	@Override

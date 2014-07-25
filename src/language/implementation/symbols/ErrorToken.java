@@ -6,13 +6,11 @@ import language.implementation.Visitor;
 public class ErrorToken extends Terminal{
 	private static final long serialVersionUID = 1L;
 	
-	public String s;
+	public final String s;
 	
-	public ErrorToken(String s){ this.s = s; }
-
-	@Override
-	public String getRegex() {
-		return Constants.ERROR_REGEX;
+	public ErrorToken(String s){
+		super(ErrorToken.class, Constants.ERROR_REGEX);
+		this.s = s; 
 	}
 
 	@Override
@@ -23,11 +21,6 @@ public class ErrorToken extends Terminal{
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return ErrorToken.class;
 	}
 	
 	@Override

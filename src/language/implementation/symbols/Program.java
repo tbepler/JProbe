@@ -15,7 +15,7 @@ public class Program extends Rule<Visitor>{
 	
 	public final Statement stm;
 	
-	public Program(Statement stm){ this.stm = stm; }
+	public Program(Statement stm){ /*TODO*/ super(null); this.stm = stm; }
 
 	@Override
 	public Class<? extends Token<Visitor>> leftHandSide() {

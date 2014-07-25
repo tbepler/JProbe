@@ -10,11 +10,9 @@ public class DoubleLiteral extends Terminal{
 	
 	public final double n;
 	
-	public DoubleLiteral(double n){ this.n = n; }
-	
-	@Override
-	public String getRegex() {
-		return Constants.DOUBLE_REGEX;
+	public DoubleLiteral(double n){
+		super(DoubleLiteral.class, Constants.DOUBLE_REGEX);
+		this.n = n;
 	}
 
 	@Override
@@ -25,11 +23,6 @@ public class DoubleLiteral extends Terminal{
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return DoubleLiteral.class;
 	}
 	
 	@Override

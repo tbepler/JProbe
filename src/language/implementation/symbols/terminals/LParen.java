@@ -10,9 +10,8 @@ public final class LParen extends Terminal{
 	
 	private static final int HASH = 375924592;
 	
-	@Override
-	public String getRegex() {
-		return Constants.LPAREN_REGEX;
+	public LParen(){
+		super(LParen.class, Constants.LPAREN_REGEX);
 	}
 
 	@Override
@@ -23,16 +22,6 @@ public final class LParen extends Terminal{
 	@Override
 	public void accept(Visitor visitor) {
 		//do nothing
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return LParen.class;
-	}
-	
-	@Override
-	public String toString(){
-		return "(";
 	}
 	
 	@Override

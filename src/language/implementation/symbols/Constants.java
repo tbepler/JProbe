@@ -7,6 +7,9 @@ public class Constants {
 	public static final int DEFAULT_PRIORITY = Integer.MAX_VALUE;
 	public static final Assoc DEFAULT_ASSOC = Assoc.NON;
 	
+	public static final int LIST_APPEND_PRIORITY = 200;
+	public static final Assoc LIST_APPEND_ASSOC = Assoc.LEFT;
+	
 	public static final int PLUS_MINUS_PRIORITY = 100;
 	public static final int MULT_DIV_PRIORITY = 90;
 	public static final Assoc PLUS_MINUS_MULT_DIV_ASSOC = Assoc.LEFT;
@@ -18,6 +21,10 @@ public class Constants {
 	public static final Assoc FUNCTION_APPLICATION_ASSOC = Assoc.LEFT;
 	
 	public static final Assoc ASSIGNMENT_ASSOC = Assoc.RIGHT;
+	
+	public static final String NOT_ID = "(?=[^a-zA-Z0-9_]|$)";
+	
+	public static final String FUNC_DEF_REGEX = "fun"+NOT_ID;
 	
 	public static final String IF_REGEX = "if";
 	public static final String THEN_REGEX = "then";
@@ -38,6 +45,9 @@ public class Constants {
 	public static final String LBRACKED_REGEX = "\\[";
 	public static final String RBRACKET_REGEX = "\\]";
 	public static final String SEMICOLON_REGEX = ";";
+	
+	public static final String ARROW_REGEX = "->";
+	public static final String DOUBLE_COLON_REGEX = "::";
 	
 	public static final String BANG_REGEX = "!";
 	

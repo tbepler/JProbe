@@ -5,13 +5,11 @@ import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
 import language.implementation.symbols.Terminal;
 
-public class Plus extends Terminal{
+public class Arrow extends Terminal{
 	private static final long serialVersionUID = 1L;
-	
-	private static final int HASH = 350385;
-	
-	public Plus(){
-		super(Plus.class, Constants.PLUS_REGEX);
+
+	public Arrow() {
+		super(Arrow.class, Constants.ARROW_REGEX);
 	}
 
 	@Override
@@ -25,20 +23,20 @@ public class Plus extends Terminal{
 	}
 	
 	@Override
-	public int getPriority(){
-		return Constants.PLUS_MINUS_PRIORITY;
+	public String toString(){
+		return Constants.ARROW_REGEX;
 	}
 	
 	@Override
 	public int hashCode(){
-		return HASH;
+		return 29385402;
 	}
 	
 	@Override
 	public boolean equals(Object o){
-		if(o == null) return false;
 		if(o == this) return true;
-		return o instanceof Plus;
+		if(o == null) return false;
+		return o instanceof Arrow;
 	}
 
 }

@@ -8,20 +8,20 @@ import language.compiler.grammar.Token;
 import language.implementation.Equals;
 import language.implementation.Visitor;
 import language.implementation.symbols.Constants;
-import language.implementation.symbols.Declaration;
 import language.implementation.symbols.Expression;
 import language.implementation.symbols.terminals.Assign;
+import language.implementation.symbols.terminals.Identifier;
 
-public class AssignExp extends Expression{
+public class AssignVarExp extends Expression{
 	private static final long serialVersionUID = 1L;
 	
 	private static final List<Class<? extends Token<Visitor>>> RHS =
-			ListUtil.asUnmodifiableList(Declaration.class, Assign.class, Expression.class);
+			ListUtil.asUnmodifiableList(Identifier.class, Assign.class, Expression.class);
 	
-	public final Declaration left;
+	public final Identifier left;
 	public final Expression right;
 	
-	public AssignExp(Declaration left, Expression right){ this.left = left; this.right = right; }
+	public AssignVarExp(Identifier left, Expression right){ this.left = left; this.right = right; }
 
 	@Override
 	public List<Class<? extends Token<Visitor>>> rightHandSide() {
@@ -34,7 +34,7 @@ public class AssignExp extends Expression{
 		for(int i=0; i<RHS.size(); ++i){
 			assert(RHS.get(i).isInstance(symbols.get(i)));
 		}
-		return new AssignExp((Declaration)symbols.get(0), (Expression)symbols.get(2));
+		return new AssignVarExp((Identifier)symbols.get(0), (Expression)symbols.get(2));
 	}
 	
 	@Override
@@ -66,8 +66,8 @@ public class AssignExp extends Expression{
 	public boolean equals(Object o){
 		if(o == null) return false;
 		if(o == this) return true;
-		if(o instanceof AssignExp){
-			AssignExp that = (AssignExp) o;
+		if(o instanceof AssignVarExp){
+			AssignVarExp that = (AssignVarExp) o;
 			return Equals.equals(this.left, that.left) && Equals.equals(this.right, that.right);
 		}
 		return false;

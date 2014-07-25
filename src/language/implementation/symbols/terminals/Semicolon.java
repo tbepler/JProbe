@@ -10,9 +10,8 @@ public final class Semicolon extends Terminal{
 	
 	private static final int HASH = 1253683;
 	
-	@Override
-	public String getRegex() {
-		return Constants.SEMICOLON_REGEX;
+	public Semicolon(){
+		super(Semicolon.class, Constants.SEMICOLON_REGEX);
 	}
 
 	@Override
@@ -24,15 +23,10 @@ public final class Semicolon extends Terminal{
 	public void accept(Visitor visitor) {
 		//do nothing
 	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return Semicolon.class;
-	}
 	
 	@Override
 	public String toString(){
-		return ";";
+		return Constants.SEMICOLON_REGEX;
 	}
 	
 	@Override

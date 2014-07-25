@@ -13,12 +13,10 @@ public class BooleanLiteral extends Terminal{
 	
 	public final boolean b;
 	
-	public BooleanLiteral(boolean b){ this.b = b; };
-	
-	@Override
-	public String getRegex() {
-		return Constants.BOOL_REGEX;
-	}
+	public BooleanLiteral(boolean b){ 
+		super(BooleanLiteral.class, Constants.BOOL_REGEX);
+		this.b = b;
+	};
 
 	@Override
 	public Token<Visitor> tokenize(String s) {
@@ -31,11 +29,6 @@ public class BooleanLiteral extends Terminal{
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return BooleanLiteral.class;
 	}
 	
 	@Override

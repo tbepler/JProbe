@@ -10,21 +10,14 @@ public class StringLiteral extends Terminal{
 	
 	public final String s;
 	
-	public StringLiteral(String s){ this.s = s; }
+	public StringLiteral(String s){
+		super(StringLiteral.class, Constants.STR_REGEX);
+		this.s = s;
+	}
 	
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
-	}
-
-	@Override
-	public Class<? extends Token<Visitor>> getSymbolType() {
-		return StringLiteral.class;
-	}
-
-	@Override
-	public String getRegex() {
-		return Constants.STR_REGEX;
 	}
 	
 	private static String process(String s){
