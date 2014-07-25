@@ -2,27 +2,31 @@ package language.implementation.symbols.types;
 
 import language.implementation.Visitor;
 import language.implementation.symbols.Type;
-import language.implementation.symbols.terminals.Identifier;
+import language.implementation.symbols.terminals.LParen;
+import language.implementation.symbols.terminals.RParen;
 
-public class IdType extends Type{
+public class BlockType extends Type{
 	private static final long serialVersionUID = 1L;
-
-	public final Identifier id;
 	
-	public IdType(Identifier id) {
-		this.id = id;
-	}
+	public final Type t;
+	
+	public BlockType(LParen l, Type t, RParen r){ this.t = t; }
 
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
+	}
+	
+	@Override
+	public String toString(){
+		return "( " + t + " )";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((t == null) ? 0 : t.hashCode());
 		return result;
 	}
 
@@ -34,11 +38,11 @@ public class IdType extends Type{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		IdType other = (IdType) obj;
-		if (id == null) {
-			if (other.id != null)
+		BlockType other = (BlockType) obj;
+		if (t == null) {
+			if (other.t != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!t.equals(other.t))
 			return false;
 		return true;
 	}

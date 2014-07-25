@@ -1,30 +1,34 @@
-package language.implementation.symbols.declarations;
+package language.implementation.symbols.types;
 
 import language.compiler.grammar.Assoc;
 import language.implementation.Visitor;
-import language.implementation.symbols.Declaration;
-import language.implementation.symbols.terminals.Identifier;
+import language.implementation.symbols.Constants;
+import language.implementation.symbols.Type;
+import language.implementation.symbols.terminals.Arrow;
 
-public class ParamDecl extends Declaration{
+public class FuncType extends Type{
 	private static final long serialVersionUID = 1L;
 	
-	public final Declaration left;
-	public final Identifier right;
-
-	@SuppressWarnings("unchecked")
-	public ParamDecl(Declaration left, Identifier right) {
-		super(ParamDecl.class, Declaration.class, Identifier.class);
-		this.left = left; this.right = right;
-	}
+	public final Type left;
+	public final Type right;
 	
-	@Override
-	public Assoc getAssoc(){
-		return Assoc.LEFT;
+	public FuncType(Type left, Arrow arrow, Type right){
+		this.left = left; this.right = right;
 	}
 
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
+	}
+	
+	@Override
+	public String toString(){
+		return this.getClass().getSimpleName() + "( " + left + " -> " + right + " )";
+	}
+	
+	@Override
+	public Assoc getAssoc(){
+		return Constants.FUNC_TYPE_ASSOC;
 	}
 
 	@Override
@@ -44,7 +48,7 @@ public class ParamDecl extends Declaration{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ParamDecl other = (ParamDecl) obj;
+		FuncType other = (FuncType) obj;
 		if (left == null) {
 			if (other.left != null)
 				return false;

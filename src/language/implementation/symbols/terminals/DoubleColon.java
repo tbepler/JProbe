@@ -16,6 +16,11 @@ public class DoubleColon extends Terminal{
 	public Token<Visitor> tokenize(String s) {
 		return this;
 	}
+	
+	@Override
+	public int getPriority(){
+		return Constants.ASSIGNMENT_PRIORITY;
+	}
 
 	@Override
 	public void accept(Visitor visitor) {

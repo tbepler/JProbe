@@ -7,7 +7,7 @@ import language.compiler.grammar.Token;
 import language.implementation.Equals;
 import language.implementation.Visitor;
 
-public class Program extends Rule<Visitor>{
+public class Program extends Rule{
 	private static final long serialVersionUID = 1L;
 
 	private static final List<Class<? extends Token<Visitor>>> RHS =
@@ -15,7 +15,7 @@ public class Program extends Rule<Visitor>{
 	
 	public final Statement stm;
 	
-	public Program(Statement stm){ /*TODO*/ super(null); this.stm = stm; }
+	public Program(Statement stm){ this.stm = stm; }
 
 	@Override
 	public Class<? extends Token<Visitor>> leftHandSide() {

@@ -4,7 +4,7 @@ import language.compiler.grammar.Assoc;
 
 public class Constants {
 	
-	public static final int DEFAULT_PRIORITY = Integer.MAX_VALUE;
+	public static final int DEFAULT_PRIORITY = 5000;
 	public static final Assoc DEFAULT_ASSOC = Assoc.NON;
 	
 	public static final int LIST_APPEND_PRIORITY = 200;
@@ -20,7 +20,10 @@ public class Constants {
 	public static final int FUNCTION_APPLICATION_PRIORITY = 110;
 	public static final Assoc FUNCTION_APPLICATION_ASSOC = Assoc.LEFT;
 	
+	public static final int ASSIGNMENT_PRIORITY = 6000;
 	public static final Assoc ASSIGNMENT_ASSOC = Assoc.RIGHT;
+	
+	public static final Assoc FUNC_TYPE_ASSOC = Assoc.RIGHT;
 	
 	public static final String NOT_ID = "(?=[^a-zA-Z0-9_]|$)";
 	
@@ -61,7 +64,7 @@ public class Constants {
 	public static final String GREATER_EQ_REGEX = ">=";
 
 	public static final String PLUS_REGEX = "\\+";
-	public static final String MINUS_REGEX = "-";
+	public static final String MINUS_REGEX = "-(?=[^\\>]|$)";
 	public static final String MULT_REGEX = "\\*";
 	public static final String DIV_REGEX = "/";
 	public static final String EXP_REGEX = "\\^";

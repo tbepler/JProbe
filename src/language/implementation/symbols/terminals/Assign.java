@@ -23,6 +23,16 @@ public final class Assign extends Terminal{
 	}
 	
 	@Override
+	public int getPriority(){
+		return Constants.ASSIGNMENT_PRIORITY;
+	}
+	
+	@Override
+	public String toString(){
+		return Constants.ASSIGN_REGEX;
+	}
+	
+	@Override
 	public int hashCode(){
 		return 135315;
 	}

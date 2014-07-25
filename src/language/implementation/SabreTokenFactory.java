@@ -10,9 +10,7 @@ import language.implementation.symbols.ErrorToken;
 import language.implementation.symbols.Program;
 import language.implementation.symbols.Terminal;
 import language.implementation.symbols.Whitespace;
-import language.implementation.symbols.declarations.ParamDecl;
-import language.implementation.symbols.declarations.FuncDecl;
-import language.implementation.symbols.declarations.TypeSignDecl;
+import language.implementation.symbols.declarations.DeclarationRules;
 import language.implementation.symbols.expressions.AssignFunctionExp;
 import language.implementation.symbols.expressions.AssignVarExp;
 import language.implementation.symbols.expressions.BooleanExp;
@@ -27,8 +25,7 @@ import language.implementation.symbols.expressions.MinusExp;
 import language.implementation.symbols.expressions.MultExp;
 import language.implementation.symbols.expressions.PlusExp;
 import language.implementation.symbols.expressions.StringExp;
-import language.implementation.symbols.lists.IdentifierList;
-import language.implementation.symbols.lists.IdentifierListAppend;
+import language.implementation.symbols.lists.ListRules;
 import language.implementation.symbols.lists.StmList;
 import language.implementation.symbols.statements.DeclStm;
 import language.implementation.symbols.statements.ExpStm;
@@ -51,7 +48,7 @@ import language.implementation.symbols.terminals.Plus;
 import language.implementation.symbols.terminals.RParen;
 import language.implementation.symbols.terminals.Semicolon;
 import language.implementation.symbols.terminals.StringLiteral;
-import language.implementation.symbols.types.IdType;
+import language.implementation.symbols.types.TypeRules;
 
 public class SabreTokenFactory implements TokenFactory<Visitor>{	
 	
@@ -74,8 +71,7 @@ public class SabreTokenFactory implements TokenFactory<Visitor>{
 		list.add(new StmList(null, null));
 		list.add(new ExpStm(null));
 		list.add(new DeclStm(null));
-		list.add(new IdentifierList());
-		list.add(new IdentifierListAppend());
+		ListRules.addAll(list);
 		list.add(new AssignVarExp(null, null));
 		list.add(new AssignFunctionExp(null, null));
 		list.add(new ExponentExp(null, null));
@@ -90,10 +86,8 @@ public class SabreTokenFactory implements TokenFactory<Visitor>{
 		list.add(new IntExp(null));
 		list.add(new StringExp(null));
 		list.add(new FunctionExp(null, null));
-		list.add(new FuncDecl(null));
-		list.add(new ParamDecl(null, null));
-		list.add(new TypeSignDecl(null, null, null));
-		list.add(new IdType(null));
+		DeclarationRules.addAll(list);
+		TypeRules.addAll(list);
 		//list.add(new ArgumentApplication(null, null));
 		//list.add(new IdentifierCall(null));
 		return list;

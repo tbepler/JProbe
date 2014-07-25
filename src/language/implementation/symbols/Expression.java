@@ -3,13 +3,8 @@ package language.implementation.symbols;
 import language.compiler.grammar.Token;
 import language.implementation.Visitor;
 
-public abstract class Expression extends Rule<Visitor>{
+public abstract class Expression extends Rule{
 	private static final long serialVersionUID = 1L;
-	
-	protected Expression(){
-		//TODO
-		super(null);
-	}
 
 	@Override
 	public Class<? extends Token<Visitor>> getSymbolType() {
