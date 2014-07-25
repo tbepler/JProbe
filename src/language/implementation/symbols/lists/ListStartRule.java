@@ -1,4 +1,4 @@
-package language.implementation.symbols;
+package language.implementation.symbols.lists;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +10,7 @@ import language.compiler.grammar.Production;
 import language.compiler.grammar.Token;
 import language.implementation.Equals;
 import language.implementation.Visitor;
+import language.implementation.symbols.Constants;
 
 public abstract class ListStartRule<E extends Token<Visitor>> extends Token<Visitor> implements Production<Visitor>, Iterable<E>{
 	private static final long serialVersionUID = 1L;

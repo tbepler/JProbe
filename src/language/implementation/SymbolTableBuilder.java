@@ -37,12 +37,6 @@ public class SymbolTableBuilder implements Visitor{
 	}
 
 	@Override
-	public void visit(AssignStm s) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void visit(PlusExp e) {
 		// TODO Auto-generated method stub
 		

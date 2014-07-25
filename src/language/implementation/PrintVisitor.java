@@ -5,8 +5,6 @@ import java.io.PrintStream;
 import language.implementation.symbols.ErrorToken;
 import language.implementation.symbols.Program;
 import language.implementation.symbols.declarations.TypeDecl;
-import language.implementation.symbols.expressions.AssignFunctionExp;
-import language.implementation.symbols.expressions.AssignVarExp;
 import language.implementation.symbols.expressions.BooleanExp;
 import language.implementation.symbols.expressions.CharExp;
 import language.implementation.symbols.expressions.DivExp;
@@ -19,8 +17,15 @@ import language.implementation.symbols.expressions.MinusExp;
 import language.implementation.symbols.expressions.MultExp;
 import language.implementation.symbols.expressions.PlusExp;
 import language.implementation.symbols.expressions.StringExp;
+import language.implementation.symbols.expressions.assignment.DeclFuncAssignment;
+import language.implementation.symbols.expressions.assignment.DeclVarAssignment;
+import language.implementation.symbols.expressions.assignment.FuncAssignment;
+import language.implementation.symbols.expressions.assignment.VarAssignment;
 import language.implementation.symbols.lists.IdList;
+import language.implementation.symbols.lists.PatternList;
 import language.implementation.symbols.lists.StmList;
+import language.implementation.symbols.patterns.IdPattern;
+import language.implementation.symbols.patterns.Pattern;
 import language.implementation.symbols.statements.DeclStm;
 import language.implementation.symbols.statements.ExpStm;
 import language.implementation.symbols.terminals.BooleanLiteral;
@@ -74,28 +79,6 @@ public class PrintVisitor implements Visitor{
 		this.println("{");
 		++indent;
 		s.e.accept(this);
-		--indent;
-		this.println("}");
-	}
-	
-	@Override
-	public void visit(AssignVarExp e){
-		this.println(e);
-		this.println("{");
-		++indent;
-		e.left.accept(this);
-		e.right.accept(this);
-		--indent;
-		this.println("}");
-	}
-	
-	@Override
-	public void visit(AssignFunctionExp e){
-		this.println(e);
-		this.println("{");
-		++indent;
-		e.left.accept(this);
-		e.right.accept(this);
 		--indent;
 		this.println("}");
 	}
@@ -321,6 +304,74 @@ public class PrintVisitor implements Visitor{
 		++indent;
 		t.left.accept(this);
 		t.right.accept(this);
+		--indent;
+		this.println("}");
+	}
+
+	@Override
+	public void visit(FuncAssignment e) {
+		this.println(e);
+		this.println("{");
+		++indent;
+		e.ids.accept(this);
+		e.pats.accept(this);
+		e.e.accept(this);
+		--indent;
+		this.println("}");
+	}
+
+	@Override
+	public void visit(DeclFuncAssignment e) {
+		this.println(e);
+		this.println("{");
+		++indent;
+		e.d.accept(this);
+		e.pats.accept(this);
+		e.e.accept(this);
+		--indent;
+		this.println("}");
+	}
+
+	@Override
+	public void visit(VarAssignment e) {
+		this.println(e);
+		this.println("{");
+		++indent;
+		e.ids.accept(this);
+		e.e.accept(this);
+		--indent;
+		this.println("}");
+	}
+
+	@Override
+	public void visit(DeclVarAssignment e) {
+		this.println(e);
+		this.println("{");
+		++indent;
+		e.d.accept(this);
+		e.e.accept(this);
+		--indent;
+		this.println("}");
+	}
+
+	@Override
+	public void visit(PatternList l) {
+		this.println(l);
+		this.println("{");
+		++indent;
+		for(Pattern p : l){
+			p.accept(this);
+		}
+		--indent;
+		this.println("}");
+	}
+
+	@Override
+	public void visit(IdPattern p) {
+		this.println(p);
+		this.println("{");
+		++indent;
+		p.id.accept(this);
 		--indent;
 		this.println("}");
 	}

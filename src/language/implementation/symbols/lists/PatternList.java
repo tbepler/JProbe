@@ -1,32 +1,29 @@
 package language.implementation.symbols.lists;
 
+import java.util.Collections;
 import java.util.List;
 
-import language.compiler.ListUtil;
 import language.compiler.grammar.Token;
 import language.implementation.Visitor;
-import language.implementation.symbols.terminals.Identifier;
+import language.implementation.symbols.patterns.Pattern;
 
-public class IdList extends ListStartRule<Identifier>{
+public class PatternList extends ListStartRule<Pattern>{
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public Class<? extends Token<Visitor>> leftHandSide() {
-		return IdList.class;
+		return PatternList.class;
 	}
 
 	@Override
 	public List<Class<? extends Token<Visitor>>> rightHandSide() {
-		return ListUtil.<Class<? extends Token<Visitor>>>asUnmodifiableList(Identifier.class);
+		return Collections.emptyList();
 	}
 
 	@Override
 	public Token<Visitor> reduce(List<Token<Visitor>> symbols) {
-		assert(symbols.size() == 1);
-		assert(symbols.get(0) instanceof Identifier);
-		IdList list = new IdList();
-		list.append((Identifier) symbols.get(0));
-		return list;
+		assert(symbols.isEmpty());
+		return new PatternList();
 	}
 
 	@Override
@@ -36,9 +33,7 @@ public class IdList extends ListStartRule<Identifier>{
 
 	@Override
 	public Class<? extends Token<Visitor>> getSymbolType() {
-		return IdList.class;
+		return PatternList.class;
 	}
-
-
 
 }
