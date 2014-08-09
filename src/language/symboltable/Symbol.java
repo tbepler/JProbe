@@ -1,32 +1,52 @@
 package language.symboltable;
-
+/**
+ * 
+ * @author Wei
+ *
+ */
 public class Symbol {
+	private Kinds kind;
+	private String id;
 	
 	public Symbol(String id, Kinds kind){
-		//TODO
+		this.kind = kind;
+		this.id = id;
 	}
 	
 	public Kinds kind(){
-		//TODO
-		return null;
+		
+		return this.kind;
 	}
 	
 	public String identifier(){
-		//TODO
-		return null;
+		return this.id;
 	}
 	
 	@Override
 	public boolean equals(Object o){
-		//TODO
+		if(o == null){
+			return false;
+		}
+		
+		if (!(o instanceof Symbol)) {
+			return false;
+		}
+		
+		if(this.id == ((Symbol) o).identifier() && this.kind == ((Symbol)o).kind()){
+			return true;
+		}
+		
 		return false;
 	}
 	
 	@Override
 	public int hashCode(){
-		//TODO
-		return 0;
+		int hash = 17;
+		int prime = 37;
+		
+		hash = hash*prime + id.hashCode();
+		hash = hash*prime + kind.hashCode();
+		
+	    return hash;
 	}
-	
-	
 }

@@ -16,7 +16,7 @@ public class Entry {
 		return 0;
 	}
 	
-	public SymbolTable subtable(){
+	public SymbolTable<?> subtable(){
 		//TODO
 		return null;
 	}
