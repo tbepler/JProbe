@@ -1,0 +1,44 @@
+#Tokens:
+id = "[a-zA-Z][a-zA-Z0-9_]*";
+int = "-?[0-9]+";
+float = "-?[0-9]+\\.[0-9]+";
+!"\\s+";
+error = ".";
+
+#Rules:
+
+assign = idlist, "=", exp;
+
+exp = id
+	| int
+	| float
+	| binop
+	| uop
+	| exp, exp #prec FAPPLY #name FApply
+	| "(", exp, ")"
+	;
+
+binop = exp, "+", exp #name Add
+	| exp, "-", exp #name Subtract
+	| exp, "*", exp #name Multiply
+	| exp, "/", exp #name Divide
+	| exp, "^", exp #name Power
+	;
+
+uop = "-", exp #prec UMINUS #name Negate
+	| "!", exp #prec NOT #name Not
+	;
+
+idlist = id #name IdListHead | idlist, id #name IdListAppend;
+
+
+#Precedence:
+RIGHT FAPPLY;
+LEFT 200 "+", "-";
+LEFT 190 "*", "/";
+RIGHT 180 "^";
+LEFT 170 UMINUS, NOT;
+
+#Pseudonyms:
+
+
