@@ -8,12 +8,12 @@ import util.concurrent.Result;
 import util.progress.ProgressListener;
 import jprobe.framework.Stoppable;
 import jprobe.framework.model.FunctionDefinition;
-import jprobe.framework.model.WorkspaceModel;
+import jprobe.framework.model.Workspace;
 import jprobe.services.data.Data;
 
 public interface WorkspaceController extends Stoppable{
 	
-	public void start(WorkspaceModel model, Properties props);
+	public void start(Workspace model, Properties props);
 	
 	public Collection<FunctionDefinition<?,?>> getFunctions();
 	public Collection<Readable> getReadables();
