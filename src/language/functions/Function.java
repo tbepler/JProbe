@@ -1,4 +1,4 @@
-package language.symboltable;
+package language.functions;
 
 import language.exceptions.InvalidArgumentException;
 /**

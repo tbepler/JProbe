@@ -12,6 +12,8 @@ assign = idlist, "=", exp;
 exp = id
 	| int
 	| float
+	| "true" #name True
+	| "false" #name False
 	| binop
 	| uop
 	| exp, exp #prec FAPPLY #name FApply
@@ -33,7 +35,7 @@ idlist = id #name IdListHead | idlist, id #name IdListAppend;
 
 
 #Precedence:
-RIGHT FAPPLY;
+LEFT FAPPLY;
 LEFT 200 "+", "-";
 LEFT 190 "*", "/";
 RIGHT 180 "^";
