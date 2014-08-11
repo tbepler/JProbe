@@ -39,18 +39,18 @@ public class SymbolTable<V> {
 		return this;
 	}
 	
-	public Collection <Collection<V>> lookup(Symbol s) throws UndefinedSymbolException{
-		Collection<Collection<V>> result = new HashSet<Collection<V>>();
+	public Collection<V> lookup(Symbol s) throws UndefinedSymbolException{
+		Collection<V> result = new HashSet<V>();
 		SymbolTable<V> currParent = this.parent;
 		
 		if(currentTable.containsKey(s)){
-			result.add(currentTable.get(s));
+			result.addAll(currentTable.get(s));
 		}
 		
 		while(currParent!= null){
 			
 			if(currParent.getCurrentTable().containsKey(s)){
-				result.add(currParent.getCurrentTable().get(s));
+				result.addAll(currParent.getCurrentTable().get(s));
 			}
 			
 			currParent = currParent.getParent();

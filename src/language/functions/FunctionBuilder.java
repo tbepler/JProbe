@@ -10,7 +10,6 @@ public class FunctionBuilder<V> {
 	
 	private final List<String> params = new ArrayList<String>();
 	private Node<V> definition = null;
-	private Function f = null;
 	
 	public FunctionBuilder<V> appendParam(String param){
 		params.add(param);
@@ -22,11 +21,9 @@ public class FunctionBuilder<V> {
 		return this;
 	}
 	
-	public Function define(SymbolTable<FunctionBuilder<V>> table){
-		if(f == null){
-			//build function - TODO
-		}
-		return f;
+	public Function define(SymbolTable<FunctionBuilder<V>> scope){
+		//TODO
+		return null;
 	}
 	
 }

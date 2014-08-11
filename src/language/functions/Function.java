@@ -1,21 +1,19 @@
 package language.functions;
 
 import language.exceptions.InvalidArgumentException;
+import language.exceptions.MissingArgsException;
+
+
 /**
  * 
- * @author Wei
+ * @author Wei, Tristan
  *
  */
 
-public class Function {
+public interface Function {
 	
-	public Function(){
-		
-	}
-
-	public Object apply(Object arg) throws InvalidArgumentException{
-		
-		return null;
-	}
+	public Function apply(Thunk arg) throws InvalidArgumentException;
+	
+	public Object evaluate() throws MissingArgsException;
 	
 }
