@@ -1,4 +1,4 @@
-package src.language.symboltable;
+package language.symboltable;
 
 import java.util.ArrayList;
 import java.util.Collection;
