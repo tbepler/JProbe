@@ -29,12 +29,15 @@ public class SymbolTable<V> {
 		this.currentTable = new HashMap<Symbol, Collection<V>>();
 	}
 	
-	public SymbolTable<V> insert(Symbol s, Collection<V> value) throws SymbolAlreadyDefinedException{
+	public SymbolTable<V> insert(Symbol s, V value) throws SymbolAlreadyDefinedException{
 		
-		if(!currentTable.containsKey(s)){
-			currentTable.put(s,value);
-		}else{
-			throw new SymbolAlreadyDefinedException("The current table already contains: "+ s);
+		Collection<V> vals = currentTable.get(s);
+		if(vals == null){
+			vals = new HashSet<V>();
+			currentTable.put(s, vals);
+		}
+		if(!vals.add(value)){
+			throw new SymbolAlreadyDefinedException("The current table already contains: "+ s+", "+value);
 		}
 		return this;
 	}

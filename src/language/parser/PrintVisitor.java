@@ -2,6 +2,7 @@
 package language.parser;
 
 import language.parser.nodes.Add;
+import language.parser.nodes.Assign;
 import language.parser.nodes.Divide;
 import language.parser.nodes.FApply;
 import language.parser.nodes.False;
@@ -13,14 +14,15 @@ import language.parser.nodes.Not;
 import language.parser.nodes.Power;
 import language.parser.nodes.Subtract;
 import language.parser.nodes.True;
-import language.parser.nodes._Punctuation8exp_Punctuation9exp;
+import language.parser.nodes._Punctuation9exp_Punctuation10exp;
+import language.parser.nodes.assignprog;
 import language.parser.nodes.binopexp;
 import language.parser.nodes.errorToken;
+import language.parser.nodes.expprog;
 import language.parser.nodes.floatToken;
 import language.parser.nodes.floatexp;
 import language.parser.nodes.idToken;
 import language.parser.nodes.idexp;
-import language.parser.nodes.idlist_Punctuation5expassign;
 import language.parser.nodes.intToken;
 import language.parser.nodes.intexp;
 import language.parser.nodes.uopexp;
@@ -68,12 +70,53 @@ public class PrintVisitor
     }
 
     @Override
-    public void visit(idlist_Punctuation5expassign node) {
+    public void visit(assignprog node) {
+        this.print(node);
+        this.print("{");
+        depth = (depth + 1);
+        node.assign0 .accept(this);
+        depth = (depth- 1);
+        this.print("}");
+    }
+
+    @Override
+    public void visit(expprog node) {
+        this.print(node);
+        this.print("{");
+        depth = (depth + 1);
+        node.exp0 .accept(this);
+        depth = (depth- 1);
+        this.print("}");
+    }
+
+    @Override
+    public void visit(Assign node) {
         this.print(node);
         this.print("{");
         depth = (depth + 1);
         node.idlist0 .accept(this);
         node.exp1 .accept(this);
+        depth = (depth- 1);
+        this.print("}");
+    }
+
+    @Override
+    public void visit(IdListHead node) {
+        this.print(node);
+        this.print("{");
+        depth = (depth + 1);
+        node.id0 .accept(this);
+        depth = (depth- 1);
+        this.print("}");
+    }
+
+    @Override
+    public void visit(IdListAppend node) {
+        this.print(node);
+        this.print("{");
+        depth = (depth + 1);
+        node.idlist0 .accept(this);
+        node.id1 .accept(this);
         depth = (depth- 1);
         this.print("}");
     }
@@ -158,7 +201,7 @@ public class PrintVisitor
     }
 
     @Override
-    public void visit(_Punctuation8exp_Punctuation9exp node) {
+    public void visit(_Punctuation9exp_Punctuation10exp node) {
         this.print(node);
         this.print("{");
         depth = (depth + 1);
@@ -238,27 +281,6 @@ public class PrintVisitor
         this.print("{");
         depth = (depth + 1);
         node.exp0 .accept(this);
-        depth = (depth- 1);
-        this.print("}");
-    }
-
-    @Override
-    public void visit(IdListHead node) {
-        this.print(node);
-        this.print("{");
-        depth = (depth + 1);
-        node.id0 .accept(this);
-        depth = (depth- 1);
-        this.print("}");
-    }
-
-    @Override
-    public void visit(IdListAppend node) {
-        this.print(node);
-        this.print("{");
-        depth = (depth + 1);
-        node.idlist0 .accept(this);
-        node.id1 .accept(this);
         depth = (depth- 1);
         this.print("}");
     }

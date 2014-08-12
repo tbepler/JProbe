@@ -16,7 +16,7 @@ public class True
 {
 
 
-    public True(_Punctuation6Token _punctuation60) {
+    public True(_Punctuation7Token _punctuation70) {
     }
 
     @Override
@@ -43,10 +43,10 @@ public class True
 
     @Override
     public boolean equals(Object o) {
-        if (this.equals(o)) {
+        if (this == o) {
             return true;
         }
-        if (o.equals(null)) {
+        if (null == o) {
             return false;
         }
         if (!(o instanceof True)) {

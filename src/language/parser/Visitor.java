@@ -2,6 +2,7 @@
 package language.parser;
 
 import language.parser.nodes.Add;
+import language.parser.nodes.Assign;
 import language.parser.nodes.Divide;
 import language.parser.nodes.FApply;
 import language.parser.nodes.False;
@@ -13,14 +14,15 @@ import language.parser.nodes.Not;
 import language.parser.nodes.Power;
 import language.parser.nodes.Subtract;
 import language.parser.nodes.True;
-import language.parser.nodes._Punctuation8exp_Punctuation9exp;
+import language.parser.nodes._Punctuation9exp_Punctuation10exp;
+import language.parser.nodes.assignprog;
 import language.parser.nodes.binopexp;
 import language.parser.nodes.errorToken;
+import language.parser.nodes.expprog;
 import language.parser.nodes.floatToken;
 import language.parser.nodes.floatexp;
 import language.parser.nodes.idToken;
 import language.parser.nodes.idexp;
-import language.parser.nodes.idlist_Punctuation5expassign;
 import language.parser.nodes.intToken;
 import language.parser.nodes.intexp;
 import language.parser.nodes.uopexp;
@@ -44,7 +46,15 @@ public interface Visitor {
 
     public void visit(errorToken node);
 
-    public void visit(idlist_Punctuation5expassign node);
+    public void visit(assignprog node);
+
+    public void visit(expprog node);
+
+    public void visit(Assign node);
+
+    public void visit(IdListHead node);
+
+    public void visit(IdListAppend node);
 
     public void visit(idexp node);
 
@@ -62,7 +72,7 @@ public interface Visitor {
 
     public void visit(FApply node);
 
-    public void visit(_Punctuation8exp_Punctuation9exp node);
+    public void visit(_Punctuation9exp_Punctuation10exp node);
 
     public void visit(Add node);
 
@@ -77,9 +87,5 @@ public interface Visitor {
     public void visit(Negate node);
 
     public void visit(Not node);
-
-    public void visit(IdListHead node);
-
-    public void visit(IdListAppend node);
 
 }

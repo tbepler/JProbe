@@ -5,9 +5,12 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+import language.functions.core.AddProcedure;
+import language.functions.core.CoreFunction;
 import language.parser.Visitor;
 import language.parser.framework.Node;
 import language.parser.nodes.Add;
+import language.parser.nodes.Assign;
 import language.parser.nodes.Divide;
 import language.parser.nodes.FApply;
 import language.parser.nodes.False;
@@ -19,19 +22,18 @@ import language.parser.nodes.Not;
 import language.parser.nodes.Power;
 import language.parser.nodes.Subtract;
 import language.parser.nodes.True;
-import language.parser.nodes._Punctuation8exp_Punctuation9exp;
+import language.parser.nodes._Punctuation9exp_Punctuation10exp;
+import language.parser.nodes.assignprog;
 import language.parser.nodes.binopexp;
 import language.parser.nodes.errorToken;
+import language.parser.nodes.expprog;
 import language.parser.nodes.floatToken;
 import language.parser.nodes.floatexp;
 import language.parser.nodes.idToken;
 import language.parser.nodes.idexp;
-import language.parser.nodes.idlist_Punctuation5expassign;
 import language.parser.nodes.intToken;
 import language.parser.nodes.intexp;
 import language.parser.nodes.uopexp;
-import language.symboltable.Kinds;
-import language.symboltable.Symbol;
 
 public class EvaluationVisitor implements Visitor{
 	
@@ -43,9 +45,8 @@ public class EvaluationVisitor implements Visitor{
 		this.env = env;
 	}
 	
-	public Object result(){
-		Thunk t = memory.pop();
-		return t.exec();
+	public Thunk result(){
+		return memory.pop();
 	}
 	
 	private Thunk lookup(Node<Visitor> node){
@@ -62,8 +63,8 @@ public class EvaluationVisitor implements Visitor{
 	public void visit(idToken node) {
 		String text = node.getText();
 		//TODO type matching
-		FunctionBuilder<Visitor> fun = env.lookup(new Symbol(text, Kinds.FUNCTION));
-		memory.push(new ValueThunk(fun.define(env)));
+		//FunctionBuilder fun = env.lookup(new Symbol(text, Kinds.FUNCTION));
+		memory.push(env.lookup(text));
 	}
 
 	@Override
@@ -84,7 +85,7 @@ public class EvaluationVisitor implements Visitor{
 	}
 
 	@Override
-	public void visit(idlist_Punctuation5expassign node) {
+	public void visit(Assign node) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -130,17 +131,20 @@ public class EvaluationVisitor implements Visitor{
 	}
 
 	@Override
-	public void visit(_Punctuation8exp_Punctuation9exp node) {
+	public void visit(_Punctuation9exp_Punctuation10exp node) {
 		memory.push(lookup(node.exp0));
 	}
 
 	@Override
 	public void visit(final Add node) {
+		final Thunk a = lookup(node.exp0);
+		final Thunk b = lookup(node.exp1);
+		//System.err.println(a +", "+b);
 		memory.push( new Thunk(){
 			@Override protected Object eval() {
 				//TODO define plus operator function
-				Function plus = null;
-				return plus.apply(lookup(node.exp0)).apply(lookup(node.exp1));
+				Function plus = new CoreFunction(new AddProcedure()).setScope(env);
+				return plus.apply(a).apply(b).evaluate();
 			}
 		});
 	}
@@ -219,6 +223,16 @@ public class EvaluationVisitor implements Visitor{
 	@Override
 	public void visit(IdListAppend node) {
 		throw new RuntimeException("Cannot evaluate node: "+node);
+	}
+
+	@Override
+	public void visit(assignprog node) {
+		node.assign0.accept(this);
+	}
+
+	@Override
+	public void visit(expprog node) {
+		node.exp0.accept(this);
 	}
 	
 	

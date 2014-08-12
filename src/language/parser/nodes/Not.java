@@ -17,7 +17,7 @@ public class Not
 
     public final expAbstractNode exp0;
 
-    public Not(_Punctuation10Token _punctuation100, expAbstractNode exp1) {
+    public Not(_Punctuation11Token _punctuation110, expAbstractNode exp1) {
         this.exp0 = exp1;
     }
 
@@ -46,10 +46,10 @@ public class Not
 
     @Override
     public boolean equals(Object o) {
-        if (this.equals(o)) {
+        if (this == o) {
             return true;
         }
-        if (o.equals(null)) {
+        if (null == o) {
             return false;
         }
         if (!(o instanceof Not)) {

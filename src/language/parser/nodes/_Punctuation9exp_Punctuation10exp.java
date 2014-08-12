@@ -11,13 +11,13 @@ import language.parser.Visitor;
  * <P>CodeModel is available from https://codemodel.java.net/.
  * 
  */
-public class _Punctuation8exp_Punctuation9exp
+public class _Punctuation9exp_Punctuation10exp
     extends expAbstractNode
 {
 
     public final expAbstractNode exp0;
 
-    public _Punctuation8exp_Punctuation9exp(_Punctuation8Token _punctuation80, expAbstractNode exp1, _Punctuation9Token _punctuation92) {
+    public _Punctuation9exp_Punctuation10exp(_Punctuation9Token _punctuation90, expAbstractNode exp1, _Punctuation10Token _punctuation102) {
         this.exp0 = exp1;
     }
 
@@ -46,16 +46,16 @@ public class _Punctuation8exp_Punctuation9exp
 
     @Override
     public boolean equals(Object o) {
-        if (this.equals(o)) {
+        if (this == o) {
             return true;
         }
-        if (o.equals(null)) {
+        if (null == o) {
             return false;
         }
-        if (!(o instanceof _Punctuation8exp_Punctuation9exp)) {
+        if (!(o instanceof _Punctuation9exp_Punctuation10exp)) {
             return false;
         }
-        _Punctuation8exp_Punctuation9exp castResult = ((_Punctuation8exp_Punctuation9exp) o);
+        _Punctuation9exp_Punctuation10exp castResult = ((_Punctuation9exp_Punctuation10exp) o);
         if (!this.exp0 .equals(castResult.exp0)) {
             return false;
         }

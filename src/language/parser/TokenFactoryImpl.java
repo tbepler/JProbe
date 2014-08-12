@@ -7,6 +7,7 @@ import language.parser.framework.TokenFactory;
 import language.parser.nodes.EOFToken;
 import language.parser.nodes._Punctuation0Token;
 import language.parser.nodes._Punctuation10Token;
+import language.parser.nodes._Punctuation11Token;
 import language.parser.nodes._Punctuation1Token;
 import language.parser.nodes._Punctuation2Token;
 import language.parser.nodes._Punctuation3Token;
@@ -33,42 +34,44 @@ public class TokenFactoryImpl
     implements TokenFactory<Visitor>
 {
 
-    private final static Pattern[] PATTERNS = new Pattern[] {Pattern.compile("\\Q!\\E"), Pattern.compile("\\Q)\\E"), Pattern.compile("\\Q(\\E"), Pattern.compile("\\Qfalse\\E"), Pattern.compile("\\Qtrue\\E"), Pattern.compile("\\Q=\\E"), Pattern.compile("\\Q^\\E"), Pattern.compile("\\Q/\\E"), Pattern.compile("\\Q*\\E"), Pattern.compile("\\Q-\\E"), Pattern.compile("\\Q+\\E"), Pattern.compile("[a-zA-Z][a-zA-Z0-9_]*"), Pattern.compile("-?[0-9]+"), Pattern.compile("-?[0-9]+\\.[0-9]+"), Pattern.compile("\\s+"), Pattern.compile(".")};
+    private final static Pattern[] PATTERNS = new Pattern[] {Pattern.compile("\\Q!\\E"), Pattern.compile("\\Q)\\E"), Pattern.compile("\\Q(\\E"), Pattern.compile("\\Qfalse\\E"), Pattern.compile("\\Qtrue\\E"), Pattern.compile("\\Q=\\E"), Pattern.compile("\\Qdef\\E"), Pattern.compile("\\Q^\\E"), Pattern.compile("\\Q/\\E"), Pattern.compile("\\Q*\\E"), Pattern.compile("\\Q-\\E"), Pattern.compile("\\Q+\\E"), Pattern.compile("[a-zA-Z][a-zA-Z0-9_]*"), Pattern.compile("-?[0-9]+"), Pattern.compile("-?[0-9]+\\.[0-9]+"), Pattern.compile("\\s+"), Pattern.compile(".")};
 
     @Override
     public Token<Visitor> build(int index) {
         switch (index) {
             case  0 :
-                return new _Punctuation10Token();
+                return new _Punctuation11Token();
             case  1 :
-                return new _Punctuation9Token();
+                return new _Punctuation10Token();
             case  2 :
-                return new _Punctuation8Token();
+                return new _Punctuation9Token();
             case  3 :
-                return new _Punctuation7Token();
+                return new _Punctuation8Token();
             case  4 :
-                return new _Punctuation6Token();
+                return new _Punctuation7Token();
             case  5 :
-                return new _Punctuation5Token();
+                return new _Punctuation6Token();
             case  6 :
-                return new _Punctuation4Token();
+                return new _Punctuation5Token();
             case  7 :
-                return new _Punctuation3Token();
+                return new _Punctuation4Token();
             case  8 :
-                return new _Punctuation2Token();
+                return new _Punctuation3Token();
             case  9 :
-                return new _Punctuation1Token();
+                return new _Punctuation2Token();
             case  10 :
-                return new _Punctuation0Token();
+                return new _Punctuation1Token();
             case  11 :
-                return new idToken();
+                return new _Punctuation0Token();
             case  12 :
-                return new intToken();
+                return new idToken();
             case  13 :
-                return new floatToken();
+                return new intToken();
             case  14 :
-                return null;
+                return new floatToken();
             case  15 :
+                return null;
+            case  16 :
                 return new errorToken();
             default:
                 throw new RuntimeException("Index out of bounds");
@@ -79,36 +82,38 @@ public class TokenFactoryImpl
     public Token<Visitor> build(int index, String text, int line, int pos) {
         switch (index) {
             case  0 :
-                return new _Punctuation10Token(text, line, pos);
+                return new _Punctuation11Token(text, line, pos);
             case  1 :
-                return new _Punctuation9Token(text, line, pos);
+                return new _Punctuation10Token(text, line, pos);
             case  2 :
-                return new _Punctuation8Token(text, line, pos);
+                return new _Punctuation9Token(text, line, pos);
             case  3 :
-                return new _Punctuation7Token(text, line, pos);
+                return new _Punctuation8Token(text, line, pos);
             case  4 :
-                return new _Punctuation6Token(text, line, pos);
+                return new _Punctuation7Token(text, line, pos);
             case  5 :
-                return new _Punctuation5Token(text, line, pos);
+                return new _Punctuation6Token(text, line, pos);
             case  6 :
-                return new _Punctuation4Token(text, line, pos);
+                return new _Punctuation5Token(text, line, pos);
             case  7 :
-                return new _Punctuation3Token(text, line, pos);
+                return new _Punctuation4Token(text, line, pos);
             case  8 :
-                return new _Punctuation2Token(text, line, pos);
+                return new _Punctuation3Token(text, line, pos);
             case  9 :
-                return new _Punctuation1Token(text, line, pos);
+                return new _Punctuation2Token(text, line, pos);
             case  10 :
-                return new _Punctuation0Token(text, line, pos);
+                return new _Punctuation1Token(text, line, pos);
             case  11 :
-                return new idToken(text, line, pos);
+                return new _Punctuation0Token(text, line, pos);
             case  12 :
-                return new intToken(text, line, pos);
+                return new idToken(text, line, pos);
             case  13 :
-                return new floatToken(text, line, pos);
+                return new intToken(text, line, pos);
             case  14 :
-                return null;
+                return new floatToken(text, line, pos);
             case  15 :
+                return null;
+            case  16 :
                 return new errorToken(text, line, pos);
             default:
                 throw new RuntimeException("Index out of bounds");
@@ -127,7 +132,7 @@ public class TokenFactoryImpl
 
     @Override
     public int size() {
-        return  16;
+        return  17;
     }
 
 }

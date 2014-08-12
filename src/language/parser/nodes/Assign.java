@@ -11,16 +11,16 @@ import language.parser.Visitor;
  * <P>CodeModel is available from https://codemodel.java.net/.
  * 
  */
-public class idlist_Punctuation5expassign
+public class Assign
     extends assignAbstractNode
 {
 
     public final idlistAbstractNode idlist0;
     public final expAbstractNode exp1;
 
-    public idlist_Punctuation5expassign(idlistAbstractNode idlist0, _Punctuation5Token _punctuation51, expAbstractNode exp2) {
-        this.idlist0 = idlist0;
-        this.exp1 = exp2;
+    public Assign(_Punctuation5Token _punctuation50, idlistAbstractNode idlist1, _Punctuation6Token _punctuation62, expAbstractNode exp3) {
+        this.idlist0 = idlist1;
+        this.exp1 = exp3;
     }
 
     @Override
@@ -49,16 +49,16 @@ public class idlist_Punctuation5expassign
 
     @Override
     public boolean equals(Object o) {
-        if (this.equals(o)) {
+        if (this == o) {
             return true;
         }
-        if (o.equals(null)) {
+        if (null == o) {
             return false;
         }
-        if (!(o instanceof idlist_Punctuation5expassign)) {
+        if (!(o instanceof Assign)) {
             return false;
         }
-        idlist_Punctuation5expassign castResult = ((idlist_Punctuation5expassign) o);
+        Assign castResult = ((Assign) o);
         if (!this.idlist0 .equals(castResult.idlist0)) {
             return false;
         }

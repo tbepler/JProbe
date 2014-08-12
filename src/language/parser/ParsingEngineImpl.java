@@ -7,6 +7,7 @@ import language.parser.framework.Stack;
 import language.parser.framework.Status;
 import language.parser.framework.Symbol;
 import language.parser.nodes.Add;
+import language.parser.nodes.Assign;
 import language.parser.nodes.Divide;
 import language.parser.nodes.FApply;
 import language.parser.nodes.False;
@@ -20,6 +21,7 @@ import language.parser.nodes.Subtract;
 import language.parser.nodes.True;
 import language.parser.nodes._Punctuation0Token;
 import language.parser.nodes._Punctuation10Token;
+import language.parser.nodes._Punctuation11Token;
 import language.parser.nodes._Punctuation1Token;
 import language.parser.nodes._Punctuation2Token;
 import language.parser.nodes._Punctuation3Token;
@@ -28,17 +30,19 @@ import language.parser.nodes._Punctuation5Token;
 import language.parser.nodes._Punctuation6Token;
 import language.parser.nodes._Punctuation7Token;
 import language.parser.nodes._Punctuation8Token;
-import language.parser.nodes._Punctuation8exp_Punctuation9exp;
 import language.parser.nodes._Punctuation9Token;
+import language.parser.nodes._Punctuation9exp_Punctuation10exp;
+import language.parser.nodes.assignAbstractNode;
+import language.parser.nodes.assignprog;
 import language.parser.nodes.binopAbstractNode;
 import language.parser.nodes.binopexp;
 import language.parser.nodes.expAbstractNode;
+import language.parser.nodes.expprog;
 import language.parser.nodes.floatToken;
 import language.parser.nodes.floatexp;
 import language.parser.nodes.idToken;
 import language.parser.nodes.idexp;
 import language.parser.nodes.idlistAbstractNode;
-import language.parser.nodes.idlist_Punctuation5expassign;
 import language.parser.nodes.intToken;
 import language.parser.nodes.intexp;
 import language.parser.nodes.uopAbstractNode;
@@ -95,8 +99,6 @@ public class ParsingEngineImpl
                 return this.getState17Action(lookahead);
             case  18 :
                 return this.getState18Action(lookahead);
-            case  0 :
-                return this.getState0Action(lookahead);
             case  19 :
                 return this.getState19Action(lookahead);
             case  20 :
@@ -109,6 +111,8 @@ public class ParsingEngineImpl
                 return this.getState23Action(lookahead);
             case  24 :
                 return this.getState24Action(lookahead);
+            case  0 :
+                return this.getState0Action(lookahead);
             case  25 :
                 return this.getState25Action(lookahead);
             case  26 :
@@ -177,6 +181,28 @@ public class ParsingEngineImpl
                 return this.getState57Action(lookahead);
             case  58 :
                 return this.getState58Action(lookahead);
+            case  59 :
+                return this.getState59Action(lookahead);
+            case  60 :
+                return this.getState60Action(lookahead);
+            case  61 :
+                return this.getState61Action(lookahead);
+            case  62 :
+                return this.getState62Action(lookahead);
+            case  63 :
+                return this.getState63Action(lookahead);
+            case  64 :
+                return this.getState64Action(lookahead);
+            case  65 :
+                return this.getState65Action(lookahead);
+            case  66 :
+                return this.getState66Action(lookahead);
+            case  67 :
+                return this.getState67Action(lookahead);
+            case  68 :
+                return this.getState68Action(lookahead);
+            case  69 :
+                return this.getState69Action(lookahead);
             default:
                 throw new RuntimeException("Unknown state.");
         }
@@ -186,294 +212,127 @@ public class ParsingEngineImpl
     public Status advance(Stack<Visitor> stack, Node<Visitor> lookahead) {
         ParsingEngineImpl.Actions action = getAction(stack.curState(), lookahead);
         switch (action) {
-            case REDUCE8 :
-            {
-                expAbstractNode field1 = ((expAbstractNode) stack.pop());
-                expAbstractNode field0 = ((expAbstractNode) stack.pop());
-                Node<Visitor> reduced = new FApply(field0, field1).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case GOTO20 :
-                stack.push(lookahead, 20);
+            case SHIFT69 :
+                stack.push(lookahead, 69);
                 return Status.NOMINAL;
-            case GOTO11 :
-                stack.push(lookahead, 11);
-                return Status.NOMINAL;
-            case GOTO1 :
-                stack.push(lookahead, 1);
-                return Status.NOMINAL;
-            case SHIFT35 :
-                stack.push(lookahead, 35);
-                return Status.NOMINAL;
-            case SHIFT41 :
-                stack.push(lookahead, 41);
-                return Status.NOMINAL;
-            case SHIFT16 :
-                stack.push(lookahead, 16);
-                return Status.NOMINAL;
-            case SHIFT2 :
-                stack.push(lookahead, 2);
-                return Status.NOMINAL;
-            case SHIFT12 :
-                stack.push(lookahead, 12);
-                return Status.NOMINAL;
-            case SHIFT15 :
-                stack.push(lookahead, 15);
-                return Status.NOMINAL;
-            case SHIFT45 :
-                stack.push(lookahead, 45);
-                return Status.NOMINAL;
-            case SHIFT49 :
-                stack.push(lookahead, 49);
-                return Status.NOMINAL;
-            case GOTO40 :
+            case SHIFT40 :
                 stack.push(lookahead, 40);
                 return Status.NOMINAL;
-            case SHIFT6 :
-                stack.push(lookahead, 6);
+            case GOTO56 :
+                stack.push(lookahead, 56);
                 return Status.NOMINAL;
-            case SHIFT48 :
-                stack.push(lookahead, 48);
+            case SHIFT63 :
+                stack.push(lookahead, 63);
                 return Status.NOMINAL;
-            case SHIFT17 :
-                stack.push(lookahead, 17);
+            case GOTO64 :
+                stack.push(lookahead, 64);
                 return Status.NOMINAL;
-            case SHIFT25 :
-                stack.push(lookahead, 25);
-                return Status.NOMINAL;
-            case SHIFT14 :
-                stack.push(lookahead, 14);
+            case GOTO9 :
+                stack.push(lookahead, 9);
                 return Status.NOMINAL;
             case SHIFT58 :
                 stack.push(lookahead, 58);
                 return Status.NOMINAL;
-            case SHIFT47 :
-                stack.push(lookahead, 47);
-                return Status.NOMINAL;
-            case GOTO24 :
-                stack.push(lookahead, 24);
-                return Status.NOMINAL;
-            case SHIFT36 :
-                stack.push(lookahead, 36);
-                return Status.NOMINAL;
-            case GOTO5 :
-                stack.push(lookahead, 5);
-                return Status.NOMINAL;
-            case GOTO44 :
-                stack.push(lookahead, 44);
-                return Status.NOMINAL;
-            case SHIFT29 :
-                stack.push(lookahead, 29);
-                return Status.NOMINAL;
-            case SHIFT31 :
-                stack.push(lookahead, 31);
-                return Status.NOMINAL;
-            case SHIFT28 :
-                stack.push(lookahead, 28);
-                return Status.NOMINAL;
-            case SHIFT50 :
-                stack.push(lookahead, 50);
-                return Status.NOMINAL;
-            case SHIFT53 :
-                stack.push(lookahead, 53);
-                return Status.NOMINAL;
-            case REDUCE16 :
-            {
-                expAbstractNode field1 = ((expAbstractNode) stack.pop());
-                _Punctuation10Token field0 = ((_Punctuation10Token) stack.pop());
-                Node<Visitor> reduced = new Not(field0, field1).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case REDUCE7 :
-            {
-                uopAbstractNode field0 = ((uopAbstractNode) stack.pop());
-                Node<Visitor> reduced = new uopexp(field0).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case GOTO39 :
-                stack.push(lookahead, 39);
-                return Status.NOMINAL;
-            case SHIFT30 :
-                stack.push(lookahead, 30);
-                return Status.NOMINAL;
-            case REDUCE9 :
-            {
-                _Punctuation9Token field2 = ((_Punctuation9Token) stack.pop());
-                expAbstractNode field1 = ((expAbstractNode) stack.pop());
-                _Punctuation8Token field0 = ((_Punctuation8Token) stack.pop());
-                Node<Visitor> reduced = new _Punctuation8exp_Punctuation9exp(field0, field1, field2).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case REDUCE13 :
-            {
-                expAbstractNode field2 = ((expAbstractNode) stack.pop());
-                _Punctuation3Token field1 = ((_Punctuation3Token) stack.pop());
-                expAbstractNode field0 = ((expAbstractNode) stack.pop());
-                Node<Visitor> reduced = new Divide(field0, field1, field2).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case GOTO51 :
-                stack.push(lookahead, 51);
+            case SHIFT6 :
+                stack.push(lookahead, 6);
                 return Status.NOMINAL;
             case SHIFT21 :
                 stack.push(lookahead, 21);
                 return Status.NOMINAL;
-            case REDUCE18 :
-            {
-                idToken field1 = ((idToken) stack.pop());
-                idlistAbstractNode field0 = ((idlistAbstractNode) stack.pop());
-                Node<Visitor> reduced = new IdListAppend(field0, field1).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case REDUCE12 :
-            {
-                expAbstractNode field2 = ((expAbstractNode) stack.pop());
-                _Punctuation2Token field1 = ((_Punctuation2Token) stack.pop());
-                expAbstractNode field0 = ((expAbstractNode) stack.pop());
-                Node<Visitor> reduced = new Multiply(field0, field1, field2).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case GOTO42 :
-                stack.push(lookahead, 42);
+            case SHIFT13 :
+                stack.push(lookahead, 13);
                 return Status.NOMINAL;
-            case REDUCE15 :
-            {
-                expAbstractNode field1 = ((expAbstractNode) stack.pop());
-                _Punctuation1Token field0 = ((_Punctuation1Token) stack.pop());
-                Node<Visitor> reduced = new Negate(field0, field1).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case REDUCE5 :
-            {
-                _Punctuation7Token field0 = ((_Punctuation7Token) stack.pop());
-                Node<Visitor> reduced = new False(field0).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case REDUCE2 :
+            case SHIFT65 :
+                stack.push(lookahead, 65);
+                return Status.NOMINAL;
+            case REDUCE6 :
             {
                 intToken field0 = ((intToken) stack.pop());
                 Node<Visitor> reduced = new intexp(field0).replace();
                 this.advance(stack, reduced);
                 return this.advance(stack, lookahead);
             }
-            case GOTO34 :
-                stack.push(lookahead, 34);
+            case SHIFT2 :
+                stack.push(lookahead, 2);
                 return Status.NOMINAL;
-            case GOTO4 :
-                stack.push(lookahead, 4);
+            case SHIFT50 :
+                stack.push(lookahead, 50);
                 return Status.NOMINAL;
-            case GOTO37 :
-                stack.push(lookahead, 37);
+            case GOTO66 :
+                stack.push(lookahead, 66);
                 return Status.NOMINAL;
-            case SHIFT27 :
-                stack.push(lookahead, 27);
+            case SHIFT11 :
+                stack.push(lookahead, 11);
                 return Status.NOMINAL;
-            case GOTO52 :
-                stack.push(lookahead, 52);
+            case GOTO22 :
+                stack.push(lookahead, 22);
                 return Status.NOMINAL;
-            case GOTO33 :
-                stack.push(lookahead, 33);
+            case GOTO68 :
+                stack.push(lookahead, 68);
                 return Status.NOMINAL;
-            case REDUCE6 :
-            {
-                binopAbstractNode field0 = ((binopAbstractNode) stack.pop());
-                Node<Visitor> reduced = new binopexp(field0).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case GOTO46 :
+            case SHIFT45 :
+                stack.push(lookahead, 45);
+                return Status.NOMINAL;
+            case SHIFT25 :
+                stack.push(lookahead, 25);
+                return Status.NOMINAL;
+            case SHIFT46 :
                 stack.push(lookahead, 46);
                 return Status.NOMINAL;
-            case SHIFT19 :
-                stack.push(lookahead, 19);
+            case SHIFT36 :
+                stack.push(lookahead, 36);
                 return Status.NOMINAL;
-            case SHIFT3 :
-                stack.push(lookahead, 3);
+            case SHIFT55 :
+                stack.push(lookahead, 55);
                 return Status.NOMINAL;
-            case SHIFT56 :
-                stack.push(lookahead, 56);
-                return Status.NOMINAL;
-            case REDUCE0 :
-            {
-                expAbstractNode field2 = ((expAbstractNode) stack.pop());
-                _Punctuation5Token field1 = ((_Punctuation5Token) stack.pop());
-                idlistAbstractNode field0 = ((idlistAbstractNode) stack.pop());
-                Node<Visitor> reduced = new idlist_Punctuation5expassign(field0, field1, field2).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case SHIFT57 :
-                stack.push(lookahead, 57);
+            case SHIFT15 :
+                stack.push(lookahead, 15);
                 return Status.NOMINAL;
             case GOTO43 :
                 stack.push(lookahead, 43);
                 return Status.NOMINAL;
-            case REDUCE17 :
-            {
-                idToken field0 = ((idToken) stack.pop());
-                Node<Visitor> reduced = new IdListHead(field0).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case GOTO26 :
-                stack.push(lookahead, 26);
+            case SHIFT14 :
+                stack.push(lookahead, 14);
                 return Status.NOMINAL;
-            case GOTO13 :
-                stack.push(lookahead, 13);
+            case SHIFT49 :
+                stack.push(lookahead, 49);
                 return Status.NOMINAL;
-            case SHIFT22 :
-                stack.push(lookahead, 22);
-                return Status.NOMINAL;
-            case REDUCE4 :
-            {
-                _Punctuation6Token field0 = ((_Punctuation6Token) stack.pop());
-                Node<Visitor> reduced = new True(field0).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case GOTO23 :
-                stack.push(lookahead, 23);
-                return Status.NOMINAL;
-            case REDUCE10 :
-            {
-                expAbstractNode field2 = ((expAbstractNode) stack.pop());
-                _Punctuation0Token field1 = ((_Punctuation0Token) stack.pop());
-                expAbstractNode field0 = ((expAbstractNode) stack.pop());
-                Node<Visitor> reduced = new Add(field0, field1, field2).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case REDUCE11 :
-            {
-                expAbstractNode field2 = ((expAbstractNode) stack.pop());
-                _Punctuation1Token field1 = ((_Punctuation1Token) stack.pop());
-                expAbstractNode field0 = ((expAbstractNode) stack.pop());
-                Node<Visitor> reduced = new Subtract(field0, field1, field2).replace();
-                this.advance(stack, reduced);
-                return this.advance(stack, lookahead);
-            }
-            case GOTO38 :
+            case SHIFT38 :
                 stack.push(lookahead, 38);
+                return Status.NOMINAL;
+            case SHIFT20 :
+                stack.push(lookahead, 20);
                 return Status.NOMINAL;
             case REDUCE1 :
             {
-                idToken field0 = ((idToken) stack.pop());
-                Node<Visitor> reduced = new idexp(field0).replace();
+                expAbstractNode field0 = ((expAbstractNode) stack.pop());
+                Node<Visitor> reduced = new expprog(field0).replace();
                 this.advance(stack, reduced);
                 return this.advance(stack, lookahead);
             }
-            case ACCEPT:
-                return Status.COMPLETE;
-            case REDUCE14 :
+            case SHIFT18 :
+                stack.push(lookahead, 18);
+                return Status.NOMINAL;
+            case SHIFT31 :
+                stack.push(lookahead, 31);
+                return Status.NOMINAL;
+            case REDUCE13 :
+            {
+                _Punctuation10Token field2 = ((_Punctuation10Token) stack.pop());
+                expAbstractNode field1 = ((expAbstractNode) stack.pop());
+                _Punctuation9Token field0 = ((_Punctuation9Token) stack.pop());
+                Node<Visitor> reduced = new _Punctuation9exp_Punctuation10exp(field0, field1, field2).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case REDUCE9 :
+            {
+                _Punctuation8Token field0 = ((_Punctuation8Token) stack.pop());
+                Node<Visitor> reduced = new False(field0).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case REDUCE18 :
             {
                 expAbstractNode field2 = ((expAbstractNode) stack.pop());
                 _Punctuation4Token field1 = ((_Punctuation4Token) stack.pop());
@@ -482,36 +341,251 @@ public class ParsingEngineImpl
                 this.advance(stack, reduced);
                 return this.advance(stack, lookahead);
             }
-            case GOTO10 :
+            case REDUCE2 :
+            {
+                expAbstractNode field3 = ((expAbstractNode) stack.pop());
+                _Punctuation6Token field2 = ((_Punctuation6Token) stack.pop());
+                idlistAbstractNode field1 = ((idlistAbstractNode) stack.pop());
+                _Punctuation5Token field0 = ((_Punctuation5Token) stack.pop());
+                Node<Visitor> reduced = new Assign(field0, field1, field2, field3).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case GOTO33 :
+                stack.push(lookahead, 33);
+                return Status.NOMINAL;
+            case SHIFT3 :
+                stack.push(lookahead, 3);
+                return Status.NOMINAL;
+            case REDUCE5 :
+            {
+                idToken field0 = ((idToken) stack.pop());
+                Node<Visitor> reduced = new idexp(field0).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case REDUCE3 :
+            {
+                idToken field0 = ((idToken) stack.pop());
+                Node<Visitor> reduced = new IdListHead(field0).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case REDUCE8 :
+            {
+                _Punctuation7Token field0 = ((_Punctuation7Token) stack.pop());
+                Node<Visitor> reduced = new True(field0).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case GOTO23 :
+                stack.push(lookahead, 23);
+                return Status.NOMINAL;
+            case GOTO60 :
+                stack.push(lookahead, 60);
+                return Status.NOMINAL;
+            case REDUCE0 :
+            {
+                assignAbstractNode field0 = ((assignAbstractNode) stack.pop());
+                Node<Visitor> reduced = new assignprog(field0).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case GOTO52 :
+                stack.push(lookahead, 52);
+                return Status.NOMINAL;
+            case SHIFT12 :
+                stack.push(lookahead, 12);
+                return Status.NOMINAL;
+            case GOTO48 :
+                stack.push(lookahead, 48);
+                return Status.NOMINAL;
+            case GOTO7 :
+                stack.push(lookahead, 7);
+                return Status.NOMINAL;
+            case GOTO57 :
+                stack.push(lookahead, 57);
+                return Status.NOMINAL;
+            case REDUCE11 :
+            {
+                uopAbstractNode field0 = ((uopAbstractNode) stack.pop());
+                Node<Visitor> reduced = new uopexp(field0).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case REDUCE14 :
+            {
+                expAbstractNode field2 = ((expAbstractNode) stack.pop());
+                _Punctuation0Token field1 = ((_Punctuation0Token) stack.pop());
+                expAbstractNode field0 = ((expAbstractNode) stack.pop());
+                Node<Visitor> reduced = new Add(field0, field1, field2).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case GOTO17 :
+                stack.push(lookahead, 17);
+                return Status.NOMINAL;
+            case GOTO4 :
+                stack.push(lookahead, 4);
+                return Status.NOMINAL;
+            case GOTO41 :
+                stack.push(lookahead, 41);
+                return Status.NOMINAL;
+            case SHIFT19 :
+                stack.push(lookahead, 19);
+                return Status.NOMINAL;
+            case SHIFT59 :
+                stack.push(lookahead, 59);
+                return Status.NOMINAL;
+            case GOTO54 :
+                stack.push(lookahead, 54);
+                return Status.NOMINAL;
+            case SHIFT16 :
+                stack.push(lookahead, 16);
+                return Status.NOMINAL;
+            case SHIFT10 :
                 stack.push(lookahead, 10);
                 return Status.NOMINAL;
-            case SHIFT18 :
-                stack.push(lookahead, 18);
+            case SHIFT35 :
+                stack.push(lookahead, 35);
                 return Status.NOMINAL;
-            case REDUCE3 :
+            case SHIFT39 :
+                stack.push(lookahead, 39);
+                return Status.NOMINAL;
+            case SHIFT34 :
+                stack.push(lookahead, 34);
+                return Status.NOMINAL;
+            case SHIFT8 :
+                stack.push(lookahead, 8);
+                return Status.NOMINAL;
+            case SHIFT24 :
+                stack.push(lookahead, 24);
+                return Status.NOMINAL;
+            case REDUCE12 :
+            {
+                expAbstractNode field1 = ((expAbstractNode) stack.pop());
+                expAbstractNode field0 = ((expAbstractNode) stack.pop());
+                Node<Visitor> reduced = new FApply(field0, field1).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case REDUCE15 :
+            {
+                expAbstractNode field2 = ((expAbstractNode) stack.pop());
+                _Punctuation1Token field1 = ((_Punctuation1Token) stack.pop());
+                expAbstractNode field0 = ((expAbstractNode) stack.pop());
+                Node<Visitor> reduced = new Subtract(field0, field1, field2).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case GOTO29 :
+                stack.push(lookahead, 29);
+                return Status.NOMINAL;
+            case GOTO28 :
+                stack.push(lookahead, 28);
+                return Status.NOMINAL;
+            case REDUCE19 :
+            {
+                expAbstractNode field1 = ((expAbstractNode) stack.pop());
+                _Punctuation1Token field0 = ((_Punctuation1Token) stack.pop());
+                Node<Visitor> reduced = new Negate(field0, field1).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case REDUCE16 :
+            {
+                expAbstractNode field2 = ((expAbstractNode) stack.pop());
+                _Punctuation2Token field1 = ((_Punctuation2Token) stack.pop());
+                expAbstractNode field0 = ((expAbstractNode) stack.pop());
+                Node<Visitor> reduced = new Multiply(field0, field1, field2).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case GOTO51 :
+                stack.push(lookahead, 51);
+                return Status.NOMINAL;
+            case GOTO30 :
+                stack.push(lookahead, 30);
+                return Status.NOMINAL;
+            case GOTO42 :
+                stack.push(lookahead, 42);
+                return Status.NOMINAL;
+            case GOTO27 :
+                stack.push(lookahead, 27);
+                return Status.NOMINAL;
+            case REDUCE7 :
             {
                 floatToken field0 = ((floatToken) stack.pop());
                 Node<Visitor> reduced = new floatexp(field0).replace();
                 this.advance(stack, reduced);
                 return this.advance(stack, lookahead);
             }
-            case GOTO54 :
-                stack.push(lookahead, 54);
+            case ACCEPT:
+                return Status.COMPLETE;
+            case GOTO44 :
+                stack.push(lookahead, 44);
                 return Status.NOMINAL;
-            case SHIFT9 :
-                stack.push(lookahead, 9);
+            case GOTO37 :
+                stack.push(lookahead, 37);
                 return Status.NOMINAL;
-            case SHIFT32 :
+            case GOTO67 :
+                stack.push(lookahead, 67);
+                return Status.NOMINAL;
+            case REDUCE4 :
+            {
+                idToken field1 = ((idToken) stack.pop());
+                idlistAbstractNode field0 = ((idlistAbstractNode) stack.pop());
+                Node<Visitor> reduced = new IdListAppend(field0, field1).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case SHIFT47 :
+                stack.push(lookahead, 47);
+                return Status.NOMINAL;
+            case SHIFT1 :
+                stack.push(lookahead, 1);
+                return Status.NOMINAL;
+            case GOTO62 :
+                stack.push(lookahead, 62);
+                return Status.NOMINAL;
+            case REDUCE17 :
+            {
+                expAbstractNode field2 = ((expAbstractNode) stack.pop());
+                _Punctuation3Token field1 = ((_Punctuation3Token) stack.pop());
+                expAbstractNode field0 = ((expAbstractNode) stack.pop());
+                Node<Visitor> reduced = new Divide(field0, field1, field2).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case GOTO26 :
+                stack.push(lookahead, 26);
+                return Status.NOMINAL;
+            case REDUCE10 :
+            {
+                binopAbstractNode field0 = ((binopAbstractNode) stack.pop());
+                Node<Visitor> reduced = new binopexp(field0).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case REDUCE20 :
+            {
+                expAbstractNode field1 = ((expAbstractNode) stack.pop());
+                _Punctuation11Token field0 = ((_Punctuation11Token) stack.pop());
+                Node<Visitor> reduced = new Not(field0, field1).replace();
+                this.advance(stack, reduced);
+                return this.advance(stack, lookahead);
+            }
+            case GOTO32 :
                 stack.push(lookahead, 32);
                 return Status.NOMINAL;
-            case SHIFT7 :
-                stack.push(lookahead, 7);
+            case SHIFT5 :
+                stack.push(lookahead, 5);
                 return Status.NOMINAL;
-            case GOTO55 :
-                stack.push(lookahead, 55);
+            case GOTO61 :
+                stack.push(lookahead, 61);
                 return Status.NOMINAL;
-            case GOTO8 :
-                stack.push(lookahead, 8);
+            case SHIFT53 :
+                stack.push(lookahead, 53);
                 return Status.NOMINAL;
             default:
                 return Status.ERROR;
@@ -522,123 +596,145 @@ public class ParsingEngineImpl
     public Symbol[] expectedSymbols(int state) {
         switch (state) {
             case  1 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  2 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  3 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  4 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  5 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  6 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  7 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  8 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  9 :
-                return new Symbol[] {Symbols.ID, Symbols._PUNCTUATION5 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  10 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  11 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  12 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.ID, Symbols._PUNCTUATION6 };
             case  13 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  14 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  15 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  16 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  17 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  18 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
-            case  0 :
-                return new Symbol[] {Symbols.ASSIGN, Symbols.ID, Symbols.IDLIST };
-            case  19 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  20 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
-            case  21 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  22 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  23 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  24 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  25 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  26 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  27 :
-                return new Symbol[] {Symbols.ID, Symbols._PUNCTUATION5 };
-            case  28 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  29 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  30 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
-            case  31 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  32 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  33 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  34 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
-            case  35 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  36 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
-            case  37 :
                 return new Symbol[] {Symbols.EOF };
+            case  18 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  19 :
+                return new Symbol[] {Symbols.ID, Symbols.IDLIST };
+            case  20 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  21 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  22 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  23 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  24 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  0 :
+                return new Symbol[] {Symbols.ASSIGN, Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols.PROG, Symbols._PUNCTUATION1, Symbols._PUNCTUATION5, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  25 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  26 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  27 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  28 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  29 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  30 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  31 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  32 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  33 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  34 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  35 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  36 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  37 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  38 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  39 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  40 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  41 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.EOF };
             case  42 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  43 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  44 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  45 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  46 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  47 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.ID, Symbols._PUNCTUATION6 };
             case  48 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.ID, Symbols._PUNCTUATION6 };
             case  49 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  50 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  51 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  52 :
-                return new Symbol[] {Symbols.ID, Symbols._PUNCTUATION5 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  53 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  54 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  55 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  56 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  57 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             case  58 :
-                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION6, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION7 };
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  59 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  60 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  61 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  62 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  63 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  64 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  65 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION1, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  66 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  67 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  68 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.BINOP, Symbols.ID, Symbols.UOP, Symbols.EXP, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols._PUNCTUATION3, Symbols._PUNCTUATION10, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
+            case  69 :
+                return new Symbol[] {Symbols.INT, Symbols.FLOAT, Symbols.ID, Symbols._PUNCTUATION0, Symbols._PUNCTUATION2, Symbols._PUNCTUATION1, Symbols._PUNCTUATION4, Symbols.EOF, Symbols._PUNCTUATION3, Symbols._PUNCTUATION8, Symbols._PUNCTUATION11, Symbols._PUNCTUATION7, Symbols._PUNCTUATION9 };
             default:
                 throw new RuntimeException("Unknown state");
         }
@@ -647,37 +743,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState1Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.SHIFT69;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.SHIFT40;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.SHIFT63;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.SHIFT35;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.SHIFT41;
+                return ParsingEngineImpl.Actions.GOTO9;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT16;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT2;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.SHIFT12;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE8;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.SHIFT58;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.SHIFT13;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.SHIFT65;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -686,27 +772,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState2Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
+                return ParsingEngineImpl.Actions.REDUCE6;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.REDUCE6;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO40;
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE6;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE6;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
+                return ParsingEngineImpl.Actions.REDUCE6;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT25;
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE6;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT14;
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE6;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -715,27 +805,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState3Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT58;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT47;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
-            case ID:
-                return ParsingEngineImpl.Actions.SHIFT36;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO44;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT29;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT31;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT28;
-            case _PUNCTUATION8 :
                 return ParsingEngineImpl.Actions.SHIFT50;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.SHIFT11;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO68;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT45;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT53;
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT55;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -744,37 +834,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState4Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT69;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT40;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT15;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
+                return ParsingEngineImpl.Actions.GOTO43;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT14;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT49;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT38;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT20;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE1;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE16;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE16;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT18;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT13;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT31;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -783,31 +873,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState5Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case EOF:
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE7;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE7;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE13;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE13;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -816,35 +906,6 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState6Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
-            case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
-            case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO39;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
-            case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT25;
-            case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT30;
-            default:
-                return ParsingEngineImpl.Actions.ERROR;
-        }
-    }
-
-    private ParsingEngineImpl.Actions getState7Action(Node<Visitor> lookahead) {
-        switch (((Symbols) lookahead.symbol())) {
-            case INT:
                 return ParsingEngineImpl.Actions.REDUCE9;
             case FLOAT:
                 return ParsingEngineImpl.Actions.REDUCE9;
@@ -862,14 +923,53 @@ public class ParsingEngineImpl
                 return ParsingEngineImpl.Actions.REDUCE9;
             case _PUNCTUATION3 :
                 return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE9;
             case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE9;
+            case _PUNCTUATION11 :
                 return ParsingEngineImpl.Actions.REDUCE9;
             case _PUNCTUATION7 :
                 return ParsingEngineImpl.Actions.REDUCE9;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE9;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState7Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO43;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT20;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE18;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -881,14 +981,8 @@ public class ParsingEngineImpl
                 return ParsingEngineImpl.Actions.REDUCE13;
             case FLOAT:
                 return ParsingEngineImpl.Actions.REDUCE13;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
             case ID:
                 return ParsingEngineImpl.Actions.REDUCE13;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO51;
             case _PUNCTUATION0 :
                 return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION2 :
@@ -896,18 +990,18 @@ public class ParsingEngineImpl
             case _PUNCTUATION1 :
                 return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT21;
-            case EOF:
                 return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE13;
-            case _PUNCTUATION6 :
                 return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION10 :
                 return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION8 :
                 return ParsingEngineImpl.Actions.REDUCE13;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE13;
+            case _PUNCTUATION9 :
                 return ParsingEngineImpl.Actions.REDUCE13;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
@@ -916,10 +1010,38 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState9Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.SHIFT69;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.SHIFT40;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE18;
-            case _PUNCTUATION5 :
-                return ParsingEngineImpl.Actions.REDUCE18;
+                return ParsingEngineImpl.Actions.SHIFT15;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO43;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.SHIFT14;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.SHIFT49;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT38;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT20;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE2;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.SHIFT18;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.SHIFT13;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT31;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -928,37 +1050,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState10Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
-            case ID:
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case _PUNCTUATION4 :
                 return ParsingEngineImpl.Actions.SHIFT2;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE12;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.SHIFT50;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.SHIFT11;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO33;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT45;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE12;
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE12;
+                return ParsingEngineImpl.Actions.SHIFT36;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE12;
+                return ParsingEngineImpl.Actions.SHIFT3;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -967,31 +1079,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState11Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE7;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE7;
+                return ParsingEngineImpl.Actions.REDUCE5;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -999,28 +1111,10 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState12Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
-            case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
-            case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO42;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT6;
+                return ParsingEngineImpl.Actions.REDUCE3;
             case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
-            case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT25;
-            case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT14;
+                return ParsingEngineImpl.Actions.REDUCE3;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1029,37 +1123,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState13Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE15;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE15;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO51;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case EOF:
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE15;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE15;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.REDUCE8;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.REDUCE8;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE8;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1068,31 +1156,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState14Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT69;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT40;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT63;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO23;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT58;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT13;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT65;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1101,31 +1185,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState15Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE2;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE2;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.REDUCE5;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1134,27 +1218,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState16Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
+                return ParsingEngineImpl.Actions.SHIFT50;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
+                return ParsingEngineImpl.Actions.SHIFT11;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO34;
+                return ParsingEngineImpl.Actions.GOTO60;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
+                return ParsingEngineImpl.Actions.SHIFT45;
             case _PUNCTUATION8 :
                 return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT30;
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT55;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1162,28 +1246,8 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState17Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
-            case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
-            case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
-            case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO4;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
-            case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT25;
-            case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT14;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE0;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1192,44 +1256,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState18Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE9;
+                return ParsingEngineImpl.Actions.SHIFT69;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE9;
+                return ParsingEngineImpl.Actions.SHIFT40;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE9;
-            default:
-                return ParsingEngineImpl.Actions.ERROR;
-        }
-    }
-
-    private ParsingEngineImpl.Actions getState0Action(Node<Visitor> lookahead) {
-        switch (((Symbols) lookahead.symbol())) {
-            case ASSIGN:
-                return ParsingEngineImpl.Actions.GOTO37;
-            case ID:
-                return ParsingEngineImpl.Actions.SHIFT27;
-            case IDLIST:
+                return ParsingEngineImpl.Actions.SHIFT63;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
                 return ParsingEngineImpl.Actions.GOTO52;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT58;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.SHIFT13;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT31;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1237,28 +1284,10 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState19Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
-            case INT:
-                return ParsingEngineImpl.Actions.SHIFT58;
-            case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT47;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT36;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO33;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT29;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT31;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT28;
-            case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT50;
-            case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT53;
+                return ParsingEngineImpl.Actions.SHIFT12;
+            case IDLIST:
+                return ParsingEngineImpl.Actions.GOTO48;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1267,31 +1296,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState20Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.SHIFT69;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.SHIFT40;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE6;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE6;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.SHIFT63;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO7;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE6;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE6;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE6;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.SHIFT58;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.SHIFT13;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.SHIFT65;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1300,27 +1325,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState21Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT58;
+                return ParsingEngineImpl.Actions.SHIFT69;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT47;
+                return ParsingEngineImpl.Actions.SHIFT40;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT36;
+                return ParsingEngineImpl.Actions.SHIFT15;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO46;
+                return ParsingEngineImpl.Actions.GOTO57;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT29;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT31;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT28;
+                return ParsingEngineImpl.Actions.SHIFT58;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT50;
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT53;
+                return ParsingEngineImpl.Actions.SHIFT13;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT31;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1329,31 +1354,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState22Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE11;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE11;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1362,37 +1387,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState23Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT58;
+                return ParsingEngineImpl.Actions.REDUCE14;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT47;
+                return ParsingEngineImpl.Actions.REDUCE14;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT36;
+                return ParsingEngineImpl.Actions.REDUCE14;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO51;
+                return ParsingEngineImpl.Actions.GOTO43;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.SHIFT19;
+                return ParsingEngineImpl.Actions.REDUCE14;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.SHIFT3;
+                return ParsingEngineImpl.Actions.SHIFT49;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT56;
+                return ParsingEngineImpl.Actions.REDUCE14;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT21;
+                return ParsingEngineImpl.Actions.SHIFT20;
             case EOF:
-                return ParsingEngineImpl.Actions.REDUCE0;
+                return ParsingEngineImpl.Actions.REDUCE14;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.SHIFT57;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT31;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT28;
+                return ParsingEngineImpl.Actions.SHIFT18;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT50;
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE14;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT53;
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE14;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1401,31 +1426,66 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState24Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case EOF:
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE6;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE6;
+                return ParsingEngineImpl.Actions.REDUCE13;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE13;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState0Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case ASSIGN:
+                return ParsingEngineImpl.Actions.GOTO17;
+            case INT:
+                return ParsingEngineImpl.Actions.SHIFT69;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.SHIFT40;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
+            case ID:
+                return ParsingEngineImpl.Actions.SHIFT63;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO4;
+            case PROG:
+                return ParsingEngineImpl.Actions.GOTO41;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT58;
+            case _PUNCTUATION5 :
+                return ParsingEngineImpl.Actions.SHIFT19;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.SHIFT13;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT65;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1434,27 +1494,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState25Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
+                return ParsingEngineImpl.Actions.REDUCE9;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.REDUCE9;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO43;
+                return ParsingEngineImpl.Actions.REDUCE9;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE9;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE9;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
+                return ParsingEngineImpl.Actions.REDUCE9;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE9;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE9;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
+                return ParsingEngineImpl.Actions.REDUCE9;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT25;
+                return ParsingEngineImpl.Actions.REDUCE9;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE9;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT14;
+                return ParsingEngineImpl.Actions.REDUCE9;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE9;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1463,37 +1527,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState26Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT50;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT59;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO51;
+                return ParsingEngineImpl.Actions.GOTO54;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT16;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT10;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT35;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE16;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT39;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE16;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT34;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT8;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE16;
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT3;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1501,10 +1565,38 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState27Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE17;
-            case _PUNCTUATION5 :
-                return ParsingEngineImpl.Actions.REDUCE17;
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO54;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT39;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION10 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE18;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE18;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1513,27 +1605,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState28Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT58;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT47;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
-            case ID:
-                return ParsingEngineImpl.Actions.SHIFT36;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO26;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT29;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT31;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT28;
-            case _PUNCTUATION8 :
                 return ParsingEngineImpl.Actions.SHIFT50;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.SHIFT59;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO54;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.SHIFT16;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.SHIFT10;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT35;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT39;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.SHIFT34;
+            case _PUNCTUATION10 :
+                return ParsingEngineImpl.Actions.SHIFT24;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT53;
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT3;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1542,27 +1644,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState29Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT58;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT47;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT36;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO13;
+                return ParsingEngineImpl.Actions.GOTO54;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.SHIFT16;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.SHIFT10;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT29;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT31;
+                return ParsingEngineImpl.Actions.SHIFT35;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT39;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.SHIFT34;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT28;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT50;
+                return ParsingEngineImpl.Actions.REDUCE12;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE12;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT22;
+                return ParsingEngineImpl.Actions.REDUCE12;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE12;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1571,31 +1683,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState30Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE15;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE15;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO29;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT10;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT39;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.SHIFT34;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE15;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE15;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1604,31 +1722,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState31Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE4;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE4;
+                return ParsingEngineImpl.Actions.SHIFT50;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE4;
+                return ParsingEngineImpl.Actions.SHIFT11;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO28;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE4;
+                return ParsingEngineImpl.Actions.SHIFT45;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE4;
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE4;
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT55;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1637,27 +1751,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState32Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT58;
+                return ParsingEngineImpl.Actions.REDUCE19;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT47;
+                return ParsingEngineImpl.Actions.REDUCE19;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT36;
+                return ParsingEngineImpl.Actions.REDUCE19;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO23;
+                return ParsingEngineImpl.Actions.GOTO43;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE19;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT29;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT31;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT28;
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE19;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT50;
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE19;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT53;
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE19;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1666,37 +1790,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState33Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.REDUCE16;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.REDUCE16;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.REDUCE16;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO51;
+                return ParsingEngineImpl.Actions.GOTO54;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.REDUCE16;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.SHIFT3;
+                return ParsingEngineImpl.Actions.REDUCE16;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.REDUCE16;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT21;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.SHIFT39;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.SHIFT57;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.REDUCE16;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.REDUCE16;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE16;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE16;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1705,37 +1829,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState34Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
-            case ID:
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.SHIFT41;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case _PUNCTUATION4 :
                 return ParsingEngineImpl.Actions.SHIFT2;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.SHIFT12;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE11;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.SHIFT50;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.SHIFT11;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO51;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT45;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE11;
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE11;
+                return ParsingEngineImpl.Actions.SHIFT36;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE11;
+                return ParsingEngineImpl.Actions.SHIFT3;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1744,27 +1858,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState35Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
+                return ParsingEngineImpl.Actions.SHIFT50;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
+                return ParsingEngineImpl.Actions.SHIFT59;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO38;
+                return ParsingEngineImpl.Actions.GOTO30;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
+                return ParsingEngineImpl.Actions.SHIFT45;
             case _PUNCTUATION8 :
                 return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT14;
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT55;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1773,31 +1887,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState36Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE1;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE1;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE8;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.REDUCE8;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE8;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1805,8 +1919,38 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState37Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
-            case EOF:
-                return ParsingEngineImpl.Actions.ACCEPT;
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO54;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION10 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE19;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE19;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1815,37 +1959,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState38Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.SHIFT69;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.SHIFT40;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.SHIFT15;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE10;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.SHIFT41;
+                return ParsingEngineImpl.Actions.GOTO42;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE10;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT2;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.SHIFT12;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE10;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.SHIFT58;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.SHIFT13;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE10;
+                return ParsingEngineImpl.Actions.SHIFT65;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1854,37 +1988,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState39Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.SHIFT50;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.SHIFT11;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE15;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.GOTO27;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE15;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE15;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE15;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE15;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.SHIFT45;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.SHIFT36;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE15;
+                return ParsingEngineImpl.Actions.SHIFT55;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1893,37 +2017,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState40Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE14;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE14;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT2;
+                return ParsingEngineImpl.Actions.REDUCE7;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE14;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE14;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.REDUCE7;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.REDUCE7;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1931,28 +2049,8 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState41Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
-            case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
-            case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
-            case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO10;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
-            case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT25;
-            case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT14;
+            case EOF:
+                return ParsingEngineImpl.Actions.ACCEPT;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -1961,37 +2059,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState42Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
+                return ParsingEngineImpl.Actions.GOTO44;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.SHIFT49;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT2;
+                return ParsingEngineImpl.Actions.SHIFT20;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE13;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE13;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.SHIFT18;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.REDUCE15;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.REDUCE15;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE13;
+                return ParsingEngineImpl.Actions.REDUCE15;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2000,37 +2098,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState43Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
+                return ParsingEngineImpl.Actions.GOTO43;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.SHIFT35;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.SHIFT41;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT16;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT2;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.SHIFT12;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
-            case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT25;
-            case _PUNCTUATION7 :
                 return ParsingEngineImpl.Actions.SHIFT14;
-            case _PUNCTUATION9 :
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.SHIFT49;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT38;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT20;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE12;
+            case _PUNCTUATION3 :
                 return ParsingEngineImpl.Actions.SHIFT18;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE12;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE12;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE12;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE12;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2043,32 +2141,32 @@ public class ParsingEngineImpl
             case FLOAT:
                 return ParsingEngineImpl.Actions.REDUCE12;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
                 return ParsingEngineImpl.Actions.REDUCE12;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO51;
+                return ParsingEngineImpl.Actions.GOTO43;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE12;
+                return ParsingEngineImpl.Actions.SHIFT14;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE12;
+                return ParsingEngineImpl.Actions.SHIFT49;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE12;
+                return ParsingEngineImpl.Actions.SHIFT38;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT21;
+                return ParsingEngineImpl.Actions.SHIFT20;
             case EOF:
                 return ParsingEngineImpl.Actions.REDUCE12;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE12;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE12;
+                return ParsingEngineImpl.Actions.SHIFT18;
             case _PUNCTUATION8 :
                 return ParsingEngineImpl.Actions.REDUCE12;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE12;
             case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE12;
+            case _PUNCTUATION9 :
                 return ParsingEngineImpl.Actions.REDUCE12;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
@@ -2078,31 +2176,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState45Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE3;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE3;
+                return ParsingEngineImpl.Actions.SHIFT50;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE3;
+                return ParsingEngineImpl.Actions.SHIFT11;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO37;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE3;
+                return ParsingEngineImpl.Actions.SHIFT45;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE3;
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE3;
+                return ParsingEngineImpl.Actions.SHIFT36;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE3;
+                return ParsingEngineImpl.Actions.SHIFT3;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2111,37 +2205,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState46Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.SHIFT50;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.SHIFT59;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO51;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE14;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.GOTO67;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE14;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT21;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE14;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE14;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE14;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.SHIFT45;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE14;
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT3;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2149,32 +2233,10 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState47Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
-            case INT:
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE3;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE3;
+                return ParsingEngineImpl.Actions.REDUCE4;
             case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE3;
-            case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE3;
+                return ParsingEngineImpl.Actions.REDUCE4;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2182,32 +2244,10 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState48Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
-            case INT:
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE4;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE4;
+                return ParsingEngineImpl.Actions.SHIFT47;
             case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE4;
-            case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE4;
+                return ParsingEngineImpl.Actions.SHIFT1;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2216,31 +2256,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState49Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.SHIFT69;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.SHIFT40;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE1;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE1;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.SHIFT63;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO62;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE1;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE1;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE1;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE1;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.SHIFT58;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.SHIFT13;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.REDUCE1;
+                return ParsingEngineImpl.Actions.SHIFT31;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2249,27 +2285,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState50Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO54;
+                return ParsingEngineImpl.Actions.REDUCE7;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE7;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT6;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
+                return ParsingEngineImpl.Actions.REDUCE7;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE7;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT25;
+                return ParsingEngineImpl.Actions.REDUCE7;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE7;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT14;
+                return ParsingEngineImpl.Actions.REDUCE7;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE7;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2278,37 +2318,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState51Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.REDUCE17;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.REDUCE17;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.REDUCE17;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO51;
+                return ParsingEngineImpl.Actions.GOTO54;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.SHIFT19;
+                return ParsingEngineImpl.Actions.REDUCE17;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.SHIFT3;
+                return ParsingEngineImpl.Actions.REDUCE17;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT56;
+                return ParsingEngineImpl.Actions.REDUCE17;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT21;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.SHIFT39;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.SHIFT57;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.REDUCE17;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.REDUCE17;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE17;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE8;
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE17;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2316,10 +2356,38 @@ public class ParsingEngineImpl
 
     private ParsingEngineImpl.Actions getState52Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT9;
-            case _PUNCTUATION5 :
-                return ParsingEngineImpl.Actions.SHIFT32;
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO43;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT20;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE17;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE17;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2328,31 +2396,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState53Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE5;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE13;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE5;
+                return ParsingEngineImpl.Actions.REDUCE13;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE13;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2361,37 +2429,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState54Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT15;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT45;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO20;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT49;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO11;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO1;
+                return ParsingEngineImpl.Actions.GOTO54;
             case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.SHIFT35;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.SHIFT41;
-            case _PUNCTUATION1 :
                 return ParsingEngineImpl.Actions.SHIFT16;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.SHIFT10;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT35;
             case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT2;
+                return ParsingEngineImpl.Actions.SHIFT39;
             case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.SHIFT12;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT48;
+                return ParsingEngineImpl.Actions.SHIFT34;
             case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT17;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT25;
+                return ParsingEngineImpl.Actions.REDUCE12;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE12;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT14;
+                return ParsingEngineImpl.Actions.REDUCE12;
             case _PUNCTUATION9 :
-                return ParsingEngineImpl.Actions.SHIFT7;
+                return ParsingEngineImpl.Actions.REDUCE12;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2400,37 +2468,27 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState55Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE11;
+                return ParsingEngineImpl.Actions.SHIFT2;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE11;
+                return ParsingEngineImpl.Actions.SHIFT50;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO66;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE11;
+                return ParsingEngineImpl.Actions.SHIFT11;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO22;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO51;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.SHIFT3;
+                return ParsingEngineImpl.Actions.GOTO26;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.SHIFT21;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.SHIFT57;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE11;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE11;
+                return ParsingEngineImpl.Actions.SHIFT45;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE11;
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE11;
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT55;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2439,27 +2497,31 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState56Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT58;
+                return ParsingEngineImpl.Actions.REDUCE10;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT47;
-            case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.REDUCE10;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT36;
-            case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
-            case EXP:
-                return ParsingEngineImpl.Actions.GOTO55;
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE10;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT29;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT31;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT28;
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE10;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT50;
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE10;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT22;
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE10;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2468,27 +2530,37 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState57Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.SHIFT58;
+                return ParsingEngineImpl.Actions.REDUCE20;
             case FLOAT:
-                return ParsingEngineImpl.Actions.SHIFT47;
+                return ParsingEngineImpl.Actions.REDUCE20;
             case BINOP:
-                return ParsingEngineImpl.Actions.GOTO24;
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.SHIFT36;
+                return ParsingEngineImpl.Actions.REDUCE20;
             case UOP:
-                return ParsingEngineImpl.Actions.GOTO5;
+                return ParsingEngineImpl.Actions.GOTO64;
             case EXP:
-                return ParsingEngineImpl.Actions.GOTO8;
+                return ParsingEngineImpl.Actions.GOTO43;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE20;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.SHIFT29;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.SHIFT31;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.SHIFT28;
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE20;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.SHIFT50;
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE20;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.SHIFT53;
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE20;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2497,31 +2569,416 @@ public class ParsingEngineImpl
     private ParsingEngineImpl.Actions getState58Action(Node<Visitor> lookahead) {
         switch (((Symbols) lookahead.symbol())) {
             case INT:
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.SHIFT69;
             case FLOAT:
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.SHIFT40;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
             case ID:
-                return ParsingEngineImpl.Actions.REDUCE2;
-            case _PUNCTUATION0 :
-                return ParsingEngineImpl.Actions.REDUCE2;
-            case _PUNCTUATION2 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.SHIFT63;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO32;
             case _PUNCTUATION1 :
-                return ParsingEngineImpl.Actions.REDUCE2;
-            case _PUNCTUATION4 :
-                return ParsingEngineImpl.Actions.REDUCE2;
-            case EOF:
-                return ParsingEngineImpl.Actions.REDUCE2;
-            case _PUNCTUATION3 :
-                return ParsingEngineImpl.Actions.REDUCE2;
-            case _PUNCTUATION6 :
-                return ParsingEngineImpl.Actions.REDUCE2;
-            case _PUNCTUATION10 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.SHIFT58;
             case _PUNCTUATION8 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.SHIFT6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT21;
             case _PUNCTUATION7 :
-                return ParsingEngineImpl.Actions.REDUCE2;
+                return ParsingEngineImpl.Actions.SHIFT13;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT31;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState59Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION10 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState60Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO54;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.SHIFT10;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT39;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.SHIFT34;
+            case _PUNCTUATION10 :
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE14;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE14;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState61Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.SHIFT2;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.SHIFT50;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.SHIFT59;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO54;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.SHIFT16;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.SHIFT10;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT35;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT39;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.SHIFT34;
+            case _PUNCTUATION10 :
+                return ParsingEngineImpl.Actions.SHIFT5;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT3;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState62Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO56;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO64;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO43;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT20;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE16;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE16;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState63Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE5;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState64Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE11;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE11;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState65Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.SHIFT2;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.SHIFT50;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.SHIFT11;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO61;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT45;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT55;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState66Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION10 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE10;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState67Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO54;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION10 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE20;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState68Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.SHIFT2;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.SHIFT50;
+            case BINOP:
+                return ParsingEngineImpl.Actions.GOTO66;
+            case ID:
+                return ParsingEngineImpl.Actions.SHIFT59;
+            case UOP:
+                return ParsingEngineImpl.Actions.GOTO22;
+            case EXP:
+                return ParsingEngineImpl.Actions.GOTO54;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.SHIFT16;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.SHIFT10;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.SHIFT35;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.SHIFT39;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.SHIFT34;
+            case _PUNCTUATION10 :
+                return ParsingEngineImpl.Actions.SHIFT53;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.SHIFT25;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.SHIFT46;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.SHIFT36;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.SHIFT3;
+            default:
+                return ParsingEngineImpl.Actions.ERROR;
+        }
+    }
+
+    private ParsingEngineImpl.Actions getState69Action(Node<Visitor> lookahead) {
+        switch (((Symbols) lookahead.symbol())) {
+            case INT:
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case FLOAT:
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case ID:
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION0 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION2 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION1 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION4 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case EOF:
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION3 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION8 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION11 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION7 :
+                return ParsingEngineImpl.Actions.REDUCE6;
+            case _PUNCTUATION9 :
+                return ParsingEngineImpl.Actions.REDUCE6;
             default:
                 return ParsingEngineImpl.Actions.ERROR;
         }
@@ -2529,85 +2986,98 @@ public class ParsingEngineImpl
 
     private static enum Actions {
 
-        REDUCE8,
-        GOTO20,
-        GOTO11,
-        GOTO1,
-        SHIFT35,
-        SHIFT41,
-        SHIFT16,
-        SHIFT2,
-        SHIFT12,
-        ERROR,
-        SHIFT15,
-        SHIFT45,
-        SHIFT49,
-        GOTO40,
-        SHIFT6,
-        SHIFT48,
-        SHIFT17,
-        SHIFT25,
-        SHIFT14,
+        SHIFT69,
+        SHIFT40,
+        GOTO56,
+        SHIFT63,
+        GOTO64,
+        GOTO9,
         SHIFT58,
-        SHIFT47,
-        GOTO24,
-        SHIFT36,
-        GOTO5,
-        GOTO44,
-        SHIFT29,
-        SHIFT31,
-        SHIFT28,
-        SHIFT50,
-        SHIFT53,
-        REDUCE16,
-        REDUCE7,
-        GOTO39,
-        SHIFT30,
-        REDUCE9,
-        REDUCE13,
-        GOTO51,
+        SHIFT6,
         SHIFT21,
-        REDUCE18,
-        REDUCE12,
-        GOTO42,
-        REDUCE15,
-        REDUCE5,
-        REDUCE2,
-        GOTO34,
-        GOTO4,
-        GOTO37,
-        SHIFT27,
-        GOTO52,
-        GOTO33,
+        SHIFT13,
+        SHIFT65,
+        ERROR,
         REDUCE6,
-        GOTO46,
-        SHIFT19,
-        SHIFT3,
-        SHIFT56,
-        REDUCE0,
-        SHIFT57,
+        SHIFT2,
+        SHIFT50,
+        GOTO66,
+        SHIFT11,
+        GOTO22,
+        GOTO68,
+        SHIFT45,
+        SHIFT25,
+        SHIFT46,
+        SHIFT36,
+        SHIFT55,
+        SHIFT15,
         GOTO43,
+        SHIFT14,
+        SHIFT49,
+        SHIFT38,
+        SHIFT20,
+        REDUCE1,
+        SHIFT18,
+        SHIFT31,
+        REDUCE13,
+        REDUCE9,
+        REDUCE18,
+        REDUCE2,
+        GOTO33,
+        SHIFT3,
+        REDUCE5,
+        REDUCE3,
+        REDUCE8,
+        GOTO23,
+        GOTO60,
+        REDUCE0,
+        GOTO52,
+        SHIFT12,
+        GOTO48,
+        GOTO7,
+        GOTO57,
+        REDUCE11,
+        REDUCE14,
+        GOTO17,
+        GOTO4,
+        GOTO41,
+        SHIFT19,
+        SHIFT59,
+        GOTO54,
+        SHIFT16,
+        SHIFT10,
+        SHIFT35,
+        SHIFT39,
+        SHIFT34,
+        SHIFT8,
+        SHIFT24,
+        REDUCE12,
+        REDUCE15,
+        GOTO29,
+        GOTO28,
+        REDUCE19,
+        REDUCE16,
+        GOTO51,
+        GOTO30,
+        GOTO42,
+        GOTO27,
+        REDUCE7,
+        ACCEPT,
+        GOTO44,
+        GOTO37,
+        GOTO67,
+        REDUCE4,
+        SHIFT47,
+        SHIFT1,
+        GOTO62,
         REDUCE17,
         GOTO26,
-        GOTO13,
-        SHIFT22,
-        REDUCE4,
-        GOTO23,
         REDUCE10,
-        REDUCE11,
-        GOTO38,
-        REDUCE1,
-        ACCEPT,
-        REDUCE14,
-        GOTO10,
-        SHIFT18,
-        REDUCE3,
-        GOTO54,
-        SHIFT9,
-        SHIFT32,
-        SHIFT7,
-        GOTO55,
-        GOTO8;
+        REDUCE20,
+        GOTO32,
+        SHIFT5,
+        GOTO61,
+        SHIFT53;
 
     }
 

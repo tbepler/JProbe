@@ -16,7 +16,7 @@ public class False
 {
 
 
-    public False(_Punctuation7Token _punctuation70) {
+    public False(_Punctuation8Token _punctuation80) {
     }
 
     @Override
@@ -43,10 +43,10 @@ public class False
 
     @Override
     public boolean equals(Object o) {
-        if (this.equals(o)) {
+        if (this == o) {
             return true;
         }
-        if (o.equals(null)) {
+        if (null == o) {
             return false;
         }
         if (!(o instanceof False)) {
