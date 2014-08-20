@@ -1,4 +1,4 @@
-package src.language.symboltable;
+package language.symboltable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,14 +9,21 @@ import java.util.List;
 public class PersistentQueue<E> {
 
 	private Node<E> head;
+	
+	private final int size;
 
 	private static class Node<E>{
 		private Node<E> next;
 		private E value;
 	}
 	
-    private PersistentQueue(Node<E> n){
+    private PersistentQueue(Node<E> n, int size){
     	head= n;
+    	this.size = size;
+    }
+    
+    public int size(){
+    	return size;
     }
 	
 	public PersistentQueue(Collection<E> c){
@@ -34,6 +41,7 @@ public class PersistentQueue<E> {
 				cur= cur.next;
 			}
 		}
+		size = c.size();
 	}
 
 	public E peek(){
@@ -41,7 +49,7 @@ public class PersistentQueue<E> {
 	}
 
 	public PersistentQueue<E> remove(){
-		return new PersistentQueue(head.next);
+		return new PersistentQueue(head.next, size - 1);
 	}
 	
 

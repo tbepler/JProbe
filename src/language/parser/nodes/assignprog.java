@@ -11,24 +11,24 @@ import language.parser.Visitor;
  * <P>CodeModel is available from https://codemodel.java.net/.
  * 
  */
-public class floatexp
-    extends expAbstractNode
+public class assignprog
+    extends progAbstractNode
 {
 
-    public final floatToken float0;
+    public final assignAbstractNode assign0;
 
-    public floatexp(floatToken float0) {
-        this.float0 = float0;
+    public assignprog(assignAbstractNode assign0) {
+        this.assign0 = assign0;
     }
 
     @Override
     public int getLine() {
-        return float0 .getLine();
+        return assign0 .getLine();
     }
 
     @Override
     public int getPos() {
-        return float0 .getPos();
+        return assign0 .getPos();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class floatexp
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = ((hash* 13)+ float0 .hashCode());
+        hash = ((hash* 13)+ assign0 .hashCode());
         hash = ((hash* 13)+ getClass().hashCode());
         return hash;
     }
@@ -52,11 +52,11 @@ public class floatexp
         if (null == o) {
             return false;
         }
-        if (!(o instanceof floatexp)) {
+        if (!(o instanceof assignprog)) {
             return false;
         }
-        floatexp castResult = ((floatexp) o);
-        if (!this.float0 .equals(castResult.float0)) {
+        assignprog castResult = ((assignprog) o);
+        if (!this.assign0 .equals(castResult.assign0)) {
             return false;
         }
         return true;

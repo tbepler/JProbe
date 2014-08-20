@@ -1,6 +1,6 @@
 package language.exceptions;
 
-public class SymbolAlreadyDefinedException extends Exception{
+public class SymbolAlreadyDefinedException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
 
 	public SymbolAlreadyDefinedException() {

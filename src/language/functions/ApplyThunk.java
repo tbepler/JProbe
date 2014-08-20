@@ -13,7 +13,11 @@ public class ApplyThunk extends Thunk{
 	@Override
 	protected Object eval() {
 		Function f = (Function) func.exec();
-		return f.apply(arg);
+		Function res = f.apply(arg);
+		if(res.params() == 0){
+			return res.evaluate();
+		}
+		return res;
 	}
 
 }

@@ -16,12 +16,13 @@ public enum Symbols
 {
 
     EOF,
-    _PUNCTUATION10("`!'"),
-    _PUNCTUATION9("`)'"),
-    _PUNCTUATION8("`('"),
-    _PUNCTUATION7("`false'"),
-    _PUNCTUATION6("`true'"),
-    _PUNCTUATION5("`='"),
+    _PUNCTUATION11("`!'"),
+    _PUNCTUATION10("`)'"),
+    _PUNCTUATION9("`('"),
+    _PUNCTUATION8("`false'"),
+    _PUNCTUATION7("`true'"),
+    _PUNCTUATION6("`='"),
+    _PUNCTUATION5("`def'"),
     _PUNCTUATION4("`^'"),
     _PUNCTUATION3("`/'"),
     _PUNCTUATION2("`*'"),
@@ -35,6 +36,7 @@ public enum Symbols
     BINOP,
     UOP,
     EXP,
+    PROG,
     IDLIST;
     private final String name;
 

@@ -10,6 +10,12 @@ public class ValueThunk extends Thunk{
 	
 	@Override
 	protected Object eval() {
+		if(val instanceof Function){
+			Function f = (Function) val;
+			if(f.params() == 0){
+				return f.evaluate();
+			}
+		}
 		return val;
 	}
 

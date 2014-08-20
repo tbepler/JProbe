@@ -7,7 +7,12 @@ error = ".";
 
 #Rules:
 
-assign = idlist, "=", exp;
+prog = assign | exp;
+
+assign = "def", idlist, "=", exp #name Assign;
+
+idlist = id #name IdListHead
+	| idlist, id #name IdListAppend;
 
 exp = id
 	| int
@@ -30,8 +35,6 @@ binop = exp, "+", exp #name Add
 uop = "-", exp #prec UMINUS #name Negate
 	| "!", exp #prec NOT #name Not
 	;
-
-idlist = id #name IdListHead | idlist, id #name IdListAppend;
 
 
 #Precedence:
