@@ -12,7 +12,7 @@ public class PersistentQueue<E> {
 
 	private static class Node<E>{
 		private Node<E> next;
-		public E value;
+		private E value;
 	}
 	
     private PersistentQueue(Node<E> n){
