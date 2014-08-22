@@ -10,6 +10,12 @@ import java.util.*;
 import util.DNAUtils;
 import util.genome.NoSuchBaseException;
 
+/**
+ * This class represents a position weight matrix
+ * 
+ * @author Tristan Bepler
+ *
+ */
 public class PWM implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -164,7 +170,25 @@ public class PWM implements Serializable{
 			double score = 0;
 			for(int i=0; i<word.length(); i++){
 				char base = word.charAt(i);
-				score += m_Scores[getBaseIndex(base)][i];
+				score += score(base, i);
+			}
+			return score;
+		}
+		throw new RuntimeException("Cannot score word: "+word+". Word length is not the same as PWM length: "+this.length()+".");
+	}
+	
+	/**
+	 * Returns the score of the given word according to this PWM. The score is calculated as the
+	 * natural log of the product of the scores of each position in the word.
+	 * @param word - sequence to be scored
+	 * @return log ratio score
+	 */
+	public double scoreLogRatio(String word){
+		if(word.length() == this.length()){
+			double score = 0;
+			for( int i = 0 ; i < word.length() ; ++i ){
+				char base = word.charAt(i);
+				score += Math.log(score(base, i));
 			}
 			return score;
 		}

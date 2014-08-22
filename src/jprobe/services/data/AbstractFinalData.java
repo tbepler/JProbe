@@ -1,5 +1,6 @@
 package jprobe.services.data;
 
+import java.awt.Font;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -62,6 +63,7 @@ public abstract class AbstractFinalData implements Data{
 		}catch(Exception e){
 			ErrorHandler.getInstance().handleException(e, JProbeActivator.getBundle());
 		}
+		table.setFont(new Font(Font.MONOSPACED, table.getFont().getStyle(), table.getFont().getSize()));
 		TableFormatter.formatTable(table, Constants.DATA_TABLE_MAX_COL_WIDTH, Constants.DATA_TABLE_ROW_SAMPLE);
 		table.setShowGrid(true);
 		return table;

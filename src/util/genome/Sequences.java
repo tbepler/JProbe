@@ -1,5 +1,6 @@
 package util.genome;
 
+import java.io.Serializable;
 import java.util.*;
 
 import util.genome.kmer.Kmer;
@@ -7,7 +8,8 @@ import util.genome.pwm.PWM;
 
 public class Sequences {
 	
-	public static class Profile{
+	public static class Profile implements Serializable{
+		private static final long serialVersionUID = 1L;
 		
 		private final List<String> m_Names = new ArrayList<String>();
 		private final List<Integer> m_WordLens = new ArrayList<Integer>();
@@ -87,7 +89,7 @@ public class Sequences {
 			for(int start = 0; start<scores.length; start++){
 				int end = start + pwm.length();
 				String subseq = seq.substring(start, end);
-				scores[start] = pwm.score(subseq);
+				scores[start] = pwm.scoreLogRatio(subseq);
 			}
 			p.put(name, pwm.length(), scores);
 		}
